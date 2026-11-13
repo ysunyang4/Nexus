@@ -84,7 +84,7 @@ nexus-nova-config.json
 
 # Production artifacts, ledgers & metric snapshots
 baseline_token_metrics.json
-artifacts/
+/artifacts/
 *.wal
 *.wal.*
 *.telemetry.jsonl
