@@ -210,7 +210,10 @@ describe("Production Runtime Resolution & Negative PATH Verification", () => {
     const mcpHeaders = {
       authorization: `Bearer ${mcpToken}`,
       "content-type": "application/json",
-      "mcp-protocol-version": "2025-11-25",
+      // This smoke test runs Core + Runner without the external 8787 Gateway.
+      // Route directly through the authenticated Core execution handler.
+      "x-nexus-internal": "true",
+      "mcp-protocol-version": "2026-07-28",
       accept: "application/json, text/event-stream",
       connection: "close",
     };

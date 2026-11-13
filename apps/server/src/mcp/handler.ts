@@ -750,6 +750,9 @@ export const mcpRoutes: FastifyPluginAsync<McpRoutesOptions> = async (
         try {
           reply.hijack();
           await server.connect(transport);
+          // Preserve our explicit compatibility version after SDK connect(), which
+          // may reset the transport header allowlist to the SDK built-in defaults.
+          transport.setSupportedProtocolVersions([MCP_PROTOCOL_VERSION]);
           await transport.handleRequest(request.raw, reply.raw, request.body);
         } catch (err) {
           cleanup();
