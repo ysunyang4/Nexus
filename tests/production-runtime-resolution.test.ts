@@ -210,7 +210,7 @@ describe("Production Runtime Resolution & Negative PATH Verification", () => {
     const mcpHeaders = {
       authorization: `Bearer ${mcpToken}`,
       "content-type": "application/json",
-      "mcp-protocol-version": "2026-07-28",
+      "mcp-protocol-version": "2025-11-25",
       accept: "application/json, text/event-stream",
       connection: "close",
     };
