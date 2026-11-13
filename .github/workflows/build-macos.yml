@@ -50,7 +50,7 @@ jobs:
       - name: Setup Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: 24.x
+          node-version: 24.21.0
           cache: "pnpm"
 
       - name: Setup Rust toolchain
