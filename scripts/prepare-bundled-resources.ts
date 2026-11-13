@@ -129,7 +129,7 @@ async function main() {
   const uvExeName = isWin ? "uv.exe" : "uv";
   const candidateUvPaths = [
     path.join(process.env.USERPROFILE || "", ".local/bin", uvExeName),
-    "E:\\Tools\\Anado\\Anaa\\Scripts\\uv.exe",
+    process.env.UV_BIN || "",
   ];
   let foundUvPath: string | null = null;
   for (const p of candidateUvPaths) {

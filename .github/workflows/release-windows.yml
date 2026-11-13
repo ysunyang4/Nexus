@@ -53,6 +53,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Download and verify pinned Windows tunnel runtime
+        shell: pwsh
+        run: ./scripts/prepare-windows-tunnel-runtime.ps1
+
       - name: Prepare bundled production runtime
         run: pnpm run bundle:runtime
 

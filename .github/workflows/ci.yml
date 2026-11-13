@@ -41,6 +41,10 @@ jobs:
       - name: Typecheck
         run: pnpm run typecheck
 
+      - name: Download and verify pinned Windows tunnel runtime
+        shell: pwsh
+        run: ./scripts/prepare-windows-tunnel-runtime.ps1
+
       - name: Build Packages & Applications
         run: pnpm run build
 
