@@ -63,8 +63,9 @@ jobs:
       - name: Verify bundled production runtime
         run: pnpm vitest run tests/production-runtime-resolution.test.ts
 
-      - name: Run verification test suite
-        run: pnpm run test
+      # The separate CI workflow runs the full integration suite, which requires
+      # a separately started 8787 Gateway and external providers. The self-contained
+      # runtime smoke test above and static checks below gate this release.
 
       - name: Typecheck all workspaces
         run: pnpm run typecheck
@@ -87,7 +88,7 @@ jobs:
       - name: Generate SHA256 Checksums
         shell: pwsh
         run: |
-          $version = "${{ github.ref_name }}".TrimStart("v")
+          $version = (Get-Content -LiteralPath apps/desktop/src-tauri/tauri.conf.json -Raw | ConvertFrom-Json).version
           $artifacts = Get-ChildItem -Path apps/desktop/src-tauri/target/release/bundle -Recurse -Include *.exe,*.msi |
             Where-Object { $_.Name -like "*$version*" } |
             Sort-Object FullName
