@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     name: Build, Typecheck & Test (Windows)
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
       - name: Checkout code
