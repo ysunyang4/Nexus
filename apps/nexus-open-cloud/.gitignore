@@ -1,0 +1,9 @@
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+*.enc
+*.secret
+.wrangler/
+
+.local-bridge-token
+*.dpapi

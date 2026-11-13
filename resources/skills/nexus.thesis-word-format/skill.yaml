@@ -1,0 +1,45 @@
+id: nexus.thesis-word-format
+version: 1.0.0
+name:
+  zh-CN: 学术论文 Word 格式受控排版与独立验证
+  en-US: Academic Thesis Word Controlled Formatting & Verification
+description:
+  zh-CN: 面向学位论文/毕业论文的受控排版、结构体检、规范映射与独立验证系统。铁律保证内容零篡改、原件只读必备份、独立OOXML审计。
+  en-US: Controlled formatting, structural diagnosis, spec mapping, and independent verification for graduation theses with zero content mutation guarantee.
+category: document
+risk: high
+triggers:
+  - 毕业论文排版
+  - 论文格式
+  - 论文改格式
+  - 论文排版
+  - 学位论文排版
+  - Word论文排版
+  - 三线表
+  - 论文页眉页脚
+  - 论文目录
+  - GB/T 7714
+  - 论文格式规范
+  - 毕业论文格式
+  - 论文格式调整
+  - 论文格式检查
+  - 调论文格式
+  - 开题报告格式
+  - thesis format
+  - paper format
+tools:
+  - localbridge_run_script
+  - localbridge_file_read
+  - localbridge_file_stat
+workflow:
+  - phase_0_readonly_audit
+  - phase_1_specification_alignment
+  - phase_2_backup_and_baseline
+  - phase_3_page_and_sections
+  - phase_4_headings_and_body
+  - phase_5_tables_and_captions
+  - phase_6_toc_and_references
+  - phase_7_save_and_reopen
+  - phase_8_independent_verification
+  - phase_9_audit_report_generation
+enabled: true

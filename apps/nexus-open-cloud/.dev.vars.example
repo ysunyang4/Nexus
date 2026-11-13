@@ -1,0 +1,4 @@
+# Copy to .dev.vars and replace with a fresh long random token.
+NEXUS_GATEWAY_TOKEN="replace-with-32-or-more-random-bytes"
+# Only explicit public HTTPS hosts are reachable by HTTP tools.
+NEXUS_ALLOWED_HOSTS="example.com"

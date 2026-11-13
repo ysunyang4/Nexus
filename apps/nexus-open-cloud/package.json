@@ -1,0 +1,15 @@
+{
+  "name": "@nexus/open-cloud",
+  "version": "0.1.0",
+  "description": "Open-source, independently deployable Cloudflare MCP tools for Nexus",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "check": "node --check src/entry.mjs && node --check src/worker.mjs && node --check src/security.mjs && node --check src/device-auth.mjs && node --check src/relay.mjs && node --check local/agent.mjs && node --check local/device-credentials.mjs && node --check local/manage-devices.mjs && node --check local/network-proxy.mjs && node --check local/sqlite-backup.mjs && node --check local/vault.mjs",
+    "test": "node --test test/*.test.mjs",
+    "deploy": "wrangler deploy --config wrangler.jsonc",
+    "dev": "wrangler dev --config wrangler.jsonc"
+  },
+  "dependencies": { "ws": "^8.18.3", "https-proxy-agent": "^7.0.6", "undici": "^7.16.0" },
+  "engines": { "node": ">=24" }
+}

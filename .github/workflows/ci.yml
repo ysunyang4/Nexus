@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Build, Typecheck & Test (Windows)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC developer environment
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+
+      - name: Setup Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: "pnpm"
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Core Packages
+        run: pnpm -r --filter=./packages/* run build
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Build Packages & Applications
+        run: pnpm run build
+
+      - name: Run Test Suite
+        run: pnpm run test
+
+      - name: Cargo Check (Desktop)
+        working-directory: apps/desktop/src-tauri
+        run: cargo check

@@ -1,0 +1,100 @@
+name: Release Windows
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build & Package Windows Installer (Tauri 2 NSIS)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          clean: true
+          fetch-depth: 0
+
+      - name: Assert clean release checkout
+        shell: pwsh
+        run: |
+          if (git status --porcelain) { throw "Release checkout is not clean" }
+          $controlled = @(
+            "apps/desktop/src-tauri/resources/runtime",
+            "apps/desktop/src-tauri/resources/server",
+            "apps/desktop/src-tauri/resources/runner"
+          )
+          foreach ($path in $controlled) {
+            if (Test-Path -LiteralPath $path) { throw "Clean-checkout smoke failed: $path already exists" }
+          }
+
+      - name: Setup MSVC developer environment
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+
+      - name: Setup Node.js 24.21.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.21.0
+          cache: "pnpm"
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare bundled production runtime
+        run: pnpm run bundle:runtime
+
+      - name: Verify bundled production runtime
+        run: pnpm vitest run tests/production-runtime-resolution.test.ts
+
+      - name: Run verification test suite
+        run: pnpm run test
+
+      - name: Typecheck all workspaces
+        run: pnpm run typecheck
+
+      - name: Build monorepo packages
+        run: pnpm run build
+
+      - name: Package Tauri Desktop Installer
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: apps/desktop
+          tagName: ${{ github.ref_name }}
+          releaseName: "Nexus ${{ github.ref_name }}"
+          releaseBody: "Nexus ${{ github.ref_name }} Release"
+          releaseDraft: false
+          prerelease: false
+
+      - name: Generate SHA256 Checksums
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart("v")
+          $artifacts = Get-ChildItem -Path apps/desktop/src-tauri/target/release/bundle -Recurse -Include *.exe,*.msi |
+            Where-Object { $_.Name -like "*$version*" } |
+            Sort-Object FullName
+          if ($artifacts.Count -lt 1) { throw "Expected at least one v$version installer, found $($artifacts.Count)" }
+          $lines = $artifacts | ForEach-Object {
+            $hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower()
+            "$hash  $($_.Name)"
+          }
+          $lines | Set-Content -Path SHA256SUMS.txt -Encoding ascii
+
+      - name: Upload Release Checksums
+        uses: softprops/action-gh-release@v2
+        with:
+          files: SHA256SUMS.txt

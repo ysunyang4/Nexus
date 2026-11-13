@@ -1,0 +1,11 @@
+{
+  "name": "nexus-open-cloud-tools",
+  "main": "src/entry.mjs",
+  "compatibility_date": "2026-10-30",
+  "workers_dev": true,
+  "durable_objects": {"bindings":[{"name":"NEXUS_RELAY","class_name":"NexusRelay"}]},
+  "migrations": [{"tag":"open-relay-v1","new_sqlite_classes":["NexusRelay"]}],
+  "vars": {
+    "NEXUS_ALLOWED_HOSTS": ""
+  }
+}

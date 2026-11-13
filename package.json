@@ -1,0 +1,47 @@
+{
+  "name": "localbridge-monorepo",
+  "version": "1.3.1",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "description": "Secure Model Context Protocol (MCP) Bridge for Local Development",
+  "packageManager": "pnpm@10.14.0",
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10"
+  },
+  "scripts": {
+    "build": "pnpm -r --filter=./packages/* run build && pnpm --filter=@localbridge/server run build && pnpm --filter=@localbridge/runner run build && pnpm --filter=@localbridge/desktop run build",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dev:server": "pnpm --filter @localbridge/server dev",
+    "dev:runner": "pnpm --filter @localbridge/runner dev",
+    "bundle:runtime": "tsx scripts/prepare-bundled-resources.ts",
+    "verify:resources": "tsx scripts/verify-bundled-resources.ts",
+    "clean": "pnpm -r run clean"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "^2.0.0",
+    "@modelcontextprotocol/server": "^2.0.0",
+    "@types/node": "^22.13.4",
+    "@types/ws": "^8.5.14",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "tsup": "^8.3.6",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.6",
+    "ws": "^8.18.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "esbuild"
+    ]
+  },
+  "dependencies": {
+    "yaml": "^2.9.1"
+  }
+}

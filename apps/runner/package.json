@@ -1,0 +1,39 @@
+{
+  "name": "@localbridge/runner",
+  "version": "1.3.1",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "main": "./dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup src/index.ts --format esm --clean",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "project": "tsx src/cli/project-cli.ts",
+    "project:add": "tsx src/cli/project-cli.ts add",
+    "project:list": "tsx src/cli/project-cli.ts list",
+    "project:remove": "tsx src/cli/project-cli.ts remove",
+    "project:enable": "tsx src/cli/project-cli.ts enable",
+    "project:disable": "tsx src/cli/project-cli.ts disable",
+    "project:set-execution": "tsx src/cli/project-cli.ts set-execution"
+  },
+  "dependencies": {
+    "@localbridge/protocol": "workspace:*",
+    "@localbridge/security": "workspace:*",
+    "@localbridge/shared": "workspace:*",
+    "koffi": "^3.3.1",
+    "node-pty": "^1.1.0",
+    "typescript-language-server": "^6.0.0",
+    "ws": "^8.18.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.14",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.3.6",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3"
+  }
+}
