@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="#english"><b>English</b></a> | <a href="#简体中文"><b>简体中文</b></a>
+  <a href="#english"><b>English</b></a> | <a href="#简体中文"><b>简体中文</b></a> | <a href="README.ja.md"><b>日本語</b></a>
 </p>
 
 <p align="center">
