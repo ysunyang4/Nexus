@@ -22,18 +22,11 @@ export function detectInitialLanguage(): SupportedLanguage {
       }
     }
 
-    if (typeof navigator !== "undefined") {
-      const browserLangs = navigator.languages ? [...navigator.languages] : [navigator.language || ""];
-      for (const lang of browserLangs) {
-        if (lang && typeof lang === "string" && lang.toLowerCase().startsWith("zh")) {
-          return "zh-CN";
-        }
-      }
-    }
+    // English is the default for first-time users; an explicit saved preference still wins.
   } catch {
     // Fallback if localStorage or navigator is inaccessible
   }
-  return "zh-CN";
+  return "en-US";
 }
 
 export function persistLanguage(lang: SupportedLanguage): void {
