@@ -313,7 +313,8 @@ export class SkillRegistry {
   // --- Meta-Tool Action Executor: nexus_skills ---
 
   async executeNexusSkills(params: NexusSkillsParams): Promise<any> {
-    switch (params.action) {
+    const action = (params?.action || "list") as any;
+    switch (action) {
       case "match" as any: {
         const queryStr = ((params as any).query || (params as any).name || "").trim();
         const matchRes = this.matchSkills(queryStr, (params as any).projectId);

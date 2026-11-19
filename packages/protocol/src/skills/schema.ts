@@ -85,7 +85,7 @@ export const SkillBatchImportParamsSchema = z.object({
 
 
 export const NexusSkillsSchema = z.object({
-  action: z.enum(["list", "search", "load", "read_file", "refresh", "status"]).describe("Skill action to perform"),
+  action: z.enum(["list", "search", "load", "read_file", "refresh", "status"]).default("list").describe("Skill action to perform"),
   query: z.string().optional().describe("Search keyword for search action"),
   name: z.string().optional().describe("Target skill name or ID (supports 'source/name' for disambiguation)"),
   path: z.string().optional().describe("Relative file path within skill directory for read_file action"),
