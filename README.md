@@ -280,9 +280,7 @@ Header: `Authorization: Bearer lb_your_token_here`
 
 ---
 
-## 9. Official Communities & Developer Contact
-
-### Official Communities (Discussion Groups)
+## 9. Official Communities
 Join our developer communities for live troubleshooting, feature requests, and updates:
 
 <div align="center">
@@ -303,41 +301,6 @@ Join our developer communities for live troubleshooting, feature requests, and u
     </tr>
   </table>
 </div>
-
-### Direct Developer Contacts
-Reach out to the author directly via WeChat, Telegram, WhatsApp, or LINE:
-
-<div align="center">
-  <table>
-    <tr>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/wechat.jpg" width="180" alt="WeChat" style="border-radius: 12px;" /><br>
-        <br>
-        <b>WeChat (微信)</b><br>
-        <code>sunny</code>
-      </td>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/telegram.jpg" width="180" alt="Telegram" style="border-radius: 12px;" /><br>
-        <br>
-        <b>Telegram</b><br>
-        <a href="https://t.me/SUNNY744"><code>@SUNNY744</code></a>
-      </td>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/whatsapp.png" width="180" alt="WhatsApp" style="border-radius: 12px;" /><br>
-        <br>
-        <b>WhatsApp</b><br>
-        <code>sunny</code>
-      </td>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/line.jpg" width="180" alt="LINE" style="border-radius: 12px;" /><br>
-        <br>
-        <b>LINE</b>
-      </td>
-    </tr>
-  </table>
-</div>
-
----
 
 ## 10. 💖 Sponsor & Support
 

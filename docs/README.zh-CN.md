@@ -304,41 +304,6 @@ Header 添加：`Authorization: Bearer lb_your_token_here`
   </table>
 </div>
 
-### 开发者直连联系方式
-如有商业合作、深度技术交流或定制需求，可直接联系作者：
-
-<div align="center">
-  <table>
-    <tr>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/wechat.jpg" width="180" alt="微信" style="border-radius: 12px;" /><br>
-        <br>
-        <b>微信 (WeChat)</b><br>
-        <code>sunny</code>
-      </td>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/telegram.jpg" width="180" alt="Telegram" style="border-radius: 12px;" /><br>
-        <br>
-        <b>Telegram</b><br>
-        <a href="https://t.me/SUNNY744"><code>@SUNNY744</code></a>
-      </td>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/whatsapp.png" width="180" alt="WhatsApp" style="border-radius: 12px;" /><br>
-        <br>
-        <b>WhatsApp</b><br>
-        <code>sunny</code>
-      </td>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/line.jpg" width="180" alt="LINE" style="border-radius: 12px;" /><br>
-        <br>
-        <b>LINE</b>
-      </td>
-    </tr>
-  </table>
-</div>
-
----
-
 ## 10. 💖 赞助与支持 (Sponsor & Support)
 
 如果 Nexus 对您的研发工作流、学术研究或日常开发有所帮助，欢迎请作者喝杯咖啡 ☕！
