@@ -362,7 +362,8 @@ Header 添加：`Authorization: Bearer lb_your_token_here`
         <img src="assets/binance-pay.jpg" width="180" alt="币安支付 (Binance Pay)" style="border-radius: 12px;" /><br />
         <br />
         <b>币安支付 (Binance Pay)</b><br />
-        <span style="font-size: 11px; color: #888;">Ryan Sunv · Crypto / USD</span>
+        <code>UID: 1292741809</code><br />
+        <span style="font-size: 11px; color: #888;">Ryan Sunv · 站内直转免选网络</span>
       </td>
     </tr>
   </table>

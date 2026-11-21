@@ -362,7 +362,8 @@ Your generous support helps sustain continuous open-source maintenance, new MCP 
         <img src="docs/assets/binance-pay.jpg" width="180" alt="Binance Pay (币安支付)" style="border-radius: 12px;" /><br />
         <br />
         <b>Binance Pay (币安支付)</b><br />
-        <span style="font-size: 11px; color: #888;">Ryan Sunv · Crypto / USD</span>
+        <code>UID: 1292741809</code><br />
+        <span style="font-size: 11px; color: #888;">Ryan Sunv · No Network Needed</span>
       </td>
     </tr>
   </table>
