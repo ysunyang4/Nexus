@@ -339,7 +339,32 @@ Reach out to the author directly via WeChat, Telegram, WhatsApp, or LINE:
 
 ---
 
-## 10. Development & Quality Verification
+## 10. 💖 Sponsor & Support
+
+If Nexus has accelerated your research, engineering workflow, or daily development, consider buying the author a coffee ☕!
+
+Your generous support helps sustain continuous open-source maintenance, new MCP toolkits, and ecosystem development.
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="260">
+        <img src="docs/assets/wechat-pay.jpg" width="220" alt="WeChat Pay (微信支付)" style="border-radius: 12px;" /><br />
+        <br />
+        <b>WeChat Pay (微信支付)</b>
+      </td>
+      <td align="center" width="260">
+        <img src="docs/assets/alipay.jpg" width="220" alt="Alipay (支付宝)" style="border-radius: 12px;" /><br />
+        <br />
+        <b>Alipay (支付宝)</b>
+      </td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## 11. Development & Quality Verification
 
 ```powershell
 # Typecheck across all 7 workspace packages (0 errors)
@@ -357,7 +382,7 @@ cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
 
 ---
 
-## 11. License, Anti-Rebranding & Security Disclaimer
+## 12. License, Anti-Rebranding & Security Disclaimer
 
 - **Software license ([GNU AGPL-3.0](LICENSE))**: Nexus v1.3.2 is distributed under the GNU Affero General Public License v3.0 (AGPL-3.0-only), which permits personal **and commercial** use, modification and redistribution subject to its terms.
   - **When source obligations apply**: Distributing covered works (including modified binaries), and allowing users to interact over a network with a modified version, can trigger the license's corresponding-source and notice requirements. Private modifications not conveyed or offered as a modified network service are not automatically required to be publicly published. Refer to the actual [AGPL-3.0 license](LICENSE), especially Sections 4–6 and 13, for the precise scope.

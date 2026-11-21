@@ -339,7 +339,32 @@ Header 添加：`Authorization: Bearer lb_your_token_here`
 
 ---
 
-## 10. 质量保障与验证指令
+## 10. 💖 赞助与支持 (Sponsor & Support)
+
+如果 Nexus 对您的研发工作流、学术研究或日常开发有所帮助，欢迎请作者喝杯咖啡 ☕！
+
+您的慷慨赞助将持续推动项目的活跃开源维护、新特性迭代与生态建设。
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="260">
+        <img src="assets/wechat-pay.jpg" width="220" alt="微信支付 (WeChat Pay)" style="border-radius: 12px;" /><br />
+        <br />
+        <b>微信支付 (WeChat Pay)</b>
+      </td>
+      <td align="center" width="260">
+        <img src="assets/alipay.jpg" width="220" alt="支付宝 (Alipay)" style="border-radius: 12px;" /><br />
+        <br />
+        <b>支付宝 (Alipay)</b>
+      </td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## 11. 质量保障与验证指令
 
 ```powershell
 # 全局 7 个工作区强类型校验（0 错误）
@@ -357,7 +382,7 @@ cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
 
 ---
 
-## 11. 开源许可证、署名与安全说明
+## 12. 开源许可证、署名与安全说明
 
 - **软件许可证**：Nexus v1.3.2 依据 [GNU AGPL-3.0](LICENSE) 发布，允许个人与商业使用、学习、修改和再分发，但须遵守许可证原文。
   - **源码提供义务的适用范围**：分发受 AGPL 约束的程序或修改版，以及让用户通过网络与修改版交互等适用情形，可能触发相应源码和许可声明义务。仅在本地私下修改、不进行相应分发或网络交互服务，并不当然要求公开源码。具体以 AGPL 第 4–6、13 条等规定为准。
