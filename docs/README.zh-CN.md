@@ -348,15 +348,21 @@ Header 添加：`Authorization: Bearer lb_your_token_here`
 <div align="center">
   <table>
     <tr>
-      <td align="center" width="260">
-        <img src="assets/wechat-pay.jpg" width="220" alt="微信支付 (WeChat Pay)" style="border-radius: 12px;" /><br />
+      <td align="center" width="220">
+        <img src="assets/wechat-pay.jpg" width="180" alt="微信支付 (WeChat Pay)" style="border-radius: 12px;" /><br />
         <br />
         <b>微信支付 (WeChat Pay)</b>
       </td>
-      <td align="center" width="260">
-        <img src="assets/alipay.jpg" width="220" alt="支付宝 (Alipay)" style="border-radius: 12px;" /><br />
+      <td align="center" width="220">
+        <img src="assets/alipay.jpg" width="180" alt="支付宝 (Alipay)" style="border-radius: 12px;" /><br />
         <br />
         <b>支付宝 (Alipay)</b>
+      </td>
+      <td align="center" width="220">
+        <img src="assets/binance-pay.jpg" width="180" alt="币安支付 (Binance Pay)" style="border-radius: 12px;" /><br />
+        <br />
+        <b>币安支付 (Binance Pay)</b><br />
+        <span style="font-size: 11px; color: #888;">Ryan Sunv · Crypto / USD</span>
       </td>
     </tr>
   </table>

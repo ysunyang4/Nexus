@@ -348,15 +348,21 @@ Your generous support helps sustain continuous open-source maintenance, new MCP 
 <div align="center">
   <table>
     <tr>
-      <td align="center" width="260">
-        <img src="docs/assets/wechat-pay.jpg" width="220" alt="WeChat Pay (微信支付)" style="border-radius: 12px;" /><br />
+      <td align="center" width="220">
+        <img src="docs/assets/wechat-pay.jpg" width="180" alt="WeChat Pay (微信支付)" style="border-radius: 12px;" /><br />
         <br />
         <b>WeChat Pay (微信支付)</b>
       </td>
-      <td align="center" width="260">
-        <img src="docs/assets/alipay.jpg" width="220" alt="Alipay (支付宝)" style="border-radius: 12px;" /><br />
+      <td align="center" width="220">
+        <img src="docs/assets/alipay.jpg" width="180" alt="Alipay (支付宝)" style="border-radius: 12px;" /><br />
         <br />
         <b>Alipay (支付宝)</b>
+      </td>
+      <td align="center" width="220">
+        <img src="docs/assets/binance-pay.jpg" width="180" alt="Binance Pay (币安支付)" style="border-radius: 12px;" /><br />
+        <br />
+        <b>Binance Pay (币安支付)</b><br />
+        <span style="font-size: 11px; color: #888;">Ryan Sunv · Crypto / USD</span>
       </td>
     </tr>
   </table>
