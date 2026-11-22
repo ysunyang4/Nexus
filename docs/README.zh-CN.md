@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ysunyang4/Nexus/releases/tag/v1.3.2"><img src="https://img.shields.io/badge/version-1.3.2-blue.svg" alt="Version 1.3.2"></a>
+  <a href="https://github.com/ysunyang4/Nexus/releases/tag/v1.3.3"><img src="https://img.shields.io/badge/version-1.3.3-blue.svg" alt="Version 1.3.3"></a>
   <img src="https://img.shields.io/badge/MCP_Tools-332_规范工具-success.svg" alt="332 MCP Tools">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-red.svg" alt="License AGPL-3.0"></a>
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-brightgreen.svg" alt="Platforms">
@@ -209,7 +209,7 @@ Nexus/
 ## 7. 快速上手
 
 #### 方式 A：使用桌面端安装包（推荐）
-1. 从 [GitHub Releases (v1.3.2)](https://github.com/ysunyang4/Nexus/releases/tag/v1.3.2) 下载对应平台的最新安装包：
+1. 从 [GitHub Releases (v1.3.2)](https://github.com/ysunyang4/Nexus/releases/tag/v1.3.3) 下载对应平台的最新安装包：
    - **Windows (x64 安装包)**：[`Nexus_1.3.2_x64-setup.exe`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.2_x64-setup.exe)
    - **macOS (Universal 通用 DMG)**：[`Nexus_1.3.2_universal.dmg`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.2_universal.dmg)
    - **macOS (Apple Silicon DMG)**：[`Nexus_1.3.2_aarch64.dmg`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.2_aarch64.dmg)
@@ -310,23 +310,28 @@ Header 添加：`Authorization: Bearer lb_your_token_here`
 
 您的慷慨赞助将持续推动项目的活跃开源维护、新特性迭代与生态建设。
 
+> 💼 **企业赞助与商业授权 (Enterprise & Licensing)**  
+> 如需企业级深度技术支持、定制集成，或商业闭源授权（豁免 AGPL-3.0 开源传染义务），欢迎通过 [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) 或邮件联系：ysunyang979@gmail.com。
+
 <div align="center">
   <table>
     <tr>
       <td align="center" width="220">
         <img src="assets/wechat-pay.jpg" width="180" alt="微信支付 (WeChat Pay)" style="border-radius: 12px;" /><br />
         <br />
-        <b>微信支付 (WeChat Pay)</b>
+        <b>微信赞赏 (WeChat Reward)</b><br />
+        <span style="font-size: 11px; color: #888;">扫码赞赏支持作者</span>
       </td>
       <td align="center" width="220">
         <img src="assets/alipay.jpg" width="180" alt="支付宝 (Alipay)" style="border-radius: 12px;" /><br />
         <br />
-        <b>支付宝 (Alipay)</b>
+        <b>支付宝赞赏 (Alipay Appreciation)</b><br />
+        <span style="font-size: 11px; color: #888;">扫码赞赏支持作者</span>
       </td>
       <td align="center" width="220">
         <img src="assets/binance-pay.jpg" width="180" alt="币安支付 (Binance Pay)" style="border-radius: 12px;" /><br />
         <br />
-        <b>币安支付 (Binance Pay)</b><br />
+        <b>加密货币 (USDT / USDC)</b><br />
         <code>UID: 1292741809</code><br />
         <span style="font-size: 11px; color: #888;">Ryan Sunv · 站内直转免选网络</span>
       </td>

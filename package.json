@@ -1,6 +1,6 @@
 {
   "name": "localbridge-monorepo",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "private": true,
   "license": "AGPL-3.0-only",
   "description": "Secure Model Context Protocol (MCP) Bridge for Local Development",

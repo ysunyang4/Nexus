@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ysunyang4/Nexus/releases/tag/v1.3.2"><img src="https://img.shields.io/badge/version-1.3.2-blue.svg" alt="Version 1.3.2"></a>
+  <a href="https://github.com/ysunyang4/Nexus/releases/tag/v1.3.3"><img src="https://img.shields.io/badge/version-1.3.3-blue.svg" alt="Version 1.3.3"></a>
   <img src="https://img.shields.io/badge/MCP_Tools-332_Canonical-success.svg" alt="332 MCP Tools">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-red.svg" alt="License AGPL-3.0"></a>
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-brightgreen.svg" alt="Platforms">
@@ -209,7 +209,7 @@ Nexus/
 ## 7. Quick Start
 
 #### Option A: Desktop Installer (Recommended)
-1. Open the [v1.3.2 release page](https://github.com/ysunyang4/Nexus/releases/tag/v1.3.2) and download the installer package for your operating system:
+1. Open the [v1.3.2 release page](https://github.com/ysunyang4/Nexus/releases/tag/v1.3.3) and download the installer package for your operating system:
    - **Windows (x64 Installer)**: `Nexus_1.3.2_x64-setup.exe`
    - **macOS (Universal DMG)**: `Nexus_1.3.2_universal.dmg`
    - **macOS (Apple Silicon DMG)**: `Nexus_1.3.2_aarch64.dmg`
@@ -308,23 +308,29 @@ If Nexus has accelerated your research, engineering workflow, or daily developme
 
 Your generous support helps sustain continuous open-source maintenance, new MCP toolkits, and ecosystem development.
 
+> 💼 **Enterprise Sponsorship & Commercial Licensing**  
+> For enterprise sponsorship, dedicated SLA support, or commercial closed-source licensing inquiries, feel free to reach out via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) or email: ysunyang979@gmail.com.  
+> *(企业赞助、专属技术支持或商业闭源授权咨询，欢迎通过 GitHub Issues 或邮件联系：ysunyang979@gmail.com。)*
+
 <div align="center">
   <table>
     <tr>
       <td align="center" width="220">
         <img src="docs/assets/wechat-pay.jpg" width="180" alt="WeChat Pay (微信支付)" style="border-radius: 12px;" /><br />
         <br />
-        <b>WeChat Pay (微信支付)</b>
+        <b>WeChat Reward (微信赞赏)</b><br />
+        <span style="font-size: 11px; color: #888;">扫码赞赏支持作者</span>
       </td>
       <td align="center" width="220">
         <img src="docs/assets/alipay.jpg" width="180" alt="Alipay (支付宝)" style="border-radius: 12px;" /><br />
         <br />
-        <b>Alipay (支付宝)</b>
+        <b>Alipay Appreciation (支付宝赞赏)</b><br />
+        <span style="font-size: 11px; color: #888;">扫码赞赏支持作者</span>
       </td>
       <td align="center" width="220">
         <img src="docs/assets/binance-pay.jpg" width="180" alt="Binance Pay (币安支付)" style="border-radius: 12px;" /><br />
         <br />
-        <b>Binance Pay (币安支付)</b><br />
+        <b>Crypto (USDT / USDC)</b><br />
         <code>UID: 1292741809</code><br />
         <span style="font-size: 11px; color: #888;">Ryan Sunv · No Network Needed</span>
       </td>
@@ -354,7 +360,7 @@ cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
 
 ## 12. License, Anti-Rebranding & Security Disclaimer
 
-- **Software license ([GNU AGPL-3.0](LICENSE))**: Nexus v1.3.2 is distributed under the GNU Affero General Public License v3.0 (AGPL-3.0-only), which permits personal **and commercial** use, modification and redistribution subject to its terms.
+- **Software license ([GNU AGPL-3.0](LICENSE))**: Nexus v1.3.3 is distributed under the GNU Affero General Public License v3.0 (AGPL-3.0-only), which permits personal **and commercial** use, modification and redistribution subject to its terms.
   - **When source obligations apply**: Distributing covered works (including modified binaries), and allowing users to interact over a network with a modified version, can trigger the license's corresponding-source and notice requirements. Private modifications not conveyed or offered as a modified network service are not automatically required to be publicly published. Refer to the actual [AGPL-3.0 license](LICENSE), especially Sections 4–6 and 13, for the precise scope.
   - **Attribution and accurate origin**: Preserve copyright, license and other legal notices as the AGPL requires, indicate relevant changes, and do not falsely represent modified builds as official releases. The AGPL's termination and reinstatement provisions are governed by Section 8; this README does not add an automatic-termination rule.
   - **Branding**: The software license does not automatically grant trademark rights or permission to imply official endorsement. See [Brand Guidelines](BRAND_GUIDELINES.md). These guidelines do not override AGPL-granted software freedoms.
