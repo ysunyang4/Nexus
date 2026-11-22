@@ -342,12 +342,13 @@ Your generous support helps sustain continuous open-source maintenance, new MCP 
 | Channel | Details | Verification Method |
 | :--- | :--- | :--- |
 | **Crypto (USDT / USDC)** | **UID: `1292741809`** · Name: **Ryan Sunv** | Direct internal transfer via Binance Pay |
+| **Crypto (USDT, on-chain)** | **Address: `TPRrDW8DGsrDmcnWvanTbFz7XEJuywu21i`** · Network: **TRON (TRC-20)** | Any wallet or exchange with TRC-20 withdrawal; **wrong network = lost funds** |
 | **WeChat Reward** | Official WeChat Reward QR code | Scan only from the official image above |
 | **Alipay Appreciation** | Official Alipay Appreciation QR code | Scan only from the official image above |
 
 ### Official Notice
 
-- **Unique Channel**: The UID and QR codes listed above are the **only** official donation channels for this project.
+- **Unique Channel**: The UID, QR codes and on-chain address listed above are the **only** official donation channels for this project.
 - **No Private Solicitation**: The maintainers of this project will **never** contact you privately via email, messaging apps, or social media to solicit funds, donations, or account credentials.
 - **Anti-Impersonation & Reporting**: If you encounter any repository, fork, mirror, or distribution claiming to be this project with an inconsistent UID or modified QR code, please report it immediately via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues).
 
