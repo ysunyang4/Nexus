@@ -1,0 +1,32 @@
+name: Sponsor & Asset Integrity Verification
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: Verify Sponsor Channels & QR Checksums
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify Binance UID and Beneficiary in Documentation
+        run: |
+          grep -q "1292741809" README.md || (echo "::error::Binance UID missing or modified in README.md" && exit 1)
+          grep -q "Ryan Sunv" README.md || (echo "::error::Beneficiary name missing or modified in README.md" && exit 1)
+          grep -q "1292741809" docs/README.zh-CN.md || (echo "::error::Binance UID missing or modified in docs/README.zh-CN.md" && exit 1)
+          grep -q "Ryan Sunv" docs/README.zh-CN.md || (echo "::error::Beneficiary name missing or modified in docs/README.zh-CN.md" && exit 1)
+
+      - name: Verify Sponsor QR Image Checksums (SHA-256)
+        run: |
+          sha256sum docs/assets/wechat-pay.jpg | grep -q "3645904ae09eb4cd738367ec0b708d7a9f92b5308ac32e28ae903b76fa2f1ace" || (echo "::error::wechat-pay.jpg checksum mismatch!" && exit 1)
+          sha256sum docs/assets/alipay.jpg | grep -q "5770cc11933367d5657f274197bffc86119b04fe885a7e41c55366653f06b9b8" || (echo "::error::alipay.jpg checksum mismatch!" && exit 1)
+          sha256sum docs/assets/binance-pay.jpg | grep -q "75c944fbb0d4838c4784e6c7f65d73f5c9ca8b004e224ec7dee440e1fc8235f8" || (echo "::error::binance-pay.jpg checksum mismatch!" && exit 1)
+          echo "All sponsor assets, channels, and signatures verified successfully."

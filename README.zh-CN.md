@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ysunyang4/Nexus/releases/tag/v1.3.2"><img src="https://img.shields.io/badge/version-1.3.2-blue.svg" alt="Version 1.3.2"></a>
+  <a href="https://github.com/ysunyang4/Nexus/releases/tag/v1.3.3"><img src="https://img.shields.io/badge/version-1.3.3-blue.svg" alt="Version 1.3.3"></a>
   <img src="https://img.shields.io/badge/MCP_Tools-332_规范工具-success.svg" alt="332 MCP Tools">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-red.svg" alt="License AGPL-3.0"></a>
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-brightgreen.svg" alt="Platforms">
@@ -209,7 +209,7 @@ Nexus/
 ## 7. 快速上手
 
 #### 方式 A：使用桌面端安装包（推荐）
-1. 从 [GitHub Releases (v1.3.2)](https://github.com/ysunyang4/Nexus/releases/tag/v1.3.2) 下载对应平台的最新安装包：
+1. 从 [GitHub Releases (v1.3.2)](https://github.com/ysunyang4/Nexus/releases/tag/v1.3.3) 下载对应平台的最新安装包：
    - **Windows (x64 安装包)**：[`Nexus_1.3.2_x64-setup.exe`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.2_x64-setup.exe)
    - **macOS (Universal 通用 DMG)**：[`Nexus_1.3.2_universal.dmg`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.2_universal.dmg)
    - **macOS (Apple Silicon DMG)**：[`Nexus_1.3.2_aarch64.dmg`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.2_aarch64.dmg)
@@ -304,42 +304,62 @@ Header 添加：`Authorization: Bearer lb_your_token_here`
   </table>
 </div>
 
-### 开发者直连联系方式
-如有商业合作、深度技术交流或定制需求，可直接联系作者：
+## 10. ☕ 赞助与支持 (Support)
+
+如果 **Nexus** 对您的日常研发工作流、学术研究或开发效率有所帮助，欢迎自愿赞助支持本项目的持续开源维护 ☕！所有赞助均为自愿行为，不附带任何额外功能、专属服务或优先支持特权。
+
+您的慷慨赞助将持续推动项目的活跃开源维护、新特性迭代与生态建设。
+
+> 💼 **企业赞助与商业授权 (Enterprise & Licensing)**  
+> 如需企业级深度技术支持、定制集成，或商业闭源授权（豁免 AGPL-3.0 开源传染义务的商业双重许可），欢迎通过 [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) 或邮件联系：`ysunyang979@gmail.com`。
 
 <div align="center">
   <table>
     <tr>
       <td align="center" width="220">
-        <img src="docs/assets/contact/wechat.jpg" width="180" alt="微信" style="border-radius: 12px;" /><br>
-        <br>
-        <b>微信 (WeChat)</b><br>
-        <code>sunny</code>
+        <img src="docs/assets/wechat-pay.jpg" width="180" alt="微信赞赏码" style="border-radius: 12px;" /><br />
+        <br />
+        <b>微信赞赏码</b><br />
+        <span style="font-size: 11px; color: #888;">微信扫码赞赏支持作者</span>
       </td>
       <td align="center" width="220">
-        <img src="docs/assets/contact/telegram.jpg" width="180" alt="Telegram" style="border-radius: 12px;" /><br>
-        <br>
-        <b>Telegram</b><br>
-        <a href="https://t.me/SUNNY744"><code>@SUNNY744</code></a>
+        <img src="docs/assets/alipay.jpg" width="180" alt="支付宝赞赏码" style="border-radius: 12px;" /><br />
+        <br />
+        <b>支付宝赞赏码</b><br />
+        <span style="font-size: 11px; color: #888;">支付宝扫码赞赏支持作者</span>
       </td>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/whatsapp.png" width="180" alt="WhatsApp" style="border-radius: 12px;" /><br>
-        <br>
-        <b>WhatsApp</b><br>
-        <code>sunny</code>
-      </td>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/line.jpg" width="180" alt="LINE" style="border-radius: 12px;" /><br>
-        <br>
-        <b>LINE</b>
+      <td align="center" width="240">
+        <img src="docs/assets/binance-pay.jpg" width="180" alt="加密货币 (USDT / USDC)" style="border-radius: 12px;" /><br />
+        <br />
+        <b>加密货币 (USDT / USDC)</b><br />
+        <code>UID: 1292741809</code><br />
+        <span style="font-size: 11px; color: #888;">币安支付 (Binance Pay) · Ryan Sunv</span>
       </td>
     </tr>
   </table>
 </div>
 
+### 官方收款渠道
+
+| 收款渠道 | 详细信息 | 验证与使用方式 |
+| :--- | :--- | :--- |
+| **加密货币 (USDT / USDC)** | **UID: `1292741809`** · 账户名: **Ryan Sunv** | 币安 App 扫码或通过 Binance Pay 站内直接转账（免选手续费网络） |
+| **微信赞赏** | 微信创作者官方赞赏码 | 仅通过上方官方展示的图片扫码 |
+| **支付宝赞赏** | 支付宝官方赞赏码 | 仅通过上方官方展示的图片扫码 |
+
+### 官方声明
+
+- **唯一官方渠道**：上表列出的 UID 和二维码是本项目**唯一**合法的官方赞助通道。
+- **绝无私信索要**：项目作者与维护团队**绝不会**通过私信、邮件、即时通讯工具等任何方式主动向您索要转账、汇款或账户信息。
+- **防伪与举报**：如在任何第三方网站、Fork 仓库或镜像中发现声称属于本项目但与上述 UID 或二维码不一致的情况，请立即通过 [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) 提交举报。
+
+### 免责声明
+
+- **网络与地域限制**：加密资产赞助须遵循相关服务平台规则。在进行赞助前，请确认币安支付（Binance Pay）在您所在国家或地区完全合法合规且可用。
+- **法律与税务合规**：赞助者须自行承担并遵守所在司法管辖区关于赠予、赞助的一切税务与法律合规责任。
 ---
 
-## 10. 质量保障与验证指令
+## 11. 质量保障与验证指令
 
 ```powershell
 # 全局 7 个工作区强类型校验（0 错误）
@@ -357,7 +377,7 @@ cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
 
 ---
 
-## 11. 开源许可证、署名与安全说明
+## 12. 开源许可证、署名与安全说明
 
 - **软件许可证**：Nexus v1.3.2 依据 [GNU AGPL-3.0](LICENSE) 发布，允许个人与商业使用、学习、修改和再分发，但须遵守许可证原文。
   - **源码提供义务的适用范围**：分发受 AGPL 约束的程序或修改版，以及让用户通过网络与修改版交互等适用情形，可能触发相应源码和许可声明义务。仅在本地私下修改、不进行相应分发或网络交互服务，并不当然要求公开源码。具体以 AGPL 第 4–6、13 条等规定为准。

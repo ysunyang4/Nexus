@@ -302,42 +302,59 @@ Join our developer communities for live troubleshooting, feature requests, and u
   </table>
 </div>
 
-## 10. 💖 Sponsor & Support
+## 10. ☕ Support & Sponsorship
 
-If Nexus has accelerated your research, engineering workflow, or daily development, consider buying the author a coffee ☕!
+If **Nexus** has accelerated your research, engineering workflow, or daily development, consider buying the author a coffee ☕! Donations are completely voluntary and do not grant any extra features, proprietary services, or priority support.
 
 Your generous support helps sustain continuous open-source maintenance, new MCP toolkits, and ecosystem development.
 
 > 💼 **Enterprise Sponsorship & Commercial Licensing**  
-> For enterprise sponsorship, dedicated SLA support, or commercial closed-source licensing inquiries, feel free to reach out via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) or email: ysunyang979@gmail.com.  
-> *(企业赞助、专属技术支持或商业闭源授权咨询，欢迎通过 GitHub Issues 或邮件联系：ysunyang979@gmail.com。)*
+> For enterprise sponsorship, dedicated SLA support, or commercial closed-source licensing inquiries (dual-licensing exempt from AGPL-3.0 copyleft obligations), feel free to reach out via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) or email: `ysunyang979@gmail.com`.
 
 <div align="center">
   <table>
     <tr>
       <td align="center" width="220">
-        <img src="docs/assets/wechat-pay.jpg" width="180" alt="WeChat Pay (微信支付)" style="border-radius: 12px;" /><br />
+        <img src="docs/assets/wechat-pay.jpg" width="180" alt="WeChat Reward" style="border-radius: 12px;" /><br />
         <br />
-        <b>WeChat Reward (微信赞赏)</b><br />
-        <span style="font-size: 11px; color: #888;">扫码赞赏支持作者</span>
+        <b>WeChat Reward</b><br />
+        <span style="font-size: 11px; color: #888;">Scan to support via WeChat</span>
       </td>
       <td align="center" width="220">
-        <img src="docs/assets/alipay.jpg" width="180" alt="Alipay (支付宝)" style="border-radius: 12px;" /><br />
+        <img src="docs/assets/alipay.jpg" width="180" alt="Alipay Appreciation" style="border-radius: 12px;" /><br />
         <br />
-        <b>Alipay Appreciation (支付宝赞赏)</b><br />
-        <span style="font-size: 11px; color: #888;">扫码赞赏支持作者</span>
+        <b>Alipay Appreciation</b><br />
+        <span style="font-size: 11px; color: #888;">Scan to support via Alipay</span>
       </td>
-      <td align="center" width="220">
-        <img src="docs/assets/binance-pay.jpg" width="180" alt="Binance Pay (币安支付)" style="border-radius: 12px;" /><br />
+      <td align="center" width="240">
+        <img src="docs/assets/binance-pay.jpg" width="180" alt="Crypto (USDT / USDC)" style="border-radius: 12px;" /><br />
         <br />
         <b>Crypto (USDT / USDC)</b><br />
         <code>UID: 1292741809</code><br />
-        <span style="font-size: 11px; color: #888;">Ryan Sunv · No Network Needed</span>
+        <span style="font-size: 11px; color: #888;">Binance Pay · Ryan Sunv</span>
       </td>
     </tr>
   </table>
 </div>
 
+### Official Payment Channels
+
+| Channel | Details | Verification Method |
+| :--- | :--- | :--- |
+| **Crypto (USDT / USDC)** | **UID: `1292741809`** · Name: **Ryan Sunv** | Direct internal transfer via Binance Pay |
+| **WeChat Reward** | Official WeChat Reward QR code | Scan only from the official image above |
+| **Alipay Appreciation** | Official Alipay Appreciation QR code | Scan only from the official image above |
+
+### Official Notice
+
+- **Unique Channel**: The UID and QR codes listed above are the **only** official donation channels for this project.
+- **No Private Solicitation**: The maintainers of this project will **never** contact you privately via email, messaging apps, or social media to solicit funds, donations, or account credentials.
+- **Anti-Impersonation & Reporting**: If you encounter any repository, fork, mirror, or distribution claiming to be this project with an inconsistent UID or modified QR code, please report it immediately via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues).
+
+### Disclaimer
+
+- **Network & Regional Availability**: Crypto donations are subject to network handling and platform terms. Please verify whether Binance Pay is compliant and legally available in your region before transferring funds.
+- **Taxation & Compliance**: Donors are solely responsible for complying with the tax obligations and legal regulations of their local jurisdictions.
 ---
 
 ## 11. Development & Quality Verification

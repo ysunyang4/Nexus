@@ -304,41 +304,59 @@ Header 添加：`Authorization: Bearer lb_your_token_here`
   </table>
 </div>
 
-## 10. 💖 赞助与支持 (Sponsor & Support)
+## 10. ☕ 赞助与支持 (Support)
 
-如果 Nexus 对您的研发工作流、学术研究或日常开发有所帮助，欢迎请作者喝杯咖啡 ☕！
+如果 **Nexus** 对您的日常研发工作流、学术研究或开发效率有所帮助，欢迎自愿赞助支持本项目的持续开源维护 ☕！所有赞助均为自愿行为，不附带任何额外功能、专属服务或优先支持特权。
 
 您的慷慨赞助将持续推动项目的活跃开源维护、新特性迭代与生态建设。
 
 > 💼 **企业赞助与商业授权 (Enterprise & Licensing)**  
-> 如需企业级深度技术支持、定制集成，或商业闭源授权（豁免 AGPL-3.0 开源传染义务），欢迎通过 [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) 或邮件联系：ysunyang979@gmail.com。
+> 如需企业级深度技术支持、定制集成，或商业闭源授权（豁免 AGPL-3.0 开源传染义务的商业双重许可），欢迎通过 [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) 或邮件联系：`ysunyang979@gmail.com`。
 
 <div align="center">
   <table>
     <tr>
       <td align="center" width="220">
-        <img src="assets/wechat-pay.jpg" width="180" alt="微信支付 (WeChat Pay)" style="border-radius: 12px;" /><br />
+        <img src="assets/wechat-pay.jpg" width="180" alt="微信赞赏码" style="border-radius: 12px;" /><br />
         <br />
-        <b>微信赞赏 (WeChat Reward)</b><br />
-        <span style="font-size: 11px; color: #888;">扫码赞赏支持作者</span>
+        <b>微信赞赏码</b><br />
+        <span style="font-size: 11px; color: #888;">微信扫码赞赏支持作者</span>
       </td>
       <td align="center" width="220">
-        <img src="assets/alipay.jpg" width="180" alt="支付宝 (Alipay)" style="border-radius: 12px;" /><br />
+        <img src="assets/alipay.jpg" width="180" alt="支付宝赞赏码" style="border-radius: 12px;" /><br />
         <br />
-        <b>支付宝赞赏 (Alipay Appreciation)</b><br />
-        <span style="font-size: 11px; color: #888;">扫码赞赏支持作者</span>
+        <b>支付宝赞赏码</b><br />
+        <span style="font-size: 11px; color: #888;">支付宝扫码赞赏支持作者</span>
       </td>
-      <td align="center" width="220">
-        <img src="assets/binance-pay.jpg" width="180" alt="币安支付 (Binance Pay)" style="border-radius: 12px;" /><br />
+      <td align="center" width="240">
+        <img src="assets/binance-pay.jpg" width="180" alt="加密货币 (USDT / USDC)" style="border-radius: 12px;" /><br />
         <br />
         <b>加密货币 (USDT / USDC)</b><br />
         <code>UID: 1292741809</code><br />
-        <span style="font-size: 11px; color: #888;">Ryan Sunv · 站内直转免选网络</span>
+        <span style="font-size: 11px; color: #888;">币安支付 (Binance Pay) · Ryan Sunv</span>
       </td>
     </tr>
   </table>
 </div>
 
+### 官方收款渠道
+
+| 收款渠道 | 详细信息 | 验证与使用方式 |
+| :--- | :--- | :--- |
+| **加密货币 (USDT / USDC)** | **UID: `1292741809`** · 账户名: **Ryan Sunv** | 币安 App 扫码或通过 Binance Pay 站内直接转账（免选手续费网络） |
+| **微信赞赏** | 微信创作者官方赞赏码 | 仅通过上方官方展示的图片扫码 |
+| **支付宝赞赏** | 支付宝官方赞赏码 | 仅通过上方官方展示的图片扫码 |
+
+### 官方声明
+
+- **唯一官方渠道**：上表列出的 UID 和二维码是本项目**唯一**合法的官方赞助通道。
+- **绝无私信索要**：项目作者与维护团队**绝不会**通过私信、邮件、即时通讯工具等任何方式主动向您索要转账、汇款或账户信息。
+- **防伪与举报**：如在任何第三方网站、Fork 仓库或镜像中发现声称属于本项目但与上述 UID 或二维码不一致的情况，请立即通过 [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) 提交举报。
+
+### 免责声明
+
+- **网络与地域限制**：加密资产赞助须遵循相关服务平台规则。在进行赞助前，请确认币安支付（Binance Pay）在您所在国家或地区完全合法合规且可用。
+- **法律与税务合规**：赞助者须自行承担并遵守所在司法管辖区关于赠予、赞助的一切税务与法律合规责任。
 ---
 
 ## 11. 质量保障与验证指令
