@@ -346,6 +346,8 @@ Your generous support helps sustain continuous open-source maintenance, new MCP 
 | **WeChat Reward** | Official WeChat Reward QR code | Scan only from the official image above |
 | **Alipay Appreciation** | Official Alipay Appreciation QR code | Scan only from the official image above |
 
+> ☕ **Every tip, big or small, means the world to me.** Your support helps me keep improving this project — making it more complete, more polished, and more powerful. Thank you for helping it grow.
+
 ### Official Notice
 
 - **Unique Channel**: The UID, QR codes and on-chain address listed above are the **only** official donation channels for this project.
