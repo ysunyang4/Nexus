@@ -344,7 +344,7 @@ Header 添加：`Authorization: Bearer lb_your_token_here`
 | 收款渠道 | 详细信息 | 验证与使用方式 |
 | :--- | :--- | :--- |
 | **加密货币 (USDT / USDC)** | **UID: `1292741809`** · 账户名: **Ryan Sunv** | 币安 App 扫码或通过 Binance Pay 站内直接转账（免选手续费网络） |
-| **加密货币 (USDT 链上直转)** | **地址: `TPRrDW8DGsrDmcnWvanTbFz7XEJuywu21i`** · 网络: **TRON (TRC-20)** | 任何支持 TRC-20 提现的钱包或交易所；**选错网络资金将丢失** |
+| **加密货币 (USDT 链上直转)** | **地址: `TPRrDW8DGsrDmcnWvanTbFz7XEJuywu21i`** · 网络: **TRON (TRC-20)** | 用任何钱包或交易所转出时，选 **TRON (TRC-20)** 网络即可 |
 | **微信赞赏** | 微信创作者官方赞赏码 | 仅通过上方官方展示的图片扫码 |
 | **支付宝赞赏** | 支付宝官方赞赏码 | 仅通过上方官方展示的图片扫码 |
 
