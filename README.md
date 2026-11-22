@@ -309,7 +309,7 @@ If **Nexus** has accelerated your research, engineering workflow, or daily devel
 Your generous support helps sustain continuous open-source maintenance, new MCP toolkits, and ecosystem development.
 
 > 💼 **Enterprise Sponsorship & Commercial Licensing**  
-> For enterprise sponsorship, dedicated SLA support, or commercial closed-source licensing inquiries (dual-licensing exempt from AGPL-3.0 copyleft obligations), feel free to reach out via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) or email: `ysunyang979@gmail.com`.
+> For enterprise sponsorship, dedicated SLA support, or commercial closed-source licensing inquiries (dual-licensing exempt from AGPL-3.0 copyleft obligations), feel free to reach out via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) or email: `ysunyang4@gmail.com`.
 
 <div align="center">
   <table>

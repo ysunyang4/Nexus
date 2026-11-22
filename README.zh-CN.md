@@ -311,7 +311,7 @@ Header 添加：`Authorization: Bearer lb_your_token_here`
 您的慷慨赞助将持续推动项目的活跃开源维护、新特性迭代与生态建设。
 
 > 💼 **企业赞助与商业授权 (Enterprise & Licensing)**  
-> 如需企业级深度技术支持、定制集成，或商业闭源授权（豁免 AGPL-3.0 开源传染义务的商业双重许可），欢迎通过 [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) 或邮件联系：`ysunyang979@gmail.com`。
+> 如需企业级深度技术支持、定制集成，或商业闭源授权（豁免 AGPL-3.0 开源传染义务的商业双重许可），欢迎通过 [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) 或邮件联系：`ysunyang4@gmail.com`。
 
 <div align="center">
   <table>
