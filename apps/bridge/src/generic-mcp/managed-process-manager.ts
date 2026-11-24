@@ -632,33 +632,26 @@ export class ManagedProcessManager {
 
       let child: child_process.ChildProcess;
 
-      if (execArgs.length > 0) {
-        const isScriptOrCmd = isWindows && (
-          execCmd.endsWith(".cmd") ||
-          execCmd.endsWith(".bat") ||
-          execCmd.toLowerCase() === "npx" ||
-          execCmd.toLowerCase() === "npm" ||
-          execCmd.toLowerCase() === "pnpm" ||
-          execCmd.toLowerCase() === "yarn"
-        );
-        child = child_process.spawn(execCmd, execArgs, {
+      const isCmdOrBat = isWindows && (
+        execCmd.toLowerCase().endsWith(".cmd") ||
+        execCmd.toLowerCase().endsWith(".bat") ||
+        execCmd.toLowerCase() === "npx" ||
+        execCmd.toLowerCase() === "npm" ||
+        execCmd.toLowerCase() === "pnpm" ||
+        execCmd.toLowerCase() === "yarn"
+      );
+
+      if (isCmdOrBat) {
+        const comSpec = process.env.ComSpec || "cmd.exe";
+        child = child_process.spawn(comSpec, ["/d", "/s", "/c", execCmd, ...execArgs], {
           cwd: serviceCwd,
           env: injectedEnv,
           windowsHide: true,
           stdio: ["ignore", "pipe", "pipe"],
-          shell: isScriptOrCmd,
-        });
-      } else if (service.config.rawCommand && service.config.rawCommand.trim()) {
-        let cmd = service.config.rawCommand.trim();
-        child = child_process.spawn(cmd, [], {
-          cwd: serviceCwd,
-          env: injectedEnv,
-          windowsHide: true,
-          stdio: ["ignore", "pipe", "pipe"],
-          shell: true,
+          shell: false,
         });
       } else {
-        child = child_process.spawn(execCmd, [], {
+        child = child_process.spawn(execCmd, execArgs, {
           cwd: serviceCwd,
           env: injectedEnv,
           windowsHide: true,
@@ -910,7 +903,7 @@ export class ManagedProcessManager {
     this.services.delete(id);
     this.persistConfigs();
     try {
-      ProviderRuntime.getInstance().unregisterProvider(id).catch(() => {});
+      ProviderRuntime.getInstance().removeProvider(id);
     } catch {}
     return { success: true };
   }

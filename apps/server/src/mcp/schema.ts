@@ -186,6 +186,11 @@ export function toMcpSchema<T extends z.ZodTypeAny>(
   const jsonSchema = JSON.parse(JSON.stringify(rawSchema)) as Record<string, unknown>;
   delete jsonSchema["$schema"];
 
+  if (Array.isArray(jsonSchema.required) && jsonSchema.properties && typeof jsonSchema.properties === "object") {
+    const props = jsonSchema.properties as Record<string, any>;
+    jsonSchema.required = jsonSchema.required.filter((key: string) => props[key]?.default === undefined);
+  }
+
   if (options?.preserveStrict) {
     const compiled = wrapWithValidationEnhancement(
       fromJsonSchema(jsonSchema),
