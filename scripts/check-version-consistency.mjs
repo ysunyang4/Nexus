@@ -20,7 +20,7 @@ function scanDirectory(dir) {
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      if (['node_modules', 'dist', 'target', '.git', 'out', 'build', 'resources'].includes(entry.name)) {
+      if (['node_modules', 'dist', 'target', '.git', 'out', 'build', 'resources', 'extension'].includes(entry.name)) {
         continue;
       }
       scanDirectory(fullPath);
