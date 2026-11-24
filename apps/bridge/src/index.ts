@@ -422,6 +422,31 @@ const server = http.createServer(async (req, res) => {
   res.setHeader("X-Nexus-Engine-Signature", "nexus-kernel-sig-8829f4a");
   res.setHeader("X-Nexus-Release-Channel", "stable-canary-8829f");
 
+  // Hard Ingress Barrier: Nexus 1.3.4 strictly supports ChatGPT only.
+  // Immediately reject Claude, Anthropic, Gemini, Google-AI clients.
+  const userAgentLower = userAgent.toLowerCase();
+  const originLower = String(req.headers["origin"] || "").toLowerCase();
+  const refererLower = String(req.headers["referer"] || "").toLowerCase();
+  if (
+    userAgentLower.includes("claude") ||
+    userAgentLower.includes("anthropic") ||
+    userAgentLower.includes("gemini") ||
+    originLower.includes("claude.ai") ||
+    originLower.includes("anthropic.com") ||
+    originLower.includes("gemini.google.com") ||
+    refererLower.includes("claude.ai") ||
+    refererLower.includes("gemini.google.com")
+  ) {
+    res.writeHead(403, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        error: "Forbidden: Client not supported in Nexus 1.3.4 (ChatGPT only)",
+        code: "CLIENT_NOT_SUPPORTED",
+      })
+    );
+    return;
+  }
+
   // 1. Handle OPTIONS Preflight
   if (req.method === "OPTIONS") {
     res.writeHead(204);

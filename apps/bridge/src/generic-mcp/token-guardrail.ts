@@ -30,28 +30,6 @@ export interface HandleEntry {
   createdAt: number;
 }
 
-export const DEFAULT_OMITTED_FIELDS = new Set([
-  "commandLine",
-  "cmdline",
-  "cmdLine",
-  "rawCommandLine",
-  "score",
-  "startTime",
-  "start_time",
-  "starttime",
-]);
-
-export function cleanDefaultItem(item: any): any {
-  if (!item || typeof item !== "object" || Array.isArray(item)) return item;
-  const cleaned: Record<string, any> = {};
-  for (const [k, v] of Object.entries(item)) {
-    if (!DEFAULT_OMITTED_FIELDS.has(k)) {
-      cleaned[k] = v;
-    }
-  }
-  return cleaned;
-}
-
 export class HandleManager {
   private static handles: Map<string, HandleEntry> = new Map();
 
@@ -74,7 +52,7 @@ export class HandleManager {
     return this.handles.get(handleId);
   }
 
-  public static readHandle(handleId: string, offset = 0, limit = 20, filter?: any, fields?: string[]): any {
+  public static readHandle(handleId: string, offset = 0, limit = 20, filter?: any): any {
     const entry = this.handles.get(handleId);
     if (!entry) {
       return { error: `Handle "${handleId}" not found or expired.` };
@@ -116,25 +94,6 @@ export class HandleManager {
       }
     }
     const page = list.slice(offset, offset + limit);
-
-    // Apply fields projection
-    const projectedPage = page.map((item) => {
-      if (!item || typeof item !== "object" || Array.isArray(item)) {
-        return item;
-      }
-      if (fields && Array.isArray(fields) && fields.length > 0) {
-        const projected: Record<string, any> = {};
-        for (const k of fields) {
-          if (k in item) {
-            projected[k] = item[k];
-          }
-        }
-        return projected;
-      }
-      // When fields is not specified, omit known excessively long/low-value fields (commandLine, score, startTime, etc.) by default
-      return cleanDefaultItem(item);
-    });
-
     return {
       handleId,
       sourceTool: entry.sourceTool,
@@ -142,9 +101,8 @@ export class HandleManager {
       filteredCount: list.length,
       offset,
       limit,
-      fields: fields && fields.length > 0 ? fields : undefined,
       hasMore: offset + limit < list.length,
-      items: projectedPage,
+      items: page,
     };
   }
 }
@@ -362,37 +320,40 @@ export class TokenGuardrail {
 
     const displayTool = /run_script|script/i.test(sourceTool) ? "process_list" : sourceTool;
     const handleId = HandleManager.createHandle(displayTool, items);
-    const sample = items.slice(0, 3).map((item) => cleanDefaultItem(item));
+    const sample = items.slice(0, 3);
 
     const copy = { ...res };
 
-    // 1. structuredContent only retains lightweight metadata (no duplicate samples)
-    const newSc: Record<string, any> = {
-      handleId,
-      sourceTool: displayTool,
-      totalCount: items.length,
-      hasMore: true,
-    };
+    // 1. Slim down structuredContent
     if (copy.structuredContent && typeof copy.structuredContent === "object") {
+      const newSc: Record<string, any> = {
+        handleId,
+        sourceTool: displayTool,
+        totalCount: items.length,
+        sample,
+        hasMore: true,
+        notice: `已自动句柄化 (原包含 ${items.length} 条记录)。使用 nexus_execute_action(tool='nexus_handle_read', arguments={handleId: '${handleId}', offset: 0, limit: 20, filter: '关键词或{key:value}'}) 查阅详情，或传入 full=true 获取全量数据`,
+      };
+      // Retain scalar properties (e.g. browserSessionId, status, exitCode, etc.)
       for (const [k, v] of Object.entries(copy.structuredContent)) {
-        if (
-          k !== "stdout" &&
-          k !== "stderr" &&
-          k !== "rawStdout" &&
-          k !== "result" &&
-          k !== "sample" &&
-          k !== "items" &&
-          (typeof v !== "object" || v === null)
-        ) {
+        if (k !== "stdout" && k !== "stderr" && k !== "rawStdout" && k !== "result" && (typeof v !== "object" || v === null)) {
           newSc[k] = v;
         }
       }
+      copy.structuredContent = newSc;
+    } else {
+      copy.structuredContent = {
+        handleId,
+        sourceTool: displayTool,
+        totalCount: items.length,
+        sample,
+        hasMore: true,
+        notice: `已自动句柄化。使用 nexus_execute_action(tool='nexus_handle_read', arguments={handleId: '${handleId}', offset: 0, limit: 20, filter: '关键词或{key:value}'}) 分页查询`,
+      };
     }
-    copy.structuredContent = newSc;
 
-    // 2. Put summary, preview sample (first 3 items), and retrieval hint directly into content so the AI client can see it
-    const sampleJson = JSON.stringify(sample);
-    const summaryText = `[📦 句柄已生成] 工具: ${displayTool} | 共 ${items.length} 项记录已暂存至句柄 ${handleId}。\n前 3 项预览:\n${sampleJson}\n\n💡 完整数据/条件筛选调用指引:\nnexus_execute_action(tool='nexus_handle_read', arguments={handleId: '${handleId}', offset: 0, limit: 20, filter: '关键词或{key:value}', fields: ['字段1', '字段2']})\n若需当前工具原始全量数据，请传入 full=true。`;
+    // 2. Slim down content: single-channel deduplication (no duplicate sample in content)
+    const summaryText = `[📦 句柄已生成] 工具: ${displayTool} | 共 ${items.length} 项记录已暂存。\n💡 调用指引: nexus_execute_action(tool='nexus_handle_read', arguments={handleId: '${handleId}', offset: 0, limit: 20, filter: '关键词或{key:value}'})\nfilter 参数支持字符串模糊检索 (如 filter: '39871') 或对象属性精确匹配 (如 filter: { port: 39871 })；若需全量数据请传入 full=true。`;
     copy.content = [{ type: "text", text: summaryText }];
 
     return copy;

@@ -2,46 +2,52 @@
 
 Date: 2026-11-24  
 Version: 1.3.4  
-Scope: Verification of claims presented in the About page and documentation.
+Scope: Verification of claims presented in the About page (Settings > About) and documentation.
 
 ---
 
 ## 1. External AI Scoped Tools
 
-> **Claim**: External AI clients operate through scoped MCP tools only. Shell and file actions run in the execution sandbox defined by the project trust policy.
+> **Claim**: External AI clients can only call the MCP tools that are enabled. Shell execution and file writes are limited to authorized project folders and require the project execution mode to be enabled.
 
 ### Verification Evidence:
-- **Code Reference**: `apps/server/src/mcp/handler.ts`, `packages/protocol/src/tools/canonical-registry.ts`
-- **Mechanism**: External AI clients connect over JSON-RPC 2.0 / MCP and can only invoke registered MCP tools (`nexus_run_script`, `nexus_discover_tools`, `nexus_execute_action`). Direct arbitrary shell access without tool wrapping is forbidden. File access is checked against authorized project boundaries and the project's trust policy (`ProjectTrustPolicy`).
+- **Code Reference**: `apps/bridge/src/server.ts`, `apps/server/src/mcp/handler.ts`, `apps/server/src/routes/projects.ts`
+- **Mechanism**: External AI clients connect over JSON-RPC 2.0 / MCP and can only invoke registered MCP tools (`nexus_run_script`, `nexus_discover_tools`, `nexus_execute_action`). Direct arbitrary shell access without tool wrapping is forbidden. Shell execution and file writes require the project's execution mode to be set (`project-code` or `enabled`) and reject paths outside authorized project boundaries.
 - **Test Evidence**: `tests/tools-compliance.test.ts`, `apps/bridge/tests/tools-compliance.test.ts` (100% passing).
 
 ---
 
-## 2. Process Isolation
+## 2. Loopback Isolation
 
-> **Claim**: Process Isolation: The local engine runs as a standard user process. Project execution isolation depends on the project's execution mode.
+> **Claim**: Loopback Isolation: The engine listens strictly on 127.0.0.1. External access reaches this machine only through the tunnel you configure.
 
 ### Verification Evidence:
-- **Code Reference**: `apps/desktop/src-tauri/src/main.rs`, `apps/runner/src/process/supervisor.ts`
-- **Mechanism**: The Nexus core runtime (`localbridge-desktop.exe`, `node.exe`, and background runners) runs strictly under the launching Windows user context without elevated root/admin privileges. Execution isolation for commands and build scripts is governed per-project by the execution mode setting (`disabled`, `project-code`, or `enabled`).
+- **Code Reference**: `apps/server/src/index.ts` (HOST="127.0.0.1"), `apps/bridge/src/index.ts` (HOST="127.0.0.1")
+- **Mechanism**: All local HTTP, WebSocket, and MCP endpoints bind strictly to IPv4 loopback (`127.0.0.1`). External incoming traffic cannot reach the local machine directly over the LAN/WAN and must route through the user-authorized encrypted tunnel.
 
 ---
 
-## 3. Local Processing & Zero Telemetry
+## 3. Killswitch Controls
+
+> **Claim**: Killswitch Controls: Emergency Halt and Global Pause both stop background execution and suspend MCP access immediately.
+
+### Verification Evidence:
+- **Code Reference**: `apps/server/src/routes/management.ts` (lines 313–391)
+- **Mechanism**:
+  - `POST /api/pause` calls `mcpContext.setPaused(paused)` which suspends all incoming MCP execution.
+  - `POST /api/emergency-stop` calls `mcpContext.setPaused(true)`, dispatches `JobCancelAll` to all runners, halts all persistent runtimes without approval, and records a `SECURITY_EMERGENCY_STOP` audit event.
+
+---
+
+## 4. Local Processing & Zero Telemetry
 
 > **Claim**: Local Processing: Requests and tool executions are processed on-device. ChatGPT traffic travels to OpenAI over the secure tunnel. No telemetry or analytics are sent to the Nexus project or third parties.
 
 ### Verification Evidence:
 - **Code Reference**: `PRIVACY.md`, `apps/server/src/app.ts`, `apps/bridge/src/server.ts`
-- **Mechanism**: Nexus contains no Google Analytics, Sentry, Mixpanel, Segment, or telemetry tracking SDKs. All tool execution payloads, file buffers, and Git operations are executed directly on the user's host machine. The only remote traffic is the TLS-encrypted MCP tunnel established to connect ChatGPT with the local bridge.
+- **Mechanism**: Nexus contains no Google Analytics, Sentry, Mixpanel, Segment, or remote tracking telemetry. All tool execution payloads, file buffers, and Git operations are executed directly on the host machine. The only remote traffic is the TLS-encrypted MCP tunnel established to connect ChatGPT with the local bridge.
 
 ---
 
-## 4. Token Storage
-
-> **Claim**: Token Storage: Local MCP access tokens are stored in the Windows DPAPI credential store, encrypted with user-scope keys.
-
-### Verification Evidence:
-- **Code Reference**: `apps/desktop/src-tauri/src/tunnel.rs` (lines 38–95)
-- **Mechanism**: Access tokens (starting with `lb_`) are encrypted using the Windows Data Protection API (`CryptProtectData`) with flag `CRYPTPROTECT_UI_FORBIDDEN`. No machine-scope flag (`CRYPTPROTECT_LOCAL_MACHINE`) is passed, ensuring cryptographic isolation tied specifically to the current logged-in Windows user account.
-- **Persistence Path**: Encrypted ciphertext is safely stored in local app state and decrypted only upon authenticated loopback calls.
+## Audit Note on Removed Claims:
+- **"Human-in-the-loop approvals with parameter hash binding and 5-minute timeout"**: Removed from the UI and documentation. While job approvals and approval status tools exist (`localbridge_approval_status`), parameter hash binding and a universal 5-minute timeout are not implemented across every destructive tool operation. As required by TASK 2, this claim has been removed.

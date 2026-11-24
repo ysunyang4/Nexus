@@ -20,15 +20,8 @@ import {
   ProviderRegistry,
   type ProjectBlueprint,
 } from "./project-builder/index.js";
-import { ProviderRuntime, DynamicCatalog, McpSecurityPolicyManager, ScriptRunner, TokenGuardrail, HandleManager, cleanDefaultItem, isBlenderTool, executeBlenderScript, getBlenderSceneInfo, findBlenderExecutable } from "./generic-mcp/index.js";
+import { ProviderRuntime, DynamicCatalog, McpSecurityPolicyManager, ScriptRunner, TokenGuardrail, HandleManager, isBlenderTool, executeBlenderScript, getBlenderSceneInfo, findBlenderExecutable } from "./generic-mcp/index.js";
 import { UnityGameDevMcpProvider } from "./unity-gamedev-provider.js";
-import {
-  ADVANCED_META_TOOL_DEFINITIONS,
-  CORE_ADVANCED_META_TOOL_DEFINITIONS,
-  CORE_ADVANCED_META_TOOL_NAMES,
-  executeAdvancedMetaTool,
-  DYNAMIC_MACRO_REGISTRY,
-} from "./meta-tools/advanced-meta-tools.js";
 
 export { CANONICAL_TOOL_COUNT };
 
@@ -953,39 +946,10 @@ export const EXTENDED_META_TOOLS = [
         },
         output_file_path: {
           type: "string",
-          description: "Optional absolute path for generated file outputs",
-        },
-        action: {
-          type: "string",
-          enum: ["chat", "new_chat", "delete_chat"],
-          default: "chat",
-          description: "Session action: 'chat', 'new_chat', or 'delete_chat'",
-        },
-        new_chat: {
-          type: "boolean",
-          default: false,
-          description: "Whether to start a fresh chat session on the target node",
-        },
-        delete_current_chat: {
-          type: "boolean",
-          default: false,
-          description: "Whether to delete the current chat session after retrieval",
-        },
-        context: {
-          type: "string",
-          description: "Optional background or context text",
-        },
-        timeout_seconds: {
-          type: "number",
-          default: 120,
-          description: "Timeout in seconds",
-        },
-        discover_nodes: {
-          type: "boolean",
-          default: false,
-          description: "When true, returns the status of ready AI nodes",
+          description: "Optional destination file to persist structured markdown",
         },
       },
+      required: ["instruction"],
     },
     readOnlyHint: false,
     destructiveHint: false,
@@ -998,7 +962,6 @@ export const EXTENDED_META_TOOLS = [
       openWorldHint: true,
     },
   },
-  SESSION_CACHE_AND_DIRECTIVE_TOOLS.find((t) => t.name === "nexus_session_handoff")!,
   {
     name: "nexus_batch_execute",
     description: "Execute a sequential pipeline of tool operations in a single round-trip with step variable interpolation.",
@@ -1007,40 +970,39 @@ export const EXTENDED_META_TOOLS = [
       properties: {
         pipeline: {
           type: "array",
-          description: "List of pipeline steps to execute sequentially",
           items: {
             type: "object",
             properties: {
-              id: { type: "string", description: "Step identifier for variable interpolation" },
-              tool: { type: "string", description: "Tool name to invoke" },
-              arguments: { type: "object", description: "Arguments object with optional '${stepId.field}' references", default: {} },
-              provider: { type: "string", description: "Optional provider ID" },
+              id: { type: "string", description: "Step identifier for variable referencing" },
+              tool: { type: "string", description: "Tool name to execute" },
+              arguments: { type: "object", description: "Arguments object" },
             },
             required: ["tool"],
           },
+          description: "Ordered array of tool invocation steps",
         },
-        stop_on_error: {
+        stopOnError: {
           type: "boolean",
           default: true,
-          description: "Whether to terminate pipeline immediately if any step fails",
+          description: "Whether to halt the pipeline immediately if any step returns an error",
         },
-        timeout_seconds: {
+        timeoutMs: {
           type: "number",
-          default: 120,
-          description: "Global timeout in seconds for the pipeline",
+          default: 60000,
+          description: "Overall pipeline execution timeout in milliseconds",
         },
       },
       required: ["pipeline"],
     },
     readOnlyHint: false,
-    destructiveHint: true,
+    destructiveHint: false,
     idempotentHint: false,
-    openWorldHint: true,
+    openWorldHint: false,
     annotations: {
       readOnlyHint: false,
-      destructiveHint: true,
+      destructiveHint: false,
       idempotentHint: false,
-      openWorldHint: true,
+      openWorldHint: false,
     },
   },
   {
@@ -1049,31 +1011,31 @@ export const EXTENDED_META_TOOLS = [
     inputSchema: {
       type: "object",
       properties: {
-        condition_type: {
+        conditionType: {
           type: "string",
-          enum: ["port_open", "log_contains"],
-          description: "Condition type: 'port_open' or 'log_contains'",
+          enum: ["port", "file_match", "process_running"],
+          description: "Type of condition to poll for",
         },
         target: {
           type: "string",
-          description: "Target host:port or log file path",
+          description: "Port number (e.g. '8080'), file path, or process name to monitor",
         },
-        expected_pattern: {
+        expectedMatch: {
           type: "string",
-          description: "Expected regex pattern or keyword for 'log_contains'",
+          description: "Keyword or pattern to search for in file_match mode",
         },
-        timeout_seconds: {
+        timeoutMs: {
           type: "number",
-          default: 60,
-          description: "Maximum timeout in seconds",
+          default: 15000,
+          description: "Maximum polling wait time in milliseconds",
         },
-        poll_interval_ms: {
+        pollIntervalMs: {
           type: "number",
-          default: 500,
-          description: "Polling interval in milliseconds",
+          default: 1000,
+          description: "Interval between polls in milliseconds",
         },
       },
-      required: ["condition_type", "target"],
+      required: ["conditionType", "target"],
     },
     readOnlyHint: true,
     destructiveHint: false,
@@ -1086,7 +1048,6 @@ export const EXTENDED_META_TOOLS = [
       openWorldHint: false,
     },
   },
-  ...CORE_ADVANCED_META_TOOL_DEFINITIONS,
 ];
 
 export const CANONICAL_TOOL_MAP = new Map<string, CanonicalToolDefinition>(
@@ -1695,114 +1656,6 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
     };
   });
 
-  function isBrowserAutomationTool(toolName: string): boolean {
-    if (!toolName) return false;
-    const t = toolName.toLowerCase().trim();
-    return (
-      t.startsWith("localbridge_browser_") ||
-      t.startsWith("browser_") ||
-      t === "open_url" ||
-      t === "open-url" ||
-      t === "open_browser" ||
-      t === "launch_browser" ||
-      t === "navigate" ||
-      t === "snapshot" ||
-      t === "click" ||
-      t === "type" ||
-      t === "scroll" ||
-      t === "press_key" ||
-      t === "key" ||
-      t === "close_modal" ||
-      t === "browser_close_modal" ||
-      t === "eval_js" ||
-      t === "page_eval"
-    );
-  }
-
-  async function dispatchBrowserTool(toolName: string, toolArgs: any, context: { executeCallTool: any }): Promise<any> {
-    const t = toolName.toLowerCase().replace(/^localbridge_/, "").replace(/-/g, "_");
-    const args = toolArgs || {};
-
-    if (t === "browser_open" || t === "browser_navigate" || t === "open_url" || t === "navigate") {
-      return executeAdvancedMetaTool("nexus_browser", { action: "navigate", url: args.url || args.targetUrl, tab_id: args.tabId }, context);
-    }
-    if (t === "browser_launch" || t === "open_browser" || t === "launch_browser") {
-      if (args.url) {
-        return executeAdvancedMetaTool("nexus_browser", { action: "navigate", url: args.url, tab_id: args.tabId }, context);
-      }
-      return executeAdvancedMetaTool("nexus_browser", { action: "launch" }, context);
-    }
-    if (t === "browser_click" || t === "click") {
-      return executeAdvancedMetaTool("nexus_browser", { action: "click", mark: args.mark, selector: args.selector, text: args.text, tab_id: args.tabId }, context);
-    }
-    if (t === "browser_type" || t === "type") {
-      return executeAdvancedMetaTool("nexus_browser", { action: "type", text: args.text, mark: args.mark, selector: args.selector, tab_id: args.tabId }, context);
-    }
-    if (t === "browser_scroll" || t === "scroll") {
-      return executeAdvancedMetaTool("nexus_browser", { action: "scroll", direction: args.direction || "down", amount: args.amount || 500, tab_id: args.tabId }, context);
-    }
-    if (t === "browser_combo" || t === "combo") {
-      return executeAdvancedMetaTool("nexus_browser", { action: "combo", steps: args.steps, tab_id: args.tabId }, context);
-    }
-    if (t === "browser_snapshot" || t === "snapshot") {
-      return executeAdvancedMetaTool("nexus_browser", { action: "snapshot", tab_id: args.tabId }, context);
-    }
-    if (t === "browser_screenshot" || t === "screenshot") {
-      return executeAdvancedMetaTool("nexus_browser", { action: "screenshot", tab_id: args.tabId }, context);
-    }
-    if (t === "browser_press_key" || t === "press_key" || t === "key" || t === "browser_key") {
-      const key = args.key || args.keyName || "ArrowDown";
-      const code = args.code || key;
-      return executeAdvancedMetaTool("nexus_browser", {
-        action: "eval",
-        script: `
-          const evD = new KeyboardEvent('keydown', { key: '${key}', code: '${code}', bubbles: true, cancelable: true });
-          const evU = new KeyboardEvent('keyup', { key: '${key}', code: '${code}', bubbles: true, cancelable: true });
-          document.dispatchEvent(evD);
-          window.dispatchEvent(evD);
-          document.body && document.body.dispatchEvent(evD);
-          setTimeout(() => {
-            document.dispatchEvent(evU);
-            window.dispatchEvent(evU);
-            document.body && document.body.dispatchEvent(evU);
-          }, 50);
-          return { success: true, action: 'key_press', key: '${key}' };
-        `,
-        tab_id: args.tabId
-      }, context);
-    }
-    if (t === "browser_close_modal" || t === "close_modal") {
-      return executeAdvancedMetaTool("nexus_browser", {
-        action: "eval",
-        script: `
-          const selectors = [
-            'button[aria-label*="close" i]', 'button[aria-label*="关闭" i]',
-            '.modal-close', '.popup-close', '.close-btn', '.btn-close',
-            'div[role="dialog"] button:has(svg)', '[class*="close-modal"]'
-          ];
-          let closed = false;
-          for (const s of selectors) {
-            const el = document.querySelector(s);
-            if (el && typeof el.click === 'function') {
-              el.click();
-              closed = true;
-              break;
-            }
-          }
-          return { success: true, modalClosed: closed };
-        `,
-        tab_id: args.tabId
-      }, context);
-    }
-    if (t === "browser_eval" || t === "browser_evaluate" || t === "eval_js" || t === "page_eval") {
-      return executeAdvancedMetaTool("nexus_browser", { action: "eval", script: args.script || args.code || "", tab_id: args.tabId }, context);
-    }
-    if (t === "browser_tabs") {
-      return executeAdvancedMetaTool("nexus_browser", { action: "list_tabs" }, context);
-    }
-    return executeAdvancedMetaTool("nexus_browser", args, context);
-  }
-
   async function dispatchBlenderTool(toolName: string, toolArgs: any): Promise<any> {
     const t = toolName.toLowerCase().replace(/^localbridge_/, "").replace(/^nexus_/, "");
     const args = toolArgs || {};
@@ -1864,11 +1717,6 @@ ${text}` }],
     // 0. Dispatch Blender 3D tools directly (dual-mode: socket + headless fallback)
     if (isBlenderTool(name)) {
       return await dispatchBlenderTool(name, args);
-    }
-
-    // 0.1 Dispatch Browser Automation tools directly
-    if (isBrowserAutomationTool(name)) {
-      return await dispatchBrowserTool(name, args, { executeCallTool });
     }
 
     // 0.2 Dispatch Unity GameDev tools directly
@@ -2414,29 +2262,6 @@ ${text}` }],
           } else {
             outputText = `[Script Execution Error]\n${rawErr}`;
           }
-        } else {
-          // Check if outputText or stdout contains a handleId (e.g. from handle-ized process/port queries)
-          const handleMatch = outputText.match(/\b(hnd_[a-zA-Z0-9_-]{4,}|h_[a-zA-Z0-9_-]{4,})\b/);
-          if (handleMatch) {
-            const matchedHandleId = handleMatch[1];
-            const entry = HandleManager.getHandle(matchedHandleId);
-            if (entry && !outputText.includes("前 3 项预览")) {
-              const sample = entry.items.slice(0, 3).map((item: any) => cleanDefaultItem(item));
-              const sampleJson = JSON.stringify(sample);
-              const callGuide = `💡 Complete data / filtering guide:\nnexus_execute_action(tool='nexus_handle_read', arguments={handleId: '${matchedHandleId}', offset: 0, limit: 20, filter: 'keyword or {key:value}', fields: ['field_name']})\nPass full=true for raw unpaginated output.`;
-              const handleHeader = `[📦 Handle Generated] Tool: ${entry.sourceTool} | Total ${entry.items.length} records staged in handle ${matchedHandleId}.\nFirst 3 preview:\n${sampleJson}\n\n${callGuide}`;
-
-              const trimmed = outputText.trim();
-              if (
-                (trimmed.startsWith("{") && trimmed.endsWith("}") || trimmed.startsWith("[") && trimmed.endsWith("]")) &&
-                (trimmed.includes("handleId") || trimmed.includes("totalCount"))
-              ) {
-                outputText = handleHeader;
-              } else {
-                outputText = `${trimmed}\n\n${handleHeader}`;
-              }
-            }
-          }
         }
 
         return TokenGuardrail.sanitizeToolResult({
@@ -2492,58 +2317,17 @@ ${text}` }],
           filter = filter.trim();
         }
 
-        let fields: string[] | undefined = undefined;
-        if (Array.isArray(args.fields)) {
-          fields = args.fields.map((f: any) => String(f).trim()).filter(Boolean);
-        } else if (typeof args.fields === "string") {
-          const trimmed = args.fields.trim();
-          if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
-            try {
-              const parsed = JSON.parse(trimmed);
-              if (Array.isArray(parsed)) {
-                fields = parsed.map((f: any) => String(f).trim()).filter(Boolean);
-              }
-            } catch {}
-          }
-          if (!fields && trimmed) {
-            fields = trimmed.split(",").map((s) => s.trim()).filter(Boolean);
-          }
-        }
-
-        const readRes = HandleManager.readHandle(handleId, offset, limit, filter, fields);
-        if (readRes.error) {
-          return {
-            content: [{
-              type: "text",
-              text: `ERR ${readRes.error}`,
-            }],
-            isError: true,
-            structuredContent: {
-              error: readRes.error,
-              handleId,
-            },
-          };
-        }
-
-        const fieldsHint = fields && fields.length > 0 ? `, fields: [${fields.join(", ")}]` : "";
-        const summaryHeader = `[Handle Read Succeeded] Handle: ${handleId} | Matched ${readRes.items.length}/${readRes.filteredCount} items (Total: ${readRes.totalCount}, offset: ${readRes.offset}, limit: ${readRes.limit}${fieldsHint}, hasMore: ${readRes.hasMore})`;
-        const itemsJson = JSON.stringify(readRes.items);
-        const contentText = `${summaryHeader}\n${itemsJson}`;
+        const readRes = HandleManager.readHandle(handleId, offset, limit, filter);
+        const summaryText = readRes.error
+          ? `ERR ${readRes.error}`
+          : `[句柄读取成功] 句柄: ${handleId} | 命中 ${readRes.items.length}/${readRes.filteredCount} 项 (总记录: ${readRes.totalCount}, offset: ${readRes.offset}, limit: ${readRes.limit})。详细条目请查阅 structuredContent.items。`;
         return {
           content: [{
             type: "text",
-            text: contentText,
+            text: summaryText,
           }],
-          isError: false,
-          structuredContent: {
-            handleId,
-            totalCount: readRes.totalCount,
-            filteredCount: readRes.filteredCount,
-            offset: readRes.offset,
-            limit: readRes.limit,
-            fields: fields && fields.length > 0 ? fields : undefined,
-            hasMore: readRes.hasMore,
-          },
+          isError: Boolean(readRes.error),
+          structuredContent: readRes,
         };
       }
 
@@ -2661,25 +2445,8 @@ ${text}` }],
           isExternal: false,
         }));
 
-        // D. Secondary Advanced Meta Tools (Available via discover_tools and execute_action)
-        const secondaryAdvancedCandidates = [
-          ...ADVANCED_META_TOOL_DEFINITIONS,
-          ...EXTENDED_META_TOOLS.filter((t) => !ADVANCED_META_TOOL_DEFINITIONS.some((at) => at.name === t.name)),
-        ].map((at) => ({
-          name: at.name,
-          category: "advanced-meta",
-          providerId: "nexus-meta",
-          source: "二级高级工程元工具 (Secondary Advanced)",
-          description: at.description || "",
-          keywords: ["advanced", "reverse", "security", "deobfuscate", "codec", "inspect", "probe", "mock", "patch", "trace", "hook", "adb", "browser", "canvas", "relay", "dispatch", "batch"],
-          parameters: (at.inputSchema?.properties ? Object.keys(at.inputSchema.properties) : []).filter((p) => !INTERNAL_HOST_PARAMS.has(p)),
-          required: (at.inputSchema?.required || []).filter((p: string) => !INTERNAL_HOST_PARAMS.has(p)),
-          inputSchema: at.inputSchema,
-          isExternal: false,
-        }));
-
-        // Combined Active Tool Pool
-        const allActiveTools = [...metaCandidates, ...secondaryAdvancedCandidates, ...canonicalCandidates, ...dynamicCandidates];
+        // Combined Active Tool Pool: Strictly 3 Meta Tools + 332 Canonical Tools + Dynamic MCP Candidates
+        const allActiveTools = [...metaCandidates, ...canonicalCandidates, ...dynamicCandidates];
 
         // 2. Empty Query Handling: return Full Capabilities Overview to save Tokens and guide AI
         if (!query && !providerFilter) {
@@ -3132,19 +2899,6 @@ ${text}` }],
         if (actionTool === "nexus_get_active_directives" || actionTool === "get_active_directives") {
           return executeCallTool({ params: { name: "nexus_get_active_directives", arguments: actionArgs } });
         }
-        if (ADVANCED_META_TOOL_DEFINITIONS.some((t) => t.name === actionTool || t.name === `nexus_${actionTool}`)) {
-          return executeAdvancedMetaTool(actionTool, actionArgs, { executeCallTool });
-        }
-
-        // 1.4.1 Blender 3D tools in nexus_execute_action
-        if (isBlenderTool(actionTool)) {
-          return await dispatchBlenderTool(actionTool, actionArgs);
-        }
-
-        // 1.4.2 Browser Automation tools in nexus_execute_action
-        if (isBrowserAutomationTool(actionTool)) {
-          return await dispatchBrowserTool(actionTool, actionArgs, { executeCallTool });
-        }
 
         // 1.4.3 Normalize canonical names in actionTool
         actionTool = normalizeCanonicalToolName(actionTool);
@@ -3302,15 +3056,6 @@ ${text}` }],
           isError: coreRes.isError,
           structuredContent: (coreRes as any).structuredContent,
         }, { sourceTool: actionTool, full: fullOpt, args: actionArgs }), actionTool);
-      }
-
-      // 1.9.9 Direct Dispatch for Advanced Meta Tools (ADB, Deobfuscate, Codec, etc.)
-      if (ADVANCED_META_TOOL_DEFINITIONS.some((t) => t.name === name || t.name === `nexus_${name}`)) {
-        return executeAdvancedMetaTool(name, args, { executeCallTool });
-      }
-      if (DYNAMIC_MACRO_REGISTRY.has(name)) {
-        const macro = DYNAMIC_MACRO_REGISTRY.get(name);
-        return executeCallTool({ params: { name: "nexus_batch_execute", arguments: { pipeline: macro.pipeline } } });
       }
 
       // 2.0.0 Handle Generic MCP Batch Execution
@@ -3816,6 +3561,30 @@ export async function handleMcpHttpRequest(
   body: any,
   nexusClient: NexusClient
 ): Promise<void> {
+  // Hard Ingress Barrier: Nexus 1.3.4 strictly supports ChatGPT only.
+  const userAgentLower = String(req.headers["user-agent"] || "").toLowerCase();
+  const originLower = String(req.headers["origin"] || "").toLowerCase();
+  const refererLower = String(req.headers["referer"] || "").toLowerCase();
+  if (
+    userAgentLower.includes("claude") ||
+    userAgentLower.includes("anthropic") ||
+    userAgentLower.includes("gemini") ||
+    originLower.includes("claude.ai") ||
+    originLower.includes("anthropic.com") ||
+    originLower.includes("gemini.google.com") ||
+    refererLower.includes("claude.ai") ||
+    refererLower.includes("gemini.google.com")
+  ) {
+    res.writeHead(403, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        error: "Forbidden: Client not supported in Nexus 1.3.4 (ChatGPT only)",
+        code: "CLIENT_NOT_SUPPORTED",
+      })
+    );
+    return;
+  }
+
   // Normalize Accept header to accommodate standard MCP clients (OpenAI oai-tunnel-client, curl, etc.)
   // WebStandardStreamableHTTPServerTransport requires both application/json and text/event-stream
   const currentAccept = req.headers.accept || "";

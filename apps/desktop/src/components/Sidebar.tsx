@@ -76,7 +76,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenCommunityModal: _onOpenCommunityModal,
   onOpenContactModal: _onOpenContactModal,
 }) => {
-  const { tText } = useTranslation();
+  const { tText, isZh } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
 
   const effectiveRunners =
@@ -337,7 +337,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Footer: Settings, Help & Support */}
       <div className="p-2 border-t border-theme-subtle space-y-1 shrink-0 bg-theme-sidebar">
-        {/* Follow & About Nexus Button */}
+        {/* About Nexus Button */}
         {(onOpenAbout || onOpenSponsorModal) && (
           <button
             type="button"
@@ -349,10 +349,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
               }
             }}
             title={tText(
-              "关注作者与关于 Nexus",
-              "Follow Author & About Nexus",
-              "作者をフォロー & Nexus について",
-              "Autor folgen & Über Nexus"
+              "关于 Nexus",
+              "About Nexus",
+              "Nexus について",
+              "Über Nexus"
             )}
             className={`w-full flex items-center rounded-md text-xs transition cursor-pointer ${
               collapsed ? "justify-center p-2" : "gap-2.5 px-3 py-1.5"
@@ -362,27 +362,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {!collapsed && (
               <span className="font-medium">
                 {tText(
-                  "关注与生态",
-                  "Follow & About",
-                  "概要 & フォロー",
-                  "Über & Folgen"
+                  "关于",
+                  "About",
+                  "概要",
+                  "Über"
                 )}
               </span>
             )}
           </button>
         )}
 
-        {/* Help & Documentation (Author's Blog) */}
+        {/* Help & Documentation */}
         <button
           type="button"
           onClick={() => {
-            void openExternalUrl("https://blog.ycu.de5.net/");
+            const docsUrl = isZh
+              ? "https://github.com/ysunyang4/Nexus/blob/main/docs/README.zh-CN.md"
+              : "https://github.com/ysunyang4/Nexus/tree/main/docs";
+            void openExternalUrl(docsUrl);
           }}
           title={tText(
-            "详细使用教程与文档 (作者博客)",
-            "Detailed Tutorials & Documentation (Blog)",
-            "詳細チュートリアルとドキュメント (ブログ)",
-            "Ausführliche Tutorials & Dokumentation (Blog)"
+            "使用指南与排错文档",
+            "Getting Started & Troubleshooting Docs",
+            "詳細チュートリアルとドキュメント",
+            "Ausführliche Tutorials & Dokumentation"
           )}
           className={`w-full flex items-center rounded-md text-xs transition cursor-pointer ${
             collapsed ? "justify-center p-2" : "gap-2.5 px-3 py-1.5"

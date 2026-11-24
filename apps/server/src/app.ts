@@ -116,8 +116,30 @@ export async function buildApp(
     }
   );
 
-  // Strict Anti-Proxy Defense for Management and Control Plane Routes
+  // Strict Anti-Proxy & Ingress Defense
   app.addHook("onRequest", async (request, reply) => {
+    // Ingress restriction: Nexus 1.3.4 strictly supports ChatGPT only.
+    // Hard block Claude, Anthropic, Gemini, Google-AI clients at transport boundary.
+    const userAgent = String(request.headers["user-agent"] || "").toLowerCase();
+    const origin = String(request.headers["origin"] || "").toLowerCase();
+    const referer = String(request.headers["referer"] || "").toLowerCase();
+    if (
+      userAgent.includes("claude") ||
+      userAgent.includes("anthropic") ||
+      userAgent.includes("gemini") ||
+      origin.includes("claude.ai") ||
+      origin.includes("anthropic.com") ||
+      origin.includes("gemini.google.com") ||
+      referer.includes("claude.ai") ||
+      referer.includes("gemini.google.com")
+    ) {
+      reply.status(403).send({
+        error: "Forbidden: Client not supported in Nexus 1.3.4 (ChatGPT only)",
+        code: "CLIENT_NOT_SUPPORTED",
+      });
+      return reply;
+    }
+
     // Transparently rewrite root extension and management routes to /api
     if (request.raw.url) {
       if (request.raw.url.startsWith("/extensions/")) {
