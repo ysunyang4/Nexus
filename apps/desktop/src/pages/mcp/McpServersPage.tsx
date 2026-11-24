@@ -302,7 +302,7 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {providers
-            .filter((p) => p.type !== "builtin-core")
+            .filter((p) => p.type !== "builtin-core" && p.id !== "crawl4ai" && p.id !== "telegram-mcp" && p.id !== "maya")
             .map((prov) => {
               const cleanEndpoint = (prov.endpoint || "").replace(/^https?:\/\//i, "").replace(/\/.*$/, "").toLowerCase();
               const isTrusted = Boolean(

@@ -13,6 +13,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { useTranslation } from "../../i18n/useTranslation.js";
+import { openExternalUrl } from "../../api/browser-helper.js";
 
 export interface ContactModalProps {
   isOpen: boolean;
@@ -37,6 +38,11 @@ export const ContactModal: React.FC<ContactModalProps> = ({
     navigator.clipboard.writeText(text);
     setCopiedKey(key);
     setTimeout(() => setCopiedKey(null), 2000);
+  };
+
+  const handleOpenUrl = (e: React.MouseEvent, url: string) => {
+    e.preventDefault();
+    void openExternalUrl(url);
   };
 
   const getNoticeText = () => {
@@ -143,6 +149,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     href="https://github.com/ysunyang4"
                     target="_blank"
                     rel="noreferrer"
+                    onClick={(e) => handleOpenUrl(e, "https://github.com/ysunyang4")}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition"
                   >
                     <Github className="w-3.5 h-3.5" />
@@ -153,6 +160,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     href="https://github.com/ysunyang4/Nexus"
                     target="_blank"
                     rel="noreferrer"
+                    onClick={(e) => handleOpenUrl(e, "https://github.com/ysunyang4/Nexus")}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-theme-base border border-theme-subtle hover:bg-theme-card-hover text-theme-primary transition"
                   >
                     <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
@@ -172,6 +180,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     href="https://blog.ycu.de5.net/"
                     target="_blank"
                     rel="noreferrer"
+                    onClick={(e) => handleOpenUrl(e, "https://blog.ycu.de5.net/")}
                     className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover hover:border-sky-500/40 transition group cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
@@ -194,6 +203,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     href="https://linux.do/u/yang_sunny/summary"
                     target="_blank"
                     rel="noreferrer"
+                    onClick={(e) => handleOpenUrl(e, "https://linux.do/u/yang_sunny/summary")}
                     className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover hover:border-sky-500/40 transition group cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
@@ -216,6 +226,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     href="https://x.com/yngstein"
                     target="_blank"
                     rel="noreferrer"
+                    onClick={(e) => handleOpenUrl(e, "https://x.com/yngstein")}
                     className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover hover:border-sky-500/40 transition group cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
@@ -238,6 +249,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     href="https://afdian.com/a/ysunyang4"
                     target="_blank"
                     rel="noreferrer"
+                    onClick={(e) => handleOpenUrl(e, "https://afdian.com/a/ysunyang4")}
                     className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover hover:border-sky-500/40 transition group cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
@@ -260,6 +272,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     href="https://www.reddit.com/user/OutrageousRabbit3296"
                     target="_blank"
                     rel="noreferrer"
+                    onClick={(e) => handleOpenUrl(e, "https://www.reddit.com/user/OutrageousRabbit3296")}
                     className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover hover:border-sky-500/40 transition group cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
@@ -311,6 +324,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 href="https://github.com/ysunyang4"
                 target="_blank"
                 rel="noreferrer"
+                onClick={(e) => handleOpenUrl(e, "https://github.com/ysunyang4")}
                 className="flex items-center justify-between p-4 rounded-xl border border-sky-500/30 bg-gradient-to-r from-sky-500/10 via-indigo-500/5 to-transparent hover:border-sky-500/60 transition group cursor-pointer shadow-xs"
               >
                 <div className="flex items-center gap-3 min-w-0">
@@ -344,6 +358,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 href="https://github.com/ysunyang4/Nexus"
                 target="_blank"
                 rel="noreferrer"
+                onClick={(e) => handleOpenUrl(e, "https://github.com/ysunyang4/Nexus")}
                 className="flex items-center justify-between p-3.5 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover hover:border-sky-500/30 transition group cursor-pointer"
               >
                 <div className="flex items-center gap-3 min-w-0">
@@ -377,6 +392,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 href="https://github.com/ysunyang4/webagent"
                 target="_blank"
                 rel="noreferrer"
+                onClick={(e) => handleOpenUrl(e, "https://github.com/ysunyang4/webagent")}
                 className="flex items-center justify-between p-3.5 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover hover:border-indigo-500/30 transition group cursor-pointer"
               >
                 <div className="flex items-center gap-3 min-w-0">
@@ -410,6 +426,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 href="https://github.com/ysunyang4/Nexus/issues"
                 target="_blank"
                 rel="noreferrer"
+                onClick={(e) => handleOpenUrl(e, "https://github.com/ysunyang4/Nexus/issues")}
                 className="flex items-center justify-between p-3.5 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover transition group cursor-pointer"
               >
                 <div className="flex items-center gap-3 min-w-0">

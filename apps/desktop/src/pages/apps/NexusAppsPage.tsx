@@ -125,7 +125,7 @@ export const NexusAppsPage: React.FC = () => {
         projectName: "Nexus Workspace",
         version: "1.3.0",
         sandbox: { enabled: true, loopback: "127.0.0.1", port: 8787 },
-        activeProviders: ["blender", "photoshop", "autocad", "crawl4ai"],
+        activeProviders: ["blender", "photoshop", "autocad", "playwright"],
       },
       null,
       2

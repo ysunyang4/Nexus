@@ -74,10 +74,13 @@ export const ManagedMcpPage: React.FC = () => {
     setIsLoading(true);
     try {
       const list = await managedMcpApi.listServices();
-      setServices(list);
+      const filtered = list.filter(
+        (s) => s.config?.id !== "crawl4ai" && s.config?.id !== "telegram-mcp" && s.config?.id !== "maya"
+      );
+      setServices(filtered);
       // Initialize form data
       const initialForms: Record<string, any> = {};
-      for (const s of list) {
+      for (const s of filtered) {
         initialForms[s.config.id] = {
           rawCommand: s.config.rawCommand || (s.config.command + (s.config.args?.length ? " " + s.config.args.join(" ") : "")),
           blenderPort: s.config.apiKeys?.blenderPort || 9876,

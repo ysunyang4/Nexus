@@ -1530,7 +1530,6 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
   * Photoshop (:9095)  : ${policyManager.isProviderTokenOptimization("photoshop-mcp") ? "🟢 SAVING ON (nexus.ps / discover)" : "⚪ SAVING OFF (Native tools exposed)"}
   * AutoCAD (:9107)    : ${policyManager.isProviderTokenOptimization("autocad") ? "🟢 SAVING ON (nexus.cad / discover)" : "⚪ SAVING OFF (Native tools exposed)"}
   * Playwright (:9100) : ${policyManager.isProviderTokenOptimization("playwright") ? "🟢 SAVING ON (nexus.browser / discover)" : "⚪ SAVING OFF (Native tools exposed)"}
-  * Telegram (:9119)   : ${policyManager.isProviderTokenOptimization("telegram-mcp") ? "🟢 SAVING ON (nexus.telegram / discover)" : "⚪ SAVING OFF (Native tools exposed)"}
 - Token Efficiency & Safety Rules (Strictly Follow):
   1. Single-Turn Batching (Recommended): For complex or multi-step tasks (Unity scene setup, Blender modeling/rendering, CAD drafting, batch file operations, test automation), NEVER loop atomic tools step-by-step. ALWAYS write a cohesive Python script and invoke via 'nexus_run_script(script=...)'. This delivers full tasks in a single turn and cuts token usage by 95%+.
   2. Targeted Discovery: Call 'nexus_discover_tools(query=...)' with clear intent keywords to get exact tool names and signatures. Avoid redundant or broad discovery queries.

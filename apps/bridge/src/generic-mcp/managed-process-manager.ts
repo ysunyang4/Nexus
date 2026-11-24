@@ -57,14 +57,11 @@ export const PRESET_TOOL_COUNTS: Record<string, number> = {
   "photoshop-mcp": 127,
   "windows-mcp": 20,
   "autocad": 24,
-  "crawl4ai": 3,
   "wikipedia-mcp": 4,
   "playwright": 6,
   "agentic-tools-mcp": 6,
   "code-reasoning": 5,
   "cloudflare-observability": 5,
-  "maya": 4,
-  "telegram-mcp": 136,
 };
 
 export function parseCommandLineTokens(cmdStr: string): { command: string; args: string[] } {
@@ -109,10 +106,10 @@ export function parseCommandLineTokens(cmdStr: string): { command: string; args:
 }
 
 export function isDirectHttpService(config: ManagedMcpConfig): boolean {
-  if (config.id === "blender-mcp" || config.id === "windows-mcp" || config.id === "autocad" || config.id === "telegram-mcp") {
+  if (config.id === "blender-mcp" || config.id === "windows-mcp" || config.id === "autocad") {
     return true;
   }
-  if (["crawl4ai", "wikipedia-mcp", "playwright", "agentic-tools-mcp", "code-reasoning", "cloudflare-observability"].includes(config.id)) {
+  if (["wikipedia-mcp", "playwright", "agentic-tools-mcp", "code-reasoning", "cloudflare-observability"].includes(config.id)) {
     return true;
   }
   const cmdStr = (config.rawCommand || config.command + " " + (config.args || []).join(" ")).toLowerCase();
@@ -187,7 +184,6 @@ export class ManagedProcessManager {
 
     const scriptFiles = [
       "blender_server.py",
-      "crawl4ai_server.py",
       "wikipedia_server.py",
       "playwright_server.py",
       "agentic_tools_server.py",
@@ -231,7 +227,6 @@ export class ManagedProcessManager {
   private repairServiceConfig(config: ManagedMcpConfig): ManagedMcpConfig {
     const isWindows = process.platform === "win32";
     const blenderPath = this.getServerScriptPath("blender_server.py");
-    const crawlPath = this.getServerScriptPath("crawl4ai_server.py");
     const wikiPath = this.getServerScriptPath("wikipedia_server.py");
     const playwrightPath = this.getServerScriptPath("playwright_server.py");
     const agenticPath = this.getServerScriptPath("agentic_tools_server.py");
@@ -351,42 +346,6 @@ export class ManagedProcessManager {
         config.port = 9109;
         config.endpoint = "http://127.0.0.1:9109/mcp";
         break;
-
-      case "crawl4ai":
-        config.name = "Crawl4ai 极速提纯";
-        config.command = "uv";
-        config.args = ["run", "--with", "mcp<2,>=1.26.0", "python", crawlPath];
-        config.rawCommand = `uv run --with "mcp<2,>=1.26.0" python "${crawlPath}"`;
-        config.port = 9111;
-        config.endpoint = "http://127.0.0.1:9111/mcp";
-        break;
-
-      case "maya":
-        config.name = "Maya";
-        config.command = "uv";
-        config.args = ["run", "--with", "maya-mcp-server", "maya-mcp-server"];
-        config.rawCommand = 'uv run --with "maya-mcp-server" maya-mcp-server';
-        config.port = 9112;
-        config.endpoint = "http://127.0.0.1:9112/mcp";
-        break;
-
-      case "telegram-mcp": {
-        const tgDir = path.join(this.nexusDataDir, "servers", "telegram-mcp");
-        const pythonExe = path.join(tgDir, ".venv", "Scripts", "python.exe");
-        config.name = "Telegram 全能管理 (Telethon)";
-        const mainPy = path.join(tgDir, "main.py");
-        if (fs.existsSync(pythonExe)) {
-          config.command = pythonExe;
-          config.args = [mainPy, "--transport", "http", "--port", "9119", "--host", "127.0.0.1"];
-        } else {
-          config.command = "uv";
-          config.args = ["--directory", tgDir, "run", mainPy, "--transport", "http", "--port", "9119", "--host", "127.0.0.1"];
-        }
-        config.rawCommand = `${config.command} ${config.args.join(" ")}`;
-        config.port = 9119;
-        config.endpoint = "http://127.0.0.1:9119/mcp";
-        break;
-      }
       
       default:
         // For custom services: unwrap supergateway if present
@@ -411,17 +370,6 @@ export class ManagedProcessManager {
   private initDefaultPresets(): void {
     const rawIds = [
       "blender-mcp",
-      "photoshop-mcp",
-      "windows-mcp",
-      "autocad",
-      "playwright",
-      "agentic-tools-mcp",
-      "code-reasoning",
-      "wikipedia-mcp",
-      "cloudflare-observability",
-      "crawl4ai",
-      "maya",
-      "telegram-mcp",
     ];
 
     for (const id of rawIds) {
@@ -445,6 +393,7 @@ export class ManagedProcessManager {
         env: {},
       };
       const repaired = this.repairServiceConfig(initialConfig);
+      repaired.autoStart = false;
       if (!this.services.has(repaired.id)) {
         this.services.set(repaired.id, {
           config: repaired,
@@ -462,7 +411,15 @@ export class ManagedProcessManager {
         const raw = fs.readFileSync(this.configFilePath, "utf8");
         const list: ManagedMcpConfig[] = JSON.parse(raw);
         for (let item of list) {
+          // Strictly drop obsolete or removed plugins
+          if (item.id === "crawl4ai" || item.id === "telegram-mcp" || item.id === "maya") {
+            continue;
+          }
           item = this.repairServiceConfig(item);
+          // Strictly ensure blender-mcp autoStart stays false unless explicitly configured
+          if (item.id === "blender-mcp") {
+            item.autoStart = false;
+          }
           const existing = this.services.get(item.id);
           if (existing) {
             existing.config = item;
@@ -671,9 +628,7 @@ export class ManagedProcessManager {
         }
       }
 
-      const serviceCwd = service.config.id === "telegram-mcp"
-        ? path.join(this.nexusDataDir, "servers", "telegram-mcp")
-        : undefined;
+      const serviceCwd = undefined;
 
       let child: child_process.ChildProcess;
 
@@ -943,6 +898,10 @@ export class ManagedProcessManager {
     });
 
     this.persistConfigs();
+    const serviceState = this.services.get(cleanId);
+    if (serviceState) {
+      this.registerToRuntime(serviceState).catch(() => {});
+    }
     return { success: true };
   }
 
@@ -950,6 +909,9 @@ export class ManagedProcessManager {
     this.stopService(id);
     this.services.delete(id);
     this.persistConfigs();
+    try {
+      ProviderRuntime.getInstance().unregisterProvider(id).catch(() => {});
+    } catch {}
     return { success: true };
   }
 

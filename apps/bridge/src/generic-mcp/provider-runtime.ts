@@ -224,6 +224,10 @@ export class ProviderRuntime {
         const managedMgr = ManagedProcessManager.getInstance();
         const service = managedMgr.getService(providerId);
         if (service) {
+          // Strictly honor autoStart: NEVER launch if autoStart is false or unset!
+          if (!service.config.autoStart) {
+            return;
+          }
           try {
             const probe = await fetch(service.config.endpoint, {
               method: "POST",
@@ -512,9 +516,8 @@ export class ProviderRuntime {
     );
 
     if (!freshness.fresh || !freshness.tool) {
-      // On-demand refresh for dynamic providers (e.g. Unity MCP or Blender MCP became online)
+      // On-demand refresh for dynamic providers (e.g. Unity MCP became online)
       await this.refreshProvider("unity-gamedev").catch(() => {});
-      await this.refreshProvider("blender-mcp").catch(() => {});
       if (typeof toolNameOrQualified === "string" && toolNameOrQualified.includes("::")) {
         const [targetP] = toolNameOrQualified.split("::");
         await this.refreshProvider(targetP).catch(() => {});

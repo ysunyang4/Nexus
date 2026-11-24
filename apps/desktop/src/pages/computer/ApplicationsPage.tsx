@@ -15,10 +15,12 @@ import {
   Package,
   Layers,
   ChevronRight,
+  ExternalLink,
 } from "lucide-react";
 import { useTranslation } from "../../i18n/useTranslation.js";
 import { managedMcpApi, type ManagedMcpStateDto } from "../../api/managed-mcp-api.js";
 import { unityApi } from "../../api/unity-api.js";
+import { openExternalUrl } from "../../api/browser-helper.js";
 
 // Core Preset Installed Services (Defaults to Unity + Blender, BOTH STOPPED)
 const INITIAL_INSTALLED_SERVICES: ManagedMcpStateDto[] = [
@@ -157,27 +159,15 @@ const MARKETPLACE_CATALOG: Array<{
     },
   },
   {
-    id: "crawl4ai",
-    name: "Crawl4ai 极速提纯",
-    category: "Data & Scraping",
-    port: 9111,
-    toolCount: 3,
-    command: "uv run python crawl4ai_server.py",
+    id: "blender-mcp",
+    name: "Blender 3D Automation",
+    category: "3D & Creative",
+    port: 9099,
+    toolCount: 9,
+    command: "uv run --with mcp-for-blender python blender_server.py",
     desc: {
-      "zh-CN": "异步高并发 LLM 网页内容清洗、结构化数据精准提取。",
-      "en-US": "Asynchronous high-concurrency LLM web page cleaning and extraction.",
-    },
-  },
-  {
-    id: "telegram-mcp",
-    name: "Telegram 全能管理 (Telethon)",
-    category: "Communication",
-    port: 9119,
-    toolCount: 136,
-    command: "uv run python telegram_server.py",
-    desc: {
-      "zh-CN": "Telethon 协议全双工 Telegram 频道、群组消息与 Bot 自动化控制。",
-      "en-US": "Full-duplex Telegram channel, group messaging, and bot automation.",
+      "zh-CN": "Blender 3D 几何建模、材质赋予、渲染与生成式 3D 工作流自动化桥接。",
+      "en-US": "Blender 3D modeling, material shading, rendering, and generative 3D workflow bridge.",
     },
   },
 ];
@@ -237,15 +227,25 @@ export const ApplicationsPage: React.FC = () => {
         managedMcpApi.getTokenMode(),
       ]);
 
-      if (servicesList.status === "fulfilled" && Array.isArray(servicesList.value) && servicesList.value.length > 0) {
-        // Merge running statuses with user's installed services
-        setServices((prev) => {
-          const map = new Map(servicesList.value.map((s) => [s.config.id, s]));
-          return prev.map((s) => {
-            const remote = map.get(s.config.id);
-            return remote ? { ...s, status: remote.status, logs: remote.logs || s.logs } : s;
-          });
-        });
+      if (servicesList.status === "fulfilled" && Array.isArray(servicesList.value)) {
+        const unityService: ManagedMcpStateDto = {
+          config: {
+            id: "unity-gamedev",
+            name: "Unity GameDev MCP (Primary)",
+            command: "internal",
+            args: [],
+            port: 20705,
+            endpoint: "http://127.0.0.1:20705/mcp",
+          },
+          status: "STOPPED",
+          logs: [],
+          toolCount: 19,
+        };
+        const backendServices = servicesList.value.filter(
+          (s) => s.config?.id !== "crawl4ai" && s.config?.id !== "telegram-mcp" && s.config?.id !== "maya"
+        );
+        const hasUnity = backendServices.some((s) => s.config?.id === "unity-gamedev");
+        setServices(hasUnity ? backendServices : [unityService, ...backendServices]);
       }
 
       if (tokenModeRes.status === "fulfilled") {
@@ -261,13 +261,26 @@ export const ApplicationsPage: React.FC = () => {
     loadData();
     const interval = setInterval(() => {
       managedMcpApi.listServices().then((list) => {
-        if (Array.isArray(list) && list.length > 0) {
+        if (Array.isArray(list)) {
+          const backendServices = list.filter(
+            (s) => s.config?.id !== "crawl4ai" && s.config?.id !== "telegram-mcp" && s.config?.id !== "maya"
+          );
           setServices((prev) => {
-            const map = new Map(list.map((s) => [s.config.id, s]));
-            return prev.map((s) => {
-              const remote = map.get(s.config.id);
-              return remote ? { ...s, status: remote.status, logs: remote.logs || s.logs } : s;
-            });
+            const unityService = prev.find((p) => p.config?.id === "unity-gamedev") || {
+              config: {
+                id: "unity-gamedev",
+                name: "Unity GameDev MCP (Primary)",
+                command: "internal",
+                args: [],
+                port: 20705,
+                endpoint: "http://127.0.0.1:20705/mcp",
+              },
+              status: "STOPPED",
+              logs: [],
+              toolCount: 19,
+            };
+            const hasUnity = backendServices.some((s) => s.config?.id === "unity-gamedev");
+            return hasUnity ? backendServices : [unityService, ...backendServices];
           });
         }
       }).catch(() => {});
@@ -343,35 +356,43 @@ export const ApplicationsPage: React.FC = () => {
     if (!confirm(isZh ? "确定要从工作台中移除此 MCP 插件吗？" : "Remove this MCP plugin from workspace?")) return;
     setActionBusy((prev) => ({ ...prev, [id]: true }));
     try {
-      await managedMcpApi.stopService(id).catch(() => {});
-      await managedMcpApi.deleteCustomService(id).catch(() => {});
+      if (id === "unity-gamedev") {
+        await unityApi.stopService().catch(() => {});
+      } else {
+        await managedMcpApi.stopService(id).catch(() => {});
+        await managedMcpApi.deleteCustomService(id).catch(() => {});
+      }
       setServices((prev) => prev.filter((s) => s.config?.id !== id));
+      await loadData();
     } finally {
       setActionBusy((prev) => ({ ...prev, [id]: false }));
     }
   };
 
   // Install from Marketplace
-  const handleInstallFromMarket = (m: typeof MARKETPLACE_CATALOG[0]) => {
+  const handleInstallFromMarket = async (m: typeof MARKETPLACE_CATALOG[0]) => {
     if (services.some((s) => s.config?.id === m.id)) {
       setActiveTab("installed");
       return;
     }
-    const newService: ManagedMcpStateDto = {
-      config: {
+    setActionBusy((prev) => ({ ...prev, [m.id]: true }));
+    try {
+      const configToCreate = {
         id: m.id,
         name: m.name,
         command: m.command.split(" ")[0] || "uv",
         args: m.command.split(" ").slice(1),
         port: m.port,
         endpoint: `http://127.0.0.1:${m.port}/mcp`,
-      },
-      status: "STOPPED",
-      logs: [],
-      toolCount: m.toolCount,
-    };
-    setServices((prev) => [...prev, newService]);
-    setActiveTab("installed");
+        rawCommand: m.command,
+        autoStart: false,
+      };
+      await managedMcpApi.createCustomService(configToCreate).catch(() => {});
+      await loadData();
+      setActiveTab("installed");
+    } finally {
+      setActionBusy((prev) => ({ ...prev, [m.id]: false }));
+    }
   };
 
   // Copy MCP Config
@@ -444,14 +465,24 @@ export const ApplicationsPage: React.FC = () => {
               </span>
             </div>
           </div>
-          <p className="text-xs text-theme-muted pl-10 leading-relaxed truncate">
-            {tText(
-              "发现、安装、配置与管理标准 MCP 扩展服务 · 如需使用教程可点击左下角【帮助与文档】访问博客",
-              "Discover, install and manage standard MCP extensions · Click Help & Docs for tutorials",
-              "MCP拡張サービスの検出・インストール・管理 · チュートリアルは左下のヘルプを参照",
-              "Standard-MCP-Dienste verwalten · Ausführliche Tutorials über Hilfe & Dokumentation"
-            )}
-          </p>
+          <div className="text-xs text-theme-muted pl-10 leading-relaxed flex items-center gap-1.5 flex-wrap">
+            <span>
+              {tText(
+                "发现、安装、配置与管理标准 MCP 扩展服务 ·",
+                "Discover, install and manage standard MCP extensions ·",
+                "MCP拡張サービスの検出・インストール・管理 ·",
+                "Standard-MCP-Dienste verwalten ·"
+              )}
+            </span>
+            <button
+              type="button"
+              onClick={() => void openExternalUrl("https://blog.ycu.de5.net/")}
+              className="text-sky-500 hover:text-sky-400 hover:underline cursor-pointer inline-flex items-center gap-0.5"
+            >
+              <span>{tText("点击访问博客获取详细教程", "Click Help & Docs for tutorials", "チュートリアルブログを見る", "Blog-Tutorial ansehen")}</span>
+              <ExternalLink className="w-3 h-3 ml-0.5" />
+            </button>
+          </div>
         </div>
 
         {/* Global Action Buttons */}

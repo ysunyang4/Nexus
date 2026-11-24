@@ -13,6 +13,7 @@ import {
 import nexusLogo from "../assets/nexus.png";
 import type { ServerStatus, UserExperienceMode } from "../types.js";
 import { useTranslation } from "../i18n/useTranslation.js";
+import { openExternalUrl } from "../api/browser-helper.js";
 
 export type NavPage =
   | "overview"
@@ -367,7 +368,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <button
           type="button"
           onClick={() => {
-            window.open("https://blog.ycu.de5.net/", "_blank");
+            void openExternalUrl("https://blog.ycu.de5.net/");
           }}
           title={tText(
             "详细使用教程与文档 (作者博客)",

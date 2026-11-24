@@ -264,42 +264,26 @@ pub struct SystemStatus {
 fn desktop_open_url(url: String) -> Result<(), String> {
     #[cfg(target_os = "windows")]
     {
-        use std::io::Write;
-        let try_navigate = |u: &str| -> bool {
-            if let Ok(mut stream) = std::net::TcpStream::connect("127.0.0.1:20710") {
-                let escaped_url = u.replace('\\', "\\\\").replace('"', "\\\"");
-                let body = format!(r#"{{"url":"{}"}}"#, escaped_url);
-                let req = format!(
-                    "POST /navigate HTTP/1.1\r\nHost: 127.0.0.1:20710\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
-                    body.len(),
-                    body
-                );
-                if stream.write_all(req.as_bytes()).is_ok() {
-                    return true;
-                }
-            }
-            false
-        };
-
-        if !try_navigate(&url) {
-            let nova_exe = r"E:\Tesyt\beo\ego-nova.exe";
-            if std::path::Path::new(nova_exe).exists() {
-                let _ = std::process::Command::new(nova_exe).spawn();
-                std::thread::sleep(std::time::Duration::from_millis(1500));
-                let _ = try_navigate(&url);
-            }
+        let mut cmd = Command::new("cmd");
+        cmd.args(["/c", "start", "", &url]);
+        cmd.creation_flags(CREATE_NO_WINDOW);
+        if let Err(_) = cmd.spawn() {
+            let mut fallback = Command::new("rundll32");
+            fallback.args(["url.dll,FileProtocolHandler", &url]);
+            fallback.creation_flags(CREATE_NO_WINDOW);
+            let _ = fallback.spawn();
         }
     }
     #[cfg(target_os = "macos")]
     {
-        let _ = std::process::Command::new("open")
+        let _ = Command::new("open")
             .arg(&url)
             .spawn()
             .map_err(|e| e.to_string())?;
     }
     #[cfg(target_os = "linux")]
     {
-        let _ = std::process::Command::new("xdg-open")
+        let _ = Command::new("xdg-open")
             .arg(&url)
             .spawn()
             .map_err(|e| e.to_string())?;
