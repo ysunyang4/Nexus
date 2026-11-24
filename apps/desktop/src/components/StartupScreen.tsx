@@ -104,7 +104,7 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({
               <div className="font-bold text-base tracking-wide flex items-center gap-2">
                 NEXUS CONTROL CENTER
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">
-                  v1.3.2
+                  v1.3.4
                 </span>
               </div>
               <div className="text-xs text-slate-400">Production Runtime Supervisor</div>
