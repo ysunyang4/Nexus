@@ -1,4 +1,4 @@
-# Nexus Open Cloud — v1.3.1 (device-scoped security v2)
+# Nexus Open Cloud — v1.3.4 (device-scoped security v2)
 
 This is the open-source Cloudflare Worker / Durable Object MCP gateway plus a local Windows Agent. The Cloudflare **root secret stays on Cloudflare**. Do not ship a shared root key in the installer.
 
@@ -30,7 +30,7 @@ node apps/nexus-open-cloud/local/manage-devices.mjs status
 
 **Existing installations should NOT rerun admin-init, rotate-root or enroll**. They are one-time migration commands and intentionally refuse overwrites. `rotate-root` is allowed only before the first device enrollment; root rotation otherwise invalidates existing device hashes.
 
-On Windows, admin and device credentials are sealed with CurrentUser DPAPI in `%LOCALAPPDATA%\NexusOpenSource\v1.3.1\cloud\` as `*.json.dpapi`. Never export these files or print bearer tokens into logs. The local development `.dev.vars` root entry is retired after successful root rotation.
+On Windows, admin and device credentials are sealed with CurrentUser DPAPI in `%LOCALAPPDATA%\NexusOpenSource\v1.3.4\cloud\` as `*.json.dpapi`. Never export these files or print bearer tokens into logs. The local development `.dev.vars` root entry is retired after successful root rotation.
 
 ## Starting the Agent
 ```powershell

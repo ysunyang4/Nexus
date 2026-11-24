@@ -16,7 +16,7 @@ describe("Nexus Open Source secure secret storage",()=>{
    const encrypted=first.encrypt("test-only-secret");
    expect(encrypted).not.toContain("test-only-secret");
    expect(first.decrypt(encrypted)).toBe("test-only-secret");
-   const keyFile=path.join(temp,"NexusOpenSource","v1.3.1","db-secrets","master.key.dpapi");
+   const keyFile=path.join(temp,"NexusOpenSource","v1.3.4","db-secrets","master.key.dpapi");
    expect(fs.existsSync(keyFile)).toBe(true);
    expect(fs.readFileSync(keyFile).length).toBeGreaterThan(32);
    const second=new SecureSecretStorage();

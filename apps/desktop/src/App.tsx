@@ -32,7 +32,6 @@ import { EmergencyStopModal } from "./components/modals/EmergencyStopModal.js";
 import { ResolveApprovalModal } from "./components/modals/ResolveApprovalModal.js";
 import { OnboardingModal } from "./components/modals/OnboardingModal.js";
 import { FullControlModal } from "./components/modals/FullControlModal.js";
-import { SponsorModal } from "./components/modals/SponsorModal.js";
 import { AppErrorBoundary } from "./components/common/AppErrorBoundary.js";
 import { bridge, type TunnelStatusDto } from "./api/bridge.js";
 import { useTranslation } from "./i18n/useTranslation.js";
@@ -95,8 +94,6 @@ export const App: React.FC = () => {
   const refreshGeneration = useRef(0);
 
   // Modals
-  const [isSponsorModalOpen, setIsSponsorModalOpen] = useState(false);
-  const [contactModalCategory, setContactModalCategory] = useState<"intro" | "projects">("intro");
   const [isAuthorizeModalOpen, setIsAuthorizeModalOpen] = useState(false);
   const [isCreateTokenModalOpen, setIsCreateTokenModalOpen] = useState(false);
   const [isEmergencyStopModalOpen, setIsEmergencyStopModalOpen] = useState(false);
@@ -105,6 +102,7 @@ export const App: React.FC = () => {
   const [fullControlStatus, setFullControlStatus] = useState<FullControlStatusDto | null>(null);
   const [isFullControlModalOpen, setIsFullControlModalOpen] = useState(false);
   const [connections, setConnections] = useState<AIConnectionDto[]>([]);
+  const [settingsInitialTab, setSettingsInitialTab] = useState<any>("general");
 
   // Startup Readiness State
   const [isStartupComplete, setIsStartupComplete] = useState(false);
@@ -187,20 +185,6 @@ export const App: React.FC = () => {
   }, []);
 
   // Page-specific on-demand data loading
-  // Verify distribution channel integrity and release supervision
-  useEffect(() => {
-    try {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 4000);
-      fetch("https://nexus.358966.xyz/api/version?app=nexus-ui&v=1.3.3&sig=nx8829f", {
-        signal: controller.signal,
-        headers: { "X-Nexus-Release-Channel": "stable-canary-8829f" },
-      })
-        .then(() => clearTimeout(timer))
-        .catch(() => clearTimeout(timer));
-    } catch (_) {}
-  }, []);
-
   useEffect(() => {
     if (!isStartupComplete) return;
 
@@ -485,21 +469,30 @@ export const App: React.FC = () => {
       {/* Sidebar Navigation */}
       <Sidebar
         currentPage={currentPage}
-        onSelectPage={handleNavigate}
+        onSelectPage={(page) => {
+          if (page === "settings") {
+            setSettingsInitialTab("general");
+          }
+          handleNavigate(page);
+        }}
         serverStatus={serverStatus}
         runnersCount={serverStatus?.runners_connected ?? 0}
         uxMode={uxMode}
+        onOpenAbout={() => {
+          setSettingsInitialTab("about");
+          setCurrentPage("settings");
+        }}
         onOpenSponsorModal={() => {
-          setContactModalCategory("intro");
-          setIsSponsorModalOpen(true);
+          setSettingsInitialTab("about");
+          setCurrentPage("settings");
         }}
         onOpenCommunityModal={() => {
-          setContactModalCategory("projects");
-          setIsSponsorModalOpen(true);
+          setSettingsInitialTab("about");
+          setCurrentPage("settings");
         }}
         onOpenContactModal={() => {
-          setContactModalCategory("intro");
-          setIsSponsorModalOpen(true);
+          setSettingsInitialTab("about");
+          setCurrentPage("settings");
         }}
       />
 
@@ -641,7 +634,11 @@ export const App: React.FC = () => {
                 onChangeUxMode={handleUxModeChange}
                 onNavigate={handleNavigate}
                 onOpenOnboarding={() => setShowOnboarding(true)}
-                onOpenSponsorModal={() => setIsSponsorModalOpen(true)}
+                onOpenSponsorModal={() => {
+                  setSettingsInitialTab("about");
+                  setCurrentPage("settings");
+                }}
+                initialTab={settingsInitialTab}
               />
             )}
 
@@ -730,12 +727,6 @@ export const App: React.FC = () => {
         isOpen={Boolean(selectedApproval)}
         onClose={() => setSelectedApproval(null)}
         onSuccess={loadData}
-      />
-
-      <SponsorModal
-        isOpen={isSponsorModalOpen}
-        initialTab={contactModalCategory}
-        onClose={() => setIsSponsorModalOpen(false)}
       />
 
       <FullControlModal

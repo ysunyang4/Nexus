@@ -941,7 +941,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-semibold text-sky-600 dark:text-sky-400 flex items-center gap-1.5">
                     <Globe className="w-3.5 h-3.5 text-sky-500" />
-                    <span>{isZh ? "WebAgent 浏览器插件授权" : "WebAgent Browser Extension"}</span>
+                    <span>{isZh ? "WebAgent 浏览器插件配置" : "WebAgent Browser Extension"}</span>
                   </span>
                   <button
                     type="button"
@@ -954,8 +954,8 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                 </div>
                 <p className="text-[11px] text-theme-muted leading-relaxed">
                   {isZh
-                    ? "WebAgent 浏览器插件支持大多主流网页 AI。复制上方 lb_ 令牌并填入插件即可连接本地工具；详细配置教程请点击上方链接跳转我的博客查看。"
-                    : "WebAgent extension supports mainstream web AIs. Copy the lb_ token above into the extension to connect; for detailed setup, please refer to the blog guide."}
+                    ? "如需在网页端 AI 中使用本地能力，可直接切换至上方 [WebAgent 浏览器插件] 标签页；详细配置步骤请查阅博客教程。"
+                    : "To use local tools with web-based AI assistants, switch to the [WebAgent Extension] tab above or view the blog guide."}
                 </p>
               </div>
 

@@ -8,6 +8,7 @@ import {
   Server,
   Info,
   Radio,
+  Compass,
   Play,
   RefreshCw,
   CheckCircle2,
@@ -26,6 +27,10 @@ import {
   FolderOpen,
   Unlock,
   HardDrive,
+  ExternalLink,
+  Github,
+  Heart,
+  Mail,
 } from "lucide-react";
 import { bridge, type TunnelStatusDto } from "../api/bridge.js";
 import { useTranslation } from "../i18n/useTranslation.js";
@@ -39,6 +44,7 @@ import {
 } from "../i18n/intelligence-map.js";
 import nexusLogo from "../assets/nexus.png";
 import { ChatGPTConnection } from "../components/connections/ChatGPTConnection.js";
+import { WebAgentConnection } from "../components/connections/WebAgentConnection.js";
 import { ConnectionCenterErrorBoundary } from "../components/common/AppErrorBoundary.js";
 import { DesktopPage } from "./computer/DesktopPage.js";
 import { FilesPage } from "./computer/FilesPage.js";
@@ -88,6 +94,7 @@ interface SettingsPageProps {
   onNavigate?: (page: any) => void;
   onOpenOnboarding?: () => void;
   onOpenSponsorModal?: () => void;
+  initialTab?: SettingsTab;
 }
 
 export type SettingsRoute =
@@ -124,20 +131,40 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   onNavigate: _onNavigate,
   onOpenOnboarding: _onOpenOnboarding,
   onOpenSponsorModal: _onOpenSponsorModal,
+  initialTab,
 }) => {
   const { t, language, setLanguage, tText } = useTranslation();
   const isZh = language === "zh-CN";
   const { themeMode, setThemeMode } = useTheme();
-  const [route, setRoute] = useState<SettingsRoute>({ page: "general" });
+  const [route, setRoute] = useState<SettingsRoute>({ page: initialTab || "general" });
   const activeTab: SettingsTab = route.page;
+
+  useEffect(() => {
+    if (initialTab) {
+      setRoute({ page: initialTab });
+    }
+  }, [initialTab]);
 
   const [computerSubPage, setComputerSubPage] = useState<"desktop" | "files" | "applications" | "browser">("desktop");
   const [executionSubPage, setExecutionSubPage] = useState<"pipeline" | "ledger" | "runtime">("pipeline");
   const [mcpSubPage, setMcpSubPage] = useState<"servers" | "tools" | "registry" | "managed">("servers");
+  const [connectionsSubTab, setConnectionsSubTab] = useState<"chatgpt" | "webagent">("chatgpt");
 
   // Server URL State
   const [serverUrl, setServerUrl] = useState(bridge.getBaseUrl());
   const [saved, setSaved] = useState(false);
+
+  const handleOpenExternalUrl = async (url: string) => {
+    try {
+      if ((bridge as any).openExternalUrl) {
+        await (bridge as any).openExternalUrl(url);
+      } else {
+        window.open(url, "_blank");
+      }
+    } catch {
+      window.open(url, "_blank");
+    }
+  };
 
 
 
@@ -892,25 +919,50 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           </div>
         )}
 
-        {/* Tab: ChatGPT Dedicated Connection */}
+        {/* Tab: AI Connections (ChatGPT & WebAgent) */}
         {activeTab === "connections" && (
           <div className="flex flex-col h-full space-y-4">
             <div className="flex items-center gap-1.5 p-1 rounded-xl bg-theme-card border border-theme-subtle w-fit shadow-xs">
               <button
                 type="button"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition bg-sky-500 text-white shadow-xs font-semibold"
+                onClick={() => setConnectionsSubTab("chatgpt")}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
+                  connectionsSubTab === "chatgpt"
+                    ? "bg-sky-500 text-white shadow-xs font-semibold"
+                    : "text-theme-secondary hover:text-theme-primary hover:bg-theme-card-hover border border-transparent"
+                }`}
               >
                 <Radio className="w-3.5 h-3.5" />
-                <span>{isZh ? "ChatGPT 隧道 & WebAgent 凭证" : "ChatGPT Tunnel & WebAgent"}</span>
+                <span>{isZh ? "ChatGPT & 隧道" : "ChatGPT & Tunnel"}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setConnectionsSubTab("webagent")}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
+                  connectionsSubTab === "webagent"
+                    ? "bg-sky-500 text-white shadow-xs font-semibold"
+                    : "text-theme-secondary hover:text-theme-primary hover:bg-theme-card-hover border border-transparent"
+                }`}
+              >
+                <Compass className="w-3.5 h-3.5" />
+                <span>{isZh ? "WebAgent 浏览器插件" : "WebAgent Extension"}</span>
               </button>
             </div>
 
             <ConnectionCenterErrorBoundary isZh={isZh}>
-              <ChatGPTConnection
-                tunnelStatus={tunnelStatus}
-                onRefreshAll={onRefresh}
-                uxMode={uxMode}
-              />
+              {connectionsSubTab === "chatgpt" ? (
+                <ChatGPTConnection
+                  tunnelStatus={tunnelStatus}
+                  onRefreshAll={onRefresh}
+                  uxMode={uxMode}
+                />
+              ) : (
+                <WebAgentConnection
+                  tunnelStatus={tunnelStatus}
+                  onRefreshAll={onRefresh}
+                />
+              )}
             </ConnectionCenterErrorBoundary>
           </div>
         )}
@@ -2906,39 +2958,44 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
       {/* Tab 5: About Nexus */}
       {activeTab === "about" && (
         <div className="max-w-4xl space-y-6">
-          {/* About Section */}
+          {/* Section 1: Product & Version Header */}
           <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs shadow-sm">
             <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
               <Info className="w-4 h-4 text-sky-500" />
               <span>{t.settings.aboutGroup}</span>
             </div>
 
-            <div className="flex items-center gap-3 pt-1">
+            <div className="flex items-start gap-4 pt-1">
               <img
                 src={nexusLogo}
                 alt="Nexus"
-                className="w-12 h-12 rounded-xl object-cover shadow-sm border border-theme-subtle"
+                className="w-14 h-14 rounded-2xl object-cover shadow-sm border border-theme-subtle shrink-0"
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).src = "/nexus.png";
                 }}
               />
-              <div className="space-y-0.5">
-                <div className="font-bold text-base text-theme-primary">
-                  {t.settings.appName || "Nexus"}
+              <div className="space-y-1.5 flex-1">
+                <div className="flex items-center gap-3">
+                  <span className="font-bold text-lg text-theme-primary">
+                    {t.settings.appName || "Nexus Control Center"}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-mono font-semibold bg-sky-500/10 text-sky-500 border border-sky-500/20">
+                    v1.3.4
+                  </span>
                 </div>
-                <div className="text-theme-secondary font-mono text-[11px]">
+                <div className="text-theme-secondary text-xs leading-relaxed">
                   {isZh
-                    ? "ChatGPT 本地 AI 控制平面 · 让 ChatGPT 安全访问并操作你明确授权的本地开发环境。"
-                    : "Local AI Control Plane for ChatGPT · Securely connect ChatGPT to your authorized local environment."}
+                    ? "Nexus 作为 ChatGPT 专用的本地 AI 控制平面，通过 3 个核心元工具（nexus_run_script、nexus_discover_tools、nexus_execute_action）向 ChatGPT 暴露 332 个受控原子工具，安全访问并操作授权的本地开发环境。"
+                    : "Nexus serves as the dedicated Local AI Control Plane for ChatGPT, exposing 332 canonical atomic tools to ChatGPT through 3 core meta tools (nexus_run_script, nexus_discover_tools, nexus_execute_action)."}
                 </div>
-                <div className="text-[10px] font-mono text-theme-muted">
-                  332 Canonical & Extended MCP Tools &bull; Nexus Skills &bull; Secure MCP Tunnel &bull; Full Local Control &bull; v1.3.4
+                <div className="text-[11px] font-mono text-theme-muted pt-0.5">
+                  332 Atomic Tools &bull; 3 Core Meta Tools &bull; Secure MCP Tunnel &bull; Full Local Control
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Security Architecture Summary */}
+          {/* Section 2: Security Architecture Guarantees (Verified Claims) */}
           <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs shadow-sm">
             <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
               <ShieldCheck className="w-4 h-4 text-emerald-500" />
@@ -2963,6 +3020,138 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 {t.settings.killswitchGuaranteeDesc}
               </li>
             </ul>
+          </div>
+
+          {/* Section 3: Author Information */}
+          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs shadow-sm">
+            <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
+              <User className="w-4 h-4 text-indigo-500" />
+              <span>{isZh ? "作者信息" : "Author Information"}</span>
+            </div>
+
+            <div className="flex items-center justify-between flex-wrap gap-4 pt-1">
+              <div>
+                <div className="font-bold text-sm text-theme-primary">
+                  Sunyang (ysunyang4)
+                </div>
+                <div className="text-theme-muted text-xs mt-0.5">
+                  Author & Core Maintainer of Nexus Ecosystem
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleOpenExternalUrl("https://github.com/ysunyang4")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover text-theme-primary text-xs font-medium transition cursor-pointer"
+                >
+                  <Github className="w-3.5 h-3.5" />
+                  <span>GitHub</span>
+                  <ExternalLink className="w-3 h-3 text-theme-muted" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenExternalUrl("https://blog.ycu.de5.net/")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover text-theme-primary text-xs font-medium transition cursor-pointer"
+                >
+                  <Globe className="w-3.5 h-3.5 text-sky-500" />
+                  <span>{isZh ? "个人博客" : "Blog"}</span>
+                  <ExternalLink className="w-3 h-3 text-theme-muted" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenExternalUrl("mailto:ysunyang979@gmail.com")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover text-theme-primary text-xs font-medium transition cursor-pointer"
+                >
+                  <Mail className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Email</span>
+                  <ExternalLink className="w-3 h-3 text-theme-muted" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 4: Project Ecosystem Links */}
+          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs shadow-sm">
+            <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
+              <Layers className="w-4 h-4 text-sky-500" />
+              <span>{isZh ? "开源项目与文档矩阵" : "Project Ecosystem & Documentation"}</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+              {[
+                {
+                  title: "Nexus Control Center",
+                  desc: isZh ? "Nexus 核心桌面端与本地控制平面仓库" : "Main desktop application & control plane repository",
+                  url: "https://github.com/ysunyang4/Nexus",
+                },
+                {
+                  title: "WebAgent Extension",
+                  desc: isZh ? "网页端 AI 浏览器辅助插件仓库" : "Web AI browser extension repository",
+                  url: "https://github.com/ysunyang4/WebAgent",
+                },
+                {
+                  title: isZh ? "问题反馈 (GitHub Issues)" : "Issues & Feedback",
+                  desc: isZh ? "报告 Bug、建议功能或提交改进反馈" : "Report bugs or submit feature requests",
+                  url: "https://github.com/ysunyang4/Nexus/issues",
+                },
+                {
+                  title: isZh ? "快速上手与排错文档" : "Getting Started & Docs",
+                  desc: isZh ? "中英文完整入门指南与常见问题解答" : "Comprehensive guide and troubleshooting",
+                  url: isZh ? "https://github.com/ysunyang4/Nexus/blob/main/docs/README.zh-CN.md" : "https://github.com/ysunyang4/Nexus/tree/main/docs",
+                },
+              ].map((proj) => (
+                <button
+                  key={proj.title}
+                  type="button"
+                  onClick={() => handleOpenExternalUrl(proj.url)}
+                  className="p-3.5 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-base hover:border-sky-500/40 text-left transition cursor-pointer space-y-1 group"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-theme-primary group-hover:text-sky-500 transition">
+                      {proj.title}
+                    </span>
+                    <ExternalLink className="w-3.5 h-3.5 text-theme-muted group-hover:text-sky-500 transition" />
+                  </div>
+                  <p className="text-[11px] text-theme-muted leading-relaxed">
+                    {proj.desc}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Section 5: Support & Sponsorship (Single Afdian Link) */}
+          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs shadow-sm">
+            <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
+              <Heart className="w-4 h-4 text-rose-500" />
+              <span>{isZh ? "赞助与支持" : "Sponsor & Support"}</span>
+            </div>
+
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-xl bg-rose-500/5 border border-rose-500/20">
+              <div className="space-y-1">
+                <div className="font-bold text-xs text-theme-primary">
+                  {isZh ? "支持 Nexus 持续开源演进" : "Support Nexus Open Source Development"}
+                </div>
+                <p className="text-[11px] text-theme-secondary leading-relaxed">
+                  {isZh
+                    ? "Nexus 是完全免费的开源项目。如果您觉得 Nexus 提升了您的工作效率，欢迎通过爱发电赞助作者一杯咖啡，支持生态持续发展！"
+                    : "Nexus is completely free and open source. If Nexus boosts your productivity, feel free to sponsor via Afdian to support continuous maintenance."}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => handleOpenExternalUrl("https://afdian.com/a/ysunyang4")}
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 transition shrink-0 cursor-pointer"
+              >
+                <Heart className="w-3.5 h-3.5" />
+                <span>{isZh ? "前往爱发电赞助" : "Sponsor on Afdian"}</span>
+                <ExternalLink className="w-3 h-3" />
+              </button>
+            </div>
           </div>
         </div>
       )}

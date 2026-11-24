@@ -674,7 +674,7 @@ export function getCanonicalToolManifest(): CanonicalToolManifest {
     sortedToolNames,
     toolNamesHash,
     schemaHash,
-    surfaceVersion: "1.3.6",
+    surfaceVersion: "1.3.4",
     protocolVersion: "2024-11-05",
     generatedAt: new Date().toISOString(),
   };
@@ -1554,7 +1554,7 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
   const server = new Server(
     {
       name: cleanTargetId ? `nexus-mcp-bridge [${cleanTargetId}]` : "nexus-mcp-bridge",
-      version: "1.3.6",
+      version: "1.3.4",
     },
     {
       capabilities: {

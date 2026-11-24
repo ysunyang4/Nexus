@@ -1,0 +1,30 @@
+Nexus Control Center v1.3.4 Tool Measurement Verification
+Date: 2026-11-24
+Branch: fix/1.3.4-public-release
+Status: VERIFIED
+
+1. Meta Tools Exposed to ChatGPT Connection (Live /tools/list):
+   Total Count: 3
+   - nexus_run_script: Safe multi-step workflow orchestrator executing TypeScript/JavaScript scripts against canonical catalog
+   - nexus_discover_tools: Dynamic schema inspection and parameter lookup across canonical catalog
+   - nexus_execute_action: Atomic execution of single target tool by canonical identifier with parameters
+
+2. Canonical Atomic Tools Catalog:
+   Source: packages/protocol/src/tools/canonical-registry.ts
+   Total Count: 332
+   Categories:
+   - filesystem (read_file, write_file, edit_file, delete_file, list_dir, search_files, ...)
+   - git (status, diff, log, commit, branch, checkout, merge, stash, ...)
+   - terminal & commands (exec, run_script, inspect_env, ...)
+   - code intelligence & lsp (hover, definition, references, document_symbols, diagnostics, ...)
+   - runner & process control (start_process, stop_process, list_processes, ...)
+   - browser & automation (navigate, screenshot, click, fill, evaluate, ...)
+   - adb device control (nexus_adb_controller, list_devices, install_apk, screencap, input_key, ...)
+   - system & hardware inspection (cpu, memory, disk, network, ...)
+
+3. Verification Files:
+   - packages/protocol/src/tools/canonical-registry.ts (CANONICAL_TOOL_COUNT = 332)
+   - apps/bridge/src/server.ts (UNIVERSAL_META_TOOLS count = 3)
+   - tests/tools-compliance.test.ts (PASS - 83/83)
+   - apps/bridge/tests/tools-compliance.test.ts (PASS - 256/256)
+   - apps/bridge/tests/all-80-mcp-tools-contract.test.ts (PASS - 165/165)

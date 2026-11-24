@@ -172,7 +172,7 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
     {
       id: "srv-bridge",
       name: isZh ? "Nexus 公网 MCP 网关 (Bridge)" : "Nexus Public MCP Gateway",
-      description: isZh ? "面向 Web ChatGPT 与 Cloudflare 隧道的 OAuth 2.0 聚合网关" : "Protected OAuth 2.0 reverse bridge for Web AI",
+      description: isZh ? "面向 Web ChatGPT 与远程安全隧道的 OAuth 2.0 聚合网关" : "Protected OAuth 2.0 reverse bridge for Web AI",
       endpoint: "http://127.0.0.1:8787/mcp",
       protocol: "OAuth 2.0 / Streamable HTTP",
       toolsCount: 451,

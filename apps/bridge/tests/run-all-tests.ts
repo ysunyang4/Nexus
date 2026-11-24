@@ -1,7 +1,7 @@
 import child_process from "node:child_process";
 
 console.log("================================================================================");
-console.log("            NEXUS 1.3.0 COMPREHENSIVE INTEGRATION & REGRESSION TEST             ");
+console.log("            NEXUS 1.3.4 COMPREHENSIVE INTEGRATION & REGRESSION TEST             ");
 console.log("================================================================================\n");
 
 function runCommand(cmd: string, args: string[]) {

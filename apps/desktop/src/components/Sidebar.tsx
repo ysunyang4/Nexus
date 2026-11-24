@@ -59,6 +59,7 @@ interface SidebarProps {
   serverStatus: ServerStatus | null;
   runnersCount?: number;
   uxMode?: UserExperienceMode;
+  onOpenAbout?: () => void;
   onOpenSponsorModal?: () => void;
   onOpenCommunityModal?: () => void;
   onOpenContactModal?: () => void;
@@ -70,6 +71,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   serverStatus,
   runnersCount,
   uxMode: _uxMode = "standard",
+  onOpenAbout,
   onOpenSponsorModal,
   onOpenCommunityModal: _onOpenCommunityModal,
   onOpenContactModal: _onOpenContactModal,
@@ -335,16 +337,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Footer: Settings, Help & Support */}
       <div className="p-2 border-t border-theme-subtle space-y-1 shrink-0 bg-theme-sidebar">
-        {/* Support Nexus Button */}
-        {onOpenSponsorModal && (
+        {/* Follow & About Nexus Button */}
+        {(onOpenAbout || onOpenSponsorModal) && (
           <button
             type="button"
-            onClick={onOpenSponsorModal}
+            onClick={() => {
+              if (onOpenAbout) {
+                onOpenAbout();
+              } else if (onOpenSponsorModal) {
+                onOpenSponsorModal();
+              }
+            }}
             title={tText(
-              "关注作者与开源项目矩阵",
-              "Follow Author & Projects",
-              "作者をフォロー & プロジェクト",
-              "Autor folgen & Projekte"
+              "关注作者与关于 Nexus",
+              "Follow Author & About Nexus",
+              "作者をフォロー & Nexus について",
+              "Autor folgen & Über Nexus"
             )}
             className={`w-full flex items-center rounded-md text-xs transition cursor-pointer ${
               collapsed ? "justify-center p-2" : "gap-2.5 px-3 py-1.5"

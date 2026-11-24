@@ -11,7 +11,7 @@ import { NexusClient } from "../src/nexus-client.js";
 
 async function runMcpServerProtocolTests() {
   console.log("=================================================================");
-  console.log("  NEXUS 1.3.0: MCP SERVER PROTOCOL & DISPATCHER TEST SUITE       ");
+  console.log("  NEXUS 1.3.4: MCP SERVER PROTOCOL & DISPATCHER TEST SUITE       ");
   console.log("=================================================================\n");
 
   const policy = McpSecurityPolicyManager.getInstance();

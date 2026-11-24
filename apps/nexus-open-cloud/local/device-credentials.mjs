@@ -21,7 +21,7 @@ function transform(operation,bytes){
   return Buffer.from(processResult.stdout.trim(),"base64");
 }
 export function credentialsDir(){
-  return path.join(process.env.LOCALAPPDATA||os.homedir(),"NexusOpenSource","v1.3.1","cloud");
+  return path.join(process.env.LOCALAPPDATA||os.homedir(),"NexusOpenSource","v1.3.4","cloud");
 }
 export function credentialPath(kind){
   if(!["admin","device"].includes(kind))throw new Error("Invalid credential kind");

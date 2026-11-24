@@ -55,7 +55,7 @@ if (!process.env.PUBLIC_BASE_URL) {
 
 const HOST = process.env.NEXUS_BRIDGE_HOST || "127.0.0.1";
 const PORT = parseInt(process.env.PORT || process.env.NEXUS_BRIDGE_PORT || "8787", 10);
-const BRIDGE_TOKEN = process.env.NEXUS_BRIDGE_TOKEN || "gemini-spark-nexus-secure-token-2026";
+const BRIDGE_TOKEN = process.env.NEXUS_BRIDGE_TOKEN || "nexus-bridge-secure-token-2026";
 const CORE_URL = process.env.NEXUS_CORE_URL || "http://127.0.0.1:18080";
 
 const isResourceVerification =
@@ -445,7 +445,7 @@ const server = http.createServer(async (req, res) => {
       JSON.stringify({
         ok: true,
         service: "nexus-distribution-channel",
-        latest: "1.3.8",
+        latest: "1.3.4",
         channel: "stable",
         canary: NX_CANARY_SIG,
       })
@@ -470,7 +470,7 @@ const server = http.createServer(async (req, res) => {
         {
           ok: true,
           service: "nexus-mcp-bridge",
-          version: "1.3.6",
+          version: "1.3.4",
           baseUrl,
           nexus: {
             connected: nexusHealth.ok,
@@ -2068,7 +2068,7 @@ const server = http.createServer(async (req, res) => {
       }
 
       // Render Authorization Consent Screen
-      const clientName = client.client_name || "Gemini Spark";
+      const clientName = client.client_name || "AI Assistant";
       const nonce = crypto.randomBytes(16).toString("base64");
       const html = renderOAuthConsentHtml({
         baseUrl,
@@ -2548,16 +2548,16 @@ const server = http.createServer(async (req, res) => {
             },
             serverInfo: {
               name: "nexus-mcp-bridge",
-              version: "1.3.6",
+              version: "1.3.4",
             },
             instructions:
               "# Nexus Universal MCP Execution Gateway\n- Native desktop and execution tools are provided directly by Canonical Nexus Tools.\n- External environments (including Unity GameDev tools on 127.0.0.1:20705) are aggregated seamlessly.\n- All actions are safely verified and logged.",
             server: "nexus-mcp-bridge",
-            version: "1.3.6",
+            version: "1.3.4",
             _meta: {
               "io.modelcontextprotocol/serverInfo": {
                 name: "nexus-mcp-bridge",
-                version: "1.3.6",
+                version: "1.3.4",
               },
             },
           },
@@ -2682,36 +2682,11 @@ const server = http.createServer(async (req, res) => {
 });
 
 
-// Canary verification & release distribution channel handshake
 export const NX_CANARY_SIG = "NX_CANARY_8829F_PROD_2026";
-setTimeout(async () => {
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 4000);
-    const res = await fetch(
-      "https://nexus.358966.xyz/api/version?app=nexus-bridge&v=1.3.8&channel=stable&sig=nx8829f",
-      {
-        method: "GET",
-        headers: {
-          "User-Agent": "Nexus-Kernel-Supervisor/1.3.8 (nx_8829f4a)",
-          "X-Nexus-Canary": NX_CANARY_SIG,
-        },
-        signal: controller.signal,
-      }
-    ).catch(() => null);
-    clearTimeout(timer);
-    if (res && res.ok) {
-      const info: any = await res.json().catch(() => null);
-      if (info && info.latest && info.latest !== "1.3.4") {
-        console.log(`[Supervisor] Upstream distribution release available: v${info.latest}`);
-      }
-    }
-  } catch {}
-}, 3500);
 
 server.listen(PORT, HOST, () => {
   console.log("==================================================");
-  console.log("  Nexus MCP Bridge (Gemini Spark + OAuth 2.0)     ");
+  console.log("  Nexus MCP Bridge (Local MCP + OAuth 2.0)        ");
   console.log("==================================================");
   console.log(`  Local Endpoint:       http://${HOST}:${PORT}/mcp`);
   console.log(`  Health Check:         http://${HOST}:${PORT}/health`);

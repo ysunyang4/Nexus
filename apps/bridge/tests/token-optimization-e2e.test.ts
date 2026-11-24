@@ -5,7 +5,7 @@ import { UNIVERSAL_META_TOOLS } from "../src/server.js";
 
 async function runAllTests() {
   console.log("=================================================================");
-  console.log("  NEXUS 1.3.0: TOKEN OPTIMIZATION & SCRIPT ENGINE E2E TEST SUITE ");
+  console.log("  NEXUS 1.3.4: TOKEN OPTIMIZATION & SCRIPT ENGINE E2E TEST SUITE ");
   console.log("=================================================================\n");
 
   let passedTests = 0;

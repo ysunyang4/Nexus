@@ -123,7 +123,7 @@ export const NexusAppsPage: React.FC = () => {
     JSON.stringify(
       {
         projectName: "Nexus Workspace",
-        version: "1.3.0",
+        version: "1.3.4",
         sandbox: { enabled: true, loopback: "127.0.0.1", port: 8787 },
         activeProviders: ["blender", "photoshop", "autocad", "playwright"],
       },
