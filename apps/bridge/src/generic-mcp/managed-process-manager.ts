@@ -189,6 +189,11 @@ export class ManagedProcessManager {
       "code_reasoning_server.py",
     ];
 
+    const cfFile = path.join(targetDir, "cloudflare_server.py");
+    if (fs.existsSync(cfFile)) {
+      try { fs.unlinkSync(cfFile); } catch {}
+    }
+
     for (const file of scriptFiles) {
       const dest = path.join(targetDir, file);
       for (const dir of candidateDirs) {
@@ -405,7 +410,7 @@ export class ManagedProcessManager {
         const list: ManagedMcpConfig[] = JSON.parse(raw);
         for (let item of list) {
           // Strictly drop obsolete or removed plugins
-          if (item.id === "crawl4ai" || item.id === "telegram-mcp" || item.id === "maya") {
+          if (item.id === "crawl4ai" || item.id === "telegram-mcp" || item.id === "maya" || item.id === "cloudflare-observability") {
             continue;
           }
           item = this.repairServiceConfig(item);

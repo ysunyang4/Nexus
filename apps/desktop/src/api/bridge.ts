@@ -69,6 +69,11 @@ class ApiBridge {
     await openExternalUrl(url);
   }
 
+  async openExternalUrl(url: string): Promise<void> {
+    const { openExternalUrl } = await import("./browser-helper.js");
+    await openExternalUrl(url);
+  }
+
   private parseInvokeError(err: any): Error {
     if (err instanceof Error && (err as any).code) {
       return err;

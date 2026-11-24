@@ -13,7 +13,7 @@ mcp = FastMCP("Wikipedia-Knowledge")
 
 USER_AGENT = "NexusKnowledgeBot/1.3 (https://nexus.ai; contact@nexus.ai)"
 
-@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=True)
+@mcp.tool()
 def search_wikipedia(query: str, limit: int = 5) -> str:
     """Search Wikipedia for articles matching the query. Returns titles and descriptions."""
     params = urllib.parse.urlencode({
@@ -42,7 +42,7 @@ def search_wikipedia(query: str, limit: int = 5) -> str:
     except Exception as e:
         return json.dumps({"error": str(e)}, ensure_ascii=False)
 
-@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=True)
+@mcp.tool()
 def get_wikipedia_summary(title: str) -> str:
     """Get the introductory summary of a specific Wikipedia article."""
     encoded_title = urllib.parse.quote(title.replace(" ", "_"))
@@ -60,7 +60,7 @@ def get_wikipedia_summary(title: str) -> str:
     except Exception as e:
         return json.dumps({"error": str(e)}, ensure_ascii=False)
 
-@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=True)
+@mcp.tool()
 def get_wikipedia_article(title: str) -> str:
     """Get full plaintext content of a Wikipedia article."""
     params = urllib.parse.urlencode({
@@ -82,7 +82,7 @@ def get_wikipedia_article(title: str) -> str:
     except Exception as e:
         return f"Error fetching article: {e}"
 
-@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=False, openWorldHint=True)
+@mcp.tool()
 def get_random_wikipedia_article() -> str:
     """Fetch a random Wikipedia article summary."""
     url = "https://en.wikipedia.org/api/rest_v1/page/random/summary"

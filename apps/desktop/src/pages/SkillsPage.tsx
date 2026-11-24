@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Sparkles,
-  ExternalLink,
   Search,
   RotateCw,
   AlertTriangle,
@@ -22,7 +21,6 @@ import type {
 } from "../types.js";
 import { useTranslation } from "../i18n/useTranslation.js";
 import { bridge } from "../api/bridge.js";
-import { openExternalUrl } from "../api/browser-helper.js";
 
 interface SkillsPageProps {
   uxMode: UserExperienceMode;
@@ -36,7 +34,6 @@ const toText = (val: any, fallback = "", lang = "zh-CN"): string => {
   if (typeof val === "string") return val;
   if (typeof val === "number" || typeof val === "boolean") return String(val);
   if (typeof val === "object") {
-    // If it's a localized object, e.g. { "zh-CN": "...", "en-US": "..." }
     const localized =
       val[lang] ||
       val["zh-CN"] ||
@@ -97,9 +94,6 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
   // Search & Navigation Filters
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<string>("all"); // "all", "warn", or source id
-
-  // Try-Trigger State
-  const [tryPrompt, setTryPrompt] = useState("");
 
   // External Sources State
   const [externalSources, setExternalSources] = useState<ExternalSkillSourceConfig[]>([]);
@@ -232,26 +226,6 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
     }
   };
 
-  // Dynamic Try-Trigger Hit Matching
-  const hitSkillIds = useMemo(() => {
-    const q = tryPrompt.trim().toLowerCase();
-    if (!q) return new Set<string>();
-
-    const hits = new Set<string>();
-    for (const s of skills) {
-      if (!s.enabled || s.isAvailable === false) continue;
-      const triggers = s.triggers || [];
-      const hasHit = triggers.some((t) => {
-        const str = safeFormatItem(t).toLowerCase();
-        return q.includes(str) || str.includes(q);
-      });
-      if (hasHit) {
-        hits.add(s.id);
-      }
-    }
-    return hits;
-  }, [tryPrompt, skills]);
-
   // Filter skills based on Active Nav Filter and Search
   const filteredSkills = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -266,7 +240,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
           if (s.isAvailable !== false && !s.readError) return false;
         } else if (activeFilter === "builtin") {
           if (s.source !== "builtin" && s.originAgent !== "gb") return false;
-        } else {
+        } else if (activeFilter !== "all") {
           // Match specific external source by ID or path
           const matchingSource = externalSources.find((src) => src.id === activeFilter);
           if (matchingSource) {
@@ -308,7 +282,6 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
         return true;
       })
       .sort((a, b) => {
-        // Meta-orchestrator skill is pinned at the very top!
         if (a.id === "nexus.meta-orchestrator") return -1;
         if (b.id === "nexus.meta-orchestrator") return 1;
         return 0;
@@ -342,8 +315,8 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
     <div className="flex-1 flex flex-col h-full min-h-0 bg-theme-base text-theme-primary font-sans select-none overflow-hidden">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-5 right-5 z-[80] max-w-sm p-3.5 rounded-xl shadow-xl bg-white dark:bg-theme-card border border-sky-500/30 text-xs flex items-start gap-2.5 animate-in slide-in-from-top-2 duration-200">
-          <Sparkles className="w-4 h-4 text-sky-500 shrink-0 mt-0.5" />
+        <div className="fixed top-5 right-5 z-[80] max-w-sm p-3.5 rounded-xl shadow-xl bg-theme-card border border-sky-500/30 text-xs flex items-start gap-2.5 animate-in slide-in-from-top-2 duration-200">
+          <Sparkles className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
             <div className="font-semibold text-theme-primary">
               {toastMessage.title}
@@ -356,7 +329,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
           </div>
           <button
             onClick={() => setToastMessage(null)}
-            className="text-slate-400 hover:text-slate-600 dark:hover:text-sky-300"
+            className="text-theme-muted hover:text-theme-primary"
           >
             ✕
           </button>
@@ -364,9 +337,9 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
       )}
 
       {/* Top Header Bar */}
-      <header className="flex items-center gap-3 px-6 py-3.5 border-b border-theme-subtle bg-white dark:bg-theme-card shrink-0">
+      <header className="flex items-center gap-3 px-6 py-3.5 border-b border-theme-subtle bg-theme-base/60 shrink-0">
         <div className="flex items-center gap-2 mr-2">
-          <Sparkles className="w-5 h-5 text-sky-500" />
+          <Sparkles className="w-5 h-5 text-sky-400" />
           <h1 className="text-base font-bold tracking-tight text-theme-primary">
             {tText("技能中心", "Skills Hub", "スキルハブ", "Skill-Zentrum")}
           </h1>
@@ -385,7 +358,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
               "スキル名、トリガー、ツールを検索...",
               "Nach Skill-Name, Triggern oder Tools suchen..."
             )}
-            className="w-full pl-9 pr-3 py-1.5 bg-theme-card dark:bg-theme-card border border-theme-subtle rounded-lg text-xs text-theme-primary placeholder-theme-muted focus:outline-none focus:border-sky-500"
+            className="w-full pl-9 pr-3 py-1.5 bg-theme-card border border-theme-subtle rounded-lg text-xs text-theme-primary placeholder-theme-muted focus:outline-none focus:border-sky-500"
           />
         </div>
 
@@ -394,9 +367,9 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
           <button
             type="button"
             onClick={() => setIsSourcesDrawerOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-theme-card dark:bg-theme-card-hover hover:bg-theme-card-hover dark:hover:bg-theme-card-hover text-theme-secondary border border-theme-subtle rounded-lg text-xs font-semibold transition cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-theme-card hover:bg-theme-card-hover text-theme-secondary border border-theme-subtle rounded-lg text-xs font-semibold transition cursor-pointer"
           >
-            <Layers className="w-3.5 h-3.5 text-sky-500" />
+            <Layers className="w-3.5 h-3.5 text-sky-400" />
             <span>
               {tText(
                 `挂载管理 ${enabledSourcesCount}/${externalSources.length}`,
@@ -412,7 +385,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
             type="button"
             onClick={handleRescan}
             disabled={reloading || loading}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-theme-card dark:bg-theme-card-hover hover:bg-theme-card-hover dark:hover:bg-theme-card-hover text-theme-secondary border border-theme-subtle rounded-lg text-xs font-semibold transition disabled:opacity-50 cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-theme-card hover:bg-theme-card-hover text-theme-secondary border border-theme-subtle rounded-lg text-xs font-semibold transition disabled:opacity-50 cursor-pointer"
           >
             <RotateCw className={`w-3.5 h-3.5 ${reloading ? "animate-spin" : ""}`} />
             <span>{tText("重新扫描", "Rescan", "再スキャン", "Neu scannen")}</span>
@@ -433,15 +406,15 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
       {/* Main Workspace Body */}
       <div className="flex-1 flex min-h-0 overflow-hidden">
         {/* Left Nav Filter Sidebar */}
-        <nav className="w-56 border-r border-theme-subtle bg-white dark:bg-theme-sidebar p-3 space-y-4 shrink-0 overflow-y-auto">
+        <nav className="w-56 border-r border-theme-subtle bg-theme-sidebar p-3 space-y-4 shrink-0 overflow-y-auto">
           <div className="space-y-1">
             <button
               type="button"
               onClick={() => setActiveFilter("all")}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition cursor-pointer ${
                 activeFilter === "all"
-                  ? "bg-sky-500/15 text-sky-700 dark:text-sky-300 font-semibold"
-                  : "text-theme-secondary hover:bg-theme-card dark:hover:bg-theme-card"
+                  ? "bg-sky-500/15 text-sky-400 font-semibold border-l-2 border-sky-400"
+                  : "text-theme-secondary hover:bg-theme-card hover:text-theme-primary"
               }`}
             >
               <span>{tText("全部技能", "All Skills", "すべてのスキル", "Alle Skills")}</span>
@@ -463,8 +436,8 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                   onClick={() => setActiveFilter(source.id)}
                   className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
                     activeFilter === source.id
-                      ? "bg-sky-500/15 text-sky-700 dark:text-sky-300 font-semibold"
-                      : "text-theme-secondary hover:bg-theme-card dark:hover:bg-theme-card"
+                      ? "bg-sky-500/15 text-sky-400 font-semibold border-l-2 border-sky-400"
+                      : "text-theme-secondary hover:bg-theme-card hover:text-theme-primary"
                   }`}
                 >
                   <span className="truncate pr-1">{source.name}</span>
@@ -487,8 +460,8 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                 onClick={() => setActiveFilter("warn")}
                 className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
                   activeFilter === "warn"
-                    ? "bg-rose-500/15 text-rose-700 dark:text-rose-300 font-semibold"
-                    : "text-theme-secondary hover:bg-theme-card dark:hover:bg-theme-card"
+                    ? "bg-rose-500/15 text-rose-400 font-semibold border-l-2 border-rose-400"
+                    : "text-theme-secondary hover:bg-theme-card hover:text-theme-primary"
                 }`}
               >
                 <div className="flex items-center gap-1.5">
@@ -503,64 +476,13 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
 
         {/* Center Main Content Area */}
         <main className="flex-1 flex flex-col min-w-0 min-h-0 overflow-y-auto p-5 space-y-4">
-          {/* Try-Trigger Interactive Box */}
-          <div className="p-3.5 rounded-xl border border-dashed border-theme-subtle bg-white dark:bg-theme-card space-y-1.5 shadow-2xs">
-            <input
-              type="text"
-              value={tryPrompt}
-              onChange={(e) => setTryPrompt(e.target.value)}
-              placeholder={tText(
-                "试触发：输入自然语言指令，看看哪些技能会被精准匹配",
-                "Try Trigger: enter a task prompt to see which skills will auto-match",
-                "トリガー試行: 自然言語を入力してマッチするスキルを確認",
-                "Trigger-Test: Geben Sie eine Anweisung ein, um passende Skills zu sehen"
-              )}
-              className="w-full bg-transparent border-none text-xs font-medium text-theme-primary placeholder-theme-muted focus:outline-none"
-            />
-            <div className="text-[11px] text-theme-secondary">
-              {tryPrompt.trim() ? (
-                hitSkillIds.size > 0 ? (
-                  <span>
-                    {tText("会自动选中 ", "Will auto-match ", "自動マッチ: ", "Wird automatisch übereinstimmen: ")}
-                    <b className="text-sky-600 dark:text-sky-400 font-semibold">
-                      {hitSkillIds.size}
-                    </b>
-                    {tText(" 个技能：", " skills: ", " 個のスキル: ", " Skills: ")}
-                    <span className="font-mono text-sky-700 dark:text-sky-300 font-semibold">
-                      {Array.from(hitSkillIds).slice(0, 5).join(", ")}
-                      {hitSkillIds.size > 5 ? "..." : ""}
-                    </span>
-                  </span>
-                ) : (
-                  <span className="text-amber-600 dark:text-amber-400">
-                    {tText(
-                      "未匹配到任何技能。可为技能补充触发词。",
-                      "No skills matched. You can add trigger keywords to relevant skills.",
-                      "マッチするスキルがありません。トリガーキーワードを追加できます。",
-                      "Keine Skills gefunden. Fügen Sie Trigger-Keywords hinzu."
-                    )}
-                  </span>
-                )
-              ) : (
-                <span>
-                  {tText(
-                    "例如：帮我调一下 bug、分析项目结构、运行单元测试",
-                    "e.g.: Help me debug this bug, inspect project structure, or run tests",
-                    "例: バグを修正して、プロジェクト構造を分析、テストを実行",
-                    "z. B.: Fehler beheben, Projektstruktur analysieren, Tests ausführen"
-                  )}
-                </span>
-              )}
-            </div>
-          </div>
-
           {/* Error Message */}
           {error && (
-            <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-xs flex items-center justify-between">
+            <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center justify-between">
               <span>{toText(error)}</span>
               <button
                 onClick={() => setError(null)}
-                className="text-xs text-rose-500 hover:underline cursor-pointer"
+                className="text-xs text-rose-400 hover:underline cursor-pointer"
               >
                 ✕
               </button>
@@ -570,13 +492,13 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
           {/* Loading State */}
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 text-theme-muted space-y-2">
-              <Loader2 className="w-6 h-6 animate-spin text-sky-500" />
+              <Loader2 className="w-6 h-6 animate-spin text-sky-400" />
               <div className="text-xs">{tText("正在加载技能列表...", "Loading skills...", "スキルを読み込み中...", "Skills werden geladen...")}</div>
             </div>
           ) : filteredSkills.length === 0 ? (
-            /* Pure Blank Initial Empty State */
-            <div className="flex-1 flex flex-col items-center justify-center p-8 max-w-xl mx-auto my-auto text-center border border-dashed border-theme-subtle rounded-2xl bg-theme-card/60 space-y-5">
-              <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-500 shadow-2xs">
+            /* Clean Empty State without promotion or spam */
+            <div className="flex-1 flex flex-col items-center justify-center p-10 max-w-lg mx-auto my-auto text-center border border-dashed border-theme-subtle rounded-2xl bg-theme-card/40 space-y-4">
+              <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 shadow-2xs">
                 <FolderOpen className="w-6 h-6" />
               </div>
               <div className="space-y-1.5">
@@ -585,39 +507,15 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                 </h3>
                 <p className="text-xs text-theme-secondary leading-relaxed">
                   {tText(
-                    "Nexus 技能中心采用零拷贝热插拔架构，支持用户完全自由自定义技能流程，随挂随用。",
-                    "Nexus Skills Hub adopts a zero-copy hot-pluggable architecture, empowering developers to customize automation workflows freely.",
-                    "Nexusスキルハブはゼロコピーのホットプラグ対応で、自由にワークフローをカスタマイズできます。",
-                    "Nexus Skills Hub verwendet eine Hot-Plug-Architektur ohne Datenverdopplung."
+                    "Nexus 技能中心采用轻量挂载架构，支持按需读取本地技能目录（包含 SKILL.md 规范），随挂随用。",
+                    "Nexus Skills Hub adopts a lightweight architecture, supporting on-demand local skill directories with standard SKILL.md specs.",
+                    "Nexusスキルハブは軽量なマウント構造を採用し、ローカルのSKILL.mdディレクトリを即時読み込みます。",
+                    "Nexus Skills Hub unterstützt das Mounten lokaler Skill-Verzeichnisse mit SKILL.md-Spezifikationen."
                   )}
                 </p>
               </div>
 
-              {/* Author Community & Ecosystem Callout */}
-              <div className="w-full p-4 rounded-xl border border-sky-500/20 bg-sky-500/5 text-left space-y-2">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-sky-600 dark:text-sky-400">
-                  <Sparkles className="w-4 h-4 shrink-0" />
-                  <span>{tText("获取专属官方技能与扩展", "Get Exclusive Skills & MCPs", "公式スキルと拡張機能を入手", "Exklusive Skills & MCPs erhalten")}</span>
-                </div>
-                <p className="text-[11px] text-theme-secondary leading-relaxed">
-                  {tText(
-                    "如果你想让 Nexus 变得更加强大，可以去关注我的 GitHub 账号并下载我为 Nexus 制作的专属 MCP 和 Skill，并且这些 MCP 和 Skill 我也是长期维护的。如果我的项目对你有帮助，请帮我点一颗 Star ⭐",
-                    "To make Nexus even more powerful, follow my GitHub and download my exclusive, actively-maintained MCPs and Skills. If you find this project helpful, please give it a Star ⭐",
-                    "Nexusをより強力にするために、私のGitHubをフォローして専属のMCPとSkillを入手してください。継続的にメンテナンスを行っています。役に立ったらStarをお願いします⭐",
-                    "Folgen Sie meinem GitHub, um exklusive, gepflegte MCPs und Skills herunterzuladen. Ein Star ⭐ auf GitHub freut uns sehr!"
-                  )}
-                </p>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
-                <button
-                  type="button"
-                  onClick={() => void openExternalUrl("https://github.com/ysunyang4")}
-                  className="flex items-center gap-1.5 px-3.5 py-2 bg-theme-base hover:bg-theme-card-hover border border-theme-subtle text-theme-primary rounded-xl text-xs font-medium transition cursor-pointer"
-                >
-                  <ExternalLink className="w-3.5 h-3.5 text-sky-500" />
-                  <span>{tText("前往 GitHub 关注并获取", "Visit GitHub for Skills", "GitHubでスキルを入手", "GitHub besuchen")}</span>
-                </button>
+              <div className="pt-2">
                 <button
                   type="button"
                   onClick={() => setIsSourcesDrawerOpen(true)}
@@ -630,7 +528,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
             </div>
           ) : (
             /* Skills List */
-            <div className="border border-theme-subtle rounded-xl divide-y divide-slate-200 dark:divide-emerald-500/10 overflow-hidden bg-white dark:bg-theme-card">
+            <div className="border border-theme-subtle rounded-xl divide-y divide-theme-subtle overflow-hidden bg-theme-card">
               {filteredSkills.map((skill) => {
                 const displayName = toText(
                   typeof skill.name === "string"
@@ -654,8 +552,6 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                   language
                 );
 
-                const isHit = hitSkillIds.size > 0 && hitSkillIds.has(skill.id);
-                const isDimmed = hitSkillIds.size > 0 && !hitSkillIds.has(skill.id);
                 const hasReadError = skill.isAvailable === false || Boolean(skill.readError);
                 const isManualOnly = (skill.triggers || []).length === 0;
 
@@ -663,15 +559,9 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                   <div
                     key={skill.id}
                     onClick={() => setSelectedSkill(skill)}
-                    className={`flex items-center gap-3.5 px-4 py-3 cursor-pointer transition ${
-                      isHit
-                        ? "bg-sky-500/15 dark:bg-theme-card"
-                        : isDimmed
-                        ? "opacity-35"
-                        : "hover:bg-sky-500/5 dark:hover:bg-theme-card"
-                    }`}
+                    className="flex items-center gap-3.5 px-4 py-3 cursor-pointer transition hover:bg-theme-card-hover"
                   >
-                    {/* High-Contrast Beautiful Toggle Switch */}
+                    {/* Toggle Switch */}
                     <button
                       type="button"
                       role="switch"
@@ -680,8 +570,8 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                       title={skill.enabled ? tText("已启用", "Enabled", "有効", "Aktiviert") : tText("已禁用", "Disabled", "無効", "Deaktiviert")}
                       className={`relative inline-flex items-center h-5 w-9 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out border-2 border-transparent focus:outline-none ${
                         skill.enabled
-                          ? "bg-sky-600 dark:bg-sky-500"
-                          : "bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600"
+                          ? "bg-sky-600"
+                          : "bg-zinc-700 hover:bg-zinc-600"
                       }`}
                     >
                       <span
@@ -698,9 +588,9 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                           {displayName}
                         </span>
                         {skill.id === "nexus.meta-orchestrator" && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 shrink-0 shadow-2xs">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 shrink-0 shadow-2xs">
                             <Sparkles className="w-3 h-3 text-amber-500" />
-                            {tText("四元工具调度中枢", "Core Meta-Orchestrator", "メタオーケストレーター中核", "Meta-Orchestrator Kern")}
+                            {tText("元工具调度中枢", "Meta-Orchestrator", "メタオーケストレーター", "Meta-Orchestrator")}
                           </span>
                         )}
                         <span className="font-mono text-[11px] text-theme-muted truncate">
@@ -715,13 +605,13 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                     {/* Right Flags & Risk Dot */}
                     <div className="flex items-center gap-2 shrink-0">
                       {hasReadError && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded border border-rose-500/40 bg-rose-500/10 text-rose-600 dark:text-rose-400 font-medium">
+                        <span className="text-[10px] px-1.5 py-0.5 rounded border border-rose-500/40 bg-rose-500/10 text-rose-400 font-medium">
                           {tText("读取异常", "Read Error", "読み込みエラー", "Lesefehler")}
                         </span>
                       )}
 
                       {isManualOnly && !hasReadError && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded border border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium">
+                        <span className="text-[10px] px-1.5 py-0.5 rounded border border-amber-500/30 bg-amber-500/10 text-amber-400 font-medium">
                           {tText("仅手动", "Manual Only", "手動のみ", "Nur manuell")}
                         </span>
                       )}
@@ -757,14 +647,14 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
       {/* --- Right Slide-Over Detail Drawer --- */}
       {selectedSkill && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-xs cursor-pointer"
+          className="fixed inset-0 z-50 flex items-center justify-end bg-black/50 backdrop-blur-xs cursor-pointer"
           onClick={(e) => {
             if (e.target === e.currentTarget) setSelectedSkill(null);
           }}
         >
           <aside
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md h-full bg-white dark:bg-theme-card border-l border-theme-subtle shadow-2xl p-6 overflow-y-auto space-y-5 animate-in slide-in-from-right duration-200 cursor-default"
+            className="w-full max-w-md h-full bg-theme-card border-l border-theme-subtle shadow-2xl p-6 overflow-y-auto space-y-5 animate-in slide-in-from-right duration-200 cursor-default"
           >
             <div className="flex items-start justify-between">
               <div>
@@ -784,7 +674,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
               <button
                 type="button"
                 onClick={() => setSelectedSkill(null)}
-                className="p-1 rounded-lg hover:bg-theme-card dark:hover:bg-theme-card text-slate-400 dark:text-sky-400/70 cursor-pointer"
+                className="p-1 rounded-lg hover:bg-theme-card-hover text-theme-muted hover:text-theme-primary cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -792,7 +682,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
 
             {/* Read Error Callout */}
             {selectedSkill.readError && (
-              <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-xs space-y-1">
+              <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs space-y-1">
                 <div className="font-semibold flex items-center gap-1.5">
                   <AlertTriangle className="w-3.5 h-3.5 text-rose-500" />
                   <span>{tText("读取异常说明", "Read Error", "読み込みエラーの説明", "Erklärung zum Lesefehler")}</span>
@@ -824,16 +714,16 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
 
             {/* Meta Tags */}
             <div className="flex flex-wrap gap-2 text-xs">
-              <span className="px-2 py-0.5 rounded-full bg-theme-card dark:bg-theme-card text-slate-600 dark:text-sky-300 border border-theme-subtle">
+              <span className="px-2 py-0.5 rounded-full bg-theme-base text-theme-secondary border border-theme-subtle">
                 {selectedSkill.source === "external" ? tText("外部挂载", "Mounted", "マウント済み", "Gemountet") : tText("内置", "Built-in", "内蔵", "Integriert")}
               </span>
               <span
                 className={`px-2 py-0.5 rounded-full border ${
                   selectedSkill.risk === "high"
-                    ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30"
+                    ? "bg-rose-500/10 text-rose-400 border-rose-500/30"
                     : selectedSkill.risk === "medium"
-                    ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30"
-                    : "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30"
+                    ? "bg-amber-500/10 text-amber-400 border-amber-500/30"
+                    : "bg-sky-500/10 text-sky-400 border-sky-500/30"
                 }`}
               >
                 {selectedSkill.risk === "high"
@@ -854,7 +744,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                   selectedSkill.triggers.map((t, idx) => (
                     <span
                       key={idx}
-                      className="text-xs px-2 py-1 rounded bg-theme-card dark:bg-theme-card-hover text-theme-secondary border border-theme-subtle"
+                      className="text-xs px-2 py-1 rounded bg-theme-base text-theme-secondary border border-theme-subtle"
                     >
                       {safeFormatItem(t)}
                     </span>
@@ -893,9 +783,9 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                   selectedSkill.tools.map((tool, idx) => (
                     <span
                       key={idx}
-                      className="text-xs font-mono px-2 py-1 rounded bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/20 flex items-center gap-1"
+                      className="text-xs font-mono px-2 py-1 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center gap-1"
                     >
-                      <Terminal className="w-3 h-3 text-sky-500" />
+                      <Terminal className="w-3 h-3 text-sky-400" />
                       <span>{safeFormatItem(tool)}</span>
                     </span>
                   ))
@@ -912,7 +802,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
               <div className="text-[11px] font-semibold text-theme-muted">
                 {tText("物理路径", "Filesystem Path", "ファイルパス", "Dateisystempfad")}
               </div>
-              <div className="text-[11px] font-mono text-slate-600 dark:text-sky-400/80 break-all bg-slate-50 dark:bg-theme-card p-2 rounded border border-slate-200 dark:border-sky-500/10">
+              <div className="text-[11px] font-mono text-theme-secondary break-all bg-theme-base/60 p-2 rounded border border-theme-subtle">
                 {toText(selectedSkill.sourcePath, "N/A")}
               </div>
             </div>
@@ -930,11 +820,11 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
         >
           <aside
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md h-full bg-white dark:bg-theme-card border-l border-theme-subtle shadow-2xl p-6 overflow-y-auto space-y-5 animate-in slide-in-from-right duration-200 cursor-default"
+            className="w-full max-w-md h-full bg-theme-card border-l border-theme-subtle shadow-2xl p-6 overflow-y-auto space-y-5 animate-in slide-in-from-right duration-200 cursor-default"
           >
             <div className="flex items-center justify-between border-b border-theme-subtle pb-4">
               <div className="flex items-center gap-2">
-                <Layers className="w-5 h-5 text-sky-500" />
+                <Layers className="w-5 h-5 text-sky-400" />
                 <h2 className="text-sm font-bold text-theme-primary">
                   {tText("挂载管理", "Sources Management", "ソース管理", "Quellenverwaltung")}
                 </h2>
@@ -942,7 +832,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
               <button
                 type="button"
                 onClick={() => setIsSourcesDrawerOpen(false)}
-                className="p-1 rounded-lg hover:bg-theme-card dark:hover:bg-theme-card text-slate-400 dark:text-sky-400/70 cursor-pointer"
+                className="p-1 rounded-lg hover:bg-theme-card-hover text-theme-muted hover:text-theme-primary cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -950,15 +840,15 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
 
             <p className="text-xs text-theme-secondary leading-relaxed">
               {tText(
-                "挂载的目录只读取，不复制。随时可以通过垃圾桶图标解除挂载并删除。",
-                "Mounted skill directories are read with zero file duplication. You can unmount and delete any path anytime.",
-                "マウントされたディレクトリは読み取り専用です。いつでもゴミ箱アイコンから解除できます。",
+                "挂载的目录只读取，不复制。随时可以通过垃圾桶图标解除挂载。",
+                "Mounted skill directories are read with zero file duplication. You can unmount anytime.",
+                "マウントされたディレクトリは読み取り専用です。いつでも解除できます。",
                 "Gemountete Verzeichnisse sind schreibgeschützt. Sie können jederzeit entfernt werden."
               )}
             </p>
 
-            {/* Mount Input Form (At TOP as requested) */}
-            <div className="p-3.5 rounded-xl border border-theme-subtle bg-slate-50 dark:bg-theme-card space-y-2">
+            {/* Mount Input Form */}
+            <div className="p-3.5 rounded-xl border border-theme-subtle bg-theme-base/60 space-y-2">
               <h3 className="text-xs font-semibold text-theme-primary">
                 {tText("挂载本地外部目录", "Mount Local Skill Directory", "ローカル外部ディレクトリをマウント", "Lokales Skill-Verzeichnis mounten")}
               </h3>
@@ -973,7 +863,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                     "絶対パスを入力 (例: D:/my-skills)",
                     "Absoluten Pfad eingeben, z. B. D:/my-skills"
                   )}
-                  className="flex-1 px-3 py-1.5 bg-white dark:bg-theme-card border border-theme-subtle rounded-lg text-xs font-mono text-theme-primary placeholder-theme-muted focus:outline-none focus:border-sky-500"
+                  className="flex-1 px-3 py-1.5 bg-theme-base border border-theme-subtle rounded-lg text-xs font-mono text-theme-primary placeholder-theme-muted focus:outline-none focus:border-sky-500"
                 />
                 <button
                   type="button"
@@ -997,14 +887,14 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                 {tText("当前已挂载目录清单", "Currently Mounted Sources", "現在マウントされているソース", "Aktuell gemountete Quellen")}
               </h4>
               {externalSources.length === 0 ? (
-                <div className="p-6 text-center rounded-xl border border-dashed border-theme-subtle bg-slate-50 dark:bg-theme-card text-xs text-theme-muted">
+                <div className="p-6 text-center rounded-xl border border-dashed border-theme-subtle bg-theme-base/30 text-xs text-theme-muted">
                   {tText("当前未挂载任何外部目录", "No external directories mounted yet", "現在外部ディレクトリはマウントされていません", "Noch keine externen Verzeichnisse gemountet")}
                 </div>
               ) : (
                 externalSources.map((src) => (
                   <div
                     key={src.id}
-                    className="p-3 rounded-xl border border-theme-subtle bg-slate-50 dark:bg-theme-card space-y-1.5"
+                    className="p-3 rounded-xl border border-theme-subtle bg-theme-base/60 space-y-1.5"
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-theme-primary truncate pr-2">
@@ -1012,17 +902,17 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                       </span>
 
                       <div className="flex items-center gap-2">
-                        {/* Delete button (All external paths can be removed!) */}
+                        {/* Delete button */}
                         <button
                           type="button"
                           onClick={(e) => handleRemoveSource(src.id, e)}
                           title={tText("删除/解绑此路径", "Delete / Unmount this path", "このパスを削除/マウント解除", "Diesen Pfad löschen / unmounten")}
-                          className="p-1 rounded hover:bg-rose-500/20 text-rose-500 transition cursor-pointer"
+                          className="p-1 rounded hover:bg-rose-500/20 text-rose-400 transition cursor-pointer"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
 
-                        {/* High-Contrast Beautiful Toggle Switch */}
+                        {/* Toggle Switch */}
                         <button
                           type="button"
                           role="switch"
@@ -1031,8 +921,8 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                           title={src.enabled ? tText("已启用", "Enabled", "有効", "Aktiviert") : tText("已禁用", "Disabled", "無効", "Deaktiviert")}
                           className={`relative inline-flex items-center h-5 w-9 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out border-2 border-transparent focus:outline-none ${
                             src.enabled
-                              ? "bg-sky-600 dark:bg-sky-500"
-                              : "bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600"
+                              ? "bg-sky-600"
+                              : "bg-zinc-700 hover:bg-zinc-600"
                           }`}
                         >
                           <span
@@ -1044,7 +934,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                       </div>
                     </div>
 
-                    <div className="font-mono text-[11px] text-slate-500 dark:text-sky-500/60 break-all">
+                    <div className="font-mono text-[11px] text-theme-muted break-all">
                       {toText(src.path)}
                     </div>
                   </div>

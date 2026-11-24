@@ -33,6 +33,7 @@ import {
   Mail,
 } from "lucide-react";
 import { bridge, type TunnelStatusDto } from "../api/bridge.js";
+import { openExternalUrl } from "../api/browser-helper.js";
 import { useTranslation } from "../i18n/useTranslation.js";
 import { useTheme, type ThemeMode } from "../theme/ThemeContext.js";
 import {
@@ -95,6 +96,7 @@ interface SettingsPageProps {
   onOpenOnboarding?: () => void;
   onOpenSponsorModal?: () => void;
   initialTab?: SettingsTab;
+  aboutNavTrigger?: number;
 }
 
 export type SettingsRoute =
@@ -132,6 +134,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   onOpenOnboarding: _onOpenOnboarding,
   onOpenSponsorModal: _onOpenSponsorModal,
   initialTab,
+  aboutNavTrigger,
 }) => {
   const { t, language, setLanguage, tText } = useTranslation();
   const isZh = language === "zh-CN";
@@ -145,6 +148,22 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
     }
   }, [initialTab]);
 
+  useEffect(() => {
+    if (aboutNavTrigger) {
+      setRoute({ page: "about" });
+    }
+  }, [aboutNavTrigger]);
+
+  useEffect(() => {
+    const handleJumpToAbout = () => {
+      setRoute({ page: "about" });
+    };
+    window.addEventListener("nexus:navigate-about", handleJumpToAbout);
+    return () => {
+      window.removeEventListener("nexus:navigate-about", handleJumpToAbout);
+    };
+  }, []);
+
   const [computerSubPage, setComputerSubPage] = useState<"desktop" | "files" | "applications" | "browser">("desktop");
   const [executionSubPage, setExecutionSubPage] = useState<"pipeline" | "ledger" | "runtime">("pipeline");
   const [mcpSubPage, setMcpSubPage] = useState<"servers" | "tools" | "registry" | "managed">("servers");
@@ -156,11 +175,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
   const handleOpenExternalUrl = async (url: string) => {
     try {
-      if ((bridge as any).openExternalUrl) {
-        await (bridge as any).openExternalUrl(url);
-      } else {
-        window.open(url, "_blank");
-      }
+      await openExternalUrl(url);
     } catch {
       window.open(url, "_blank");
     }
@@ -3046,7 +3061,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
                   onClick={() => handleOpenExternalUrl("https://github.com/ysunyang4")}
@@ -3069,7 +3084,37 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
                 <button
                   type="button"
-                  onClick={() => handleOpenExternalUrl("mailto:ysunyang979@gmail.com")}
+                  onClick={() => handleOpenExternalUrl("https://x.com/yngstein")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover text-theme-primary text-xs font-medium transition cursor-pointer"
+                >
+                  <span className="font-bold text-xs">𝕏</span>
+                  <span>@yngstein</span>
+                  <ExternalLink className="w-3 h-3 text-theme-muted" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenExternalUrl("https://linux.do/u/yang_sunny/summary")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover text-theme-primary text-xs font-medium transition cursor-pointer"
+                >
+                  <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                  <span>LINUX DO</span>
+                  <ExternalLink className="w-3 h-3 text-theme-muted" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenExternalUrl("https://www.reddit.com/user/OutrageousRabbit3296")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover text-theme-primary text-xs font-medium transition cursor-pointer"
+                >
+                  <MessageSquare className="w-3.5 h-3.5 text-orange-500" />
+                  <span>Reddit</span>
+                  <ExternalLink className="w-3 h-3 text-theme-muted" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenExternalUrl("mailto:ysunyang4@gmail.com")}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover text-theme-primary text-xs font-medium transition cursor-pointer"
                 >
                   <Mail className="w-3.5 h-3.5 text-amber-500" />
@@ -3130,7 +3175,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
             </div>
           </div>
 
-          {/* Section 5: Support & Sponsorship (Single Afdian Link) */}
+          {/* Section 5: Support & Sponsorship */}
           <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs shadow-sm">
             <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
               <Heart className="w-4 h-4 text-rose-500" />
@@ -3138,15 +3183,36 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
             </div>
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-xl bg-rose-500/5 border border-rose-500/20">
-              <div className="space-y-1">
+              <div className="space-y-1.5 max-w-xl">
                 <div className="font-bold text-xs text-theme-primary">
-                  {isZh ? "支持 Nexus 持续开源演进" : "Support Nexus Open Source Development"}
+                  {tText("支持 Nexus 持续开源演进", "Support Nexus Open Source Development")}
                 </div>
                 <p className="text-[11px] text-theme-secondary leading-relaxed">
-                  {isZh
-                    ? "Nexus 是完全免费的开源项目。如果您觉得 Nexus 提升了您的工作效率，欢迎通过爱发电赞助作者一杯咖啡，支持生态持续发展！"
-                    : "Nexus is completely free and open source. If Nexus boosts your productivity, feel free to sponsor via Afdian to support continuous maintenance."}
+                  {tText(
+                    "Nexus 是完全免费的开源项目。你的支持，让它保持免费并持续维护。",
+                    "Nexus is free and open source. Your support keeps it maintained."
+                  )}
                 </p>
+                <div className="text-[11px] text-theme-muted leading-relaxed flex flex-wrap items-center gap-1">
+                  <span>
+                    {tText(
+                      "其他赞助方式（微信 / 支付宝 / USDT）请见",
+                      "More ways to sponsor (WeChat / Alipay / USDT): see the"
+                    )}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleOpenExternalUrl(
+                        "https://github.com/ysunyang4/Nexus#supported-contribution-channels"
+                      )
+                    }
+                    className="inline-flex items-center gap-0.5 text-sky-500 hover:text-sky-400 underline underline-offset-2 transition cursor-pointer font-medium"
+                  >
+                    <span>README</span>
+                    <ExternalLink className="w-2.5 h-2.5 inline" />
+                  </button>
+                </div>
               </div>
 
               <button
@@ -3155,7 +3221,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 transition shrink-0 cursor-pointer"
               >
                 <Heart className="w-3.5 h-3.5" />
-                <span>{isZh ? "前往爱发电赞助" : "Sponsor on Afdian"}</span>
+                <span>{tText("前往爱发电赞助", "Sponsor on Afdian")}</span>
                 <ExternalLink className="w-3 h-3" />
               </button>
             </div>

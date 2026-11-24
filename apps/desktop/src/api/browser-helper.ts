@@ -18,7 +18,7 @@ export async function openExternalUrl(url: string): Promise<void> {
     console.warn("[browser-helper] Tauri desktop_open_url invocation note:", tauriErr);
   }
 
-  // 2. Try Bridge / Server system browser open endpoint
+  // 2. Try Bridge system browser open endpoint
   try {
     const baseUrl = bridge.getBaseUrl() || "http://127.0.0.1:8787";
     const res = await fetch(`${baseUrl}/api/browser/open-system`, {
@@ -29,9 +29,9 @@ export async function openExternalUrl(url: string): Promise<void> {
     if (res.ok) return;
   } catch {}
 
-  // 3. Try Local Server management endpoint fallback
+  // 3. Try Local Server system browser open endpoint fallback
   try {
-    const res = await fetch("http://127.0.0.1:18080/api/browser/open", {
+    const res = await fetch("http://127.0.0.1:18080/api/browser/open-system", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url }),

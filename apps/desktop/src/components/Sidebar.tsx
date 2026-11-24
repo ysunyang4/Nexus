@@ -347,6 +347,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               } else if (onOpenSponsorModal) {
                 onOpenSponsorModal();
               }
+              window.dispatchEvent(new CustomEvent("nexus:navigate-about"));
             }}
             title={tText(
               "关于 Nexus",

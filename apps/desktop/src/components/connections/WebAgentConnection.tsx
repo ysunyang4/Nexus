@@ -16,6 +16,7 @@ import {
   Lock,
 } from "lucide-react";
 import { bridge, type TunnelStatusDto } from "../../api/bridge.js";
+import { openExternalUrl } from "../../api/browser-helper.js";
 import { useTranslation } from "../../i18n/useTranslation.js";
 
 interface WebAgentConnectionProps {
@@ -78,11 +79,7 @@ export const WebAgentConnection: React.FC<WebAgentConnectionProps> = ({
   const handleOpenBlogTutorial = async () => {
     const url = "https://blog.ycu.de5.net/";
     try {
-      if ((bridge as any).openExternalUrl) {
-        await (bridge as any).openExternalUrl(url);
-      } else {
-        window.open(url, "_blank");
-      }
+      await openExternalUrl(url);
     } catch {
       window.open(url, "_blank");
     }

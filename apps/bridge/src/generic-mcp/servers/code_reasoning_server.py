@@ -11,7 +11,7 @@ from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("Code-Reasoning")
 
-@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=False)
+@mcp.tool()
 def analyze_ast_structure(code: str, language: str = "python") -> str:
     """Analyze Abstract Syntax Tree (AST) of code snippet, extracting classes, functions, and imports."""
     if language.lower() == "python":
@@ -43,7 +43,7 @@ def analyze_ast_structure(code: str, language: str = "python") -> str:
             "line_count": len(code.splitlines())
         }, ensure_ascii=False, indent=2)
 
-@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=False)
+@mcp.tool()
 def inspect_code_complexity(code: str) -> str:
     """Calculate lines of code (LOC), branch depth, and estimated cyclomatic complexity."""
     lines = code.splitlines()
@@ -58,7 +58,7 @@ def inspect_code_complexity(code: str) -> str:
         "rating": status
     }, ensure_ascii=False, indent=2)
 
-@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=False)
+@mcp.tool()
 def trace_execution_flow(function_name: str, code: str) -> str:
     """Trace function call relationships and extract control flow branches."""
     calls = re.findall(rf'\b{re.escape(function_name)}\b\s*\(', code)
@@ -73,7 +73,7 @@ def trace_execution_flow(function_name: str, code: str) -> str:
         "downstream_invocations": internal_calls[:15]
     }, ensure_ascii=False, indent=2)
 
-@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=False)
+@mcp.tool()
 def detect_code_smells(code: str) -> str:
     """Scan code snippet for common smells (deep indentation, long lines, empty excepts)."""
     smells = []
@@ -90,7 +90,7 @@ def detect_code_smells(code: str) -> str:
         "issues": smells[:20]
     }, ensure_ascii=False, indent=2)
 
-@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=False)
+@mcp.tool()
 def generate_refactoring_plan(code: str, goal: str = "readability") -> str:
     """Generate structured step-by-step refactoring guidelines for targeted code."""
     loc = len(code.splitlines())

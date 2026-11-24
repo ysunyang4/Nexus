@@ -103,6 +103,14 @@ export const App: React.FC = () => {
   const [isFullControlModalOpen, setIsFullControlModalOpen] = useState(false);
   const [connections, setConnections] = useState<AIConnectionDto[]>([]);
   const [settingsInitialTab, setSettingsInitialTab] = useState<any>("general");
+  const [aboutNavTrigger, setAboutNavTrigger] = useState(0);
+
+  const handleOpenAbout = useCallback(() => {
+    setSettingsInitialTab("about");
+    setCurrentPage("settings");
+    setAboutNavTrigger(Date.now());
+    window.dispatchEvent(new CustomEvent("nexus:navigate-about"));
+  }, []);
 
   // Startup Readiness State
   const [isStartupComplete, setIsStartupComplete] = useState(false);
@@ -478,22 +486,10 @@ export const App: React.FC = () => {
         serverStatus={serverStatus}
         runnersCount={serverStatus?.runners_connected ?? 0}
         uxMode={uxMode}
-        onOpenAbout={() => {
-          setSettingsInitialTab("about");
-          setCurrentPage("settings");
-        }}
-        onOpenSponsorModal={() => {
-          setSettingsInitialTab("about");
-          setCurrentPage("settings");
-        }}
-        onOpenCommunityModal={() => {
-          setSettingsInitialTab("about");
-          setCurrentPage("settings");
-        }}
-        onOpenContactModal={() => {
-          setSettingsInitialTab("about");
-          setCurrentPage("settings");
-        }}
+        onOpenAbout={handleOpenAbout}
+        onOpenSponsorModal={handleOpenAbout}
+        onOpenCommunityModal={handleOpenAbout}
+        onOpenContactModal={handleOpenAbout}
       />
 
       {/* Main Container */}
@@ -634,11 +630,9 @@ export const App: React.FC = () => {
                 onChangeUxMode={handleUxModeChange}
                 onNavigate={handleNavigate}
                 onOpenOnboarding={() => setShowOnboarding(true)}
-                onOpenSponsorModal={() => {
-                  setSettingsInitialTab("about");
-                  setCurrentPage("settings");
-                }}
+                onOpenSponsorModal={handleOpenAbout}
                 initialTab={settingsInitialTab}
+                aboutNavTrigger={aboutNavTrigger}
               />
             )}
 
