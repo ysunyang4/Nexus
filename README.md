@@ -1,27 +1,28 @@
-# Nexus
+<p align="right"><a href="README.md">English</a> · <a href="docs/README.zh-CN.md">简体中文</a></p>
 
 <p align="center">
-  <img src="docs/assets/nexus-mascot.png" width="160" alt="Nexus Mascot" style="border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.15);" />
+  <img src="docs/assets/nexus-mascot.png" width="130" alt="Nexus Mascot" style="border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.15);" />
 </p>
 
+<h1 align="center">Nexus</h1>
+
 <p align="center">
-  <b>Dedicated Local AI Control Plane for ChatGPT, DeepSeek & Modern Web AI Assistants</b><br>
+  <strong>Dedicated Local AI Control Plane for ChatGPT, DeepSeek & Modern Web AI Assistants</strong><br>
   <i>Powered by the LocalBridge 332 Canonical MCP Tool Architecture & Durable Action Ledger</i>
 </p>
 
 <p align="center">
-  <b>English</b> | <a href="docs/README.zh-CN.md"><b>简体中文</b></a>
+  <a href="#7-quick-start">Quick Start</a> · <a href="#1-overview">Overview</a> · <a href="#5-core-capabilities--architectural-highlights">Capabilities</a> · <a href="https://github.com/ysunyang4/Nexus/issues">Issues</a> · <a href="LICENSE">License</a>
 </p>
 
 <p align="center">
   <a href="https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme"><img src="https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652" alt="M8ven Verified"></a>
-  <a href="https://github.com/ysunyang4/Nexus/releases/tag/v1.3.2"><img src="https://img.shields.io/badge/version-1.3.2-blue.svg" alt="Version 1.3.2"></a>
-  <img src="https://img.shields.io/badge/MCP_Tools-332_Canonical-success.svg" alt="332 MCP Tools">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-red.svg" alt="License AGPL-3.0"></a>
-  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-brightgreen.svg" alt="Platforms">
-  <img src="https://img.shields.io/badge/tests-190%2B_suites_%7C_1200%2B_tests-purple.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/MCP_Tools-332_Canonical-2563EB?labelColor=1E40AF&amp;style=flat-square" alt="332 MCP Tools">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-2563EB?labelColor=1E40AF&amp;style=flat-square" alt="License AGPL-3.0"></a>
 </p>
 <!-- M8ven Publisher Verification: [![M8ven Verified](https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652)](https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme) -->
+
+Nexus is an enterprise-grade Local AI Control Plane designed specifically for ChatGPT, DeepSeek, and modern AI coding assistants. It securely bridges remote LLMs to your local workstation through a high-performance **Secure MCP Tunnel** (Streamable HTTP with Bearer tokens). Ask your assistant to inspect repositories, edit code, run builds, debug, or orchestrate complex local engineering workflows within strictly enforced sandbox boundaries—without exposing your full filesystem or transmitting proprietary code to untrusted cloud intermediaries.
 
 <p align="center">
   <a href="https://trendshift.io/repositories/358532?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-358532" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/358532/daily?language=TypeScript" alt="ysunyang4%2FNexus | Trendshift" width="250" height="55"/></a>
@@ -30,10 +31,6 @@
 ---
 
 ## 1. Overview
-
-**Nexus** is an enterprise-grade Local AI Control Plane designed specifically for ChatGPT, DeepSeek, and modern AI coding assistants. It securely bridges remote LLMs to your local workstation through a high-performance **Secure MCP Tunnel** (Streamable HTTP with Bearer tokens).
-
-Nexus allows AI agents to inspect, edit, build, debug, and orchestrate complex local engineering workflows within strictly enforced sandbox boundaries—without exposing your full filesystem or transmitting proprietary code to untrusted cloud intermediaries.
 
 ```text
  ChatGPT / DeepSeek / Web AI Assistants
