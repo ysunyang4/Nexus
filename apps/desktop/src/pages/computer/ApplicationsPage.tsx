@@ -136,18 +136,6 @@ const MARKETPLACE_CATALOG: Array<{
     },
   },
   {
-    id: "cloudflare-observability",
-    name: "Cloudflare-observability",
-    category: "Cloud & Devops",
-    port: 9109,
-    toolCount: 5,
-    command: "uv run python cloudflare_server.py",
-    desc: {
-      "zh-CN": "Cloudflare Workers、DNS 路由与边缘网关探活可观测性监控。",
-      "en-US": "Cloudflare Workers, DNS routing, and edge gateway observability.",
-    },
-  },
-  {
     id: "blender-mcp",
     name: "Blender 3D Automation",
     category: "3D & Creative",

@@ -61,7 +61,6 @@ export const PRESET_TOOL_COUNTS: Record<string, number> = {
   "playwright": 6,
   "agentic-tools-mcp": 6,
   "code-reasoning": 5,
-  "cloudflare-observability": 5,
 };
 
 export function parseCommandLineTokens(cmdStr: string): { command: string; args: string[] } {
@@ -109,7 +108,7 @@ export function isDirectHttpService(config: ManagedMcpConfig): boolean {
   if (config.id === "blender-mcp" || config.id === "windows-mcp" || config.id === "autocad") {
     return true;
   }
-  if (["wikipedia-mcp", "playwright", "agentic-tools-mcp", "code-reasoning", "cloudflare-observability"].includes(config.id)) {
+  if (["wikipedia-mcp", "playwright", "agentic-tools-mcp", "code-reasoning"].includes(config.id)) {
     return true;
   }
   const cmdStr = (config.rawCommand || config.command + " " + (config.args || []).join(" ")).toLowerCase();
@@ -188,7 +187,6 @@ export class ManagedProcessManager {
       "playwright_server.py",
       "agentic_tools_server.py",
       "code_reasoning_server.py",
-      "cloudflare_server.py",
     ];
 
     for (const file of scriptFiles) {
@@ -231,7 +229,6 @@ export class ManagedProcessManager {
     const playwrightPath = this.getServerScriptPath("playwright_server.py");
     const agenticPath = this.getServerScriptPath("agentic_tools_server.py");
     const reasoningPath = this.getServerScriptPath("code_reasoning_server.py");
-    const cfPath = this.getServerScriptPath("cloudflare_server.py");
 
     switch (config.id) {
       case "blender-mcp":
@@ -338,15 +335,6 @@ export class ManagedProcessManager {
         config.endpoint = "http://127.0.0.1:9108/mcp";
         break;
 
-      case "cloudflare-observability":
-        config.name = "Cloudflare-observability";
-        config.command = "uv";
-        config.args = ["run", "--with", "mcp<2,>=1.26.0", "python", cfPath];
-        config.rawCommand = `uv run --with "mcp<2,>=1.26.0" python "${cfPath}"`;
-        config.port = 9109;
-        config.endpoint = "http://127.0.0.1:9109/mcp";
-        break;
-      
       default:
         // For custom services: unwrap supergateway if present
         if (config.rawCommand?.includes("supergateway") || (config.args && config.args.includes("supergateway"))) {

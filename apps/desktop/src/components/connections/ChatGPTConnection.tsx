@@ -20,7 +20,9 @@ import {
   AlertTriangle,
   Eye,
   EyeOff,
+  ExternalLink,
 } from "lucide-react";
+import { openExternalUrl } from "../../api/browser-helper.js";
 import { bridge } from "../../api/bridge.js";
 import {
   type TunnelStatusDto,
@@ -57,7 +59,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
   const [, setLoading] = useState(true);
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState<TestConnectionResult | null>(null);
-  const [, setScopes] = useState<string[]>(["read", "write", "execute"]);
+  const [, setScopes] = useState<string[]>(["read"]);
   const [copiedEndpoint, setCopiedEndpoint] = useState(false);
   const [reconnecting, setReconnecting] = useState(false);
   const [copiedToken, setCopiedToken] = useState(false);
@@ -82,7 +84,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
   const [customProxyUrl, setCustomProxyUrl] = useState(
     tunnelStatus?.custom_proxy_url || ""
   );
-  const [tokenScopes, setTokenScopes] = useState<string[]>(["read", "write", "execute"]);
+  const [tokenScopes, setTokenScopes] = useState<string[]>(["read"]);
   const [tunnelBusy, setTunnelBusy] = useState(false);
   const [tunnelSuccessMsg, setTunnelSuccessMsg] = useState<string | null>(null);
   const [tunnelErrorMsg, setTunnelErrorMsg] = useState<string | null>(null);
@@ -155,6 +157,16 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
     fetchConnection();
     loadCurrentMcpToken();
   }, [fetchConnection, loadCurrentMcpToken, tunnelStatus]);
+
+  // Auto-hide revealed token after 60 seconds
+  useEffect(() => {
+    if (showActiveToken) {
+      const timer = setTimeout(() => {
+        setShowActiveToken(false);
+      }, 60000);
+      return () => clearTimeout(timer);
+    }
+  }, [showActiveToken]);
 
   // Error formatting for tunnel operations
   const formatTunnelError = useCallback(
@@ -663,12 +675,19 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
           </div>
 
           {/* Metrics Grid in Header */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0">
             <div className="px-3 py-2 rounded-lg bg-theme-card-muted border border-theme-subtle text-center">
               <div className="text-[10px] font-mono text-theme-muted uppercase tracking-wider">
-                {isZh ? "可用工具" : "MCP Tools"}
+                {isZh ? "暴露元工具" : "Exposed tools"}
               </div>
-              <div className="text-sm font-bold font-mono text-theme-primary">64</div>
+              <div className="text-sm font-bold font-mono text-sky-500">3</div>
+            </div>
+
+            <div className="px-3 py-2 rounded-lg bg-theme-card-muted border border-theme-subtle text-center">
+              <div className="text-[10px] font-mono text-theme-muted uppercase tracking-wider">
+                {isZh ? "原子能力库" : "Catalog"}
+              </div>
+              <div className="text-sm font-bold font-mono text-theme-primary">332</div>
             </div>
 
             <div className="px-3 py-2 rounded-lg bg-theme-card-muted border border-theme-subtle text-center">
@@ -684,7 +703,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
               <div className="text-[10px] font-mono text-theme-muted uppercase tracking-wider">
                 {isZh ? "协议版本" : "Protocol"}
               </div>
-              <div className="text-sm font-bold font-mono text-theme-primary">2024-11-05</div>
+              <div className="text-sm font-bold font-mono text-theme-secondary">2024-11-05</div>
             </div>
           </div>
         </div>
@@ -738,9 +757,13 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                   </span>
                   <span
                     className="font-semibold text-theme-primary font-mono text-[11px] truncate max-w-[200px]"
-                    title={tunnelStatus?.tunnel_id || ""}
+                    title={tunnelStatus?.tunnel_id ? (tunnelStatus.tunnel_id.length > 16 ? `${tunnelStatus.tunnel_id.slice(0, 10)}...${tunnelStatus.tunnel_id.slice(-6)}` : tunnelStatus.tunnel_id) : ""}
                   >
-                    {tunnelStatus?.tunnel_id || (isZh ? "未配置 (请点击隧道设置)" : "Not Configured")}
+                    {tunnelStatus?.tunnel_id ? (
+                      tunnelStatus.tunnel_id.length > 16
+                        ? `${tunnelStatus.tunnel_id.slice(0, 10)}...${tunnelStatus.tunnel_id.slice(-6)}`
+                        : tunnelStatus.tunnel_id
+                    ) : (isZh ? "未配置 (请点击隧道设置)" : "Not Configured")}
                   </span>
                 </div>
 
@@ -913,6 +936,29 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                 </div>
               </div>
 
+              {/* WebAgent Extension Guidance Banner */}
+              <div className="p-3 rounded-lg bg-sky-500/10 border border-sky-500/20 space-y-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-semibold text-sky-600 dark:text-sky-400 flex items-center gap-1.5">
+                    <Globe className="w-3.5 h-3.5 text-sky-500" />
+                    <span>{isZh ? "WebAgent 浏览器插件授权" : "WebAgent Browser Extension"}</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => openExternalUrl("https://blog.ycu.de5.net/")}
+                    className="inline-flex items-center gap-1 text-[11px] text-sky-600 dark:text-sky-400 hover:text-sky-500 font-medium hover:underline transition cursor-pointer"
+                  >
+                    <span>{isZh ? "请查看详细的配置教程" : "View Setup Guide"}</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </button>
+                </div>
+                <p className="text-[11px] text-theme-muted leading-relaxed">
+                  {isZh
+                    ? "WebAgent 浏览器插件支持大多主流网页 AI。复制上方 lb_ 令牌并填入插件即可连接本地工具；详细配置教程请点击上方链接跳转我的博客查看。"
+                    : "WebAgent extension supports mainstream web AIs. Copy the lb_ token above into the extension to connect; for detailed setup, please refer to the blog guide."}
+                </p>
+              </div>
+
               {/* Scopes Selection */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -927,11 +973,11 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                 {/* Scope Presets */}
                 <div className="flex flex-wrap gap-1.5 pb-1">
                   {[
-                    { id: "read_only", label: isZh ? "只读" : "Read-Only", list: ["read"] },
+                    { id: "read_only", label: isZh ? "只读 (默认)" : "Read-Only (Default)", list: ["read"] },
                     { id: "write_only", label: isZh ? "只写" : "Write-Only", list: ["write"] },
                     { id: "read_write", label: isZh ? "读写" : "Read & Write", list: ["read", "write"] },
                     { id: "exec_only", label: isZh ? "执行" : "Execute", list: ["execute"] },
-                    { id: "full", label: isZh ? "读写执行 (推荐)" : "Full Control", list: ["read", "write", "execute"] },
+                    { id: "full", label: isZh ? "读写执行" : "Full Control", list: ["read", "write", "execute"] },
                   ].map((preset) => {
                     const isSelected =
                       preset.list.length === tokenScopes.length &&
@@ -969,15 +1015,15 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                       id: "write",
                       label: isZh ? "写入 (Write)" : "Write",
                       desc: isZh
-                        ? "允许创建、编辑和修改代码文件（敏感变更需确认）。"
-                        : "Create, edit, and modify code files (subject to confirmation).",
+                        ? "允许创建、编辑和修改代码文件。"
+                        : "Create, edit, and modify code files in authorized folders.",
                     },
                     {
                       id: "execute",
                       label: isZh ? "执行 (Execute)" : "Execute",
                       desc: isZh
-                        ? "允许运行受控终端命令、测试套件与工作流。"
-                        : "Run sandboxed terminal commands, tests, and workflows.",
+                        ? "允许运行终端命令、测试套件与工作流。"
+                        : "Run terminal commands, tests, and workflows in authorized projects.",
                     },
                   ].map((s) => (
                     <label
@@ -1000,6 +1046,20 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                       </div>
                     </label>
                   ))}
+
+                  {tokenScopes.includes("write") && (
+                    <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs mt-1">
+                      <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                      <span>{isZh ? "警告：AI 客户端可修改已授权目录内的文件。" : "Warning: AI client can change files in authorized folders."}</span>
+                    </div>
+                  )}
+
+                  {tokenScopes.includes("execute") && (
+                    <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs mt-1">
+                      <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                      <span>{isZh ? "警告：AI 客户端可在已授权项目中执行终端命令。" : "Warning: AI client can run commands in authorized projects."}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 

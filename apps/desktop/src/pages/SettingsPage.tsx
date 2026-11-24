@@ -901,7 +901,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition bg-sky-500 text-white shadow-xs font-semibold"
               >
                 <Radio className="w-3.5 h-3.5" />
-                <span>{isZh ? "ChatGPT & 隧道" : "ChatGPT & Tunnel"}</span>
+                <span>{isZh ? "ChatGPT 隧道 & WebAgent 凭证" : "ChatGPT Tunnel & WebAgent"}</span>
               </button>
             </div>
 

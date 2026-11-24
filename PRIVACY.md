@@ -32,7 +32,7 @@ Nexus reads and validates credentials exclusively from local configuration files
 - `NEXUS_MANAGEMENT_TOKEN`
 
 ### Security Guarantees:
-1. **Zero Exfiltration**: Tokens are strictly used to authenticate local loopback requests between your AI assistant (e.g., Claude Desktop, ChatGPT desktop/web via tunnel) and the local Nexus server.
+1. **Zero Exfiltration**: Tokens are strictly used to authenticate local loopback requests between your AI assistant (e.g., ChatGPT via tunnel or WebAgent browser extension via local loopback) and the local Nexus server.
 2. **Never Transmitted Remotely**: Tokens are never uploaded, logged to external services, or included in outgoing URLs.
 3. **In-Memory Sanitization**: Error traces and audit logs redact token parameters to prevent accidental disclosure.
 

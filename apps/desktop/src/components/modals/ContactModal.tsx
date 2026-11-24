@@ -410,9 +410,9 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     </div>
                     <div className="text-[11px] text-theme-secondary mt-0.5 line-clamp-1">
                       {tText(
-                        "连接 Web 端 ChatGPT / Claude / DeepSeek 与本地 Nexus 实例的浏览器增强扩展。",
-                        "Browser extension connecting ChatGPT, Claude, and DeepSeek to local Nexus.",
-                        "ChatGPT、Claude、DeepSeek をローカル Nexus に接続するブラウザ拡張機能。",
+                        "连接 Web 端 ChatGPT / DeepSeek / Kimi 与本地 Nexus 实例的浏览器增强扩展。",
+                        "Browser extension connecting ChatGPT, DeepSeek, and Kimi to local Nexus.",
+                        "ChatGPT、DeepSeek、Kimi をローカル Nexus に接続するブラウザ扩展機能。",
                         "Browser-Erweiterung zur Verbindung von Web-KI mit lokalem Nexus."
                       )}
                     </div>
