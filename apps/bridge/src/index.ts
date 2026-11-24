@@ -2025,7 +2025,7 @@ const server = http.createServer(async (req, res) => {
         sendErrorHtml(
           res,
           400,
-          `Unauthorized redirect_uri '${redirectUri}'. Only Google/Gemini official callbacks, configured production domain, or localhost are permitted.`
+          `Unauthorized redirect_uri '${redirectUri}'. Only authorized callbacks, configured production domain, or localhost are permitted.`
         );
         return;
       }

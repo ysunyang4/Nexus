@@ -281,8 +281,8 @@ export function createLocalBridgeMcpServer(
             projectId: targetProjectId,
             durationMs,
             resultStatus: isError ? "error" : "success",
-            clientId: (store as any).clientId || "claude_client",
-            actorDisplayName: (store as any).clientId || "Claude",
+            clientId: (store as any).clientId || "mcp_client",
+            actorDisplayName: (store as any).clientId || "AI Client",
             relativePath: relPath,
           });
           return res;
@@ -294,8 +294,8 @@ export function createLocalBridgeMcpServer(
             durationMs,
             resultStatus: "error",
             errorCode: err?.code || "ERROR",
-            clientId: (store as any).clientId || "claude_client",
-            actorDisplayName: (store as any).clientId || "Claude",
+            clientId: (store as any).clientId || "mcp_client",
+            actorDisplayName: (store as any).clientId || "AI Client",
           });
           throw err;
         }

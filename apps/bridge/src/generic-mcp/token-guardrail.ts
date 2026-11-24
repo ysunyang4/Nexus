@@ -390,7 +390,7 @@ export class TokenGuardrail {
     }
     copy.structuredContent = newSc;
 
-    // 2. Put summary, preview sample (first 3 items), and retrieval hint directly into content so Claude can see it
+    // 2. Put summary, preview sample (first 3 items), and retrieval hint directly into content so the AI client can see it
     const sampleJson = JSON.stringify(sample);
     const summaryText = `[📦 句柄已生成] 工具: ${displayTool} | 共 ${items.length} 项记录已暂存至句柄 ${handleId}。\n前 3 项预览:\n${sampleJson}\n\n💡 完整数据/条件筛选调用指引:\nnexus_execute_action(tool='nexus_handle_read', arguments={handleId: '${handleId}', offset: 0, limit: 20, filter: '关键词或{key:value}', fields: ['字段1', '字段2']})\n若需当前工具原始全量数据，请传入 full=true。`;
     copy.content = [{ type: "text", text: summaryText }];

@@ -141,10 +141,6 @@ export function checkLoopbackAndSecurity(
     pathname.includes("/recording-mode") ||
     pathname.includes("/script-token");
 
-  const isClaudeOrigin =
-    origin === "https://claude.ai" ||
-    (typeof origin === "string" && origin.endsWith(".claude.ai"));
-
   if (origin) {
     const allowedOrigins = [
       "tauri://localhost",
@@ -158,7 +154,7 @@ export function checkLoopbackAndSecurity(
       origin === "http://127.0.0.1" ||
       origin === "http://localhost";
 
-    if (!isTauriOrigin && !isLocalUrlOrigin && !(isSyncOrAudit && isClaudeOrigin)) {
+    if (!isTauriOrigin && !isLocalUrlOrigin) {
       reply.status(403).send({
         error: "Forbidden: Browser cross-origin management access is rejected",
         code: "BROWSER_CROSS_ORIGIN_FORBIDDEN",
@@ -171,8 +167,7 @@ export function checkLoopbackAndSecurity(
   if (
     secFetchSite === "cross-site" &&
     !isTauriOrigin &&
-    !isLocalUrlOrigin &&
-    !(isSyncOrAudit && isClaudeOrigin)
+    !isLocalUrlOrigin
   ) {
     reply.status(403).send({
       error: "Forbidden: Cross-site browser requests are blocked",
@@ -1245,16 +1240,16 @@ export const managementRoutes: FastifyPluginAsync<ManagementRoutesOptions> = asy
       if (Array.isArray(messages) && messages.length > 0) {
         for (const msg of messages) {
           const mid = msg.id || `msg_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
-          const speaker = msg.role === "user" ? "Human" : "Claude";
+          const speaker = msg.role === "user" ? "Human" : "Assistant";
           const snippet = typeof msg.content === "string" ? msg.content.slice(0, 2000) : "";
           try {
             insertStmt.run(
               mid,
               msg.timestamp || timestamp,
-              "claude_web",
+              "ai_web",
               chatId || null,
-              "claude_dialogue",
-              JSON.stringify({ text: snippet, title: title || "Claude 对话", role: msg.role }),
+              "ai_dialogue",
+              JSON.stringify({ text: snippet, title: title || "AI 对话", role: msg.role }),
               JSON.stringify({ status: "synced", speaker }),
               0,
               "SAFE",
@@ -1264,16 +1259,16 @@ export const managementRoutes: FastifyPluginAsync<ManagementRoutesOptions> = asy
         }
       } else if (content) {
         const mid = `msg_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
-        const speaker = role === "user" ? "Human" : "Claude";
+        const speaker = role === "user" ? "Human" : "Assistant";
         const snippet = content.slice(0, 2000);
         try {
           insertStmt.run(
             mid,
             timestamp,
-            "claude_web",
+            "ai_web",
             chatId || null,
-            "claude_dialogue",
-            JSON.stringify({ text: snippet, title: title || "Claude 对话", role }),
+            "ai_dialogue",
+            JSON.stringify({ text: snippet, title: title || "AI 对话", role }),
             JSON.stringify({ status: "synced", speaker }),
             0,
             "SAFE",
@@ -1512,7 +1507,7 @@ export const managementRoutes: FastifyPluginAsync<ManagementRoutesOptions> = asy
     const { title, summary, keyDecisions, activeFiles, pendingTasks, rawContext, ttlHours } = request.body || {};
     try {
       const entry = SessionHandoffManager.save(mcpContext.db, {
-        title: title || "Claude 对话交接",
+        title: title || "AI 对话交接",
         summary: summary || "阶段性上下文交接",
         keyDecisions: keyDecisions || [],
         activeFiles: activeFiles || [],

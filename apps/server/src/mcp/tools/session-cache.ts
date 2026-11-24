@@ -72,7 +72,7 @@ export function registerSessionCacheTools(server: McpServer, context: McpContext
     "nexus_session_cache_save",
     {
       description:
-        "Save a cross-account conversation handoff package into Nexus SQLite cache with sensitive token redaction and return a short 8-char handle. Use this before switching Claude accounts or starting a new session to preserve full context with minimal tokens.",
+        "Save a cross-account conversation handoff package into Nexus SQLite cache with sensitive token redaction and return a short 8-char handle. Use this before switching AI sessions to preserve full context with minimal tokens.",
       inputSchema: toMcpSchema(SaveSessionCacheSchema),
       annotations: {
         readOnlyHint: false,
@@ -108,27 +108,27 @@ export function registerSessionCacheTools(server: McpServer, context: McpContext
           fs.writeFileSync(handleFilePath, `${entry.handle}\n${entry.wakePrompt}\n`, "utf-8");
         } catch {}
 
-        // 2. Insert into audit_logs as claude_dialogue so it appears in Claude 对话记录
+        // 2. Insert into audit_logs as ai_dialogue so it appears in AI 对话记录
         try {
           const insertStmt = db.prepare(
             `INSERT OR REPLACE INTO audit_logs (id, timestamp, client_id, project_id, tool, arguments_summary, result_summary, duration_ms, risk_level, actor_display_name)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
           );
           const mid = `msg_handoff_${Date.now()}_${entry.handle}`;
-          const formattedText = `【Claude 回复存证 · 句柄 ${entry.handle}】\n\n📌 任务标题: ${entry.title}\n\n📝 进展总结:\n${entry.summary}` +
+          const formattedText = `【AI 回复存证 · 句柄 ${entry.handle}】\n\n📌 任务标题: ${entry.title}\n\n📝 进展总结:\n${entry.summary}` +
             (entry.keyDecisions && entry.keyDecisions.length > 0 ? `\n\n💡 关键决策:\n${entry.keyDecisions.map((d: string) => `• ${d}`).join("\n")}` : "") +
             (entry.pendingTasks && entry.pendingTasks.length > 0 ? `\n\n📋 待办事项:\n${entry.pendingTasks.map((t: string) => `• ${t}`).join("\n")}` : "");
           insertStmt.run(
             mid,
             Date.now(),
-            "claude_session",
+            "ai_session",
             entry.handle,
-            "claude_dialogue",
+            "ai_dialogue",
             JSON.stringify({ text: formattedText, title: entry.title, role: "assistant", handle: entry.handle }),
-            JSON.stringify({ status: "saved", speaker: "Claude (Assistant)" }),
+            JSON.stringify({ status: "saved", speaker: "AI (Assistant)" }),
             0,
             "SAFE",
-            "Claude (Assistant)"
+            "AI (Assistant)"
           );
         } catch {}
 
@@ -145,7 +145,7 @@ export function registerSessionCacheTools(server: McpServer, context: McpContext
           tokenCount: entry.tokenCount,
           expiresAt: new Date(entry.expiresAt).toISOString(),
           wakePrompt: entry.wakePrompt,
-          instruction: "复制上方 wakePrompt 发送给下一个 Claude 账户即可，下一个账户将通过 nexus_session_cache_load 恢复全部上下文。",
+          instruction: "复制上方 wakePrompt 发送给下一个 AI 会话即可，下一个会话将通过 nexus_session_cache_load 恢复全部上下文。",
         });
       } catch (error) {
         context.logAudit("mcp_tool_failed", {

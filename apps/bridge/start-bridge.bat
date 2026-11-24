@@ -3,7 +3,7 @@ setlocal
 cd /d "%~dp0"
 
 echo ==================================================
-echo   Starting Nexus MCP Bridge (Gemini Spark Layer)
+echo   Starting Nexus MCP Bridge (Port 8787)
 echo ==================================================
 
 if not exist "dist\index.js" (

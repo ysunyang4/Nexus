@@ -476,11 +476,7 @@ export function getNexusBrowserHtml(initialUrl: string = "", initialAi: string =
   const normAi = (initialAi || "").toLowerCase();
   const normUrl = (initialUrl || "").toLowerCase();
 
-  if (normAi === "gemini" || normUrl.includes("gemini.google.com") || normUrl.includes("gemini")) {
-    targetAi = "gemini";
-  } else if (normAi === "claude" || normUrl.includes("claude.ai") || normUrl.includes("claude")) {
-    targetAi = "claude";
-  } else if (normAi === "reader") {
+  if (normAi === "reader") {
     targetAi = "reader";
   } else if (normAi === "chatgpt" || normUrl.includes("chatgpt.com")) {
     targetAi = "chatgpt";
@@ -488,9 +484,7 @@ export function getNexusBrowserHtml(initialUrl: string = "", initialAi: string =
 
   let mainCanvasUrl = initialUrl;
   if (
-    mainCanvasUrl.includes("chatgpt.com") ||
-    mainCanvasUrl.includes("claude.ai") ||
-    mainCanvasUrl.includes("gemini.google.com")
+    mainCanvasUrl.includes("chatgpt.com")
   ) {
     mainCanvasUrl = "";
   }
@@ -768,16 +762,6 @@ export function getNexusBrowserHtml(initialUrl: string = "", initialAi: string =
       border-color: var(--accent-emerald);
       color: #34d399;
       background: rgba(16, 185, 129, 0.1);
-    }
-    .ai-tab.active[data-ai="claude"] {
-      border-color: var(--accent-purple);
-      color: #d8b4fe;
-      background: rgba(192, 132, 252, 0.1);
-    }
-    .ai-tab.active[data-ai="gemini"] {
-      border-color: var(--accent-cyan);
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.1);
     }
     .ai-tab.active[data-ai="reader"] {
       border-color: var(--accent-amber);
@@ -1237,8 +1221,6 @@ export function getNexusBrowserHtml(initialUrl: string = "", initialAi: string =
     <!-- AI Companion Tabs -->
     <div class="ai-tabs">
       <button class="ai-tab ${targetAi === 'chatgpt' ? 'active' : ''}" data-ai="chatgpt" id="tab-chatgpt" onclick="switchCopilotTab('chatgpt')">🤖 ChatGPT</button>
-      <button class="ai-tab ${targetAi === 'claude' ? 'active' : ''}" data-ai="claude" id="tab-claude" onclick="switchCopilotTab('claude')">🟣 Claude</button>
-      <button class="ai-tab ${targetAi === 'gemini' ? 'active' : ''}" data-ai="gemini" id="tab-gemini" onclick="switchCopilotTab('gemini')">✨ Gemini</button>
       <button class="ai-tab ${targetAi === 'reader' ? 'active' : ''}" data-ai="reader" id="tab-reader" onclick="switchCopilotTab('reader')">📄 脱水提纯</button>
       <button class="ai-tab" data-ai="settings" id="tab-settings" onclick="switchCopilotTab('settings')" title="沙箱数据与重置">&#x2699;</button>
     </div>
@@ -1353,17 +1335,7 @@ export function getNexusBrowserHtml(initialUrl: string = "", initialAi: string =
           <iframe class="ai-hub-iframe" id="aiFrame-chatgpt" src="${targetAi === 'chatgpt' ? 'https://chatgpt.com' : 'about:blank'}" data-src="https://chatgpt.com"></iframe>
         </div>
 
-        <!-- 2. Claude Embedded View -->
-        <div id="view-claude" class="ai-hub-view ${targetAi === 'claude' ? 'active' : ''}">
-          <iframe class="ai-hub-iframe" id="aiFrame-claude" src="${targetAi === 'claude' ? 'https://claude.ai' : 'about:blank'}" data-src="https://claude.ai"></iframe>
-        </div>
-
-        <!-- 3. Gemini Embedded View -->
-        <div id="view-gemini" class="ai-hub-view ${targetAi === 'gemini' ? 'active' : ''}">
-          <iframe class="ai-hub-iframe" id="aiFrame-gemini" src="${targetAi === 'gemini' ? 'https://gemini.google.com' : 'about:blank'}" data-src="https://gemini.google.com"></iframe>
-        </div>
-
-        <!-- 4. Reader Viewport -->
+        <!-- 2. Reader Viewport -->
         <div id="view-reader" class="reader-view ${targetAi === 'reader' ? 'active' : ''}">
           <div style="font-size:11px;color:var(--text-muted);">
             输入任意网址，一键提取纯净正文并脱水转为 Markdown，零 Token 浪费：
@@ -1414,9 +1386,7 @@ export function getNexusBrowserHtml(initialUrl: string = "", initialAi: string =
       baidu: "https://www.baidu.com/s?wd="
     };
     const AI_URL_MAP = {
-      chatgpt: "https://chatgpt.com",
-      claude: "https://claude.ai",
-      gemini: "https://gemini.google.com"
+      chatgpt: "https://chatgpt.com"
     };
 
     // Clock
@@ -1538,8 +1508,6 @@ export function getNexusBrowserHtml(initialUrl: string = "", initialAi: string =
 
       const titleMap = {
         chatgpt: "🤖 ChatGPT 官网",
-        claude: "🟣 Claude 官网",
-        gemini: "✨ Gemini 官网",
         reader: "📄 网页脱水提纯",
         settings: "⚙ 沙箱隔离设置"
       };

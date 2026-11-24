@@ -507,7 +507,7 @@ export const SESSION_CACHE_AND_DIRECTIVE_TOOLS = [
   },
   {
     name: "nexus_session_cache_save",
-    description: "Save a cross-account conversation handoff package into Nexus SQLite cache with sensitive token redaction and return a short 8-char handle. Use this before switching Claude accounts or starting a new session to preserve full context with minimal tokens.",
+    description: "Save a cross-account conversation handoff package into Nexus SQLite cache with sensitive token redaction and return a short 8-char handle. Use this before switching AI accounts or starting a new session to preserve full context with minimal tokens.",
     inputSchema: {
       type: "object",
       properties: {
@@ -934,9 +934,12 @@ export const UNIVERSAL_META_TOOLS = [
       openWorldHint: true,
     },
   },
+];
+
+export const EXTENDED_META_TOOLS = [
   {
     name: "nexus_relay_dispatch",
-    description: "Dispatch tasks to background browser AI nodes (ChatGPT, Claude, DeepSeek) with headless execution and structured markdown return.",
+    description: "Dispatch tasks to background browser AI nodes (ChatGPT, DeepSeek) with headless execution and structured markdown return.",
     inputSchema: {
       type: "object",
       properties: {
@@ -2644,14 +2647,14 @@ ${text}` }],
           };
         });
 
-        // C. Universal Meta Tools (Top-Level Orchestration & Relay - 14 Meta Tools)
+        // C. Universal Meta Tools (Top-Level Orchestration & Discovery - 3 Meta Tools)
         const metaCandidates = UNIVERSAL_META_TOOLS.map((mt) => ({
           name: mt.name,
           category: "meta",
           providerId: "nexus-meta",
           source: "顶层元工具 (Universal Meta)",
           description: mt.description || "",
-          keywords: ["meta", "relay", "dispatch", "multi-model", "deepseek", "kimi", "chatgpt", "claude", "doubao", "duck", "script", "handoff", "discover", "execute", "batch", "pipeline", "wait", "condition", "port", "log"],
+          keywords: ["meta", "orchestrator", "chatgpt", "script", "python", "node", "discover", "execute", "tools", "action"],
           parameters: (mt.inputSchema?.properties ? Object.keys(mt.inputSchema.properties) : []).filter((p) => !INTERNAL_HOST_PARAMS.has(p)),
           required: (mt.inputSchema?.required || []).filter((p: string) => !INTERNAL_HOST_PARAMS.has(p)),
           inputSchema: mt.inputSchema,
@@ -2659,20 +2662,21 @@ ${text}` }],
         }));
 
         // D. Secondary Advanced Meta Tools (Available via discover_tools and execute_action)
-        const secondaryAdvancedCandidates = ADVANCED_META_TOOL_DEFINITIONS
-          .filter((t) => !CORE_ADVANCED_META_TOOL_NAMES.includes(t.name))
-          .map((at) => ({
-            name: at.name,
-            category: "advanced-meta",
-            providerId: "nexus-meta",
-            source: "二级高级工程元工具 (Secondary Advanced)",
-            description: at.description || "",
-            keywords: ["advanced", "reverse", "security", "deobfuscate", "codec", "inspect", "probe", "mock", "patch", "trace", "hook"],
-            parameters: (at.inputSchema?.properties ? Object.keys(at.inputSchema.properties) : []).filter((p) => !INTERNAL_HOST_PARAMS.has(p)),
-            required: (at.inputSchema?.required || []).filter((p: string) => !INTERNAL_HOST_PARAMS.has(p)),
-            inputSchema: at.inputSchema,
-            isExternal: false,
-          }));
+        const secondaryAdvancedCandidates = [
+          ...ADVANCED_META_TOOL_DEFINITIONS,
+          ...EXTENDED_META_TOOLS.filter((t) => !ADVANCED_META_TOOL_DEFINITIONS.some((at) => at.name === t.name)),
+        ].map((at) => ({
+          name: at.name,
+          category: "advanced-meta",
+          providerId: "nexus-meta",
+          source: "二级高级工程元工具 (Secondary Advanced)",
+          description: at.description || "",
+          keywords: ["advanced", "reverse", "security", "deobfuscate", "codec", "inspect", "probe", "mock", "patch", "trace", "hook", "adb", "browser", "canvas", "relay", "dispatch", "batch"],
+          parameters: (at.inputSchema?.properties ? Object.keys(at.inputSchema.properties) : []).filter((p) => !INTERNAL_HOST_PARAMS.has(p)),
+          required: (at.inputSchema?.required || []).filter((p: string) => !INTERNAL_HOST_PARAMS.has(p)),
+          inputSchema: at.inputSchema,
+          isExternal: false,
+        }));
 
         // Combined Active Tool Pool
         const allActiveTools = [...metaCandidates, ...secondaryAdvancedCandidates, ...canonicalCandidates, ...dynamicCandidates];
@@ -3812,7 +3816,7 @@ export async function handleMcpHttpRequest(
   body: any,
   nexusClient: NexusClient
 ): Promise<void> {
-  // Normalize Accept header to accommodate standard MCP clients (OpenAI oai-tunnel-client, Gemini, Claude, curl, etc.)
+  // Normalize Accept header to accommodate standard MCP clients (OpenAI oai-tunnel-client, curl, etc.)
   // WebStandardStreamableHTTPServerTransport requires both application/json and text/event-stream
   const currentAccept = req.headers.accept || "";
   if (!currentAccept.includes("text/event-stream") || !currentAccept.includes("application/json")) {

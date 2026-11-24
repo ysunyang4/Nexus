@@ -4,6 +4,7 @@ import {
   PROJECT_BUILDER_TOOLS,
   SESSION_CACHE_AND_DIRECTIVE_TOOLS,
   UNIVERSAL_META_TOOLS,
+  EXTENDED_META_TOOLS,
 } from "../src/server.js";
 import { ADVANCED_META_TOOL_DEFINITIONS } from "../src/meta-tools/advanced-meta-tools.js";
 import { ALL_80_MCP_TOOLS, ECOSYSTEM_TOOL_CONTRACTS } from "./all-80-mcp-tools-contract.test.js";
@@ -60,6 +61,7 @@ describe("Nexus MCP Tools Compliance & 100% (80/80) Coverage Suite", () => {
       ...PROJECT_BUILDER_TOOLS,
       ...SESSION_CACHE_AND_DIRECTIVE_TOOLS,
       ...UNIVERSAL_META_TOOLS,
+      ...EXTENDED_META_TOOLS,
     ].forEach((t) => {
       if (SERVER_TS_26_TOOL_NAMES.includes(t.name)) {
         tsCoreToolsMap.set(t.name, t);

@@ -1,13 +1,13 @@
 # Nexus MCP Bridge
 
-> Standard MCP HTTP / Streamable HTTP Bridge for connecting Gemini Spark Custom Apps to Nexus LocalBridge on Windows.
+> Standard MCP HTTP / Streamable HTTP Bridge for connecting ChatGPT Custom GPTs / MCP Clients to Nexus LocalBridge on Windows.
 
 ---
 
 ## 架构
 
 ```text
-Gemini Spark (Custom App)
+ChatGPT / MCP Clients
       │
       │ HTTPS (Streamable HTTP / MCP Protocol 2024-11-05)
       ▼
@@ -17,7 +17,7 @@ Cloudflare Tunnel (https://<tunnel-domain>/mcp)
 Nexus MCP Bridge (http://127.0.0.1:8787/mcp)
       │
       │ Authorization: Bearer <NEXUS_BRIDGE_TOKEN>
-      │ Whitelisted 8 Tools | Path Sandbox Security
+      │ Whitelisted Tools | Path Sandbox Security
       ▼
 Nexus LocalBridge (http://127.0.0.1:18080)
       │

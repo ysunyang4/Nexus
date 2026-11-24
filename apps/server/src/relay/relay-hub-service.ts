@@ -13,7 +13,7 @@ export interface RelayNodeInfo {
 
 export interface RelayConfig {
   enabled: boolean;
-  authorityMode: "auto" | "manual"; // "auto" (Claude 自动决断) | "manual" (用户强管控)
+  authorityMode: "auto" | "manual"; // "auto" (AI 自动决断) | "manual" (用户强管控)
   allowAiResponseReturn: boolean; // 是否允许回传 AI 答案 (仅用户强管控下生效)
   stripThinking: boolean; // 深度思考链自动剥离 (DeepSeek/Kimi)
   gptFileSaving: {
@@ -575,7 +575,7 @@ export class RelayHubService {
           }
           resolve({
             status: "DETACHED_LONG_INFERENCE",
-            text: `【后台持续推理中】已成功将任务送达 [${targetNodeId}] 网页端，后台正在持续深度生成中（已满 38 秒，自动开启长任务脱钩保护以防止 Claude Web 界面超时断开）。思考链将自动过滤，生成完毕后纯结果可在后台或输出中查验。`,
+            text: `【后台持续推理中】已成功将任务送达 [${targetNodeId}] 网页端，后台正在持续深度生成中（已满 38 秒，自动开启长任务脱钩保护以防止 Web 界面超时断开）。思考链将自动过滤，生成完毕后纯结果可在后台或输出中查验。`,
             detached: true,
           });
         }

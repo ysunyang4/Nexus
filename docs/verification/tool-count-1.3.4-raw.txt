@@ -1,0 +1,8 @@
+Nexus Control Center v1.3.4 Live Measurement Raw Tool List
+Measured At: 2026-11-24T13:30:00.433Z
+Port: 18787
+Total Count: 3
+Tool Names:
+  1. nexus_run_script
+  2. nexus_discover_tools
+  3. nexus_execute_action

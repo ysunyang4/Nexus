@@ -136,7 +136,7 @@ export function createGatewayHttpServer(
             },
             protocol: {
               target: "Standard MCP (2024-11-05 Streamable HTTP)",
-              supportedClients: ["Gemini Spark", "Claude", "Cursor", "Antigravity"],
+              supportedClients: ["ChatGPT", "Cursor", "Antigravity"],
             },
             uptime: process.uptime(),
           },

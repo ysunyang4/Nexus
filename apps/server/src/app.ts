@@ -87,9 +87,7 @@ export async function buildApp(
         origin.startsWith("http://127.0.0.1") ||
         origin.startsWith("http://localhost") ||
         origin.includes("tauri.localhost") ||
-        origin === "tauri://localhost" ||
-        origin === "https://claude.ai" ||
-        origin.endsWith(".claude.ai")
+        origin === "tauri://localhost"
       ) {
         cb(null, true);
         return;

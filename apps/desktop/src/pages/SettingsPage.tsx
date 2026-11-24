@@ -2983,13 +2983,20 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     v1.3.4
                   </span>
                 </div>
-                <div className="text-theme-secondary text-xs leading-relaxed">
-                  {isZh
-                    ? "Nexus 作为 ChatGPT 专用的本地 AI 控制平面，通过 3 个核心元工具（nexus_run_script、nexus_discover_tools、nexus_execute_action）向 ChatGPT 暴露 332 个受控原子工具，安全访问并操作授权的本地开发环境。"
-                    : "Nexus serves as the dedicated Local AI Control Plane for ChatGPT, exposing 332 canonical atomic tools to ChatGPT through 3 core meta tools (nexus_run_script, nexus_discover_tools, nexus_execute_action)."}
+                <div className="text-theme-secondary text-xs leading-relaxed space-y-1">
+                  <div>
+                    {isZh
+                      ? "ChatGPT 专用的本地 AI 控制平面。将 ChatGPT 连接到您授权的本地环境。"
+                      : "Local AI control plane for ChatGPT. Connects ChatGPT to the local environment you authorize."}
+                  </div>
+                  <div>
+                    {isZh
+                      ? "引擎通过工具目录暴露 332 个受控原子工具。ChatGPT 连接默认向模型展示 3 个核心元工具，其他工具按需通过动态发现调用。"
+                      : "The engine exposes 332 atomic tools through a catalog. The ChatGPT connection shows 3 core meta tools to the model by default. Other tools are reached on demand through discovery."}
+                  </div>
                 </div>
                 <div className="text-[11px] font-mono text-theme-muted pt-0.5">
-                  332 Atomic Tools &bull; 3 Core Meta Tools &bull; Secure MCP Tunnel &bull; Full Local Control
+                  332 Atomic Tools &bull; 3 Core Meta Tools &bull; Secure MCP Tunnel
                 </div>
               </div>
             </div>
