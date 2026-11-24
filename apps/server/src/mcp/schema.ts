@@ -182,7 +182,7 @@ export function toMcpSchema<T extends z.ZodTypeAny>(
     return cached;
   }
 
-  const rawSchema = (z as any).toJSONSchema ? (z as any).toJSONSchema(zodSchema) : zodToJsonSchema(zodSchema);
+  const rawSchema = (z as any).toJSONSchema ? (z as any).toJSONSchema(zodSchema) : zodToJsonSchema(zodSchema as any);
   const jsonSchema = JSON.parse(JSON.stringify(rawSchema)) as Record<string, unknown>;
   delete jsonSchema["$schema"];
 

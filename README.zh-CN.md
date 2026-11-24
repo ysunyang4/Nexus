@@ -301,6 +301,10 @@ Header 添加：`Authorization: Bearer lb_your_token_here`
 
 ### 官方赞助渠道
 
+| 🟢 微信支付 (WeChat Pay) | 🔵 支付宝 (Alipay) | 🟡 币安支付 (Binance Pay) |
+| :---: | :---: | :---: |
+| <img src="docs/assets/wechat-pay.jpg" width="210" alt="WeChat Pay" /> | <img src="docs/assets/alipay.jpg" width="210" alt="Alipay" /> | <img src="docs/assets/binance-pay.jpg" width="210" alt="Binance Pay" /> |
+
 | 赞助方式 | 网络 / 平台 | 账户 / 地址 | 说明 |
 | :--- | :--- | :--- | :--- |
 | **加密货币 (USDT 链上直转)** | **TRON (TRC-20)** | `TPRrDW8DGsrDmcnWvanTbFz7XEJuywu21i` | 用任何钱包或交易所转出时，选 **TRON (TRC-20)** 网络即可 |

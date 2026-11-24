@@ -113,6 +113,9 @@ export class SkillLoader {
     }
 
     for (const entry of entries) {
+      if (entry === "nexus.dev-copilot" || entry === "nexus-dev-copilot" || entry.includes("copilot")) {
+        continue;
+      }
       const skillPath = path.join(dirPath, entry);
       try {
         const stat = fs.statSync(skillPath);

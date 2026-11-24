@@ -6,13 +6,9 @@ import {
   LayoutDashboard,
   FolderLock,
   Sparkles,
-  Brain,
-  BookOpen,
-    Settings,
+  Settings,
   AppWindow,
-  LayoutGrid,
   HelpCircle,
-  Heart,
 } from "lucide-react";
 import nexusLogo from "../assets/nexus.png";
 import type { ServerStatus, UserExperienceMode } from "../types.js";
@@ -25,7 +21,6 @@ export type NavPage =
   | "desktop"
   | "files"
   | "applications"
-  | "nexus-apps"
   | "browser"
   | "execution"
   | "ledger"
@@ -34,8 +29,6 @@ export type NavPage =
   | "mcp-tools"
   | "mcp-registry"
   | "skills"
-  | "memory"
-  | "knowledge"
   | "settings"
   // Legacy compatibility aliases
   | "jobs"
@@ -117,16 +110,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           label: tText("技能中心", "Skills Hub", "スキルハブ", "Skill-Zentrum"),
           icon: Sparkles,
         },
-        {
-          id: "memory",
-          label: tText("记忆库", "Memory", "メモリ", "Gedächtnis"),
-          icon: Brain,
-        },
-        {
-          id: "knowledge",
-          label: tText("知识库", "Knowledge", "ナレッジベース", "Wissensdatenbank"),
-          icon: BookOpen,
-        },
       ],
     },
     {
@@ -135,14 +118,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       items: [
         {
           id: "applications",
-          label: tText("外部应用工作台", "External Apps", "外部アプリ", "Externe Apps"),
+          label: tText("MCP 插件中心", "MCP Center", "MCP センター", "MCP-Zentrum"),
           icon: AppWindow,
           badgeStatus: "CONNECTED",
-        },
-        {
-          id: "nexus-apps",
-          label: tText("Nexus 专属应用", "Nexus Apps", "Nexus アプリ", "Nexus Apps"),
-          icon: LayoutGrid,
         },
       ],
     },
@@ -362,40 +340,40 @@ export const Sidebar: React.FC<SidebarProps> = ({
             type="button"
             onClick={onOpenSponsorModal}
             title={tText(
-              "赞助支持 Nexus (USDT / Binance)",
-              "Support Nexus (USDT / Binance)",
-              "Nexusを支援 (USDT / Binance)",
-              "Nexus unterstützen (USDT / Binance)"
+              "关注作者与开源项目矩阵",
+              "Follow Author & Projects",
+              "作者をフォロー & プロジェクト",
+              "Autor folgen & Projekte"
             )}
             className={`w-full flex items-center rounded-md text-xs transition cursor-pointer ${
               collapsed ? "justify-center p-2" : "gap-2.5 px-3 py-1.5"
-            } text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 hover:bg-emerald-500/10 border border-transparent`}
+            } text-sky-600 dark:text-sky-400 hover:text-sky-700 hover:bg-sky-500/10 border border-transparent`}
           >
-            <Heart className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+            <Sparkles className="w-3.5 h-3.5 text-sky-500 shrink-0" />
             {!collapsed && (
               <span className="font-medium">
                 {tText(
-                  "赞助支持",
-                  "Support Project",
-                  "プロジェクト支援",
-                  "Projekt unterstützen"
+                  "关注与生态",
+                  "Follow & About",
+                  "概要 & フォロー",
+                  "Über & Folgen"
                 )}
               </span>
             )}
           </button>
         )}
 
-        {/* Help & Documentation (GitHub) */}
+        {/* Help & Documentation (Author's Blog) */}
         <button
           type="button"
           onClick={() => {
-            window.open("https://github.com/ysunyang4/Nexus", "_blank");
+            window.open("https://blog.ycu.de5.net/", "_blank");
           }}
           title={tText(
-            "帮助与开源文档 (GitHub)",
-            "Help & Documentation (GitHub)",
-            "ヘルプとドキュメント (GitHub)",
-            "Hilfe & Dokumentation (GitHub)"
+            "详细使用教程与文档 (作者博客)",
+            "Detailed Tutorials & Documentation (Blog)",
+            "詳細チュートリアルとドキュメント (ブログ)",
+            "Ausführliche Tutorials & Dokumentation (Blog)"
           )}
           className={`w-full flex items-center rounded-md text-xs transition cursor-pointer ${
             collapsed ? "justify-center p-2" : "gap-2.5 px-3 py-1.5"

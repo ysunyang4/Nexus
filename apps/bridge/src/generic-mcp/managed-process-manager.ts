@@ -252,7 +252,7 @@ export class ManagedProcessManager {
         config.rawCommand = `uv run --with mcp-for-blender python "${blenderPath}"`;
         config.port = 9099;
         config.endpoint = "http://127.0.0.1:9099/mcp";
-        config.autoStart = true;
+        config.autoStart = false;
         break;
 
       case "photoshop-mcp":
@@ -947,9 +947,6 @@ export class ManagedProcessManager {
   }
 
   public deleteCustomService(id: string): { success: boolean; error?: string } {
-    if (id === "blender-mcp") {
-      return { success: false, error: "Cannot delete built-in preset service" };
-    }
     this.stopService(id);
     this.services.delete(id);
     this.persistConfigs();

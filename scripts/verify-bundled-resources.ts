@@ -128,7 +128,7 @@ async function verifyBundledServerMcpSchema() {
       headers: { authorization: `Bearer ${mgmtToken}` },
     });
     const statusData = (await statusRes.json()) as any;
-    if (statusData.toolsCount !== 332 && statusData.toolsCount !== 333 && statusData.toolsCount !== 361) {
+    if (statusData.toolsCount !== 332 && statusData.toolsCount !== 333 && statusData.toolsCount !== 340 && statusData.toolsCount !== 361) {
       throw new Error(`Bundled server /api/mcp/status toolsCount mismatch: expected 332, got ${statusData.toolsCount}`);
     }
 
@@ -199,7 +199,7 @@ async function verifyBundledServerMcpSchema() {
     const listData = await listRes.json();
     const tools = listData.result?.tools ?? [];
 
-    if (tools.length !== 332 && tools.length !== 333 && tools.length !== 456 && tools.length !== 361) {
+    if (tools.length !== 332 && tools.length !== 333 && tools.length !== 340 && tools.length !== 456 && tools.length !== 361) {
       throw new Error(`Bundled server tools/list returned ${tools.length} tools, expected 332 or 456!`);
     }
 

@@ -9,7 +9,6 @@ import { ProjectsPage } from "./pages/ProjectsPage.js";
 import { DesktopPage } from "./pages/computer/DesktopPage.js";
 import { FilesPage } from "./pages/computer/FilesPage.js";
 import { ApplicationsPage } from "./pages/computer/ApplicationsPage.js";
-import { NexusAppsPage } from "./pages/apps/NexusAppsPage.js";
 import { BrowserPage } from "./pages/computer/BrowserPage.js";
 import { ExecutionPage } from "./pages/execution/ExecutionPage.js";
 import { ActionLedgerPage } from "./pages/execution/ActionLedgerPage.js";
@@ -23,9 +22,7 @@ import { TokensPage } from "./pages/TokensPage.js";
 import { ApprovalsPage } from "./pages/ApprovalsPage.js";
 import { ActivityPage } from "./pages/ActivityPage.js";
 import { SkillsPage } from "./pages/SkillsPage.js";
-import { MemoryPage } from "./pages/MemoryPage.js";
 import { GlobalRulesPage } from "./pages/GlobalRulesPage.js";
-import { KnowledgeImportPage } from "./pages/KnowledgeImportPage.js";
 import { StoragePage } from "./pages/StoragePage.js";
 import { SettingsPage } from "./pages/SettingsPage.js";
 import { UnityWorkspacePage } from "./pages/unity/UnityWorkspacePage.js";
@@ -99,7 +96,7 @@ export const App: React.FC = () => {
 
   // Modals
   const [isSponsorModalOpen, setIsSponsorModalOpen] = useState(false);
-  const [contactModalCategory, setContactModalCategory] = useState<"community" | "contact">("community");
+  const [contactModalCategory, setContactModalCategory] = useState<"intro" | "projects">("intro");
   const [isAuthorizeModalOpen, setIsAuthorizeModalOpen] = useState(false);
   const [isCreateTokenModalOpen, setIsCreateTokenModalOpen] = useState(false);
   const [isEmergencyStopModalOpen, setIsEmergencyStopModalOpen] = useState(false);
@@ -401,14 +398,9 @@ export const App: React.FC = () => {
       breadcrumb: tText("电脑控制", "COMPUTER", "コンピューター制御", "COMPUTER"),
     },
     applications: {
-      title: tText("托管应用与窗口", "Managed Applications", "管理対象アプリとウィンドウ", "Verwaltete Anwendungen"),
-      subtitle: tText("原生桌面应用与窗口自动化控制", "Desktop Application & Window Automation", "デスクトップアプリとウィンドウ自動化", "Anwendungs- & Fensterautomatisierung"),
-      breadcrumb: tText("电脑控制", "COMPUTER", "コンピューター制御", "COMPUTER"),
-    },
-    "nexus-apps": {
-      title: tText("Nexus 专属应用中心", "Nexus Dedicated Apps", "Nexus 専用アプリセンター", "Nexus Dedizierte Apps"),
-      subtitle: tText("深度定制的本地高频生产力工具 • 原生环境与数据沙箱隔离", "Native AI Productivity Apps & Data Sandboxes", "ネイティブAI生産性アプリとデータサンドボックス", "Native KI-Produktivitäts-Apps & Sandboxes"),
-      breadcrumb: tText("电脑控制", "COMPUTER", "コンピューター制御", "COMPUTER"),
+      title: tText("MCP 插件中心", "MCP Plugin Center", "MCP プラグインセンター", "MCP-Plugin-Zentrum"),
+      subtitle: tText("发现、安装、配置与管理标准 MCP 扩展服务", "Discover, install and manage standard MCP extensions", "MCP拡張サービスの検出・インストール・管理", "Standard-MCP-Dienste erkennen, installieren und verwalten"),
+      breadcrumb: tText("应用", "APPLICATIONS", "アプリケーション", "ANWENDUNGEN"),
     },
     browser: {
       title: tText("浏览器自动化", "Browser Automation", "ブラウザ自動化", "Browser-Automatisierung"),
@@ -448,16 +440,6 @@ export const App: React.FC = () => {
     skills: {
       title: tText("技能中心", "Executable Skills", "スキルセンター", "Skill-Zentrum"),
       subtitle: tText("确定性本地任务工作流与执行规范", "Deterministic Workflows & Automation Tasks", "確定的なローカルタスクワークフローと実行仕様", "Deterministische Workflows & Automatisierungsaufgaben"),
-      breadcrumb: tText("智能管理", "INTELLIGENCE", "インテリジェンス", "INTELLIGENZ"),
-    },
-    memory: {
-      title: tText("记忆库运行时", "Memory Store", "メモリリポジトリ", "Gedächtnis-Speicher"),
-      subtitle: tText("服务端权威 SQLite/WAL 智能持久化事实源", "SQLite Authoritative Fact & Knowledge Store", "SQLite/WAL 事実と知識ストア", "SQLite Fakten- & Wissensspeicher"),
-      breadcrumb: tText("智能管理", "INTELLIGENCE", "インテリジェンス", "INTELLIGENZ"),
-    },
-    knowledge: {
-      title: tText("知识文档库", "Knowledge Documents", "ナレッジベース文書", "Wissensdokumente"),
-      subtitle: tText("自动化摄取、智能分类与去重机制", "Indexed Documents & Deduplicated Chunks", "インデックス付きドキュメントと重複排除チャンク", "Indizierte Dokumente & Deduplizierte Chunks"),
       breadcrumb: tText("智能管理", "INTELLIGENCE", "インテリジェンス", "INTELLIGENZ"),
     },
     settings: {
@@ -508,15 +490,15 @@ export const App: React.FC = () => {
         runnersCount={serverStatus?.runners_connected ?? 0}
         uxMode={uxMode}
         onOpenSponsorModal={() => {
-          setContactModalCategory("contact");
+          setContactModalCategory("intro");
           setIsSponsorModalOpen(true);
         }}
         onOpenCommunityModal={() => {
-          setContactModalCategory("community");
+          setContactModalCategory("projects");
           setIsSponsorModalOpen(true);
         }}
         onOpenContactModal={() => {
-          setContactModalCategory("contact");
+          setContactModalCategory("intro");
           setIsSponsorModalOpen(true);
         }}
       />
@@ -623,7 +605,6 @@ export const App: React.FC = () => {
             {currentPage === "files" && <FilesPage projects={projects} />}
 
             {currentPage === "applications" && <ApplicationsPage />}
-            {currentPage === "nexus-apps" && <NexusAppsPage />}
             {currentPage === "unity" && <UnityWorkspacePage />}
 
             {currentPage === "browser" && <BrowserPage />}
@@ -648,10 +629,6 @@ export const App: React.FC = () => {
                 projectId={selectedProjectId ?? undefined}
               />
             )}
-
-            {currentPage === "memory" && <MemoryPage />}
-
-            {currentPage === "knowledge" && <KnowledgeImportPage />}
 
             
             {currentPage === "settings" && (

@@ -301,6 +301,10 @@ If **Nexus** has accelerated your research, engineering workflow, or daily devel
 
 ### Supported Contribution Channels
 
+| 🟢 WeChat Pay | 🔵 Alipay | 🟡 Binance Pay |
+| :---: | :---: | :---: |
+| <img src="docs/assets/wechat-pay.jpg" width="210" alt="WeChat Pay" /> | <img src="docs/assets/alipay.jpg" width="210" alt="Alipay" /> | <img src="docs/assets/binance-pay.jpg" width="210" alt="Binance Pay" /> |
+
 | Method | Network / Platform | Address / Account | Notes |
 | :--- | :--- | :--- | :--- |
 | **USDT (on-chain)** | **TRON (TRC-20)** | `TPRrDW8DGsrDmcnWvanTbFz7XEJuywu21i` | Transfer from any wallet or exchange via **TRON (TRC-20)** |

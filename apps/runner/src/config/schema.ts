@@ -16,7 +16,13 @@ export const RunnerDaemonConfigSchema = z.object({
       factor: z.number().positive().default(2),
       jitter: z.boolean().default(true),
     })
-    .default({}),
+    .default({
+      enabled: true,
+      initialDelayMs: 1000,
+      maxDelayMs: 30000,
+      factor: 2,
+      jitter: true,
+    }),
   logging: z
     .object({
       level: z
@@ -24,7 +30,10 @@ export const RunnerDaemonConfigSchema = z.object({
         .default("info"),
       pretty: z.boolean().default(false),
     })
-    .default({}),
+    .default({
+      level: "info",
+      pretty: false,
+    }),
 });
 
 export type RunnerDaemonConfig = z.infer<typeof RunnerDaemonConfigSchema>;

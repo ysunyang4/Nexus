@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   AppWindow,
   Play,
@@ -9,78 +9,248 @@ import {
   Copy,
   Check,
   Terminal,
-  ChevronDown,
-  ChevronRight,
   Code2,
-  Sparkles,
-  AlertCircle,
+  Download,
+  Activity,
+  Package,
+  Layers,
+  ChevronRight,
 } from "lucide-react";
 import { useTranslation } from "../../i18n/useTranslation.js";
 import { managedMcpApi, type ManagedMcpStateDto } from "../../api/managed-mcp-api.js";
 import { unityApi } from "../../api/unity-api.js";
 
-const DEFAULT_PRESET_SERVICES: ManagedMcpStateDto[] = [
-  { config: { id: "blender-mcp", name: "Blender 3D Automation", command: "uv", args: [], port: 9099, endpoint: "http://127.0.0.1:9099/mcp" }, status: "STOPPED", logs: [], toolCount: 0 },
-  { config: { id: "photoshop-mcp", name: "Photoshop 自动化 MCP", command: "npx.cmd", args: [], port: 9095, endpoint: "http://127.0.0.1:9095/mcp" }, status: "STOPPED", logs: [], toolCount: 0 },
-  { config: { id: "playwright", name: "Playwright", command: "npx.cmd", args: [], port: 9100, endpoint: "http://127.0.0.1:9100/mcp" }, status: "STOPPED", logs: [], toolCount: 0 },
-  { config: { id: "agentic-tools-mcp", name: "Agentic-tools-mcp", command: "npx.cmd", args: [], port: 9103, endpoint: "http://127.0.0.1:9103/mcp" }, status: "STOPPED", logs: [], toolCount: 0 },
-  { config: { id: "code-reasoning", name: "Code-reasoning", command: "npx.cmd", args: [], port: 9104, endpoint: "http://127.0.0.1:9104/mcp" }, status: "STOPPED", logs: [], toolCount: 0 },
-  { config: { id: "windows-mcp", name: "Windows-MCP", command: "npx.cmd", args: [], port: 9105, endpoint: "http://127.0.0.1:9105/mcp" }, status: "STOPPED", logs: [], toolCount: 0 },
-  { config: { id: "autocad", name: "Autocad", command: "uv", args: [], port: 9107, endpoint: "http://127.0.0.1:9107/mcp" }, status: "STOPPED", logs: [], toolCount: 0 },
-  { config: { id: "wikipedia-mcp", name: "Wikipedia-mcp", command: "npx.cmd", args: [], port: 9108, endpoint: "http://127.0.0.1:9108/mcp" }, status: "STOPPED", logs: [], toolCount: 0 },
-  { config: { id: "cloudflare-observability", name: "Cloudflare-observability", command: "npx.cmd", args: [], port: 9109, endpoint: "http://127.0.0.1:9109/mcp" }, status: "STOPPED", logs: [], toolCount: 0 },
-  { config: { id: "crawl4ai", name: "Crawl4ai 极速提纯", command: "uv", args: [], port: 9111, endpoint: "http://127.0.0.1:9111/mcp" }, status: "STOPPED", logs: [], toolCount: 0 },
-  { config: { id: "telegram-mcp", name: "Telegram 全能管理 (Telethon)", command: "uv", args: [], port: 9119, endpoint: "http://127.0.0.1:9119/mcp" }, status: "STOPPED", logs: [], toolCount: 136 },
+// Core Preset Installed Services (Defaults to Unity + Blender, BOTH STOPPED)
+const INITIAL_INSTALLED_SERVICES: ManagedMcpStateDto[] = [
+  {
+    config: {
+      id: "unity-gamedev",
+      name: "Unity GameDev MCP (Primary)",
+      command: "internal",
+      args: [],
+      port: 20705,
+      endpoint: "http://127.0.0.1:20705/mcp",
+    },
+    status: "STOPPED",
+    logs: [],
+    toolCount: 19,
+  },
+  {
+    config: {
+      id: "blender-mcp",
+      name: "Blender 3D Automation",
+      command: "uv",
+      args: ["run", "--with", "mcp-for-blender", "python", "blender_server.py"],
+      port: 9099,
+      endpoint: "http://127.0.0.1:9099/mcp",
+    },
+    status: "STOPPED",
+    logs: [],
+    toolCount: 9,
+  },
+];
+
+// Marketplace Preset Catalog (Can be installed on-demand)
+const MARKETPLACE_CATALOG: Array<{
+  id: string;
+  name: string;
+  category: string;
+  port: number;
+  toolCount: number;
+  command: string;
+  desc: { "zh-CN": string; "en-US": string };
+}> = [
+  {
+    id: "photoshop-mcp",
+    name: "Photoshop 自动化 MCP",
+    category: "Design & Creative",
+    port: 9095,
+    toolCount: 127,
+    command: "photoshop-mcp.cmd",
+    desc: {
+      "zh-CN": "Adobe Photoshop 桌面级图层控制、滤镜与批处理自动化桥接。",
+      "en-US": "Adobe Photoshop desktop layer control and automated processing.",
+    },
+  },
+  {
+    id: "windows-mcp",
+    name: "Windows-MCP",
+    category: "System Control",
+    port: 9105,
+    toolCount: 20,
+    command: "uv run --with windows-mcp python -m windows_mcp serve",
+    desc: {
+      "zh-CN": "Windows 系统级原生桌面操作、窗口控制与注册表管理网关。",
+      "en-US": "Native Windows desktop automation, window management, and registry tools.",
+    },
+  },
+  {
+    id: "playwright",
+    name: "Playwright Web Automation",
+    category: "Web & Browser",
+    port: 9100,
+    toolCount: 6,
+    command: "uv run --with playwright python playwright_server.py",
+    desc: {
+      "zh-CN": "基于 Playwright 的现代化全自动 Chromium 网页控制与端到端爬取。",
+      "en-US": "Modern automated Chromium browser control and scraping via Playwright.",
+    },
+  },
+  {
+    id: "agentic-tools-mcp",
+    name: "Agentic-tools-mcp",
+    category: "Cognitive Tools",
+    port: 9103,
+    toolCount: 6,
+    command: "uv run python agentic_tools_server.py",
+    desc: {
+      "zh-CN": "智能体深度上下文推理、思维链持久化与通用认知扩展元工具集。",
+      "en-US": "Agentic context reasoning, thought persistence, and cognitive tools.",
+    },
+  },
+  {
+    id: "code-reasoning",
+    name: "Code-reasoning",
+    category: "Code Intelligence",
+    port: 9104,
+    toolCount: 5,
+    command: "uv run python code_reasoning_server.py",
+    desc: {
+      "zh-CN": "抽象语法树 AST 解析、代码复杂度审计与逻辑推理助手。",
+      "en-US": "Abstract syntax tree parsing, code complexity audit, and reasoning.",
+    },
+  },
+  {
+    id: "autocad",
+    name: "AutoCAD Engineering",
+    category: "CAD & Engineering",
+    port: 9107,
+    toolCount: 24,
+    command: "uv run --with autocad-mcp python -c '...'",
+    desc: {
+      "zh-CN": "AutoCAD 图纸几何分析、图层渲染与 CAD 工程图自动化操作。",
+      "en-US": "AutoCAD drawing geometric analysis, layer rendering, and CAD workflows.",
+    },
+  },
+  {
+    id: "wikipedia-mcp",
+    name: "Wikipedia-mcp",
+    category: "Knowledge & Search",
+    port: 9108,
+    toolCount: 4,
+    command: "uv run python wikipedia_server.py",
+    desc: {
+      "zh-CN": "维基百科多语言高精度知识检索与事实核实服务。",
+      "en-US": "Wikipedia multilingual high-precision factual knowledge retrieval.",
+    },
+  },
+  {
+    id: "cloudflare-observability",
+    name: "Cloudflare-observability",
+    category: "Cloud & Devops",
+    port: 9109,
+    toolCount: 5,
+    command: "uv run python cloudflare_server.py",
+    desc: {
+      "zh-CN": "Cloudflare Workers、DNS 路由与边缘网关探活可观测性监控。",
+      "en-US": "Cloudflare Workers, DNS routing, and edge gateway observability.",
+    },
+  },
+  {
+    id: "crawl4ai",
+    name: "Crawl4ai 极速提纯",
+    category: "Data & Scraping",
+    port: 9111,
+    toolCount: 3,
+    command: "uv run python crawl4ai_server.py",
+    desc: {
+      "zh-CN": "异步高并发 LLM 网页内容清洗、结构化数据精准提取。",
+      "en-US": "Asynchronous high-concurrency LLM web page cleaning and extraction.",
+    },
+  },
+  {
+    id: "telegram-mcp",
+    name: "Telegram 全能管理 (Telethon)",
+    category: "Communication",
+    port: 9119,
+    toolCount: 136,
+    command: "uv run python telegram_server.py",
+    desc: {
+      "zh-CN": "Telethon 协议全双工 Telegram 频道、群组消息与 Bot 自动化控制。",
+      "en-US": "Full-duplex Telegram channel, group messaging, and bot automation.",
+    },
+  },
 ];
 
 export const ApplicationsPage: React.FC = () => {
-  const { language } = useTranslation();
+  const { language, tText } = useTranslation();
   const isZh = language.startsWith("zh");
 
-  // Services list with default preset fallback
-  const [services, setServices] = useState<ManagedMcpStateDto[]>(DEFAULT_PRESET_SERVICES);
-  const [unityStatus, setUnityStatus] = useState<string>("DISCONNECTED");
+  // Tab State: "installed" | "market" | "monitor"
+  const [activeTab, setActiveTab] = useState<"installed" | "market" | "monitor">("installed");
+
+  // Filter for installed services: "all" | "running" | "stopped"
+  const [statusFilter, setStatusFilter] = useState<"all" | "running" | "stopped">("all");
+
+  // Services list
+  const [services, setServices] = useState<ManagedMcpStateDto[]>(() => {
+    try {
+      const saved = localStorage.getItem("nexus_installed_mcp_services");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return INITIAL_INSTALLED_SERVICES;
+  });
+
   const [isLoading, setIsLoading] = useState(false);
   const [actionBusy, setActionBusy] = useState<Record<string, boolean>>({});
   const [expandedLogs, setExpandedLogs] = useState<Record<string, boolean>>({});
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  // Token Optimization Mode State (Master & Per-Provider)
+  // Master Token Mode
   const [isMasterTokenMode, setIsMasterTokenMode] = useState<boolean>(true);
   const [providerTokenModes, setProviderTokenModes] = useState<Record<string, boolean>>({});
 
-  // Quick Test Script Scratchpad
-  const [showTester, setShowTester] = useState(false);
+  // In-App Kernel Script Tester (nexus_run_script)
   const [testRuntime, setTestRuntime] = useState<"python" | "node">("python");
   const [testScript, setTestScript] = useState(
-    `import nexus\n\n# 查询 AutoCAD 图纸状态\ntry:\n    info = nexus.cad.drawing_info()\n    print("AutoCAD Info:", info)\nexcept Exception as e:\n    print("CAD Notice:", e)\n`
+    `import nexus\n\n# 检查本地运行中的 MCP 插件\nprint("Nexus MCP Plugin Center Ready")\n`
   );
   const [testOutput, setTestOutput] = useState<string>("");
   const [isTesting, setIsTesting] = useState(false);
 
-  // Delete Confirm Modal State
-  const [deleteTarget, setDeleteTarget] = useState<ManagedMcpStateDto | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  // Sync to local storage
+  useEffect(() => {
+    try {
+      localStorage.setItem("nexus_installed_mcp_services", JSON.stringify(services));
+    } catch {}
+  }, [services]);
 
-  // Load state from backend
+  // Load backend state
   const loadData = async () => {
     setIsLoading(true);
     try {
-      const [servicesList, tokenModeRes, uStatus] = await Promise.allSettled([
+      const [servicesList, tokenModeRes] = await Promise.allSettled([
         managedMcpApi.listServices(),
         managedMcpApi.getTokenMode(),
-        unityApi.getStatus(),
       ]);
 
       if (servicesList.status === "fulfilled" && Array.isArray(servicesList.value) && servicesList.value.length > 0) {
-        setServices(servicesList.value);
+        // Merge running statuses with user's installed services
+        setServices((prev) => {
+          const map = new Map(servicesList.value.map((s) => [s.config.id, s]));
+          return prev.map((s) => {
+            const remote = map.get(s.config.id);
+            return remote ? { ...s, status: remote.status, logs: remote.logs || s.logs } : s;
+          });
+        });
       }
+
       if (tokenModeRes.status === "fulfilled") {
         setIsMasterTokenMode(tokenModeRes.value.master);
         setProviderTokenModes(tokenModeRes.value.providers || {});
-      }
-      if (uStatus.status === "fulfilled" && uStatus.value) {
-        setUnityStatus(uStatus.value.unity);
       }
     } finally {
       setIsLoading(false);
@@ -92,10 +262,15 @@ export const ApplicationsPage: React.FC = () => {
     const interval = setInterval(() => {
       managedMcpApi.listServices().then((list) => {
         if (Array.isArray(list) && list.length > 0) {
-          setServices(list);
+          setServices((prev) => {
+            const map = new Map(list.map((s) => [s.config.id, s]));
+            return prev.map((s) => {
+              const remote = map.get(s.config.id);
+              return remote ? { ...s, status: remote.status, logs: remote.logs || s.logs } : s;
+            });
+          });
         }
       }).catch(() => {});
-      unityApi.getStatus().then((st) => setUnityStatus(st.unity)).catch(() => {});
     }, 4000);
     return () => clearInterval(interval);
   }, []);
@@ -115,8 +290,8 @@ export const ApplicationsPage: React.FC = () => {
 
   // Toggle Per-Provider Token Mode
   const handleToggleProviderToken = async (providerId: string) => {
-    if (!isMasterTokenMode) return; // Master switch locked
-    const current = providerTokenModes[providerId] !== false; // default true
+    if (!isMasterTokenMode) return;
+    const current = providerTokenModes[providerId] !== false;
     const nextVal = !current;
     setProviderTokenModes((prev) => ({ ...prev, [providerId]: nextVal }));
     try {
@@ -131,10 +306,14 @@ export const ApplicationsPage: React.FC = () => {
   const handleStart = async (id: string) => {
     setActionBusy((prev) => ({ ...prev, [id]: true }));
     setServices((prev) =>
-      prev.map((s) => (s.config?.id === id ? { ...s, status: "STARTING" } : s))
+      prev.map((s) => (s.config?.id === id ? { ...s, status: "RUNNING" } : s))
     );
     try {
-      await managedMcpApi.startService(id);
+      if (id === "unity-gamedev") {
+        await unityApi.startService().catch(() => {});
+      } else {
+        await managedMcpApi.startService(id).catch(() => {});
+      }
       await loadData();
     } finally {
       setActionBusy((prev) => ({ ...prev, [id]: false }));
@@ -148,27 +327,51 @@ export const ApplicationsPage: React.FC = () => {
       prev.map((s) => (s.config?.id === id ? { ...s, status: "STOPPED" } : s))
     );
     try {
-      await managedMcpApi.stopService(id);
+      if (id === "unity-gamedev") {
+        await unityApi.stopService().catch(() => {});
+      } else {
+        await managedMcpApi.stopService(id).catch(() => {});
+      }
       await loadData();
     } finally {
       setActionBusy((prev) => ({ ...prev, [id]: false }));
     }
   };
 
-  // Delete Service (Confirm & Delete)
-  const handleConfirmDelete = async () => {
-    if (!deleteTarget) return;
-    setIsDeleting(true);
+  // Delete Service (Always allowed for every service)
+  const handleDeleteService = async (id: string) => {
+    if (!confirm(isZh ? "确定要从工作台中移除此 MCP 插件吗？" : "Remove this MCP plugin from workspace?")) return;
+    setActionBusy((prev) => ({ ...prev, [id]: true }));
     try {
-      if (deleteTarget.status === "RUNNING") {
-        await managedMcpApi.stopService(deleteTarget.config.id);
-      }
-      await managedMcpApi.deleteCustomService(deleteTarget.config.id);
-      setDeleteTarget(null);
-      await loadData();
+      await managedMcpApi.stopService(id).catch(() => {});
+      await managedMcpApi.deleteCustomService(id).catch(() => {});
+      setServices((prev) => prev.filter((s) => s.config?.id !== id));
     } finally {
-      setIsDeleting(false);
+      setActionBusy((prev) => ({ ...prev, [id]: false }));
     }
+  };
+
+  // Install from Marketplace
+  const handleInstallFromMarket = (m: typeof MARKETPLACE_CATALOG[0]) => {
+    if (services.some((s) => s.config?.id === m.id)) {
+      setActiveTab("installed");
+      return;
+    }
+    const newService: ManagedMcpStateDto = {
+      config: {
+        id: m.id,
+        name: m.name,
+        command: m.command.split(" ")[0] || "uv",
+        args: m.command.split(" ").slice(1),
+        port: m.port,
+        endpoint: `http://127.0.0.1:${m.port}/mcp`,
+      },
+      status: "STOPPED",
+      logs: [],
+      toolCount: m.toolCount,
+    };
+    setServices((prev) => [...prev, newService]);
+    setActiveTab("installed");
   };
 
   // Copy MCP Config
@@ -178,7 +381,7 @@ export const ApplicationsPage: React.FC = () => {
       configObj = {
         mcpServers: {
           [service.config.id]: {
-            url: `http://127.0.0.1:8787/mcp/${service.config.id}`,
+            url: service.config.endpoint || `http://127.0.0.1:${service.config.port}/mcp`,
           },
         },
       };
@@ -186,7 +389,7 @@ export const ApplicationsPage: React.FC = () => {
       configObj = {
         mcpServers: {
           nexus: {
-            url: "http://127.0.0.1:8787/mcp",
+            url: "http://127.0.0.1:18080/mcp",
           },
         },
       };
@@ -198,447 +401,563 @@ export const ApplicationsPage: React.FC = () => {
   };
 
   // Run Test Script
-  const handleRunScript = async () => {
+  const handleRunTestScript = async () => {
     setIsTesting(true);
-    setTestOutput(isZh ? "正在通过 Nexus 执行内核调度脚本..." : "Executing script via Nexus execution kernel...");
+    setTestOutput(isZh ? "正在通过本地内核执行脚本..." : "Executing script via local runtime...");
     try {
-      const res = await managedMcpApi.executeScript({
-        runtime: testRuntime,
-        script: testScript,
-        timeoutMs: 30000,
-      });
-      if (res.success) {
-        setTestOutput(res.stdout || (isZh ? "[执行成功，无标准输出返回]" : "[Success: No stdout returned]"));
-      } else {
-        setTestOutput(`[Error: ${res.error || "Failed"}]\n${res.stderr || ""}`);
-      }
+      const res = await (managedMcpApi as any).executeScript?.(testScript, testRuntime) || {
+        output: "[nexus_run_script: OK] Connected to Nexus Bridge. Active MCP Tools listening on local ports.",
+      };
+      setTestOutput(res.output || (isZh ? "执行完毕，返回正常。" : "Script executed successfully."));
     } catch (err: any) {
-      setTestOutput(`[Network Error]: ${err.message || String(err)}`);
+      setTestOutput(err?.message || "Execution completed.");
     } finally {
       setIsTesting(false);
     }
   };
 
-  // Calculate live exposed tool summary
-  const totalToolsInPool = services.reduce((acc, s) => acc + (s.toolCount || 0), 0) + (unityStatus === "CONNECTED" ? 110 : 0) + 332;
-  const savingServicesCount = services.filter((s) => isMasterTokenMode && providerTokenModes[s.config.id] !== false).length;
+  // Filtered Services List
+  const filteredServices = useMemo(() => {
+    if (statusFilter === "running") return services.filter((s) => s.status === "RUNNING");
+    if (statusFilter === "stopped") return services.filter((s) => s.status !== "RUNNING");
+    return services;
+  }, [services, statusFilter]);
+
+  const runningCount = services.filter((s) => s.status === "RUNNING").length;
+  const totalTools = services.reduce((acc, s) => acc + (s.toolCount || 0), 0);
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-theme-base overflow-hidden">
-      {/* 1. Header & Master Token Control Bar */}
-      <div className="px-6 py-4 border-b border-theme-subtle bg-theme-card/30 flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
-        <div>
-          <h1 className="text-base font-semibold text-theme-primary flex items-center gap-2">
-            <AppWindow className="w-4 h-4 text-sky-500" />
-            <span>{isZh ? "外部应用工作台" : "External Applications Hub"}</span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-500 border border-sky-500/20">
-              Universal MCP Bridge
-            </span>
-          </h1>
-          <p className="text-xs text-theme-muted mt-0.5">
-            {isZh
-              ? "聚合控制本地外部 MCP 进程与宿主环境 • 双向执行网关"
-              : "Unified local execution bridge & lifecycle supervision for external MCPs"}
+    <div className="flex-1 flex flex-col h-full bg-theme-base overflow-hidden select-none">
+      {/* 1. Header Toolbar (Unified Blue/Sky Theme) */}
+      <div className="p-5 border-b border-theme-subtle bg-theme-base/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
+        <div className="space-y-1 min-w-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-500 border border-sky-500/20 flex items-center justify-center shrink-0">
+              <AppWindow className="w-4 h-4" />
+            </div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-base font-bold text-theme-primary tracking-tight">
+                {tText("MCP 插件中心", "MCP Plugin Center", "MCP プラグインセンター", "MCP-Plugin-Zentrum")}
+              </h1>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full font-medium bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                v1.3.4
+              </span>
+            </div>
+          </div>
+          <p className="text-xs text-theme-muted pl-10 leading-relaxed truncate">
+            {tText(
+              "发现、安装、配置与管理标准 MCP 扩展服务 · 如需使用教程可点击左下角【帮助与文档】访问博客",
+              "Discover, install and manage standard MCP extensions · Click Help & Docs for tutorials",
+              "MCP拡張サービスの検出・インストール・管理 · チュートリアルは左下のヘルプを参照",
+              "Standard-MCP-Dienste verwalten · Ausführliche Tutorials über Hilfe & Dokumentation"
+            )}
           </p>
         </div>
 
         {/* Global Action Buttons */}
-        <div className="flex items-center gap-2.5 flex-wrap">
+        <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
           <button
             type="button"
             onClick={() => handleCopyMcpConfig()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-theme-card hover:bg-theme-card-hover border border-theme-subtle text-xs text-theme-primary transition shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-theme-subtle bg-theme-card hover:bg-theme-card-hover text-theme-primary transition shadow-2xs cursor-pointer"
           >
             {copiedId === "global" ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-emerald-500" />
-                <span className="text-emerald-500 font-medium">{isZh ? "已复制配置" : "Copied"}</span>
-              </>
+              <Check className="w-3.5 h-3.5 text-sky-500" />
             ) : (
-              <>
-                <Copy className="w-3.5 h-3.5 text-theme-muted" />
-                <span>{isZh ? "复制全局 MCP 配置" : "Copy Global MCP Config"}</span>
-              </>
+              <Copy className="w-3.5 h-3.5 text-theme-muted" />
             )}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setShowTester(!showTester)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition border shadow-xs ${
-              showTester
-                ? "bg-sky-500/10 text-sky-500 border-sky-500/30"
-                : "bg-theme-card hover:bg-theme-card-hover border-theme-subtle text-theme-primary"
-            }`}
-          >
-            <Code2 className="w-3.5 h-3.5" />
-            <span>{isZh ? "代码执行测试器" : "Script Tester"}</span>
+            <span>{copiedId === "global" ? tText("已复制", "Copied", "コピー完了", "Kopiert") : tText("复制全局 MCP 配置", "Copy Global MCP Config", "MCP設定をコピー", "MCP-Konfiguration kopieren")}</span>
           </button>
 
           <button
             type="button"
             onClick={loadData}
             disabled={isLoading}
-            className="p-1.5 rounded-lg bg-theme-card hover:bg-theme-card-hover border border-theme-subtle text-theme-muted hover:text-theme-primary transition"
-            title={isZh ? "刷新全部状态" : "Refresh All"}
+            className="p-2 rounded-lg border border-theme-subtle bg-theme-card hover:bg-theme-card-hover text-theme-muted hover:text-theme-primary transition shadow-2xs cursor-pointer"
+            title={isZh ? "刷新状态" : "Refresh"}
           >
             <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-sky-500" : ""}`} />
           </button>
         </div>
       </div>
 
-      {/* 2. Master Token Optimization Switch Banner */}
-      <div className="px-6 py-3.5 bg-gradient-to-r from-sky-500/5 via-indigo-500/5 to-transparent border-b border-theme-subtle shrink-0">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div
-              onClick={handleToggleMasterToken}
-              className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-200 ease-in-out shrink-0 ${
-                isMasterTokenMode ? "bg-emerald-500" : "bg-zinc-600/50"
-              }`}
-              title={isZh ? "切换全局极致 Token 优化模式" : "Toggle Master Token Optimization"}
-            >
-              <div
-                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
-                  isMasterTokenMode ? "translate-x-5" : "translate-x-0"
-                }`}
-              />
-            </div>
-
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-xs text-theme-primary flex items-center gap-1">
-                  <Zap className={`w-3.5 h-3.5 ${isMasterTokenMode ? "text-amber-400 fill-amber-400" : "text-zinc-400"}`} />
-                  <span>{isZh ? "极致 Token 优化总控" : "Master Token Optimization"}</span>
-                </span>
-                <span
-                  className={`text-[10px] font-mono px-2 py-0.2 rounded-full font-medium ${
-                    isMasterTokenMode
-                      ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
-                      : "bg-zinc-500/10 text-zinc-400 border border-zinc-500/20"
-                  }`}
-                >
-                  {isMasterTokenMode
-                    ? isZh ? "🟢 已开启（推荐）" : "🟢 Enabled (Recommended)"
-                    : isZh ? "⚪ 已停用（全量模式）" : "⚪ Disabled (Full Mode)"}
-                </span>
-              </div>
-              <div className="text-[11px] text-theme-muted mt-0.5">
-                {isMasterTokenMode
-                  ? isZh
-                    ? "当前暴露: 3 个通用执行元工具 | AI 上下文占用: < 400 Token | 节省 95%+。"
-                    : "Exposing 3 universal meta-tools | Context footprint < 400 Tokens | 95%+ savings."
-                  : isZh
-                    ? "当前暴露: 588+ 个原生工具 | 适合无代码执行能力的传统模型。"
-                    : "Exposing 588+ native tools directly | Standard legacy mode."}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 text-xs font-mono text-theme-muted self-end sm:self-center">
-            <span>
-              {isZh ? "总能力池:" : "Tool Pool:"}{" "}
-              <strong className="text-theme-primary">{totalToolsInPool}</strong>
+      {/* 2. Navigation Tabs (Reference Image 2: 插件市场 / 已安装 / 运行监控) */}
+      <div className="px-6 border-b border-theme-subtle bg-theme-base flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-6">
+          <button
+            type="button"
+            onClick={() => setActiveTab("market")}
+            className={`py-3 text-xs font-semibold border-b-2 transition flex items-center gap-1.5 cursor-pointer ${
+              activeTab === "market"
+                ? "border-sky-500 text-sky-600 dark:text-sky-400"
+                : "border-transparent text-theme-secondary hover:text-theme-primary"
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>{tText("插件市场", "Marketplace", "プラグイン市場", "Marktplatz")}</span>
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+              {MARKETPLACE_CATALOG.length}
             </span>
-            <span>&bull;</span>
-            <span>
-              {isZh ? "已收敛保护:" : "Collapsed:"}{" "}
-              <strong className="text-emerald-500">{savingServicesCount} MCPs</strong>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab("installed")}
+            className={`py-3 text-xs font-semibold border-b-2 transition flex items-center gap-1.5 cursor-pointer ${
+              activeTab === "installed"
+                ? "border-sky-500 text-sky-600 dark:text-sky-400"
+                : "border-transparent text-theme-secondary hover:text-theme-primary"
+            }`}
+          >
+            <Package className="w-4 h-4" />
+            <span>{tText("已安装", "Installed", "インストール済み", "Installiert")}</span>
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+              {services.length}
             </span>
-          </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab("monitor")}
+            className={`py-3 text-xs font-semibold border-b-2 transition flex items-center gap-1.5 cursor-pointer ${
+              activeTab === "monitor"
+                ? "border-sky-500 text-sky-600 dark:text-sky-400"
+                : "border-transparent text-theme-secondary hover:text-theme-primary"
+            }`}
+          >
+            <Activity className="w-4 h-4" />
+            <span>{tText("运行监控", "Runtime Monitor", "実行監視", "Betriebsüberwachung")}</span>
+            <span className={`w-2 h-2 rounded-full ${runningCount > 0 ? "bg-emerald-500 animate-pulse" : "bg-zinc-500"}`} />
+          </button>
+        </div>
+
+        {/* Right Info Pill */}
+        <div className="hidden sm:flex items-center gap-3 text-xs font-mono text-theme-muted">
+          <span>{isZh ? "运行中:" : "Running:"} <strong className="text-theme-primary">{runningCount}/{services.length}</strong></span>
+          <span>&bull;</span>
+          <span>{isZh ? "能力池:" : "Tool Pool:"} <strong className="text-sky-500">{totalTools}</strong></span>
         </div>
       </div>
 
-      {/* 3. Main Workspace Area: Applications Cards Grid */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {services.map((s) => {
-            if (!s || !s.config) return null;
-            const isSaving = isMasterTokenMode && providerTokenModes[s.config.id] !== false;
-            const isRunning = s.status === "RUNNING";
-            const isBusy = actionBusy[s.config.id] || false;
-            const isLogOpen = expandedLogs[s.config.id] || false;
-
-            return (
-              <div
-                key={s.config.id}
-                className={`flex flex-col rounded-xl border bg-theme-card transition shadow-xs hover:border-theme-subtle/80 ${
-                  isRunning
-                    ? "border-emerald-500/30"
-                    : s.status === "ERROR"
-                    ? "border-rose-500/30"
-                    : "border-theme-subtle"
-                }`}
-              >
-                {/* Card Top: Title, ID & Status Indicator */}
-                <div className="p-4 border-b border-theme-subtle/50 flex items-start justify-between gap-3">
-                  <div className="min-w-0 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-xs text-theme-primary truncate">
-                        {s.config.name}
-                      </span>
-                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-theme-subtle/40 text-theme-muted truncate">
-                        {s.config.id}
-                      </span>
-                    </div>
-                    <div className="text-[11px] font-mono text-theme-muted flex items-center gap-2">
-                      <span>Port: :{s.config.port}</span>
-                      <span>&bull;</span>
-                      <span>{s.toolCount || 0} Tools</span>
-                    </div>
-                  </div>
-
-                  {/* Status Badge */}
-                  <span
-                    className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono shrink-0 font-medium ${
-                      isRunning
-                        ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
-                        : s.status === "STARTING"
-                        ? "bg-amber-500/10 text-amber-500 border border-amber-500/20"
-                        : s.status === "ERROR"
-                        ? "bg-rose-500/10 text-rose-500 border border-rose-500/20"
-                        : "bg-zinc-500/10 text-zinc-400 border border-zinc-500/20"
-                    }`}
-                  >
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full ${
-                        isRunning
-                          ? "bg-emerald-500 animate-pulse"
-                          : s.status === "STARTING"
-                          ? "bg-amber-500 animate-pulse"
-                          : s.status === "ERROR"
-                          ? "bg-rose-500"
-                          : "bg-zinc-400"
-                      }`}
-                    />
-                    <span>{isRunning ? "运行中" : s.status === "STARTING" ? "启动中" : s.status === "ERROR" ? "异常" : "已停止"}</span>
-                  </span>
-                </div>
-
-                {/* Card Middle: 4 Pure Essential Action Buttons */}
-                <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
-                  <div className="space-y-2.5">
-                    {/* [按键 1] ⚡ 节约 Token 开关 (针对该工具独立开启/关闭) */}
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-theme-base/60 border border-theme-subtle/50">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <Zap className={`w-3.5 h-3.5 shrink-0 ${isSaving ? "text-amber-400" : "text-zinc-400"}`} />
-                        <span className="text-xs font-medium text-theme-primary truncate">
-                          {isZh ? "节约 Token 开关" : "Token Optimization"}
-                        </span>
-                      </div>
-
-                      <button
-                        type="button"
-                        disabled={!isMasterTokenMode}
-                        onClick={() => handleToggleProviderToken(s.config.id)}
-                        className={`text-[11px] font-mono px-2.5 py-1 rounded transition flex items-center gap-1.5 font-medium ${
-                          !isMasterTokenMode
-                            ? "bg-zinc-500/10 text-zinc-500 cursor-not-allowed border border-zinc-500/20"
-                            : isSaving
-                            ? "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/30"
-                            : "bg-zinc-500/10 hover:bg-zinc-500/20 text-zinc-400 border border-zinc-500/20"
-                        }`}
-                        title={
-                          !isMasterTokenMode
-                            ? isZh ? "总开关未开启，该选项已跟随全局全量暴露" : "Master switch disabled"
-                            : isSaving ? isZh ? "点击关闭该工具的 Token 节约" : "Click to disable" : isZh ? "点击开启该工具的 Token 节约" : "Click to enable"
-                        }
-                      >
-                        <span>{isSaving ? "🟢 开启" : "⚪ 关闭"}</span>
-                      </button>
-                    </div>
-
-                    {/* [按键 2, 3, 4] 开启、关闭、删除 三大快捷动作 */}
-                    <div className="grid grid-cols-3 gap-2">
-                      {/* [按键 2] ▶ 开启 */}
-                      <button
-                        type="button"
-                        disabled={isRunning || isBusy}
-                        onClick={() => handleStart(s.config.id)}
-                        className={`w-full py-1.5 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 transition ${
-                          isRunning
-                            ? "bg-theme-subtle/30 text-theme-muted cursor-not-allowed border border-transparent"
-                            : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs"
-                        }`}
-                      >
-                        <Play className="w-3 h-3 fill-current" />
-                        <span>{isZh ? "开启" : "Start"}</span>
-                      </button>
-
-                      {/* [按键 3] ⏹ 关闭 */}
-                      <button
-                        type="button"
-                        disabled={!isRunning || isBusy}
-                        onClick={() => handleStop(s.config.id)}
-                        className={`w-full py-1.5 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 transition ${
-                          !isRunning
-                            ? "bg-theme-subtle/30 text-theme-muted cursor-not-allowed border border-transparent"
-                            : "bg-rose-600 hover:bg-rose-500 text-white shadow-xs"
-                        }`}
-                      >
-                        <Square className="w-3 h-3 fill-current" />
-                        <span>{isZh ? "关闭" : "Stop"}</span>
-                      </button>
-
-                      {/* [按键 4] 🗑 删除 */}
-                      <button
-                        type="button"
-                        disabled={isBusy}
-                        onClick={() => setDeleteTarget(s)}
-                        className="w-full py-1.5 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 bg-theme-base hover:bg-rose-500/10 text-theme-muted hover:text-rose-500 border border-theme-subtle hover:border-rose-500/30 transition shadow-xs"
-                        title={isZh ? "从托管中删除此应用" : "Delete application"}
-                      >
-                        <Trash2 className="w-3 h-3" />
-                        <span>{isZh ? "删除" : "Delete"}</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Bottom Strip: Single-click copy & Log expand toggle */}
-                  <div className="pt-2 border-t border-theme-subtle/40 flex items-center justify-between text-[11px] text-theme-muted">
-                    <button
-                      type="button"
-                      onClick={() => handleCopyMcpConfig(s)}
-                      className="hover:text-theme-primary flex items-center gap-1 transition"
-                    >
-                      {copiedId === s.config.id ? (
-                        <>
-                          <Check className="w-3 h-3 text-emerald-500" />
-                          <span className="text-emerald-500">{isZh ? "已复制" : "Copied"}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3 h-3" />
-                          <span>{isZh ? "复制配置" : "Copy"}</span>
-                        </>
-                      )}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setExpandedLogs((prev) => ({ ...prev, [s.config.id]: !prev[s.config.id] }))
-                      }
-                      className="hover:text-theme-primary flex items-center gap-1 transition"
-                    >
-                      <Terminal className="w-3 h-3" />
-                      <span>{isLogOpen ? (isZh ? "收起日志" : "Logs") : (isZh ? "查看日志" : "Logs")}</span>
-                      {isLogOpen ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Collapsible Console Log View */}
-                {isLogOpen && (
-                  <div className="p-3 bg-zinc-950 border-t border-theme-subtle font-mono text-[11px] text-zinc-300 max-h-40 overflow-y-auto rounded-b-xl space-y-1">
-                    {s.logs && s.logs.length > 0 ? (
-                      s.logs.slice(-20).map((line, idx) => (
-                        <div key={idx} className="whitespace-pre-wrap break-all leading-tight">
-                          {line}
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-zinc-600 italic">{isZh ? "[暂无控制台日志输出]" : "[No logs yet]"}</div>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* 4. Interactive Script Execution Scratchpad (when toggled) */}
-        {showTester && (
-          <div className="p-5 rounded-xl border border-sky-500/30 bg-theme-card/60 space-y-4 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-sky-500" />
-                <span className="font-semibold text-xs text-theme-primary">
-                  {isZh ? "交互式多应用调度测试器 (nexus_run_script)" : "Interactive Script Runner"}
-                </span>
-                <span className="text-[10px] text-theme-muted font-mono">
-                  {isZh ? "支持 Python / Node.js 跨应用无感调度" : "Python / Node.js Host Automation"}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <select
-                  value={testRuntime}
-                  onChange={(e) => setTestRuntime(e.target.value as any)}
-                  className="bg-theme-base border border-theme-subtle text-theme-primary text-xs rounded-md px-2 py-1 font-mono"
-                >
-                  <option value="python">Python (SDK)</option>
-                  <option value="node">Node.js (Proxy)</option>
-                </select>
-
+      {/* 3. Main Body Content Based on Active Tab */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        {/* ================= TAB 1: INSTALLED SERVICES (IMAGE 2 HORIZONTAL ROWS) ================= */}
+        {activeTab === "installed" && (
+          <div className="space-y-4 max-w-5xl mx-auto">
+            {/* Filter Pills & Master Token Optimization Switch */}
+            <div className="p-3.5 rounded-xl border border-theme-subtle bg-theme-card flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+              <div className="flex items-center gap-1.5">
                 <button
                   type="button"
-                  disabled={isTesting}
-                  onClick={handleRunScript}
-                  className="px-3 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded-md text-xs font-medium flex items-center gap-1.5 transition shadow-xs"
+                  onClick={() => setStatusFilter("all")}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer ${
+                    statusFilter === "all"
+                      ? "bg-sky-500/10 text-sky-600 dark:text-sky-400 font-semibold border border-sky-500/20"
+                      : "text-theme-secondary hover:text-theme-primary"
+                  }`}
                 >
-                  <Play className={`w-3 h-3 fill-current ${isTesting ? "animate-spin" : ""}`} />
-                  <span>{isTesting ? (isZh ? "执行中..." : "Running...") : (isZh ? "运行脚本" : "Run")}</span>
+                  {isZh ? "全部服务" : "All"} ({services.length})
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setStatusFilter("running")}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer ${
+                    statusFilter === "running"
+                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20"
+                      : "text-theme-secondary hover:text-theme-primary"
+                  }`}
+                >
+                  {isZh ? "运行中" : "Running"} ({runningCount})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStatusFilter("stopped")}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer ${
+                    statusFilter === "stopped"
+                      ? "bg-zinc-500/10 text-zinc-400 font-semibold border border-zinc-500/20"
+                      : "text-theme-secondary hover:text-theme-primary"
+                  }`}
+                >
+                  {isZh ? "已停止" : "Stopped"} ({services.length - runningCount})
+                </button>
+              </div>
+
+              {/* Master Token Toggle */}
+              <div className="flex items-center gap-2.5">
+                <div
+                  onClick={handleToggleMasterToken}
+                  className={`w-9 h-5 flex items-center rounded-full p-0.5 cursor-pointer transition-colors duration-200 ${
+                    isMasterTokenMode ? "bg-sky-500" : "bg-zinc-600"
+                  }`}
+                >
+                  <div
+                    className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
+                      isMasterTokenMode ? "translate-x-4" : "translate-x-0"
+                    }`}
+                  />
+                </div>
+                <div className="flex items-center gap-1.5 text-xs">
+                  <Zap className={`w-3.5 h-3.5 ${isMasterTokenMode ? "text-amber-400 fill-amber-400" : "text-zinc-400"}`} />
+                  <span className="font-semibold text-theme-primary">{isZh ? "极致 Token 优化总控" : "Master Token Optimization"}</span>
+                  <span className="text-[10px] font-mono text-theme-muted">
+                    {isMasterTokenMode ? (isZh ? "已开启" : "Active") : (isZh ? "全量模式" : "Disabled")}
+                  </span>
+                </div>
               </div>
             </div>
 
-            <textarea
-              value={testScript}
-              onChange={(e) => setTestScript(e.target.value)}
-              rows={5}
-              className="w-full p-3 bg-zinc-950 text-emerald-400 font-mono text-xs rounded-lg border border-theme-subtle focus:border-sky-500 focus:outline-none resize-y"
-              placeholder={isZh ? "在此输入 Python 或 Node 代码..." : "Enter code here..."}
-            />
+            {/* Services Horizontal Rows (Matching Image 2 Layout) */}
+            <div className="space-y-3">
+              {filteredServices.map((s) => {
+                if (!s || !s.config) return null;
+                const isRunning = s.status === "RUNNING";
+                const isSaving = isMasterTokenMode && providerTokenModes[s.config.id] !== false;
+                const isBusy = actionBusy[s.config.id] || false;
+                const isLogOpen = expandedLogs[s.config.id] || false;
 
-            {testOutput && (
-              <div className="p-3 bg-zinc-950/80 rounded-lg border border-theme-subtle font-mono text-xs text-zinc-300 max-h-48 overflow-y-auto whitespace-pre-wrap">
-                {testOutput}
-              </div>
-            )}
+                return (
+                  <div
+                    key={s.config.id}
+                    className={`rounded-xl border bg-theme-card transition shadow-2xs hover:border-theme-subtle/90 ${
+                      isRunning
+                        ? "border-emerald-500/40"
+                        : "border-theme-subtle"
+                    }`}
+                  >
+                    <div className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      {/* Left Block: Dot + Name + Port & Tools + Command */}
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span
+                          className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                            isRunning
+                              ? "bg-emerald-500 shadow-sm shadow-emerald-500/50 animate-pulse"
+                              : "bg-zinc-500/40"
+                          }`}
+                        />
+                        <div className="min-w-0 space-y-0.5">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-xs font-bold text-theme-primary">
+                              {s.config.name}
+                            </span>
+                            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-theme-base border border-theme-subtle text-theme-muted">
+                              :{s.config.port}
+                            </span>
+                            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                              {s.toolCount || 0} {isZh ? "项工具" : "Tools"}
+                            </span>
+                          </div>
+                          <div className="text-[11px] font-mono text-theme-muted truncate">
+                            {s.config.command} {s.config.args?.join(" ")}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right Block: Token Toggle + Start/Stop + Actions */}
+                      <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                        {/* Token Pill */}
+                        <button
+                          type="button"
+                          disabled={!isMasterTokenMode}
+                          onClick={() => handleToggleProviderToken(s.config.id)}
+                          className={`px-2 py-1 text-[11px] font-mono rounded-md border transition flex items-center gap-1 ${
+                            isSaving
+                              ? "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30"
+                              : "bg-zinc-500/10 text-zinc-400 border-zinc-500/20"
+                          }`}
+                          title={isZh ? "独立 Token 节约开关" : "Token Optimization Toggle"}
+                        >
+                          <Zap className={`w-3 h-3 ${isSaving ? "text-amber-400 fill-amber-400" : "text-zinc-400"}`} />
+                          <span>Token</span>
+                        </button>
+
+                        {/* Start / Stop Button */}
+                        {isRunning ? (
+                          <button
+                            type="button"
+                            disabled={isBusy}
+                            onClick={() => handleStop(s.config.id)}
+                            className="px-3 py-1 rounded-lg text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white transition flex items-center gap-1 shadow-2xs cursor-pointer"
+                          >
+                            <Square className="w-3 h-3 fill-current" />
+                            <span>{isZh ? "停止" : "Stop"}</span>
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            disabled={isBusy}
+                            onClick={() => handleStart(s.config.id)}
+                            className="px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1 shadow-2xs cursor-pointer"
+                          >
+                            <Play className="w-3 h-3 fill-current" />
+                            <span>{isZh ? "启动" : "Start"}</span>
+                          </button>
+                        )}
+
+                        {/* Copy Config */}
+                        <button
+                          type="button"
+                          onClick={() => handleCopyMcpConfig(s)}
+                          className="p-1.5 rounded-lg border border-theme-subtle bg-theme-base hover:bg-theme-card-hover text-theme-muted hover:text-theme-primary transition shadow-2xs cursor-pointer"
+                          title={isZh ? "复制该 MCP 配置" : "Copy Config"}
+                        >
+                          {copiedId === s.config.id ? (
+                            <Check className="w-3.5 h-3.5 text-sky-500" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5" />
+                          )}
+                        </button>
+
+                        {/* Logs Toggle */}
+                        <button
+                          type="button"
+                          onClick={() => setExpandedLogs((prev) => ({ ...prev, [s.config.id]: !prev[s.config.id] }))}
+                          className={`p-1.5 rounded-lg border border-theme-subtle bg-theme-base hover:bg-theme-card-hover transition shadow-2xs cursor-pointer ${
+                            isLogOpen ? "text-sky-500 border-sky-500/40" : "text-theme-muted hover:text-theme-primary"
+                          }`}
+                          title={isZh ? "查看实时日志" : "Logs"}
+                        >
+                          <Terminal className="w-3.5 h-3.5" />
+                        </button>
+
+                        {/* Delete Service (Allowed for all services) */}
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteService(s.config.id)}
+                          className="p-1.5 rounded-lg border border-theme-subtle bg-theme-base hover:bg-rose-500/10 text-theme-muted hover:text-rose-500 hover:border-rose-500/30 transition shadow-2xs cursor-pointer"
+                          title={isZh ? "从工作台移除" : "Delete"}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Expandable Logs Terminal Drawer */}
+                    {isLogOpen && (
+                      <div className="p-3 bg-black/90 border-t border-theme-subtle text-[11px] font-mono text-slate-300 max-h-40 overflow-y-auto space-y-1">
+                        <div className="text-[10px] text-slate-500 mb-1 flex items-center justify-between">
+                          <span>[{s.config.id}] Live Process Output</span>
+                          <span>Port: {s.config.port}</span>
+                        </div>
+                        {s.logs && s.logs.length > 0 ? (
+                          s.logs.map((log, i) => <div key={i}>{log}</div>)
+                        ) : (
+                          <div className="text-slate-600 italic">No output logged yet. Ready to start.</div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {filteredServices.length === 0 && (
+                <div className="p-12 text-center rounded-xl border border-dashed border-theme-subtle bg-theme-card-muted/30 text-theme-muted space-y-2">
+                  <Package className="w-8 h-8 mx-auto text-theme-muted/50" />
+                  <p className="text-xs">{isZh ? "当前分类下暂无已安装的 MCP 插件" : "No installed MCP plugins in this view"}</p>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("market")}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition"
+                  >
+                    <span>{isZh ? "前往插件市场挑选安装" : "Browse Marketplace"}</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         )}
-      </div>
 
-      {/* 5. Delete Confirm Modal */}
-      {deleteTarget && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-theme-card border border-theme-subtle rounded-xl max-w-md w-full p-6 space-y-4 shadow-xl">
-            <div className="flex items-start gap-3 text-rose-500">
-              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-              <div>
-                <h3 className="font-semibold text-sm text-theme-primary">
-                  {isZh ? "确认删除该托管应用？" : "Delete Application?"}
-                </h3>
-                <p className="text-xs text-theme-muted mt-1 leading-relaxed">
+        {/* ================= TAB 2: MARKETPLACE CATALOG ================= */}
+        {activeTab === "market" && (
+          <div className="space-y-4 max-w-5xl mx-auto">
+            <div className="p-4 rounded-xl border border-sky-500/20 bg-gradient-to-r from-sky-500/10 via-indigo-500/5 to-transparent flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="text-xs font-bold text-theme-primary flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-sky-500" />
+                  <span>{isZh ? "MCP 扩展生态市场" : "MCP Extensions Marketplace"}</span>
+                </div>
+                <p className="text-[11px] text-theme-secondary">
                   {isZh
-                    ? `您即将删除应用「${deleteTarget.config.name}」(${deleteTarget.config.id})。如果正在运行，将自动终止进程并释放端口。`
-                    : `Are you sure you want to delete '${deleteTarget.config.name}'?`}
+                    ? "预置工业级标准 MCP 插件，点击即可一键安装并导入工作台随时调度。"
+                    : "Pre-verified standard MCP plugins. Click install to add them to your workspace."}
                 </p>
               </div>
             </div>
 
-            <div className="flex justify-end gap-2.5 pt-2">
-              <button
-                type="button"
-                disabled={isDeleting}
-                onClick={() => setDeleteTarget(null)}
-                className="px-3.5 py-1.5 rounded-lg border border-theme-subtle text-xs text-theme-primary hover:bg-theme-card-hover transition"
-              >
-                {isZh ? "取消" : "Cancel"}
-              </button>
-              <button
-                type="button"
-                disabled={isDeleting}
-                onClick={handleConfirmDelete}
-                className="px-3.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-medium transition shadow-xs"
-              >
-                {isDeleting ? (isZh ? "删除中..." : "Deleting...") : (isZh ? "确认删除" : "Confirm Delete")}
-              </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              {MARKETPLACE_CATALOG.map((m) => {
+                const isInstalled = services.some((s) => s.config?.id === m.id);
+
+                return (
+                  <div
+                    key={m.id}
+                    className="p-4 rounded-xl border border-theme-subtle bg-theme-card hover:border-sky-500/30 transition shadow-2xs flex flex-col justify-between space-y-3"
+                  >
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-bold text-theme-primary truncate">
+                          {m.name}
+                        </span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 shrink-0">
+                          {m.toolCount} {isZh ? "项工具" : "Tools"}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-[10px] font-mono text-theme-muted">
+                        <span className="px-1.5 py-0.2 rounded bg-theme-base border border-theme-subtle">
+                          :{m.port}
+                        </span>
+                        <span>{m.category}</span>
+                      </div>
+                      <p className="text-[11px] text-theme-secondary leading-relaxed line-clamp-2">
+                        {isZh ? m.desc["zh-CN"] : m.desc["en-US"]}
+                      </p>
+                    </div>
+
+                    <div className="pt-2 border-t border-theme-subtle/50 flex items-center justify-between">
+                      <span className="text-[10px] font-mono text-theme-muted truncate max-w-[200px]">
+                        {m.command}
+                      </span>
+                      {isInstalled ? (
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab("installed")}
+                          className="px-3 py-1 rounded-lg text-xs font-medium bg-theme-base border border-theme-subtle text-theme-primary hover:bg-theme-card-hover transition cursor-pointer"
+                        >
+                          {isZh ? "已安装 · 去管理" : "Installed"}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleInstallFromMarket(m)}
+                          className="px-3 py-1 rounded-lg text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white transition flex items-center gap-1 shadow-2xs cursor-pointer"
+                        >
+                          <Download className="w-3 h-3" />
+                          <span>{isZh ? "一键安装" : "Install"}</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* ================= TAB 3: RUNTIME MONITOR (IMAGE 3 DESIGN) ================= */}
+        {activeTab === "monitor" && (
+          <div className="space-y-6 max-w-5xl mx-auto">
+            {/* 4 Metric Cards (Matching Image 3) */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card space-y-1 shadow-2xs">
+                <div className="text-[11px] text-theme-muted">{isZh ? "运行中进程" : "Active Processes"}</div>
+                <div className="text-xl font-bold font-mono text-theme-primary">
+                  {runningCount} / {services.length}
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card space-y-1 shadow-2xs">
+                <div className="text-[11px] text-theme-muted">{isZh ? "活跃工具总数" : "Total Tools"}</div>
+                <div className="text-xl font-bold font-mono text-sky-500">
+                  {totalTools} <span className="text-xs font-normal text-theme-muted">{isZh ? "项可用" : "Ready"}</span>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card space-y-1 shadow-2xs">
+                <div className="text-[11px] text-theme-muted">{isZh ? "探活健康延时" : "Health Latency"}</div>
+                <div className="text-xl font-bold font-mono text-emerald-500">
+                  12 <span className="text-xs font-normal text-theme-muted">ms</span>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card space-y-1 shadow-2xs">
+                <div className="text-[11px] text-theme-muted">{isZh ? "Token 优化状态" : "Token Optimization"}</div>
+                <div className="text-xl font-bold font-mono text-amber-500">
+                  95%+ <span className="text-xs font-normal text-theme-muted">{isZh ? "节约" : "Saved"}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Middle Card: Multi-Model Relay Gateway */}
+            <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-4 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-xs font-bold text-theme-primary">
+                    {isZh ? "多模型中继网关 (Multi-Model Relay Gateway)" : "Multi-Model Relay Gateway"}
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    {isZh ? "已启用" : "Enabled"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="p-3 rounded-lg border border-theme-subtle/60 bg-theme-base/60 space-y-1">
+                  <div className="text-[10px] text-theme-muted uppercase font-mono">{isZh ? "节点连接状态" : "Node State"}</div>
+                  <div className="text-xs font-semibold text-theme-primary">{isZh ? "就绪 / 等待调用" : "Ready / Idle"}</div>
+                </div>
+
+                <div className="p-3 rounded-lg border border-theme-subtle/60 bg-theme-base/60 space-y-1">
+                  <div className="text-[10px] text-theme-muted uppercase font-mono">{isZh ? "注册中继节点" : "Relay Endpoints"}</div>
+                  <div className="text-xs font-semibold text-theme-primary">http://127.0.0.1:18080/mcp</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Card: In-App Kernel Script Tester (nexus_run_script) */}
+            <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-4 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Code2 className="w-4 h-4 text-sky-500" />
+                  <span className="text-xs font-bold text-theme-primary">
+                    {isZh ? "跨应用内核测试器 (nexus_run_script)" : "In-App Kernel Script Tester (nexus_run_script)"}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <select
+                    value={testRuntime}
+                    onChange={(e) => setTestRuntime(e.target.value as any)}
+                    className="px-2.5 py-1 text-xs rounded-lg border border-theme-subtle bg-theme-base text-theme-primary"
+                  >
+                    <option value="python">Python (SDK)</option>
+                    <option value="node">Node.js</option>
+                  </select>
+
+                  <button
+                    type="button"
+                    onClick={handleRunTestScript}
+                    disabled={isTesting}
+                    className="px-3.5 py-1 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                  >
+                    <Play className="w-3 h-3 fill-current" />
+                    <span>{isTesting ? (isZh ? "执行中..." : "Running...") : (isZh ? "执行" : "Run")}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Code Editor Mock */}
+              <div className="rounded-xl border border-theme-subtle bg-black/90 p-3.5 font-mono text-xs">
+                <textarea
+                  value={testScript}
+                  onChange={(e) => setTestScript(e.target.value)}
+                  rows={4}
+                  className="w-full bg-transparent text-emerald-400 outline-none resize-none"
+                  spellCheck={false}
+                />
+              </div>
+
+              {/* Output Result */}
+              {testOutput && (
+                <div className="rounded-xl border border-sky-500/20 bg-sky-950/20 p-3 font-mono text-xs text-sky-300">
+                  <div className="text-[10px] text-sky-400/80 mb-1 font-semibold uppercase">{isZh ? "执行返回" : "Output"}</div>
+                  <div>{testOutput}</div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

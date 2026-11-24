@@ -122,8 +122,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   uxMode = "standard",
   onChangeUxMode,
   onNavigate: _onNavigate,
-  onOpenOnboarding,
-  onOpenSponsorModal,
+  onOpenOnboarding: _onOpenOnboarding,
+  onOpenSponsorModal: _onOpenSponsorModal,
 }) => {
   const { t, language, setLanguage, tText } = useTranslation();
   const isZh = language === "zh-CN";
@@ -745,8 +745,6 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
             { id: "connections", label: tText("AI 客户端与连接", "AI Connections", "AI接続", "KI-Verbindungen"), icon: Radio },
             { id: "mcp", label: tText("MCP 协议生态", "MCP Ecosystem", "MCPエコシステム", "MCP-Ökosystem"), icon: Wrench },
             { id: "security", label: tText("安全与信任策略", "Security", "セキュリティポリシー", "Sicherheit & Vertrauen"), icon: Shield },
-            { id: "intelligence", label: tText("智能决策模型", "Intelligence", "インテリジェンスモデル", "KI-Modell"), icon: Brain },
-            { id: "computer", label: tText("桌面与电脑控制", "Computer Control", "コンピューター制御", "Computer-Steuerung"), icon: Monitor },
             { id: "execution", label: tText("任务执行与账本", "Execution & Ledger", "実行と台帳", "Ausführung & Hauptbuch"), icon: Terminal },
             { id: "advanced", label: tText("高级选项与 Runner", "Advanced & Runner", "高度な設定とRunner", "Erweitert & Runner"), icon: Server },
             { id: "about", label: tText("关于 Nexus", "About", "Nexus について", "Über Nexus"), icon: Info },
@@ -2934,59 +2932,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     : "Local AI Control Plane for ChatGPT · Securely connect ChatGPT to your authorized local environment."}
                 </div>
                 <div className="text-[10px] font-mono text-theme-muted">
-                  87 MCP Tools &bull; Nexus Skills v1 &bull; Secure MCP Tunnel &bull; Full Control &bull; Laya Decision Intelligence &bull; Code Intelligence &bull; Persistent Runtime
+                  332 Canonical & Extended MCP Tools &bull; Nexus Skills &bull; Secure MCP Tunnel &bull; Full Local Control &bull; v1.3.4
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact & Community Section */}
-          <div className="p-6 bg-gradient-to-r from-emerald-500/10 via-sky-500/5 to-transparent border border-emerald-500/30 rounded-xl space-y-4 text-xs shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-                <MessageSquare className="w-4 h-4 text-emerald-500" />
-                <span>{tText("💬 联系与交流 (Contact & Community)", "💬 Contact & Community", "💬 連絡とコミュニティ", "💬 Kontakt & Community")}</span>
-              </div>
-              {onOpenSponsorModal && (
-                <button
-                  type="button"
-                  onClick={onOpenSponsorModal}
-                  className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-xs cursor-pointer"
-                >
-                  <MessageSquare className="w-3.5 h-3.5" />
-                  <span>{tText("打开联系方式", "Open Contact QR Codes", "連絡先QRコードを開く", "Kontakt-QR-Codes öffnen")}</span>
-                </button>
-              )}
-            </div>
-            <p className="text-theme-secondary leading-relaxed">
-              {isZh
-                ? "欢迎随时联系与交流探讨 AI Agent 落地、MCP 工具链拓展与桌面集成体验，分享技术想法、反馈使用建议或探讨深度合作！"
-                : "Welcome to get in touch, exchange ideas, share feedback, or explore collaboration on local AI agent tooling and desktop integration!"}
-            </p>
-          </div>
-
-          {/* License & Onboarding Notice */}
-          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-                <ShieldCheck className="w-4 h-4 text-sky-500" />
-                <span>{isZh ? "开源许可协议与启动引导" : "License & Onboarding Wizard"}</span>
-              </div>
-              {onOpenOnboarding && (
-                <button
-                  type="button"
-                  onClick={onOpenOnboarding}
-                  className="px-3 py-1.5 bg-theme-card-muted hover:bg-theme-card-hover text-theme-primary border border-theme-subtle rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-2xs"
-                >
-                  <RotateCcw className="w-3.5 h-3.5 text-sky-500" />
-                  <span>{isZh ? "重新打开开始界面" : "Reopen Start Screen"}</span>
-                </button>
-              )}
-            </div>
-            <div className="p-3.5 rounded-xl bg-theme-card-muted/70 border border-theme-subtle flex items-start gap-3 text-[11px] text-theme-muted leading-relaxed">
-              <ShieldCheck className="w-4 h-4 text-theme-secondary shrink-0 mt-0.5" />
-              <div>
-                {t.onboarding.licenseAgreementText}
               </div>
             </div>
           </div>
