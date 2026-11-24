@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
+import net from "node:net";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { ListToolsRequestSchema, CallToolRequestSchema } from "@modelcontextprotocol/sdk/types.js";
@@ -19,8 +20,15 @@ import {
   ProviderRegistry,
   type ProjectBlueprint,
 } from "./project-builder/index.js";
-import { ProviderRuntime, DynamicCatalog, McpSecurityPolicyManager, ScriptRunner, TokenGuardrail, HandleManager } from "./generic-mcp/index.js";
+import { ProviderRuntime, DynamicCatalog, McpSecurityPolicyManager, ScriptRunner, TokenGuardrail, HandleManager, cleanDefaultItem, isBlenderTool, executeBlenderScript, getBlenderSceneInfo, findBlenderExecutable } from "./generic-mcp/index.js";
 import { UnityGameDevMcpProvider } from "./unity-gamedev-provider.js";
+import {
+  ADVANCED_META_TOOL_DEFINITIONS,
+  CORE_ADVANCED_META_TOOL_DEFINITIONS,
+  CORE_ADVANCED_META_TOOL_NAMES,
+  executeAdvancedMetaTool,
+  DYNAMIC_MACRO_REGISTRY,
+} from "./meta-tools/advanced-meta-tools.js";
 
 export { CANONICAL_TOOL_COUNT };
 
@@ -30,149 +38,229 @@ export { CANONICAL_TOOL_COUNT };
 export const LEGACY_NEXUS_TOOLS = [
   {
     name: "nexus_project_list",
-    description: "列出当前 Nexus LocalBridge 中所有已登记并受控的本地项目，包含项目 ID、名称及路径信息",
+    description: "List all registered and managed local projects in Nexus LocalBridge with IDs, names, and path configurations.",
     inputSchema: {
       type: "object",
       properties: {},
     },
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
   },
   {
     name: "nexus_project_info",
-    description: "获取指定项目的详细配置信息（支持输入项目名称如 'Myweb' 或项目 ID）",
+    description: "Retrieve detailed configuration and state for a specified project by project name or ID.",
     inputSchema: {
       type: "object",
       properties: {
         projectId: {
           type: "string",
-          description: "项目名称或项目 ID，例如 'Myweb' 或 'proj_367f3b4a...'",
+          description: "Project name or project ID, e.g. 'Myweb' or 'proj_367f3b4a...'",
         },
       },
       required: ["projectId"],
     },
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
   },
   {
     name: "nexus_directory_list",
-    description: "列出项目指定目录下的子文件与子目录清单",
+    description: "List files and subdirectories under a specified directory within a managed project workspace.",
     inputSchema: {
       type: "object",
       properties: {
         projectId: {
           type: "string",
-          description: "项目名称或项目 ID，例如 'Myweb'",
+          description: "Project name or project ID, e.g. 'Myweb'",
         },
         path: {
           type: "string",
-          description: "项目内的相对目录路径，默认为当前根目录 '.'",
+          description: "Relative directory path inside the project, defaults to '.'",
           default: ".",
         },
       },
       required: ["projectId"],
     },
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
   },
   {
     name: "nexus_file_read",
-    description: "读取项目内指定文本文件的完整内容或分行切片",
+    description: "Read full contents or sliced line ranges of a specified text file within a managed project.",
     inputSchema: {
       type: "object",
       properties: {
         projectId: {
           type: "string",
-          description: "项目名称或项目 ID，例如 'Myweb'",
+          description: "Project name or project ID, e.g. 'Myweb'",
         },
         path: {
           type: "string",
-          description: "文件在项目内的相对路径，例如 'src/index.ts' 或 'index.html'",
+          description: "Relative file path inside the project, e.g. 'src/index.ts' or 'index.html'",
         },
         startLine: {
           type: "number",
-          description: "起始读取行号（1-indexed），默认从第 1 行开始",
+          description: "1-indexed starting line number, defaults to 1",
         },
         maxLines: {
           type: "number",
-          description: "最大读取行数（1-500），默认 300 行",
+          description: "Maximum line count to read (1-500), defaults to 300",
         },
         offset: {
           type: "number",
-          description: "起始行（兼容参数，等同于 startLine）",
+          description: "Alias for startLine",
         },
         limit: {
           type: "number",
-          description: "读取行数（兼容参数，等同于 maxLines）",
+          description: "Alias for maxLines",
         },
       },
       required: ["projectId", "path"],
     },
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
   },
   {
     name: "nexus_file_create",
-    description: "在受管项目目录内安全创建新文件",
+    description: "Safely create a new file with specified text content within the managed project directory.",
     inputSchema: {
       type: "object",
       properties: {
         projectId: {
           type: "string",
-          description: "项目名称或项目 ID，例如 'Myweb'",
+          description: "Project name or project ID, e.g. 'Myweb'",
         },
         path: {
           type: "string",
-          description: "新文件在项目内的相对路径",
+          description: "Relative path of the new file inside the project",
         },
         content: {
           type: "string",
-          description: "文件的文本内容",
+          description: "Text content of the file",
         },
       },
       required: ["projectId", "path", "content"],
+    },
+    readOnlyHint: false,
+    destructiveHint: true,
+    idempotentHint: false,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: true,
+      idempotentHint: false,
+      openWorldHint: false,
     },
   },
   {
     name: "nexus_file_write",
-    description: "重写或更新项目目录内现有文件的内容",
+    description: "Overwrite or update the content of an existing file in the project workspace.",
     inputSchema: {
       type: "object",
       properties: {
         projectId: {
           type: "string",
-          description: "项目名称或项目 ID，例如 'Myweb'",
+          description: "Project name or project ID, e.g. 'Myweb'",
         },
         path: {
           type: "string",
-          description: "现有文件在项目内的相对路径",
+          description: "Relative path of the existing file inside the project",
         },
         content: {
           type: "string",
-          description: "新的文本内容",
+          description: "New text content to write",
         },
       },
       required: ["projectId", "path", "content"],
     },
+    readOnlyHint: false,
+    destructiveHint: true,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: true,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
   },
   {
     name: "nexus_git_status",
-    description: "查询受管项目的当前 Git 工作区状态（分支、修改状态、未跟踪文件等）",
+    description: "Inspect the current Git workspace status (branch, modified files, untracked changes) of a project.",
     inputSchema: {
       type: "object",
       properties: {
         projectId: {
           type: "string",
-          description: "项目名称或项目 ID，例如 'Myweb' 或 'git-p1b-test'",
+          description: "Project name or project ID, e.g. 'Myweb' or 'git-p1b-test'",
         },
       },
       required: ["projectId"],
     },
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
   },
   {
     name: "nexus_runtime_list",
-    description: "查询项目中当前激活或已注册的本地持久化运行时服务列表（如 Web 开发服务器、常驻后台服务）",
+    description: "List currently active or registered local persistent runtime services (e.g. dev servers, daemon processes).",
     inputSchema: {
       type: "object",
       properties: {
         projectId: {
           type: "string",
-          description: "项目名称或项目 ID，例如 'Myweb'",
+          description: "Project name or project ID, e.g. 'Myweb'",
         },
       },
       required: ["projectId"],
+    },
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
     },
   },
 ];
@@ -180,17 +268,17 @@ export const LEGACY_NEXUS_TOOLS = [
 export const PROJECT_BUILDER_TOOLS = [
   {
     name: "nexus_project_blueprint_submit",
-    description: "向 Nexus Project Builder 提交结构化项目工程蓝图（Project Blueprint）并启动执行。Nexus 自动化执行阶段依赖图、动态 Capability 解析、独立状态验证（Verification First）与防篡改审计记录。",
+    description: "Submit a structured project blueprint to Nexus Project Builder and initiate automated execution with verification-first audit.",
     inputSchema: {
       type: "object",
       properties: {
-        projectId: { type: "string", description: "项目全局唯一标识，如 'proj_unity_demo'" },
-        name: { type: "string", description: "项目名称" },
-        goal: { type: "string", description: "项目核心目标" },
-        requirements: { type: "array", items: { type: "string" }, description: "需求清单" },
-        constraints: { type: "array", items: { type: "string" }, description: "技术与环境约束" },
-        providers: { type: "array", items: { type: "string" }, description: "涉及的 Provider，例如 ['unity-gamedev', 'localbridge-core']" },
-        capabilities: { type: "array", items: { type: "string" }, description: "使用的 Capability 列表" },
+        projectId: { type: "string", description: "Globally unique project identifier, e.g. 'proj_unity_demo'" },
+        name: { type: "string", description: "Project name" },
+        goal: { type: "string", description: "Core project goal" },
+        requirements: { type: "array", items: { type: "string" }, description: "List of requirements" },
+        constraints: { type: "array", items: { type: "string" }, description: "Technical and environment constraints" },
+        providers: { type: "array", items: { type: "string" }, description: "Required providers, e.g. ['unity-gamedev', 'localbridge-core']" },
+        capabilities: { type: "array", items: { type: "string" }, description: "Referenced Capability list" },
         stages: {
           type: "array",
           items: {
@@ -218,31 +306,51 @@ export const PROJECT_BUILDER_TOOLS = [
             },
             required: ["id", "name", "goal", "provider", "actions"],
           },
-          description: "项目执行阶段及各阶段内部 Actions",
+          description: "Project stages and internal actions",
         },
         executionMode: { type: "string", enum: ["FAST", "DEEP"], default: "DEEP" },
       },
       required: ["name", "goal", "stages"],
     },
+    readOnlyHint: false,
+    destructiveHint: true,
+    idempotentHint: false,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: true,
+      idempotentHint: false,
+      openWorldHint: false,
+    },
   },
   {
     name: "nexus_project_status",
-    description: "查询指定 Project Builder 项目的实时运行状态、当前激活 Stage、各阶段完成情况、审计流水与证据节点。",
+    description: "Query real-time execution status, active stage, and audit ledger of a Project Builder instance.",
     inputSchema: {
       type: "object",
       properties: {
-        projectId: { type: "string", description: "项目 ID" },
+        projectId: { type: "string", description: "Project ID" },
       },
       required: ["projectId"],
+    },
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
     },
   },
   {
     name: "nexus_project_replan",
-    description: "当项目处于 NEEDS_REPLAN 状态时，向 Nexus 提交重规划的剩余阶段定义。已成功 COMMITTED 的阶段将被严格保留，无需从头重跑。",
+    description: "Submit replanned remaining stages when a project requires replanning, preserving already committed stages.",
     inputSchema: {
       type: "object",
       properties: {
-        projectId: { type: "string", description: "项目 ID" },
+        projectId: { type: "string", description: "Project ID" },
         replannedStages: {
           type: "array",
           items: {
@@ -257,36 +365,66 @@ export const PROJECT_BUILDER_TOOLS = [
             },
             required: ["id", "name", "goal", "provider", "actions"],
           },
-          description: "替换失败及后续依赖的新阶段列表",
+          description: "List of replanned stages replacing failed or pending ones",
         },
       },
       required: ["projectId", "replannedStages"],
     },
+    readOnlyHint: false,
+    destructiveHint: true,
+    idempotentHint: false,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: true,
+      idempotentHint: false,
+      openWorldHint: false,
+    },
   },
   {
     name: "nexus_project_artifact_get",
-    description: "获取已交付项目的交付物清单、文件 SHA-256 哈希、全量证据树及最终交付证书报告。",
+    description: "Retrieve project deliverables, file SHA-256 hashes, evidence trees, and delivery verification reports.",
     inputSchema: {
       type: "object",
       properties: {
-        projectId: { type: "string", description: "项目 ID" },
+        projectId: { type: "string", description: "Project ID" },
       },
       required: ["projectId"],
+    },
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
     },
   },
   {
     name: "nexus_capability_list",
-    description: "列出当前 Nexus Project Builder 体系中所有可供 AI 规划引用的 Capability 意图能力及其所属 Provider 和映射描述。",
+    description: "List all available Capability intents, providers, and mappings in the Nexus Project Builder system.",
     inputSchema: {
       type: "object",
       properties: {
-        provider: { type: "string", description: "按 Provider 筛选，如 'unity-gamedev'" },
+        provider: { type: "string", description: "Optional filter by provider name, e.g. 'unity-gamedev'" },
       },
+    },
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
     },
   },
   {
     name: "mcp_batch_execute",
-    description: "执行一组 MCP 工具调用，支持串行 (sequential)、并行 (parallel) 及依赖感知 (dependency) 执行模式，具备完整的执行追踪、部分失败容错与结果汇总。",
+    description: "Execute a batch of MCP tool calls with sequential, parallel, or dependency-aware scheduling and fault tolerance.",
     inputSchema: {
       type: "object",
       properties: {
@@ -295,31 +433,202 @@ export const PROJECT_BUILDER_TOOLS = [
           items: {
             type: "object",
             properties: {
-              id: { type: "string", description: "操作唯一ID，如 'step1'" },
-              toolName: { type: "string", description: "要调用的工具名称" },
-              arguments: { type: "object", description: "工具参数" },
-              dependsOn: { type: "array", items: { type: "string" }, description: "依赖的前置操作ID列表" },
-              timeoutMs: { type: "number", description: "单次操作超时毫秒数" },
+              id: { type: "string", description: "Unique operation ID, e.g. 'step1'" },
+              toolName: { type: "string", description: "Name of the tool to invoke" },
+              arguments: { type: "object", description: "Tool arguments object" },
+              dependsOn: { type: "array", items: { type: "string" }, description: "Prerequisite operation IDs" },
+              timeoutMs: { type: "number", description: "Operation timeout in milliseconds" },
             },
             required: ["id", "toolName", "arguments"],
           },
-          description: "批量操作清单",
+          description: "List of batch operations",
         },
         mode: {
           type: "string",
           enum: ["sequential", "parallel", "dependency"],
-          description: "执行模式，默认为 'sequential'",
+          description: "Execution mode, defaults to 'sequential'",
         },
         continueOnError: {
           type: "boolean",
-          description: "遇到单个操作失败时是否继续执行后续无依赖操作，默认为 false",
+          description: "Whether to continue remaining independent operations if one fails",
         },
         timeoutMs: {
           type: "number",
-          description: "整个批处理的最大超时毫秒数",
+          description: "Global batch timeout in milliseconds",
         },
       },
       required: ["operations"],
+    },
+    readOnlyHint: false,
+    destructiveHint: true,
+    idempotentHint: false,
+    openWorldHint: true,
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: true,
+      idempotentHint: false,
+      openWorldHint: true,
+    },
+  },
+];
+
+export const SESSION_CACHE_AND_DIRECTIVE_TOOLS = [
+  {
+    name: "nexus_get_active_directives",
+    description: "Retrieve active prompt directives and system instructions configured in Nexus for the current session or project. Read-only operation that does not modify any state.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        category: {
+          type: "string",
+          enum: ["system", "project", "user", "tool"],
+          description: "Optional category filter (system, project, user, tool)",
+        },
+        projectId: {
+          type: "string",
+          description: "Optional project ID filter",
+        },
+        project_id: {
+          type: "string",
+          description: "Optional alias for projectId",
+        },
+      },
+    },
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  {
+    name: "nexus_session_cache_save",
+    description: "Save a cross-account conversation handoff package into Nexus SQLite cache with sensitive token redaction and return a short 8-char handle. Use this before switching Claude accounts or starting a new session to preserve full context with minimal tokens.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        title: { type: "string", description: "Descriptive title of the working session or milestone" },
+        summary: { type: "string", description: "Structured summary of completed work, key context, and current phase" },
+        keyDecisions: { type: "array", items: { type: "string" }, description: "Key architectural, design, or algorithmic decisions made" },
+        key_decisions: { type: "array", items: { type: "string" }, description: "Alias for keyDecisions" },
+        activeFiles: { type: "array", items: { type: "string" }, description: "Key files modified, inspected, or relevant to the next step" },
+        active_files: { type: "array", items: { type: "string" }, description: "Alias for activeFiles" },
+        pendingTasks: { type: "array", items: { type: "string" }, description: "Pending next steps or unfinished tasks for the next agent/account" },
+        pending_tasks: { type: "array", items: { type: "string" }, description: "Alias for pendingTasks" },
+        rawContext: { type: "string", description: "Optional compact dialog excerpts (up to 5000 chars)" },
+        raw_context: { type: "string", description: "Alias for rawContext" },
+        ttlHours: { type: "number", description: "Expiration time in hours (1-168, default 24)" },
+        ttl_hours: { type: "number", description: "Alias for ttlHours" },
+      },
+      required: ["title", "summary"],
+    },
+    readOnlyHint: false,
+    destructiveHint: true,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: true,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  {
+    name: "nexus_session_cache_load",
+    description: "Load a cross-account handoff cache by handle (e.g. nx-a1b2c3d4). Restores task state, decisions, active files, and pending items. By default automatically releases the handle after retrieval to minimize token overhead.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        handle: { type: "string", description: "The 8-character handoff handle (e.g. nx-a1b2c3d4)" },
+        releaseAfterRead: { type: "boolean", description: "Whether to immediately release/expire the cache after reading" },
+        release_after_read: { type: "boolean", description: "Alias for releaseAfterRead" },
+      },
+      required: ["handle"],
+    },
+    readOnlyHint: false,
+    destructiveHint: false,
+    idempotentHint: false,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: false,
+      idempotentHint: false,
+      openWorldHint: false,
+    },
+  },
+  {
+    name: "nexus_session_cache_list",
+    description: "List currently stored cross-account handoff cache handles with metadata (omits raw dialog text to save tokens).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        includeExpired: { type: "boolean", description: "Whether to include expired handles in the list (default false)" },
+        include_expired: { type: "boolean", description: "Alias for includeExpired" },
+      },
+    },
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  {
+    name: "nexus_session_cache_clear",
+    description: "Optional specific handle to clear. If omitted, cleans all expired and released handles.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        handle: { type: "string", description: "Optional specific handle to clear" },
+      },
+    },
+    readOnlyHint: false,
+    destructiveHint: true,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: true,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  {
+    name: "nexus_session_handoff",
+    description: "Save an AI-synthesized, token-compressed session handoff package with verifiable anchors, verified facts vs hypotheses, verification status, and negative knowledge into Nexus SQLite cache. Returns an 8-character handle for instant cross-session resumption.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        title: { type: "string", description: "Descriptive title of the working session or milestone" },
+        coreProgress: { type: "array", items: { type: "string" }, description: "Core completed achievements" },
+        verifiableAnchors: { type: "object", description: "Verifiable hard anchors (activeFiles, exactSymbolsOrLines, errorOrCodeSnippets, gitCommitOrBranch)" },
+        confirmedFacts: { type: "array", items: { type: "string" }, description: "Verified facts" },
+        hypotheses: { type: "array", items: { type: "string" }, description: "AI hypotheses or unverified assumptions" },
+        verificationStatus: { type: "object", description: "Current verification status (passed, pending)" },
+        negativeKnowledge: { type: "array", items: { type: "string" }, description: "Anti-patterns and discarded solutions NOT to repeat" },
+        nextSteps: { type: "array", items: { type: "string" }, description: "Prioritized next actionable steps for the next AI agent" },
+        summary: { type: "string", description: "Optional overall structured summary markdown" },
+        ttlHours: { type: "number", description: "Expiration time in hours (default 24)" },
+      },
+      required: ["title"],
+    },
+    readOnlyHint: false,
+    destructiveHint: true,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: true,
+      idempotentHint: true,
+      openWorldHint: false,
     },
   },
 ];
@@ -328,6 +637,7 @@ export const PROJECT_BUILDER_TOOLS = [
 export const ALL_EXPOSED_TOOLS = [
   ...LEGACY_NEXUS_TOOLS,
   ...PROJECT_BUILDER_TOOLS,
+  ...SESSION_CACHE_AND_DIRECTIVE_TOOLS,
   ...CANONICAL_TOOL_DEFINITIONS.map((t) => ({
     name: t.name,
     description: t.description,
@@ -364,7 +674,7 @@ export function getCanonicalToolManifest(): CanonicalToolManifest {
     sortedToolNames,
     toolNamesHash,
     schemaHash,
-    surfaceVersion: "1.3.2",
+    surfaceVersion: "1.3.6",
     protocolVersion: "2024-11-05",
     generatedAt: new Date().toISOString(),
   };
@@ -517,7 +827,7 @@ export function dereferenceJsonSchema(schema: any): any {
 export const UNIVERSAL_META_TOOLS = [
   {
     name: "nexus_run_script",
-    description: "[状态: 🟢 极致 Token 优化] 【推荐首选 · 零 Token 浪费】执行 Python 或 Node.js 脚本以直接操控受管宿主应用（AutoCAD、Blender、Photoshop、Unity、Playwright、Windows 系统）。内置 'nexus' 统一命名空间 (nexus.cad, nexus.blender, nexus.ps, nexus.unity, nexus.browser, nexus.windows, nexus.core)。对于多步工程任务（如 3D 建模、Unity 关卡搭建、批处理、CAD 绘图、长流程测试），强烈推荐直接编写完整脚本单次执行完毕（单轮即可交付），节省 95%+ 上下文 Token，避免反复单步调用造成上下文爆炸与额度超限。",
+    description: "Execute Python or Node.js scripts directly controlling managed host applications (AutoCAD, Blender, Photoshop, Unity, Playwright, Windows) via unified 'nexus' namespace with zero token overhead.",
     inputSchema: {
       type: "object",
       properties: {
@@ -525,116 +835,255 @@ export const UNIVERSAL_META_TOOLS = [
           type: "string",
           enum: ["python", "node"],
           default: "python",
-          description: "执行脚本运行时语言，默认为 python",
+          description: "Runtime language for script execution, defaults to python",
         },
         script: {
           type: "string",
-          description: "待执行的完整代码脚本（例如: import nexus; info = nexus.cad.drawing_info(); print(info)）",
+          description: "Complete script to execute (e.g. import nexus; info = nexus.cad.drawing_info(); print(info))",
         },
         timeoutMs: {
           type: "number",
           default: 30000,
-          description: "单次脚本超时限制（毫秒），默认 30000ms，超时将触发守护熔断",
+          description: "Script execution timeout in milliseconds",
         },
       },
       required: ["script"],
     },
+    readOnlyHint: false,
+    destructiveHint: true,
+    idempotentHint: false,
+    openWorldHint: true,
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: true,
+      idempotentHint: false,
+      openWorldHint: true,
+    },
   },
   {
     name: "nexus_discover_tools",
-    description: "[状态: 🟢 极致 Token 优化] 全局按需检索 Nexus 内置 332 个原生工程工具与当前处于运行状态的外部 MCP 工具。支持中英文意图搜索（如 '打开网页', 'unity', '截图'）。留空查询可查看完整能力大纲看板。检索到目标后，如需多步组合请立即使用 nexus_run_script 批量执行。",
+    description: "Search native engineering tools and active external MCP tools using English keywords or natural language.",
     inputSchema: {
       type: "object",
       properties: {
         query: {
           type: "string",
-          description: "搜索关键词或意图（如 '打开网页', 'bilibili', 'unity', 'cmd', '截图', '文件'）",
+          description: "Search keywords (e.g. 'process list', 'browser open', 'screenshot', 'file')",
         },
         category: {
           type: "string",
-          description: "可选按分类过滤（如 'browser', 'command', 'filesystem', 'computer-use', 'unity-gamedev', 'blender-mcp'）",
+          description: "Optional category filter (e.g. 'browser', 'command', 'filesystem', 'computer-use', 'unity-gamedev')",
         },
         provider: {
           type: "string",
-          description: "可选按 Provider 标识过滤（如 'unity-gamedev', 'blender-mcp', 'photoshop-mcp'）",
+          description: "Optional provider filter (e.g. 'unity-gamedev', 'blender-mcp')",
         },
         detail: {
           type: "boolean",
           default: false,
-          description: "是否返回完整参数细节 Schema 与调用示例。默认为 false（启用 Nexus 紧凑工具签名模式以减少 Token 占用），设为 true 可查看完整 Schema",
+          description: "Whether to return full schema details and examples. Defaults to false for token compression",
         },
         limit: {
           type: "number",
           default: 10,
-          description: "返回的最大工具匹配数量，默认 10，上限 30",
+          description: "Maximum number of tools to return (default 10, max 30)",
         },
       },
+    },
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
     },
   },
   {
     name: "nexus_execute_action",
-    description: "[状态: 🟢 极致 Token 优化] 【单步原子工具 · 仅限单点查询/微调】动态执行单个底层原子工具。服务端支持工具名自动别名归一、浏览器会话状态自动继承、大文本安全截断与图像 Base64 自动脱敏保存。注意：严禁循环多步调用原子工具进行大批量创作或场景搭建（会导致 Token 极速超限），多步复杂工程务必使用 nexus_run_script 编写脚本批量执行。",
+    description: "Execute an atomic underlying action or tool with automatic aliasing, session inheritance, and data sanitization.",
     inputSchema: {
       type: "object",
       properties: {
         tool: {
           type: "string",
-          description: "工具真实名称或常见别名（例如 'localbridge_browser_open', 'localbridge_browser_launch', 'gameobject-create-configured'）",
+          description: "Exact name of the target atomic tool. Must not be a meta-tool",
         },
         arguments: {
           type: "object",
-          description: "工具参数对象",
+          description: "Arguments object matching the target tool schema",
           default: {},
         },
         provider: {
           type: "string",
-          description: "可选的所属 Provider 标识",
+          description: "Optional provider ID",
         },
       },
       required: ["tool"],
     },
+    readOnlyHint: false,
+    destructiveHint: true,
+    idempotentHint: false,
+    openWorldHint: true,
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: true,
+      idempotentHint: false,
+      openWorldHint: true,
+    },
   },
   {
-    name: "nexus_skills",
-    description: "[状态: 🟢 极致 Token 优化] 【统一技能元工具 · 跨 Agent 智能工作流】管理、检索、加载并依循技能 (Skills) 工作流规范。支持操作 action: 'match' (智能意图匹配) | 'load' (读取技能完整规范与代码步骤) | 'list' (列出可用技能清单) | 'read_file' (读取技能内辅助文档/脚本)。收到工程任务或领域要求时，推荐首先调用 match 匹配最贴合的 Skill 指导流程，以获得最高执行质量与零幻觉保障。",
+    name: "nexus_relay_dispatch",
+    description: "Dispatch tasks to background browser AI nodes (ChatGPT, Claude, DeepSeek) with headless execution and structured markdown return.",
     inputSchema: {
       type: "object",
       properties: {
+        instruction: {
+          type: "string",
+          description: "Task instruction to dispatch to external AI node",
+        },
+        node_id: {
+          type: "string",
+          description: "Target AI node identifier (e.g. 'gpt-omni', 'deepseek-reasoner')",
+        },
+        output_file_path: {
+          type: "string",
+          description: "Optional absolute path for generated file outputs",
+        },
         action: {
           type: "string",
-          enum: ["match", "load", "list", "read_file", "search", "status"],
-          description: "操作类型: match (匹配最佳技能), load (加载技能完整指令与步骤), list (列出所有可用技能), read_file (读取技能辅助文件)",
+          enum: ["chat", "new_chat", "delete_chat"],
+          default: "chat",
+          description: "Session action: 'chat', 'new_chat', or 'delete_chat'",
         },
-        query: {
-          type: "string",
-          description: "用于匹配技能的用户自然语言任务或意图描述 (action='match' 或 'search' 时使用)",
+        new_chat: {
+          type: "boolean",
+          default: false,
+          description: "Whether to start a fresh chat session on the target node",
         },
-        name: {
-          type: "string",
-          description: "技能标识 ID 或名称 (如 'nexus.run-tests', 'nexus.meta-orchestrator', action='load'/'read_file' 时必填)",
+        delete_current_chat: {
+          type: "boolean",
+          default: false,
+          description: "Whether to delete the current chat session after retrieval",
         },
-        skillId: {
+        context: {
           type: "string",
-          description: "兼容参数，等同于 name",
+          description: "Optional background or context text",
         },
-        path: {
-          type: "string",
-          description: "技能内部相对文档路径 (action='read_file' 时使用，例如 'references/guide.md')",
+        timeout_seconds: {
+          type: "number",
+          default: 120,
+          description: "Timeout in seconds",
         },
-        documentPath: {
-          type: "string",
-          description: "兼容参数，等同于 path",
-        },
-        mode: {
-          type: "string",
-          enum: ["summary", "full"],
-          default: "summary",
-          description: "加载模式: full 模式将一并返回所有关联的文档内容",
+        discover_nodes: {
+          type: "boolean",
+          default: false,
+          description: "When true, returns the status of ready AI nodes",
         },
       },
-      required: ["action"],
+    },
+    readOnlyHint: false,
+    destructiveHint: false,
+    idempotentHint: false,
+    openWorldHint: true,
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: false,
+      idempotentHint: false,
+      openWorldHint: true,
     },
   },
+  SESSION_CACHE_AND_DIRECTIVE_TOOLS.find((t) => t.name === "nexus_session_handoff")!,
+  {
+    name: "nexus_batch_execute",
+    description: "Execute a sequential pipeline of tool operations in a single round-trip with step variable interpolation.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        pipeline: {
+          type: "array",
+          description: "List of pipeline steps to execute sequentially",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string", description: "Step identifier for variable interpolation" },
+              tool: { type: "string", description: "Tool name to invoke" },
+              arguments: { type: "object", description: "Arguments object with optional '${stepId.field}' references", default: {} },
+              provider: { type: "string", description: "Optional provider ID" },
+            },
+            required: ["tool"],
+          },
+        },
+        stop_on_error: {
+          type: "boolean",
+          default: true,
+          description: "Whether to terminate pipeline immediately if any step fails",
+        },
+        timeout_seconds: {
+          type: "number",
+          default: 120,
+          description: "Global timeout in seconds for the pipeline",
+        },
+      },
+      required: ["pipeline"],
+    },
+    readOnlyHint: false,
+    destructiveHint: true,
+    idempotentHint: false,
+    openWorldHint: true,
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: true,
+      idempotentHint: false,
+      openWorldHint: true,
+    },
+  },
+  {
+    name: "nexus_wait_condition",
+    description: "Wait on the server side for a specific condition (TCP port open or log file keyword) before continuing.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        condition_type: {
+          type: "string",
+          enum: ["port_open", "log_contains"],
+          description: "Condition type: 'port_open' or 'log_contains'",
+        },
+        target: {
+          type: "string",
+          description: "Target host:port or log file path",
+        },
+        expected_pattern: {
+          type: "string",
+          description: "Expected regex pattern or keyword for 'log_contains'",
+        },
+        timeout_seconds: {
+          type: "number",
+          default: 60,
+          description: "Maximum timeout in seconds",
+        },
+        poll_interval_ms: {
+          type: "number",
+          default: 500,
+          description: "Polling interval in milliseconds",
+        },
+      },
+      required: ["condition_type", "target"],
+    },
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  ...CORE_ADVANCED_META_TOOL_DEFINITIONS,
 ];
 
 export const CANONICAL_TOOL_MAP = new Map<string, CanonicalToolDefinition>(
@@ -767,7 +1216,7 @@ export function logToolTelemetry(entry: {
       totalBytes,
     };
 
-    const defaultLogDir = process.env.NEXUS_LOG_DIR || process.cwd();
+    const defaultLogDir = fs.existsSync("E:/workspace/cod") ? "E:/workspace/cod" : process.cwd();
     const logPath =
       process.env.NEXUS_TOKEN_LOG_PATH || path.resolve(defaultLogDir, "nexus-token-telemetry.jsonl");
     fs.mkdirSync(path.dirname(logPath), { recursive: true });
@@ -863,6 +1312,193 @@ export class DiskCheckpointStore {
   }
 }
 
+export function calculateToolScore(
+  t: any,
+  query: string,
+  queryTokens: string[],
+  matchedConcepts: any[] = [],
+  conceptExactHints: Set<string> = new Set(),
+  conceptCategories: Set<string> = new Set()
+): { score: number; matchedAny: boolean } {
+  let score = 0;
+  let matchedAny = false;
+  const nameLower = t.name.toLowerCase();
+  const cleanName = nameLower.replace(/^localbridge_/, "");
+  const descLower = (t.description || "").toLowerCase();
+  const catLower = (t.category || "").toLowerCase();
+
+  if (query) {
+    // A. Exact Concept Hint Match (Top Priority)
+    if (conceptExactHints.has(t.name)) {
+      score += 150;
+      matchedAny = true;
+    }
+
+    // B. Exact Name Match
+    if (cleanName === query || nameLower === query) {
+      score += 120;
+      matchedAny = true;
+    }
+
+    // C. Query Token Match in Tool Name
+    for (const tok of queryTokens) {
+      if (cleanName.includes(tok) || nameLower.includes(tok)) {
+        score += 60;
+        matchedAny = true;
+      }
+    }
+
+    // D. Query Token Match in Description
+    for (const tok of queryTokens) {
+      if (descLower.includes(tok)) {
+        score += 25;
+        matchedAny = true;
+      }
+    }
+
+    // D2. Tool Metadata Keywords Match (+80 Boost)
+    if (t.keywords && Array.isArray(t.keywords)) {
+      for (const kw of t.keywords) {
+        const kwLower = String(kw).toLowerCase();
+        if (queryTokens.some((tok) => kwLower.includes(tok) || tok.includes(kwLower))) {
+          score += 80;
+          matchedAny = true;
+        }
+      }
+    }
+
+    // E. Concept English Keywords in Tool Name (restricted to concept categories)
+    for (const c of matchedConcepts) {
+      if (c.categories && !c.categories.includes(catLower)) continue;
+      for (const kw of (c.englishKeywords || [])) {
+        if (cleanName.includes(kw)) {
+          score += 40;
+          matchedAny = true;
+        }
+      }
+    }
+
+    // F. Concept Category Match Boost
+    if (conceptCategories.has(catLower)) {
+      score += 15;
+    }
+
+    // G. Parameter Name Match
+    if (t.parameters && t.parameters.some((p: string) => queryTokens.some((tok) => p.toLowerCase().includes(tok)))) {
+      score += 10;
+      matchedAny = true;
+    }
+
+    // High frequency core verbs tie-breaker ONLY IF already matched
+    if (matchedAny && /(launch|open|run|click|type|find|list|create|exec)/i.test(cleanName)) {
+      score += 5;
+    }
+  } else {
+    // Category or provider filter only
+    score = 10;
+    matchedAny = true;
+  }
+
+  return { score, matchedAny };
+}
+
+/**
+ * Safely extracts a nested property value from an object given a dot-separated path.
+ * Supports accessing top-level properties or nested structuredContent properties.
+ */
+export function getNestedValue(obj: any, pathStr: string): any {
+  if (obj == null) return undefined;
+  const parts = pathStr.split(".");
+  let curr = obj;
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i];
+    if (curr == null) return undefined;
+    if (part in curr) {
+      curr = curr[part];
+    } else if (i === 0 && curr.structuredContent && typeof curr.structuredContent === "object" && part in curr.structuredContent) {
+      curr = curr.structuredContent[part];
+    } else {
+      return undefined;
+    }
+  }
+  return curr;
+}
+
+/**
+ * Deterministically interpolates variables in the format ${stepId.propertyPath} into step arguments.
+ * Preserves native object/array types if the entire field is a single variable interpolation.
+ */
+export function interpolateStepArguments(
+  args: any,
+  stepOutputs: Record<string, any>,
+  currentStepId: string,
+  stopOnError: boolean
+): any {
+  if (typeof args === "string") {
+    // Exact single variable match e.g. "${step1.content}"
+    const exactMatch = args.match(/^\$\{([a-zA-Z0-9_-]+)\.([a-zA-Z0-9_.-]+)\}$/);
+    if (exactMatch) {
+      const refStepId = exactMatch[1];
+      const refPath = exactMatch[2];
+      const stepOut = stepOutputs[refStepId];
+      if (!stepOut) {
+        if (stopOnError) {
+          const avail = Object.keys(stepOutputs).join(", ") || "(none)";
+          throw new Error(`[Batch Interpolation Error] Step '${currentStepId}' references unknown step '${refStepId}'. Available steps: ${avail}`);
+        }
+        return args;
+      }
+      const resolved = getNestedValue(stepOut, refPath);
+      if (resolved === undefined) {
+        if (stopOnError) {
+          const availKeys = Object.keys(stepOut);
+          throw new Error(`[Batch Interpolation Error] Step '${currentStepId}' property '${refPath}' in step '${refStepId}' is undefined. Available step keys: ${availKeys.join(", ")}`);
+        }
+        return args;
+      }
+      return resolved;
+    }
+
+    // Substring interpolation e.g. "echo ${step1.output}"
+    const varRegex = /\$\{([a-zA-Z0-9_-]+)\.([a-zA-Z0-9_.-]+)\}/g;
+    return args.replace(varRegex, (match, refStepId, refPath) => {
+      const stepOut = stepOutputs[refStepId];
+      if (!stepOut) {
+        if (stopOnError) {
+          const avail = Object.keys(stepOutputs).join(", ") || "(none)";
+          throw new Error(`[Batch Interpolation Error] Step '${currentStepId}' references unknown step '${refStepId}'. Available steps: ${avail}`);
+        }
+        return match;
+      }
+      const resolved = getNestedValue(stepOut, refPath);
+      if (resolved === undefined) {
+        if (stopOnError) {
+          throw new Error(`[Batch Interpolation Error] Step '${currentStepId}' property '${refPath}' in step '${refStepId}' is undefined.`);
+        }
+        return match;
+      }
+      if (typeof resolved === "object" && resolved !== null) {
+        return JSON.stringify(resolved);
+      }
+      return String(resolved);
+    });
+  }
+
+  if (Array.isArray(args)) {
+    return args.map((item) => interpolateStepArguments(item, stepOutputs, currentStepId, stopOnError));
+  }
+
+  if (typeof args === "object" && args !== null) {
+    const res: Record<string, any> = {};
+    for (const [k, v] of Object.entries(args)) {
+      res[k] = interpolateStepArguments(v, stepOutputs, currentStepId, stopOnError);
+    }
+    return res;
+  }
+
+  return args;
+}
+
 /**
  * Creates and registers all Nexus tools (or Minimal Meta Tools under Token Optimization Mode) into an MCP Server.
  * Supports isolated targetProviderId filtering for dedicated provider endpoints (e.g. /mcp/autocad).
@@ -895,11 +1531,18 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
   * AutoCAD (:9107)    : ${policyManager.isProviderTokenOptimization("autocad") ? "🟢 SAVING ON (nexus.cad / discover)" : "⚪ SAVING OFF (Native tools exposed)"}
   * Playwright (:9100) : ${policyManager.isProviderTokenOptimization("playwright") ? "🟢 SAVING ON (nexus.browser / discover)" : "⚪ SAVING OFF (Native tools exposed)"}
   * Telegram (:9119)   : ${policyManager.isProviderTokenOptimization("telegram-mcp") ? "🟢 SAVING ON (nexus.telegram / discover)" : "⚪ SAVING OFF (Native tools exposed)"}
-- Token Efficiency Rules (Strictly Follow to Conserve Context):
-  1. Skill-Guided Execution: Call 'nexus_skills(action="match", query=...)' to load established recipes and step-by-step guidelines for non-trivial tasks.
-  2. Single-Turn Batching (Recommended): For complex or multi-step tasks (Unity scene setup, Blender modeling/rendering, CAD drafting, batch file operations, test automation), NEVER loop atomic tools step-by-step. ALWAYS write a cohesive Python script and invoke via 'nexus_run_script(script=...)'. This delivers full tasks in a single turn and cuts token usage by 95%+.
-  3. Targeted Discovery: Call 'nexus_discover_tools(query=...)' with clear intent keywords to get exact tool names and signatures. Avoid redundant or broad discovery queries.
-  4. Atomic Invocation (Lightweight Only): Use 'nexus_execute_action(tool=..., arguments=...)' ONLY for single-point status inspection or quick atomic actions. Large payloads (screenshots/logs) are automatically saved to local files and middle-truncated by Nexus Token Guardrail.
+- Token Efficiency & Safety Rules (Strictly Follow):
+  1. Single-Turn Batching (Recommended): For complex or multi-step tasks (Unity scene setup, Blender modeling/rendering, CAD drafting, batch file operations, test automation), NEVER loop atomic tools step-by-step. ALWAYS write a cohesive Python script and invoke via 'nexus_run_script(script=...)'. This delivers full tasks in a single turn and cuts token usage by 95%+.
+  2. Targeted Discovery: Call 'nexus_discover_tools(query=...)' with clear intent keywords to get exact tool names and signatures. Avoid redundant or broad discovery queries.
+  3. Strict Atomic Action Protocol (nexus_execute_action Golden Rules):
+     Rule 1: Atomic Tools Only. NEVER forward top-level meta-tools (discover_tools, run_script, batch_execute, parallel_fanout, etc.) through execute_action; call them directly.
+     Rule 2: Exact Tool Names. Never guess aliases. Discover first if unsure.
+     Rule 3: Strict Schema Compliance. Never invent parameters or wrapper keys.
+     Rule 4: Explicit User Consent Required for: Vault/credentials, wiretaps/sniffing, process inspection, external AI relay, event traps, and destructive/modifying file writes.
+     Rule 5: Transparent Raw Errors. Report failure verbatim; do NOT switch tools silently.
+     Rule 6: Zero Credential Leakage. Never read, echo, or extrapolate keys, tokens, or auth headers.
+     Rule 7: Unreliable Result Warning. When encountering empty/abnormal responses, explicitly warn the user that results may be unreliable.
+     Rule 8: Two-Line Handoff Contract. After each action, provide a 1-2 sentence execution summary and explicitly state verification status.
 `.trim();
   } else {
     instructionsText = `
@@ -912,7 +1555,7 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
   const server = new Server(
     {
       name: cleanTargetId ? `nexus-mcp-bridge [${cleanTargetId}]` : "nexus-mcp-bridge",
-      version: "1.3.2",
+      version: "1.3.6",
     },
     {
       capabilities: {
@@ -929,7 +1572,9 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
     // 1.1 Non-blocking background provider healthcheck
     void providerRuntime.initializeDefaultProviders().catch(() => {});
 
-    const isP3Enabled = process.env.NEXUS_TOKEN_P3_ENABLED !== "false";
+    const isP3Enabled =
+      process.env.NEXUS_TOKEN_P3_ENABLED !== "false" &&
+      process.env.NEXUS_SCHEMA_SLIM_ENABLED !== "false";
 
     const dehydrateSchema = (schema: any) => {
       if (!isP3Enabled || !schema || typeof schema !== "object") return dereferenceJsonSchema(schema);
@@ -944,7 +1589,7 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
       return cloned;
     };
 
-    // Sanitize tools: dereference schemas to satisfy standard MCP schema parser
+    // Sanitize tools: dereference schemas to satisfy OpenAI / Claude schema parser
     const sanitizeTool = (t: any) => ({
       name: t.name,
       description: isP3Enabled && t.description && t.description.length > 200
@@ -1048,16 +1693,701 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
     };
   });
 
+  function isBrowserAutomationTool(toolName: string): boolean {
+    if (!toolName) return false;
+    const t = toolName.toLowerCase().trim();
+    return (
+      t.startsWith("localbridge_browser_") ||
+      t.startsWith("browser_") ||
+      t === "open_url" ||
+      t === "open-url" ||
+      t === "open_browser" ||
+      t === "launch_browser" ||
+      t === "navigate" ||
+      t === "snapshot" ||
+      t === "click" ||
+      t === "type" ||
+      t === "scroll" ||
+      t === "press_key" ||
+      t === "key" ||
+      t === "close_modal" ||
+      t === "browser_close_modal" ||
+      t === "eval_js" ||
+      t === "page_eval"
+    );
+  }
+
+  async function dispatchBrowserTool(toolName: string, toolArgs: any, context: { executeCallTool: any }): Promise<any> {
+    const t = toolName.toLowerCase().replace(/^localbridge_/, "").replace(/-/g, "_");
+    const args = toolArgs || {};
+
+    if (t === "browser_open" || t === "browser_navigate" || t === "open_url" || t === "navigate") {
+      return executeAdvancedMetaTool("nexus_browser", { action: "navigate", url: args.url || args.targetUrl, tab_id: args.tabId }, context);
+    }
+    if (t === "browser_launch" || t === "open_browser" || t === "launch_browser") {
+      if (args.url) {
+        return executeAdvancedMetaTool("nexus_browser", { action: "navigate", url: args.url, tab_id: args.tabId }, context);
+      }
+      return executeAdvancedMetaTool("nexus_browser", { action: "launch" }, context);
+    }
+    if (t === "browser_click" || t === "click") {
+      return executeAdvancedMetaTool("nexus_browser", { action: "click", mark: args.mark, selector: args.selector, text: args.text, tab_id: args.tabId }, context);
+    }
+    if (t === "browser_type" || t === "type") {
+      return executeAdvancedMetaTool("nexus_browser", { action: "type", text: args.text, mark: args.mark, selector: args.selector, tab_id: args.tabId }, context);
+    }
+    if (t === "browser_scroll" || t === "scroll") {
+      return executeAdvancedMetaTool("nexus_browser", { action: "scroll", direction: args.direction || "down", amount: args.amount || 500, tab_id: args.tabId }, context);
+    }
+    if (t === "browser_combo" || t === "combo") {
+      return executeAdvancedMetaTool("nexus_browser", { action: "combo", steps: args.steps, tab_id: args.tabId }, context);
+    }
+    if (t === "browser_snapshot" || t === "snapshot") {
+      return executeAdvancedMetaTool("nexus_browser", { action: "snapshot", tab_id: args.tabId }, context);
+    }
+    if (t === "browser_screenshot" || t === "screenshot") {
+      return executeAdvancedMetaTool("nexus_browser", { action: "screenshot", tab_id: args.tabId }, context);
+    }
+    if (t === "browser_press_key" || t === "press_key" || t === "key" || t === "browser_key") {
+      const key = args.key || args.keyName || "ArrowDown";
+      const code = args.code || key;
+      return executeAdvancedMetaTool("nexus_browser", {
+        action: "eval",
+        script: `
+          const evD = new KeyboardEvent('keydown', { key: '${key}', code: '${code}', bubbles: true, cancelable: true });
+          const evU = new KeyboardEvent('keyup', { key: '${key}', code: '${code}', bubbles: true, cancelable: true });
+          document.dispatchEvent(evD);
+          window.dispatchEvent(evD);
+          document.body && document.body.dispatchEvent(evD);
+          setTimeout(() => {
+            document.dispatchEvent(evU);
+            window.dispatchEvent(evU);
+            document.body && document.body.dispatchEvent(evU);
+          }, 50);
+          return { success: true, action: 'key_press', key: '${key}' };
+        `,
+        tab_id: args.tabId
+      }, context);
+    }
+    if (t === "browser_close_modal" || t === "close_modal") {
+      return executeAdvancedMetaTool("nexus_browser", {
+        action: "eval",
+        script: `
+          const selectors = [
+            'button[aria-label*="close" i]', 'button[aria-label*="关闭" i]',
+            '.modal-close', '.popup-close', '.close-btn', '.btn-close',
+            'div[role="dialog"] button:has(svg)', '[class*="close-modal"]'
+          ];
+          let closed = false;
+          for (const s of selectors) {
+            const el = document.querySelector(s);
+            if (el && typeof el.click === 'function') {
+              el.click();
+              closed = true;
+              break;
+            }
+          }
+          return { success: true, modalClosed: closed };
+        `,
+        tab_id: args.tabId
+      }, context);
+    }
+    if (t === "browser_eval" || t === "browser_evaluate" || t === "eval_js" || t === "page_eval") {
+      return executeAdvancedMetaTool("nexus_browser", { action: "eval", script: args.script || args.code || "", tab_id: args.tabId }, context);
+    }
+    if (t === "browser_tabs") {
+      return executeAdvancedMetaTool("nexus_browser", { action: "list_tabs" }, context);
+    }
+    return executeAdvancedMetaTool("nexus_browser", args, context);
+  }
+
+  async function dispatchBlenderTool(toolName: string, toolArgs: any): Promise<any> {
+    const t = toolName.toLowerCase().replace(/^localbridge_/, "").replace(/^nexus_/, "");
+    const args = toolArgs || {};
+
+    if (t === "get_scene_info" || t === "scene_info") {
+      const sceneRes = await getBlenderSceneInfo();
+      const text = typeof sceneRes.scene === "string" ? sceneRes.scene : JSON.stringify(sceneRes.scene, null, 2);
+      return {
+        content: [{ type: "text", text: `[Blender Scene Info (${sceneRes.mode})]
+${text}` }],
+        isError: sceneRes.isError,
+        structuredContent: {
+          success: !sceneRes.isError,
+          mode: sceneRes.mode,
+          scene: sceneRes.scene,
+        },
+      };
+    }
+
+    const code = args.code || args.script || args.python || args.command || "";
+    const userPrompt = args.user_prompt || args.prompt || args.context || "";
+    const execRes = await executeBlenderScript(code, userPrompt);
+    const resultText = execRes.output || "Executed";
+
+    return {
+      content: [{ type: "text", text: `[Blender 3D Execution (${execRes.mode})]\n${resultText}` }],
+      isError: execRes.isError,
+      structuredContent: {
+        success: !execRes.isError,
+        mode: execRes.mode,
+        output: execRes.output,
+      },
+    };
+  }
+
+  function normalizeCanonicalToolName(rawName: string): string {
+    const clean = rawName.toLowerCase().trim();
+    const aliasMap: Record<string, string> = {
+      "process_list": "localbridge_process_list",
+      "ps": "localbridge_process_list",
+      "port_kill": "localbridge_port_kill",
+      "kill_process": "localbridge_process_kill",
+      "process_kill": "localbridge_process_kill",
+      "screenshot": "localbridge_computer_screen_snapshot",
+      "screen_capture": "localbridge_computer_screen_snapshot",
+      "clipboard_read": "localbridge_clipboard_read",
+      "clipboard_write": "localbridge_clipboard_write",
+      "system_info": "localbridge_system_info",
+    };
+    return aliasMap[clean] || rawName;
+  }
+
   // 2. tools/call Request Handler
   const executeCallTool = async (request: any) => {
-    const { name, arguments: rawArgs } = request.params;
+    let { name } = request.params;
+    const { arguments: rawArgs } = request.params;
     const args = (rawArgs && typeof rawArgs === "object" ? { ...rawArgs } : {}) as Record<string, any>;
 
+    // 0. Dispatch Blender 3D tools directly (dual-mode: socket + headless fallback)
+    if (isBlenderTool(name)) {
+      return await dispatchBlenderTool(name, args);
+    }
+
+    // 0.1 Dispatch Browser Automation tools directly
+    if (isBrowserAutomationTool(name)) {
+      return await dispatchBrowserTool(name, args, { executeCallTool });
+    }
+
+    // 0.2 Dispatch Unity GameDev tools directly
+    const unityProvider = UnityGameDevMcpProvider.getInstance();
+    if (unityProvider.isUnityTool(name)) {
+      const execResult = await unityProvider.executeTool(name, args);
+      return {
+        content: (execResult.content || []) as any,
+        isError: execResult.isError,
+        structuredContent: execResult,
+      };
+    }
+
+    // 0.3 Normalize canonical un-prefixed tool names
+    name = normalizeCanonicalToolName(name);
+
     try {
-      // 2.0.0.1 Universal Meta-Tools Execution
-      const isP0Enabled = process.env.NEXUS_TOKEN_P0_ENABLED !== "false";
+      const isP0Enabled =
+        process.env.NEXUS_TOKEN_P0_ENABLED !== "false" &&
+        process.env.NEXUS_TOKEN_SLIM_ENABLED !== "false";
+
+      // 1.0 Multi-Model Relay Meta-Tool
+      if (name === "nexus_relay_dispatch" || name === "relay_dispatch") {
+        if (args.discover_nodes) {
+          const downstreamRes = await nexusClient.callNexusTool("localbridge_relay_discover_nodes", {
+            refresh: true,
+          });
+          return downstreamRes;
+        }
+
+        const downstreamRes = await nexusClient.callNexusTool("localbridge_relay_dispatch_task", {
+          node_id: args.node_id || "auto",
+          instruction: args.instruction || "",
+          action: args.action || (args.new_chat ? "new_chat" : args.delete_current_chat ? "delete_chat" : "chat"),
+          new_chat: Boolean(args.new_chat),
+          delete_current_chat: Boolean(args.delete_current_chat),
+          context: args.context,
+          timeout_seconds: args.timeout_seconds || 120,
+          output_file_path: args.output_file_path,
+        });
+
+        // Thinking chain removal safeguard (strips any <think> tags before returning to Claude)
+        if (downstreamRes?.content && Array.isArray(downstreamRes.content)) {
+          for (const item of downstreamRes.content) {
+            if (item && typeof item.text === "string") {
+              item.text = item.text
+                .replace(/<think>[\s\S]*?<\/think>/gi, "")
+                .replace(/\[thinking\][\s\S]*?\[\/thinking\]/gi, "")
+                .replace(/:::thinking[\s\S]*?:::/gi, "")
+                .trim();
+            }
+          }
+        }
+        return downstreamRes;
+      }
+
+      // 1.0.1 Declarative Batch Execution Meta-Tool
+      if (name === "nexus_batch_execute" || name === "batch_execute") {
+        const rawPipeline = args.pipeline;
+        if (!Array.isArray(rawPipeline) || rawPipeline.length === 0) {
+          return {
+            content: [{
+              type: "text",
+              text: "ERR invalid_arguments: 'pipeline' must be a non-empty array of execution steps.",
+            }],
+            isError: true,
+            structuredContent: {
+              success: false,
+              error: "'pipeline' must be a non-empty array of execution steps.",
+            },
+          };
+        }
+
+        const stopOnError = args.stop_on_error !== false; // default true
+        const timeoutSeconds = Math.min(Math.max(Number(args.timeout_seconds) || 120, 1), 300);
+        const startTime = Date.now();
+        const deadline = startTime + timeoutSeconds * 1000;
+
+        const stepResults: Array<{
+          id: string;
+          tool: string;
+          status: "success" | "error" | "skipped" | "timeout";
+          durationMs: number;
+          output?: any;
+          error?: string;
+        }> = [];
+
+        const stepOutputs: Record<string, any> = {};
+        let pipelineFailed = false;
+        let failedStepId: string | null = null;
+
+        for (let i = 0; i < rawPipeline.length; i++) {
+          const step = rawPipeline[i];
+          const stepId = String(step?.id || `step_${i + 1}`).trim();
+          const stepTool = String(step?.tool || "").trim();
+
+          if (pipelineFailed && stopOnError) {
+            stepResults.push({
+              id: stepId,
+              tool: stepTool,
+              status: "skipped",
+              durationMs: 0,
+            });
+            continue;
+          }
+
+          if (Date.now() >= deadline) {
+            pipelineFailed = true;
+            failedStepId = stepId;
+            stepResults.push({
+              id: stepId,
+              tool: stepTool,
+              status: "timeout",
+              durationMs: 0,
+              error: `Pipeline timed out after ${timeoutSeconds}s before executing step '${stepId}'.`,
+            });
+            continue;
+          }
+
+          if (!stepTool) {
+            pipelineFailed = true;
+            failedStepId = stepId;
+            stepResults.push({
+              id: stepId,
+              tool: stepTool,
+              status: "error",
+              durationMs: 0,
+              error: `Step '${stepId}' is missing required 'tool' property.`,
+            });
+            if (stopOnError) continue;
+          }
+
+          if (stepTool === "nexus_batch_execute" || stepTool === "batch_execute") {
+            pipelineFailed = true;
+            failedStepId = stepId;
+            stepResults.push({
+              id: stepId,
+              tool: stepTool,
+              status: "error",
+              durationMs: 0,
+              error: `Nested batch execution in step '${stepId}' is disallowed.`,
+            });
+            if (stopOnError) continue;
+          }
+
+          // Strict deterministic variable interpolation
+          let resolvedArgs: Record<string, any> = {};
+          let interpError: string | null = null;
+          try {
+            resolvedArgs = interpolateStepArguments(step.arguments || {}, stepOutputs, stepId, stopOnError);
+          } catch (err: any) {
+            interpError = err?.message || String(err);
+          }
+
+          if (interpError) {
+            pipelineFailed = true;
+            failedStepId = stepId;
+            stepResults.push({
+              id: stepId,
+              tool: stepTool,
+              status: "error",
+              durationMs: 0,
+              error: interpError,
+            });
+            if (stopOnError) continue;
+          }
+
+          // Execute step strictly through nexus_execute_action to ensure 100% security and audit parity!
+          const stepStart = Date.now();
+          let stepExecRes: any;
+          try {
+            stepExecRes = await executeCallTool({
+              params: {
+                name: "nexus_execute_action",
+                arguments: {
+                  tool: stepTool,
+                  arguments: resolvedArgs,
+                  provider: step.provider,
+                  _internal: true,
+                },
+              },
+            });
+          } catch (callErr: any) {
+            stepExecRes = {
+              content: [{ type: "text", text: `[Step Execution Exception] ${callErr?.message || String(callErr)}` }],
+              isError: true,
+            };
+          }
+          const stepDurationMs = Date.now() - stepStart;
+
+          const isStepError = Boolean(stepExecRes?.isError);
+          const stepText = (stepExecRes?.content || [])
+            .map((c: any) => c.text || "")
+            .filter(Boolean)
+            .join("\n");
+
+          // Register output for subsequent step variable references
+          const extractedOutput: Record<string, any> = {
+            content: stepExecRes?.content,
+            text: stepText,
+            isError: isStepError,
+            success: !isStepError,
+            ...(typeof stepExecRes?.structuredContent === "object" && stepExecRes?.structuredContent !== null
+              ? stepExecRes.structuredContent
+              : {}),
+            structuredContent: stepExecRes?.structuredContent,
+          };
+          stepOutputs[stepId] = extractedOutput;
+
+          if (isStepError) {
+            pipelineFailed = true;
+            if (!failedStepId) failedStepId = stepId;
+            stepResults.push({
+              id: stepId,
+              tool: stepTool,
+              status: "error",
+              durationMs: stepDurationMs,
+              output: stepExecRes?.structuredContent || stepText.slice(0, 500),
+              error: stepText || "Step returned an error",
+            });
+          } else {
+            stepResults.push({
+              id: stepId,
+              tool: stepTool,
+              status: "success",
+              durationMs: stepDurationMs,
+              output: stepExecRes?.structuredContent || stepText,
+            });
+          }
+        }
+
+        const totalDurationMs = Date.now() - startTime;
+        const succeededCount = stepResults.filter((s) => s.status === "success").length;
+        const failedCount = stepResults.filter((s) => s.status === "error" || s.status === "timeout").length;
+        const skippedCount = stepResults.filter((s) => s.status === "skipped").length;
+
+        const summaryHeader = pipelineFailed
+          ? `❌ [nexus_batch_execute] 流水线执行失败 (在步骤 '${failedStepId}' 熔断中断)`
+          : `✅ [nexus_batch_execute] 流水线全部 ${succeededCount} 个步骤顺序执行完毕`;
+
+        const stepSummaries = stepResults.map((s, idx) => {
+          const icon = s.status === "success" ? "✓" : s.status === "skipped" ? "○" : "✗";
+          const desc = s.status === "skipped"
+            ? `[SKIPPED] ${s.id} (${s.tool})`
+            : s.status === "success"
+            ? `[成功 ${s.durationMs}ms] ${s.id} (${s.tool})`
+            : `[失败 ${s.durationMs}ms] ${s.id} (${s.tool}) -> ${s.error || "error"}`;
+          return `${idx + 1}. ${icon} ${desc}`;
+        }).join("\n");
+
+        return {
+          content: [{
+            type: "text",
+            text: `${summaryHeader}\nDuration: ${totalDurationMs}ms (Success: ${succeededCount}, Failed: ${failedCount}, Skipped: ${skippedCount})\n\nExecution Trace:\n${stepSummaries}\n\nDetailed step results available in structuredContent.`,
+          }],
+          isError: pipelineFailed,
+          structuredContent: {
+            success: !pipelineFailed,
+            totalSteps: rawPipeline.length,
+            succeededSteps: succeededCount,
+            failedSteps: failedCount,
+            skippedSteps: skippedCount,
+            totalDurationMs,
+            steps: stepResults,
+          },
+        };
+      }
+
+      // 1.0.2 Server-Side Asynchronous Wait Condition Meta-Tool
+      if (name === "nexus_wait_condition" || name === "wait_condition") {
+        const conditionType = String(args.condition_type || "").trim();
+        const rawTarget = String(args.target || "").trim();
+        const expectedPattern = typeof args.expected_pattern === "string" ? args.expected_pattern : "";
+        const timeoutSeconds = Math.min(Math.max(Number(args.timeout_seconds) || 60, 1), 300);
+        const pollIntervalMs = Math.min(Math.max(Number(args.poll_interval_ms) || 500, 100), 5000);
+
+        if (!conditionType || (conditionType !== "port_open" && conditionType !== "log_contains")) {
+          return {
+            content: [{
+              type: "text",
+              text: "ERR invalid_arguments: 'condition_type' must be either 'port_open' or 'log_contains'.",
+            }],
+            isError: true,
+            structuredContent: {
+              success: false,
+              error: "'condition_type' must be either 'port_open' or 'log_contains'.",
+            },
+          };
+        }
+
+        if (!rawTarget) {
+          return {
+            content: [{
+              type: "text",
+              text: "ERR invalid_arguments: 'target' is required (e.g. '127.0.0.1:3000' for port_open, or file path for log_contains).",
+            }],
+            isError: true,
+            structuredContent: {
+              success: false,
+              error: "'target' is required.",
+            },
+          };
+        }
+
+        const startTime = Date.now();
+        const deadline = startTime + timeoutSeconds * 1000;
+
+        // Condition A: port_open
+        if (conditionType === "port_open") {
+          let host = "127.0.0.1";
+          let port: number;
+
+          if (rawTarget.includes(":")) {
+            const parts = rawTarget.split(":");
+            host = parts[0].trim() || "127.0.0.1";
+            if (host === "localhost") host = "127.0.0.1";
+            port = parseInt(parts[1], 10);
+          } else {
+            port = parseInt(rawTarget, 10);
+          }
+
+          if (isNaN(port) || port <= 0 || port > 65535) {
+            return {
+              content: [{
+                type: "text",
+                text: `ERR invalid_arguments: Invalid port number in target '${rawTarget}'. Must be between 1 and 65535.`,
+              }],
+              isError: true,
+              structuredContent: {
+                success: false,
+                error: `Invalid port number in target '${rawTarget}'.`,
+              },
+            };
+          }
+
+          const probeTcpPort = (targetHost: string, targetPort: number): Promise<boolean> => {
+            return new Promise((resolve) => {
+              const socket = new net.Socket();
+              let resolved = false;
+              const cleanup = (success: boolean) => {
+                if (!resolved) {
+                  resolved = true;
+                  socket.destroy();
+                  resolve(success);
+                }
+              };
+              socket.setTimeout(800);
+              socket.on("connect", () => cleanup(true));
+              socket.on("timeout", () => cleanup(false));
+              socket.on("error", () => cleanup(false));
+              socket.connect(targetPort, targetHost);
+            });
+          };
+
+          while (Date.now() < deadline) {
+            const isOpen = await probeTcpPort(host, port);
+            if (isOpen) {
+              const elapsedMs = Date.now() - startTime;
+              return {
+                content: [{
+                  type: "text",
+                  text: `✅ [Condition Satisfied] TCP port ${host}:${port} is ready and accepting connections (elapsed: ${elapsedMs}ms).`,
+                }],
+                structuredContent: {
+                  satisfied: true,
+                  condition_type: "port_open",
+                  target: `${host}:${port}`,
+                  elapsedMs,
+                  timeout_seconds: timeoutSeconds,
+                },
+              };
+            }
+
+            const remaining = deadline - Date.now();
+            if (remaining <= 0) break;
+            await new Promise((r) => setTimeout(r, Math.min(pollIntervalMs, remaining)));
+          }
+
+          const elapsedMs = Date.now() - startTime;
+          return {
+            content: [{
+              type: "text",
+              text: `⏱️ [Condition Timeout] TCP port ${host}:${port} was not opened within ${timeoutSeconds}s.`,
+            }],
+            isError: true,
+            structuredContent: {
+              satisfied: false,
+              condition_type: "port_open",
+              target: `${host}:${port}`,
+              elapsedMs,
+              timeout_seconds: timeoutSeconds,
+              error: `Timed out waiting for port ${host}:${port} to open after ${timeoutSeconds}s`,
+            },
+          };
+        }
+
+        // Condition B: log_contains
+        if (conditionType === "log_contains") {
+          if (!expectedPattern) {
+            return {
+              content: [{
+                type: "text",
+                text: "ERR invalid_arguments: 'expected_pattern' is required when condition_type is 'log_contains'.",
+              }],
+              isError: true,
+              structuredContent: {
+                success: false,
+                error: "'expected_pattern' is required for log_contains.",
+              },
+            };
+          }
+
+          const targetFilePath = path.isAbsolute(rawTarget)
+            ? rawTarget
+            : path.resolve(process.cwd(), rawTarget);
+
+          let regexPattern: RegExp | null = null;
+          if (expectedPattern.startsWith("/") && expectedPattern.lastIndexOf("/") > 0) {
+            try {
+              const lastSlash = expectedPattern.lastIndexOf("/");
+              const patternStr = expectedPattern.slice(1, lastSlash);
+              const flags = expectedPattern.slice(lastSlash + 1);
+              regexPattern = new RegExp(patternStr, flags);
+            } catch {
+              regexPattern = null;
+            }
+          }
+
+          while (Date.now() < deadline) {
+            if (fs.existsSync(targetFilePath)) {
+              try {
+                const stat = fs.statSync(targetFilePath);
+                let content = "";
+                if (stat.size > 2 * 1024 * 1024) {
+                  const fd = fs.openSync(targetFilePath, "r");
+                  const buf = Buffer.alloc(2 * 1024 * 1024);
+                  fs.readSync(fd, buf, 0, buf.length, stat.size - buf.length);
+                  fs.closeSync(fd);
+                  content = buf.toString("utf-8");
+                } else {
+                  content = fs.readFileSync(targetFilePath, "utf-8");
+                }
+
+                let matched = false;
+                let matchedSnippet = "";
+
+                if (regexPattern) {
+                  const m = content.match(regexPattern);
+                  if (m) {
+                    matched = true;
+                    matchedSnippet = m[0];
+                  }
+                } else if (content.includes(expectedPattern)) {
+                  matched = true;
+                  const lines = content.split("\n");
+                  const matchLine = lines.find((l) => l.includes(expectedPattern));
+                  matchedSnippet = (matchLine || expectedPattern).trim();
+                }
+
+                if (matched) {
+                  const elapsedMs = Date.now() - startTime;
+                  return {
+                    content: [{
+                      type: "text",
+                      text: `✅ [Condition Satisfied] Log file [${path.basename(targetFilePath)}] matched expected content (elapsed: ${elapsedMs}ms):\n>> ${matchedSnippet.slice(0, 300)}`,
+                    }],
+                    structuredContent: {
+                      satisfied: true,
+                      condition_type: "log_contains",
+                      target: targetFilePath,
+                      matchedSnippet: matchedSnippet.slice(0, 1000),
+                      elapsedMs,
+                      timeout_seconds: timeoutSeconds,
+                    },
+                  };
+                }
+              } catch {
+                // File might be briefly locked during writes; continue polling
+              }
+            }
+
+            const remaining = deadline - Date.now();
+            if (remaining <= 0) break;
+            await new Promise((r) => setTimeout(r, Math.min(pollIntervalMs, remaining)));
+          }
+
+          const elapsedMs = Date.now() - startTime;
+          return {
+            content: [{
+              type: "text",
+              text: `⏱️ [Condition Timeout] Log file [${path.basename(targetFilePath)}] did not match pattern '${expectedPattern}' within ${timeoutSeconds}s.`,
+            }],
+            isError: true,
+            structuredContent: {
+              satisfied: false,
+              condition_type: "log_contains",
+              target: targetFilePath,
+              expected_pattern: expectedPattern,
+              elapsedMs,
+              timeout_seconds: timeoutSeconds,
+              error: `Timed out waiting for pattern in file after ${timeoutSeconds}s`,
+            },
+          };
+        }
+      }
 
       if (name === "nexus_run_script") {
+        const isRunScriptEnabled = process.env.NEXUS_RUN_SCRIPT_ENABLED !== "false";
+        if (!isRunScriptEnabled) {
+          return {
+            content: [{
+              type: "text",
+              text: "ERR script_disabled: nexus_run_script is disabled via environment variable (NEXUS_RUN_SCRIPT_ENABLED=false). For single-step actions, please use nexus_execute_action(tool='<tool_name>', arguments={...})",
+            }],
+            isError: true,
+            structuredContent: {
+              success: false,
+              error: "nexus_run_script is disabled by configuration (NEXUS_RUN_SCRIPT_ENABLED=false)",
+            },
+          };
+        }
         const runner = ScriptRunner.getInstance();
         const execRes = await runner.execute({
           runtime: args.runtime || "python",
@@ -1082,6 +2412,29 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
           } else {
             outputText = `[Script Execution Error]\n${rawErr}`;
           }
+        } else {
+          // Check if outputText or stdout contains a handleId (e.g. from handle-ized process/port queries)
+          const handleMatch = outputText.match(/\b(hnd_[a-zA-Z0-9_-]{4,}|h_[a-zA-Z0-9_-]{4,})\b/);
+          if (handleMatch) {
+            const matchedHandleId = handleMatch[1];
+            const entry = HandleManager.getHandle(matchedHandleId);
+            if (entry && !outputText.includes("前 3 项预览")) {
+              const sample = entry.items.slice(0, 3).map((item: any) => cleanDefaultItem(item));
+              const sampleJson = JSON.stringify(sample);
+              const callGuide = `💡 Complete data / filtering guide:\nnexus_execute_action(tool='nexus_handle_read', arguments={handleId: '${matchedHandleId}', offset: 0, limit: 20, filter: 'keyword or {key:value}', fields: ['field_name']})\nPass full=true for raw unpaginated output.`;
+              const handleHeader = `[📦 Handle Generated] Tool: ${entry.sourceTool} | Total ${entry.items.length} records staged in handle ${matchedHandleId}.\nFirst 3 preview:\n${sampleJson}\n\n${callGuide}`;
+
+              const trimmed = outputText.trim();
+              if (
+                (trimmed.startsWith("{") && trimmed.endsWith("}") || trimmed.startsWith("[") && trimmed.endsWith("]")) &&
+                (trimmed.includes("handleId") || trimmed.includes("totalCount"))
+              ) {
+                outputText = handleHeader;
+              } else {
+                outputText = `${trimmed}\n\n${handleHeader}`;
+              }
+            }
+          }
         }
 
         return TokenGuardrail.sanitizeToolResult({
@@ -1094,27 +2447,6 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
           isError: !execRes.success,
           structuredContent: structuredRes,
         }, { sourceTool: "nexus_run_script", full: Boolean(args.full), args });
-      }
-
-      if (name === "nexus_skills") {
-        const action = String(args.action || "list").trim();
-        const skillArgs: Record<string, any> = {
-          action,
-          query: args.query || args.name,
-          name: args.name || args.skillId,
-          skillId: args.skillId || args.name,
-          path: args.path || args.documentPath,
-          documentPath: args.documentPath || args.path,
-          mode: args.mode || "summary",
-          projectId: args.projectId,
-        };
-
-        const res = await nexusClient.callNexusTool("nexus_skills", skillArgs);
-        return TokenGuardrail.sanitizeToolResult(res, {
-          sourceTool: "nexus_skills",
-          full: true,
-          args: skillArgs,
-        });
       }
 
       // P3 On-Demand Tool Schema Resolution
@@ -1158,37 +2490,78 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
           filter = filter.trim();
         }
 
-        const readRes = HandleManager.readHandle(handleId, offset, limit, filter);
-        const summaryText = readRes.error
-          ? `ERR ${readRes.error}`
-          : `[句柄读取成功] 句柄: ${handleId} | 命中 ${readRes.items.length}/${readRes.filteredCount} 项 (总记录: ${readRes.totalCount}, offset: ${readRes.offset}, limit: ${readRes.limit})。详细条目请查阅 structuredContent.items。`;
+        let fields: string[] | undefined = undefined;
+        if (Array.isArray(args.fields)) {
+          fields = args.fields.map((f: any) => String(f).trim()).filter(Boolean);
+        } else if (typeof args.fields === "string") {
+          const trimmed = args.fields.trim();
+          if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+            try {
+              const parsed = JSON.parse(trimmed);
+              if (Array.isArray(parsed)) {
+                fields = parsed.map((f: any) => String(f).trim()).filter(Boolean);
+              }
+            } catch {}
+          }
+          if (!fields && trimmed) {
+            fields = trimmed.split(",").map((s) => s.trim()).filter(Boolean);
+          }
+        }
+
+        const readRes = HandleManager.readHandle(handleId, offset, limit, filter, fields);
+        if (readRes.error) {
+          return {
+            content: [{
+              type: "text",
+              text: `ERR ${readRes.error}`,
+            }],
+            isError: true,
+            structuredContent: {
+              error: readRes.error,
+              handleId,
+            },
+          };
+        }
+
+        const fieldsHint = fields && fields.length > 0 ? `, fields: [${fields.join(", ")}]` : "";
+        const summaryHeader = `[Handle Read Succeeded] Handle: ${handleId} | Matched ${readRes.items.length}/${readRes.filteredCount} items (Total: ${readRes.totalCount}, offset: ${readRes.offset}, limit: ${readRes.limit}${fieldsHint}, hasMore: ${readRes.hasMore})`;
+        const itemsJson = JSON.stringify(readRes.items);
+        const contentText = `${summaryHeader}\n${itemsJson}`;
         return {
           content: [{
             type: "text",
-            text: summaryText,
+            text: contentText,
           }],
-          isError: Boolean(readRes.error),
-          structuredContent: readRes,
+          isError: false,
+          structuredContent: {
+            handleId,
+            totalCount: readRes.totalCount,
+            filteredCount: readRes.filteredCount,
+            offset: readRes.offset,
+            limit: readRes.limit,
+            fields: fields && fields.length > 0 ? fields : undefined,
+            hasMore: readRes.hasMore,
+          },
         };
       }
 
       // P2 Disk-Persisted Checkpoint Tools
       if (name === "nexus_checkpoint_save") {
-        if (process.env.NEXUS_TOKEN_P2_ENABLED === "false") {
+        if (process.env.NEXUS_TOKEN_P2_ENABLED === "false" || process.env.NEXUS_CHECKPOINT_PERSISTENCE === "false") {
           return { content: [{ type: "text", text: "Checkpoint is disabled by NEXUS_TOKEN_P2_ENABLED" }], isError: true };
         }
         const saveRes = DiskCheckpointStore.saveCheckpoint(args.name, args.data, args.description);
         return {
           content: [{
             type: "text",
-            text: `[Checkpoint Saved] 名称: ${saveRes.checkpointName} | 磁盘文件: ${saveRes.filePath} (${saveRes.sizeBytes} 字节)。服务重启后可通过 nexus_checkpoint_load 随时恢复。`,
+            text: `[Checkpoint Saved] Name: ${saveRes.checkpointName} | File: ${saveRes.filePath} (${saveRes.sizeBytes} bytes). Restore at any time via nexus_checkpoint_load.`,
           }],
           structuredContent: saveRes,
         };
       }
 
       if (name === "nexus_checkpoint_load") {
-        if (process.env.NEXUS_TOKEN_P2_ENABLED === "false") {
+        if (process.env.NEXUS_TOKEN_P2_ENABLED === "false" || process.env.NEXUS_CHECKPOINT_PERSISTENCE === "false") {
           return { content: [{ type: "text", text: "Checkpoint is disabled by NEXUS_TOKEN_P2_ENABLED" }], isError: true };
         }
         const loadRes = DiskCheckpointStore.loadCheckpoint(args.name);
@@ -1209,7 +2582,7 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
       }
 
       if (name === "nexus_checkpoint_list") {
-        if (process.env.NEXUS_TOKEN_P2_ENABLED === "false") {
+        if (process.env.NEXUS_TOKEN_P2_ENABLED === "false" || process.env.NEXUS_CHECKPOINT_PERSISTENCE === "false") {
           return { content: [{ type: "text", text: "Checkpoint is disabled by NEXUS_TOKEN_P2_ENABLED" }], isError: true };
         }
         const listRes = DiskCheckpointStore.listCheckpoints();
@@ -1247,6 +2620,7 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
           providerId: ct.providerId || "builtin",
           source: "内置核心 (Canonical)",
           description: ct.description || "",
+          keywords: ((ct as any).keywords || []) as string[],
           parameters: (ct.inputSchema?.properties ? Object.keys(ct.inputSchema.properties) : []).filter((p) => !INTERNAL_HOST_PARAMS.has(p)),
           required: (ct.inputSchema?.required || []).filter((p) => !INTERNAL_HOST_PARAMS.has(p)),
           inputSchema: ct.inputSchema,
@@ -1271,8 +2645,38 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
           };
         });
 
+        // C. Universal Meta Tools (Top-Level Orchestration & Relay - 14 Meta Tools)
+        const metaCandidates = UNIVERSAL_META_TOOLS.map((mt) => ({
+          name: mt.name,
+          category: "meta",
+          providerId: "nexus-meta",
+          source: "顶层元工具 (Universal Meta)",
+          description: mt.description || "",
+          keywords: ["meta", "relay", "dispatch", "multi-model", "deepseek", "kimi", "chatgpt", "claude", "doubao", "duck", "script", "handoff", "discover", "execute", "batch", "pipeline", "wait", "condition", "port", "log"],
+          parameters: (mt.inputSchema?.properties ? Object.keys(mt.inputSchema.properties) : []).filter((p) => !INTERNAL_HOST_PARAMS.has(p)),
+          required: (mt.inputSchema?.required || []).filter((p: string) => !INTERNAL_HOST_PARAMS.has(p)),
+          inputSchema: mt.inputSchema,
+          isExternal: false,
+        }));
+
+        // D. Secondary Advanced Meta Tools (Available via discover_tools and execute_action)
+        const secondaryAdvancedCandidates = ADVANCED_META_TOOL_DEFINITIONS
+          .filter((t) => !CORE_ADVANCED_META_TOOL_NAMES.includes(t.name))
+          .map((at) => ({
+            name: at.name,
+            category: "advanced-meta",
+            providerId: "nexus-meta",
+            source: "二级高级工程元工具 (Secondary Advanced)",
+            description: at.description || "",
+            keywords: ["advanced", "reverse", "security", "deobfuscate", "codec", "inspect", "probe", "mock", "patch", "trace", "hook"],
+            parameters: (at.inputSchema?.properties ? Object.keys(at.inputSchema.properties) : []).filter((p) => !INTERNAL_HOST_PARAMS.has(p)),
+            required: (at.inputSchema?.required || []).filter((p: string) => !INTERNAL_HOST_PARAMS.has(p)),
+            inputSchema: at.inputSchema,
+            isExternal: false,
+          }));
+
         // Combined Active Tool Pool
-        const allActiveTools = [...canonicalCandidates, ...dynamicCandidates];
+        const allActiveTools = [...metaCandidates, ...secondaryAdvancedCandidates, ...canonicalCandidates, ...dynamicCandidates];
 
         // 2. Empty Query Handling: return Full Capabilities Overview to save Tokens and guide AI
         if (!query && !providerFilter) {
@@ -1283,21 +2687,21 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
           const dynamicProviders = Array.from(new Set(dynamicCandidates.map((d) => d.providerId)));
           const overview = {
             type: "capabilities_overview",
-            message: "当前处于极致 Token 优化模式。已索引全部 332 个内置核心工具与当前处于运行状态的外部 MCP 工具。请使用 query、category 或 provider 进行精准按需检索。",
+            message: "Token optimization mode active. Indexed 332 canonical tools and active external MCP providers. Use query, category, or provider for on-demand retrieval.",
             totalToolsIndexed: canonicalCandidates.length + dynamicCandidates.length,
             builtinTotal: canonicalCandidates.length,
             domains: {
-              "🖥️ 桌面与操作系统 (Native Desktop & OS)": {
+              "Desktop & OS (Native Desktop & OS)": {
                 "computer-use": `${categoryCounts["computer-use"] || 47} tools - 原生桌面与键鼠控制、WinRT OCR、UI元素定位与屏幕截图`,
                 command: `${categoryCounts.command || 2} tools - 操作系统命令直接执行 (cmd, powershell, bash)`,
                 terminal: `${categoryCounts.terminal || 7} tools - 持久化 PTY 终端会话与流式命令执行`,
                 process: `${categoryCounts.process || 4} tools - 本地进程管理、运行状态与生命周期监控`,
                 port: `${categoryCounts.port || 2} tools - 网络端口探测与占用管理`,
               },
-              "🌐 真实浏览器自动化 (Real Browser Automation)": {
+              "Browser Automation (Real Browser Automation)": {
                 browser: `${categoryCounts.browser || 30} tools - 真实 Chromium (Edge/Chrome) 本地自动化控制 (launch, open, click, type, screenshot 等)`,
               },
-              "📁 文件工程与代码仓库 (Filesystem, Code & Git)": {
+              "Filesystem, Code & Git (Filesystem, Code & Git)": {
                 filesystem: `${categoryCounts.filesystem || 16} tools - 本地文件读写、检索与工程目录管理`,
                 git: `${categoryCounts.git || 9} tools - 本地 Git 版本控制 (status, diff, commit, branch, log)`,
                 worktree: `${categoryCounts.worktree || 5} tools - Git Worktree 独立工作区隔离开发`,
@@ -1305,11 +2709,11 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
                 code: `${categoryCounts.code || 11} tools - AST 语法树分析与局部代码重构`,
                 skills: `${categoryCounts.skills || 10} tools - Nexus 技能中心能力库与拓展插件`,
               },
-              "📄 文档处理与多模态 (Documents & Vision)": {
+              "Documents & Vision (Documents & Vision)": {
                 document: `${categoryCounts.document || 28} tools - Word/PDF/Markdown 文档处理与自动化生成`,
                 vision: `${categoryCounts.vision || 14} tools - 本地多模态视觉分析与图元提取`,
               },
-              "🤖 智能体协同与规划 (Agent Planning & Runtime)": {
+              "Agent Planning & Runtime (Agent Planning & Runtime)": {
                 "agent-task": `${categoryCounts["agent-task"] || 20} tools - 任务编排与子任务流转`,
                 "agent-plan": `${categoryCounts["agent-plan"] || 20} tools - 结构化多阶段任务规划`,
                 "agent-comm": `${categoryCounts["agent-comm"] || 10} tools - 智能体间消息传递与事件广播`,
@@ -1336,7 +2740,7 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
             },
             activeExternalMcp: dynamicProviders.length > 0 
               ? dynamicProviders.map((p) => `${p} (${dynamicCandidates.filter((d) => d.providerId === p).length} tools · 🟢 运行中)`)
-              : ["(暂无运行中的外部 MCP，未开启的外部工具已被自动过滤)"],
+              : ["(No active external MCP providers currently running; inactive tools are auto-filtered)"],
           };
           return {
             content: [{ type: "text", text: JSON.stringify(overview, null, 2) }],
@@ -1425,6 +2829,24 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
             englishKeywords: ["autocad", "cad"],
             categories: ["autocad"],
           },
+          {
+            triggers: ["手机", "安卓", "android", "adb", "真机", "模拟器", "操作手机", "点手机", "手机截图", "投屏", "scrcpy", "mobile", "phone", "apk", "雷电", "mumu", "夜神", "root"],
+            englishKeywords: ["adb", "android", "mobile"],
+            exactToolHints: ["nexus_adb_controller"],
+            categories: ["mobile", "android", "system"],
+          },
+          {
+            triggers: ["逆向", "脱敏", "反混淆", "deobfuscate", "代码还原", "加密算法", "ast"],
+            englishKeywords: ["deobfuscate", "reverse", "ast"],
+            exactToolHints: ["nexus_deobfuscate_synthesize", "nexus_ast_semantic_patch"],
+            categories: ["code", "reverse"],
+          },
+          {
+            triggers: ["编解码", "转码", "hex", "base64", "protobuf", "哈希", "hash", "md5", "sha256", "hmac"],
+            englishKeywords: ["codec", "transform", "hex", "base64", "hash"],
+            exactToolHints: ["nexus_data_codec_transform"],
+            categories: ["codec", "tools"],
+          },
         ];
 
         const queryTokens = query.split(/[\s,，;；|]+/g).filter(Boolean);
@@ -1445,73 +2867,14 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
             if (!matchesProvider) continue;
           }
 
-          let score = 0;
-          let matchedAny = false;
-          const nameLower = t.name.toLowerCase();
-          const cleanName = nameLower.replace(/^localbridge_/, "");
-          const descLower = (t.description || "").toLowerCase();
-          const catLower = (t.category || "").toLowerCase();
-
-          if (query) {
-            // A. Exact Concept Hint Match (Top Priority)
-            if (conceptExactHints.has(t.name)) {
-              score += 150;
-              matchedAny = true;
-            }
-
-            // B. Exact Name Match
-            if (cleanName === query || nameLower === query) {
-              score += 120;
-              matchedAny = true;
-            }
-
-            // C. Query Token Match in Tool Name
-            for (const tok of queryTokens) {
-              if (cleanName.includes(tok) || nameLower.includes(tok)) {
-                score += 60;
-                matchedAny = true;
-              }
-            }
-
-            // D. Query Token Match in Description
-            for (const tok of queryTokens) {
-              if (descLower.includes(tok)) {
-                score += 25;
-                matchedAny = true;
-              }
-            }
-
-            // E. Concept English Keywords in Tool Name (restricted to concept categories)
-            for (const c of matchedConcepts) {
-              if (c.categories && !c.categories.includes(catLower)) continue;
-              for (const kw of (c.englishKeywords || [])) {
-                if (cleanName.includes(kw)) {
-                  score += 40;
-                  matchedAny = true;
-                }
-              }
-            }
-
-            // F. Concept Category Match Boost
-            if (conceptCategories.has(catLower)) {
-              score += 15;
-            }
-
-            // G. Parameter Name Match
-            if (t.parameters.some((p: string) => queryTokens.some((tok) => p.toLowerCase().includes(tok)))) {
-              score += 10;
-              matchedAny = true;
-            }
-
-            // High frequency core verbs tie-breaker ONLY IF already matched
-            if (matchedAny && /(launch|open|run|click|type|find|list|create|exec)/i.test(cleanName)) {
-              score += 5;
-            }
-          } else {
-            // Category or provider filter only
-            score = 10;
-            matchedAny = true;
-          }
+          const { score, matchedAny } = calculateToolScore(
+            t,
+            query,
+            queryTokens,
+            matchedConcepts,
+            conceptExactHints,
+            conceptCategories
+          );
 
           if (matchedAny && score > 0) {
             scored.push({ tool: t, score });
@@ -1522,12 +2885,36 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
 
         // 5. If no matches found: provide clean, truthful feedback instead of padding garbage tools
         if (scored.length === 0) {
+          const SYNONYM_MAP: Record<string, string[]> = {
+            screenshot: ["screen capture", "screen snapshot", "observe"],
+            snapshot: ["screenshot", "screen capture", "observe"],
+            click: ["mouse click", "mouse move", "browser click"],
+            process: ["process list", "tasklist", "psutil"],
+            document: ["document create", "document read", "docx", "markdown"],
+            browser: ["browser open", "browser launch", "browser click"],
+            file: ["file read", "file write", "directory list"],
+            window: ["window list", "window focus", "observe"],
+            code: ["code document symbols", "code workspace symbols"],
+            terminal: ["terminal exec", "command execute"],
+          };
+
+          let suggestedKeywords: string[] = [];
+          for (const [key, syns] of Object.entries(SYNONYM_MAP)) {
+            if (query.includes(key) || queryTokens.some((tok) => tok.includes(key))) {
+              suggestedKeywords.push(...syns);
+            }
+          }
+          if (suggestedKeywords.length === 0) {
+            suggestedKeywords = ["process list", "browser open", "screenshot", "file read", "document read", "window list"];
+          }
+          suggestedKeywords = Array.from(new Set(suggestedKeywords));
+
           const externalApps = ["blender", "photoshop", "autocad", "unity", "figma", "godot", "unreal"].filter((app) =>
             query.includes(app) || queryTokens.includes(app)
           );
           const notFoundMsg = externalApps.length > 0
-            ? `未检索到匹配的工具。您查询了外部应用 [${externalApps.join(", ")}]，当前宿主端未检测到这些外部 Provider 处于运行状态（未开启的外部工具已自动过滤，避免调用失败）。如需使用，请先在宿主界面【MCP 管理】中启动对应服务。`
-            : `未检索到与 "${rawQuery}" 相关的工具。`;
+            ? `未检索到匹配的工具。您查询了外部应用 [${externalApps.join(", ")}]，当前宿主端未检测到这些外部 Provider 处于运行状态（未开启的外部工具已自动过滤，避免调用失败）。如需使用，请先在宿主界面【MCP 管理】中启动对应服务。可尝试英文关键词: ${suggestedKeywords.join(", ")}`
+            : `未检索到与 "${rawQuery}" 相关的工具。可尝试的同义英文词: ${suggestedKeywords.join(", ")}。常用检索对照: 进程 → process, 截图 → screenshot / screen snapshot, 点击 → click, 文档 → document, 浏览器 → browser, 文件 → file, 打开网页 → browser open, 窗口 → window。`;
 
           const emptyResult = {
             totalMatches: 0,
@@ -1535,6 +2922,7 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
             query: rawQuery,
             tools: [],
             message: notFoundMsg,
+            suggestedEnglishKeywords: suggestedKeywords,
           };
           return {
             content: [{ type: "text", text: JSON.stringify(emptyResult, null, 2) }],
@@ -1542,11 +2930,23 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
           };
         }
 
-        const topMatches = scored.slice(0, limit).map(({ tool: t }) => {
+        const offset = Math.max(0, Number(args.offset) || 0);
+
+        // Adaptive Score Cliff Cutoff: keep high-relevance core, prune sharp drop-offs
+        const topScore = scored.length > 0 ? scored[0].score : 0;
+        let effectiveScored = scored;
+        if (topScore >= 25 && scored.length > 3) {
+          const cliffIndex = scored.findIndex((s, idx) => idx >= 3 && s.score < topScore * 0.4);
+          if (cliffIndex !== -1) {
+            effectiveScored = scored.slice(0, cliffIndex);
+          }
+        }
+
+        const topMatches = effectiveScored.slice(offset, offset + limit).map(({ tool: t }) => {
           const exampleArgs: Record<string, any> = {};
           for (const reqParam of (t.required || [])) {
             if (reqParam === "browserSessionId") {
-              exampleArgs[reqParam] = lastActiveBrowserSessionId || "<sessionId 或留空自动继承>";
+              exampleArgs[reqParam] = lastActiveBrowserSessionId || "<sessionId or leave empty to auto-inherit>";
             } else if (reqParam === "url") {
               exampleArgs[reqParam] = "https://www.bilibili.com";
             } else if (reqParam === "projectId") {
@@ -1559,6 +2959,7 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
           }
 
           return {
+            name: t.name,
             tool: t.name,
             source: t.source,
             category: t.category,
@@ -1583,20 +2984,26 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
             return `${sig} - ${t.description}`;
           });
 
-          const hasMore = scored.length > topMatches.length;
+          const totalAvailable = effectiveScored.length;
+          const returnedCount = topMatches.length;
+          const nextOffset = offset + returnedCount;
+          const hasMore = totalAvailable > nextOffset;
+          const remainingCount = totalAvailable - nextOffset;
           const searchResult: Record<string, any> = {
-            totalMatches: scored.length,
-            returnedCount: topMatches.length,
+            totalMatches: totalAvailable,
+            returnedCount,
+            offset,
             hasMore,
             tools: compactTools,
           };
           if (hasMore) {
-            searchResult.hasMoreHint = `还有 ${scored.length - topMatches.length} 个相关工具未显示。若需精确筛选可使用 query='具体能力'。`;
+            searchResult.hasMoreHint = `Most relevant matches displayed. There are ${remainingCount} additional matching tools folded. Pass offset=${nextOffset} to retrieve more.`;
           }
 
           const compactMeta: Record<string, any> = {
-            totalMatches: scored.length,
-            returnedCount: topMatches.length,
+            totalMatches: totalAvailable,
+            returnedCount,
+            offset,
             hasMore,
           };
           if (hasMore) {
@@ -1659,7 +3066,39 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
           }
         }
 
-        // Dispatch local bridge meta actions directly in-process under nexus_execute_action
+        // Rule 1 Enforcement: When invoked externally, top-level orchestrator meta tools must be called directly, NEVER forwarded
+        const isInternalBatch = Boolean(actionArgs._internal || args._internal);
+        const FORBIDDEN_META_ORCHESTRATORS = new Set([
+          "nexus_discover_tools", "discover_tools",
+          "nexus_run_script", "run_script",
+          "nexus_batch_execute", "batch_execute",
+          "nexus_parallel_fanout", "parallel_fanout",
+          "nexus_relay_dispatch", "relay_dispatch",
+          "nexus_wait_condition", "wait_condition",
+          "nexus_session_handoff", "session_handoff"
+        ]);
+        if (!isInternalBatch && FORBIDDEN_META_ORCHESTRATORS.has(actionTool)) {
+          return {
+            content: [{
+              type: "text",
+              text: `❌ [ERR_META_TOOL_FORWARD_FORBIDDEN] Rule Violation: '${actionTool}' is a top-level orchestrator meta-tool. Call '${actionTool}(...)' directly at the top level instead of nesting it in nexus_execute_action!`
+            }],
+            isError: true,
+            structuredContent: {
+              success: false,
+              errorCode: "ERR_META_TOOL_FORWARD_FORBIDDEN",
+              tool: actionTool,
+              advisory: `Call '${actionTool}' directly as a top-level tool instead of nesting it in nexus_execute_action.`
+            }
+          };
+        }
+
+        // Allow internal batch dispatch for run_script
+        if (isInternalBatch && (actionTool === "nexus_run_script" || actionTool === "run_script")) {
+          return executeCallTool({ params: { name: "nexus_run_script", arguments: actionArgs } });
+        }
+
+        // Dispatch local bridge state & schema meta actions directly in-process under nexus_execute_action
         if (actionTool === "nexus_get_tool_schema" || actionTool === "get_tool_schema") {
           return executeCallTool({ params: { name: "nexus_get_tool_schema", arguments: actionArgs } });
         }
@@ -1675,9 +3114,37 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
         if (actionTool === "nexus_checkpoint_list" || actionTool === "checkpoint_list") {
           return executeCallTool({ params: { name: "nexus_checkpoint_list", arguments: actionArgs } });
         }
-        if (actionTool === "nexus_skills" || actionTool === "skills") {
-          return executeCallTool({ params: { name: "nexus_skills", arguments: actionArgs } });
+        if (actionTool === "nexus_session_cache_load" || actionTool === "session_cache_load") {
+          return executeCallTool({ params: { name: "nexus_session_cache_load", arguments: actionArgs } });
         }
+        if (actionTool === "nexus_session_cache_save" || actionTool === "session_cache_save") {
+          return executeCallTool({ params: { name: "nexus_session_cache_save", arguments: actionArgs } });
+        }
+        if (actionTool === "nexus_session_cache_list" || actionTool === "session_cache_list") {
+          return executeCallTool({ params: { name: "nexus_session_cache_list", arguments: actionArgs } });
+        }
+        if (actionTool === "nexus_session_cache_clear" || actionTool === "session_cache_clear") {
+          return executeCallTool({ params: { name: "nexus_session_cache_clear", arguments: actionArgs } });
+        }
+        if (actionTool === "nexus_get_active_directives" || actionTool === "get_active_directives") {
+          return executeCallTool({ params: { name: "nexus_get_active_directives", arguments: actionArgs } });
+        }
+        if (ADVANCED_META_TOOL_DEFINITIONS.some((t) => t.name === actionTool || t.name === `nexus_${actionTool}`)) {
+          return executeAdvancedMetaTool(actionTool, actionArgs, { executeCallTool });
+        }
+
+        // 1.4.1 Blender 3D tools in nexus_execute_action
+        if (isBlenderTool(actionTool)) {
+          return await dispatchBlenderTool(actionTool, actionArgs);
+        }
+
+        // 1.4.2 Browser Automation tools in nexus_execute_action
+        if (isBrowserAutomationTool(actionTool)) {
+          return await dispatchBrowserTool(actionTool, actionArgs, { executeCallTool });
+        }
+
+        // 1.4.3 Normalize canonical names in actionTool
+        actionTool = normalizeCanonicalToolName(actionTool);
 
         // Auto-inherit browserSessionId if missing or placeholder
         if (actionTool.startsWith("localbridge_browser_") && 
@@ -1725,14 +3192,39 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
         if (!dynamicTool && actionProvider) {
           dynamicTool = dynamicCatalog.resolveTool(`${actionProvider}::${actionTool}`);
         }
+        const enforceActionPostRules = (res: any, toolName: string) => {
+          // Rule 6: Redact sensitive tokens and secrets from returning text
+          if (res?.content && Array.isArray(res.content)) {
+            for (const item of res.content) {
+              if (item.type === "text" && item.text) {
+                item.text = item.text.replace(/(?:password|secret|key|token|auth|bearer)["']?\s*[:=]\s*["']?([a-zA-Z0-9_\-\.]{12,})["']?/gi, (m: string, g1: string) => m.replace(g1, "[REDACTED_CREDENTIAL]"));
+              }
+            }
+          }
+
+          // Rule 7: Unreliable result detection on empty/abnormal responses
+          if (!res.isError) {
+            const mainText = res.content?.[0]?.text?.trim() || "";
+            if (!mainText || mainText === "{}" || mainText === "[]" || mainText === "null") {
+              if (!res.structuredContent) res.structuredContent = {};
+              res.structuredContent.result_reliability = "POTENTIALLY_UNRELIABLE";
+              if (res.content?.[0]) {
+                res.content[0].text = `⚠️ [Potentially Unreliable: Empty Result] Tool '${toolName}' executed but returned an empty response:\n${mainText || "(empty)"}\nConsider checking arguments via discover_tools or verifying manually.`;
+              }
+            }
+          }
+
+          return res;
+        };
+
         if (dynamicTool) {
           const execResult = await providerRuntime.executeTool(dynamicTool.qualifiedName, actionArgs);
           const fullOpt = Boolean(actionArgs.full || actionArgs._full || args.full);
-          return TokenGuardrail.sanitizeToolResult({
+          return enforceActionPostRules(TokenGuardrail.sanitizeToolResult({
             content: (execResult.content || []) as any,
             isError: execResult.isError,
             structuredContent: execResult,
-          }, { sourceTool: actionTool, full: fullOpt, args: actionArgs });
+          }, { sourceTool: actionTool, full: fullOpt, args: actionArgs }), actionTool);
         }
 
         // 1.5 Try Unity GameDev MCP Provider if applicable
@@ -1744,11 +3236,11 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
           if (unityProvider.isUnityTool(actionTool)) {
             const execResult = await unityProvider.executeTool(actionTool, actionArgs);
             const fullOpt = Boolean(actionArgs.full || actionArgs._full || args.full);
-            return TokenGuardrail.sanitizeToolResult({
+            return enforceActionPostRules(TokenGuardrail.sanitizeToolResult({
               content: (execResult.content || []) as any,
               isError: execResult.isError,
               structuredContent: execResult,
-            }, { sourceTool: actionTool, full: fullOpt, args: actionArgs });
+            }, { sourceTool: actionTool, full: fullOpt, args: actionArgs }), actionTool);
           }
         }
 
@@ -1802,11 +3294,20 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
         } catch {}
 
         const fullOpt = Boolean(actionArgs.full || actionArgs._full || args.full);
-        return TokenGuardrail.sanitizeToolResult({
+        return enforceActionPostRules(TokenGuardrail.sanitizeToolResult({
           content: (coreRes.content || []) as any,
           isError: coreRes.isError,
           structuredContent: (coreRes as any).structuredContent,
-        }, { sourceTool: actionTool, full: fullOpt, args: actionArgs });
+        }, { sourceTool: actionTool, full: fullOpt, args: actionArgs }), actionTool);
+      }
+
+      // 1.9.9 Direct Dispatch for Advanced Meta Tools (ADB, Deobfuscate, Codec, etc.)
+      if (ADVANCED_META_TOOL_DEFINITIONS.some((t) => t.name === name || t.name === `nexus_${name}`)) {
+        return executeAdvancedMetaTool(name, args, { executeCallTool });
+      }
+      if (DYNAMIC_MACRO_REGISTRY.has(name)) {
+        const macro = DYNAMIC_MACRO_REGISTRY.get(name);
+        return executeCallTool({ params: { name: "nexus_batch_execute", arguments: { pipeline: macro.pipeline } } });
       }
 
       // 2.0.0 Handle Generic MCP Batch Execution
@@ -2236,6 +3737,23 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
       result,
       durationMs,
     });
+    // Background audit log sync to Nexus Core
+    try {
+      const coreUrl = process.env.NEXUS_CORE_URL || "http://127.0.0.1:18080";
+      fetch(`${coreUrl}/api/audit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tool: request?.params?.name || "unknown",
+          argumentsSummary: request?.params?.arguments,
+          resultSummary: { isError: Boolean(result?.isError), durationMs },
+          durationMs,
+          riskLevel: result?.isError ? "BLOCKED" : "SAFE",
+          actorDisplayName: "Claude",
+          clientId: "claude_bridge",
+        }),
+      }).catch(() => {});
+    } catch {}
     return result;
   });
 
@@ -2295,7 +3813,7 @@ export async function handleMcpHttpRequest(
   body: any,
   nexusClient: NexusClient
 ): Promise<void> {
-  // Normalize Accept header to accommodate standard MCP clients (OpenAI oai-tunnel-client, curl, etc.)
+  // Normalize Accept header to accommodate standard MCP clients (OpenAI oai-tunnel-client, Gemini, Claude, curl, etc.)
   // WebStandardStreamableHTTPServerTransport requires both application/json and text/event-stream
   const currentAccept = req.headers.accept || "";
   if (!currentAccept.includes("text/event-stream") || !currentAccept.includes("application/json")) {

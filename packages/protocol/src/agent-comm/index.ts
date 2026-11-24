@@ -12,7 +12,7 @@ export const AgentIdentitySchema = z.object({
   status: AgentStatusSchema.default("online"),
   registeredAt: z.number(),
   lastHeartbeatAt: z.number(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 export type AgentIdentity = z.infer<typeof AgentIdentitySchema>;
 
@@ -22,7 +22,7 @@ export const AgentRegisterParamsSchema = z.object({
   role: z.string().min(1),
   capabilities: z.array(z.string()).optional(),
   endpoint: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 export type AgentRegisterParams = z.infer<typeof AgentRegisterParamsSchema>;
 
@@ -43,7 +43,7 @@ export const AgentUnregisterResultSchema = z.object({
 export type AgentUnregisterResult = z.infer<typeof AgentUnregisterResultSchema>;
 
 export const AgentListParamsSchema = z.object({
-  status: AgentStatusSchema.optional(),
+  status: AgentStatusSchema.optional().describe("合法值：online | busy | idle | offline"),
   role: z.string().optional(),
 });
 export type AgentListParams = z.infer<typeof AgentListParamsSchema>;
@@ -73,7 +73,7 @@ export const AgentMessageTypeSchema = z.enum([
   "notification",
   "handoff",
   "error",
-]);
+]).describe("合法值：request | response | notification | handoff | error");
 export type AgentMessageType = z.infer<typeof AgentMessageTypeSchema>;
 
 export const AgentMessageStatusSchema = z.enum([
@@ -81,7 +81,7 @@ export const AgentMessageStatusSchema = z.enum([
   "delivered",
   "read",
   "acknowledged",
-]);
+]).describe("合法值：sent | delivered | read | acknowledged");
 export type AgentMessageStatus = z.infer<typeof AgentMessageStatusSchema>;
 
 export const AgentMessageSchema = z.object({
@@ -151,14 +151,14 @@ export const AgentConversationSchema = z.object({
   participants: z.array(z.string()),
   createdAt: z.number(),
   updatedAt: z.number(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 export type AgentConversation = z.infer<typeof AgentConversationSchema>;
 
 export const AgentConversationCreateParamsSchema = z.object({
   title: z.string().min(1),
   participants: z.array(z.string()).min(1),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 export type AgentConversationCreateParams = z.infer<typeof AgentConversationCreateParamsSchema>;
 
@@ -187,7 +187,7 @@ export const AgentHandoffParamsSchema = z.object({
   contextSummary: z.string(),
   checkpoints: z.array(z.string()).optional(),
   artifacts: z.array(z.string()).optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 export type AgentHandoffParams = z.infer<typeof AgentHandoffParamsSchema>;
 

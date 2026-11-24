@@ -20,7 +20,7 @@ ingress:
   # 2. Catch-all rule returning 404 for unmatched hostnames
   - service: http_status:404
 
-# Best Practices for Remote MCP Integration:
+# Best Practices for Gemini Spark Integration:
 # 1. In Cloudflare Zero Trust Dashboard, attach Cloudflare Access policy to https://nexus-mcp.example.com/mcp
 # 2. Add Service Token or IP/Geo restrictions if needed.
 # 3. Nexus MCP Bridge will independently enforce Bearer Token (Authorization: Bearer <NEXUS_BRIDGE_TOKEN>).

@@ -6,9 +6,9 @@ export function registerGitTools(server: McpServer, nexusClient: NexusClient) {
   // 1. nexus_git_status
   server.tool(
     "nexus_git_status",
-    "查询受管项目的当前 Git 工作区状态（分支、修改状态、未跟踪文件等）",
+    "Inspect the current Git workspace status (branch, modified files, untracked changes) of a project.",
     {
-      projectId: z.string().describe("项目名称或项目 ID，例如 'Myweb' 或 'git-p1b-test'"),
+      projectId: z.string().describe("Project name or project ID, e.g. 'Myweb' or 'git-p1b-test'"),
     },
     async ({ projectId }) => {
       try {

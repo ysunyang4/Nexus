@@ -4,6 +4,7 @@ export interface SecurityConfig {
   bridgeToken: string;
 }
 
+import type { OAuthStore } from "./oauth.js";
 
 /**
  * Validates the Authorization Bearer token.
@@ -31,12 +32,15 @@ export function validateBearerToken(
 }
 
 /**
- * Validates an incoming Authorization header against the Bridge static Bearer token (NEXUS_BRIDGE_TOKEN).
+ * Validates an incoming Authorization header against either:
+ * 1. Legacy/Direct static Bearer token (NEXUS_BRIDGE_TOKEN)
+ * 2. OAuth 2.0 Access Token issued by the Bridge
  */
 export function validateRequestAuth(
   authHeader: string | undefined,
-  staticToken: string
-): { valid: boolean; authType?: "bearer"; error?: string } {
+  staticToken: string,
+  oauthStore: OAuthStore
+): { valid: boolean; authType?: "bearer" | "oauth"; error?: string } {
   if (!authHeader) {
     return { valid: false, error: "Missing Authorization header" };
   }
@@ -48,13 +52,24 @@ export function validateRequestAuth(
 
   const token = parts[1];
 
+  // 1. Check static token
   if (staticToken && token === staticToken) {
     return { valid: true, authType: "bearer" };
   }
 
-  return { valid: false, error: "Invalid or unauthorized token" };
+  // 2. Check OAuth access token
+  const oauthRes = oauthStore.validateAccessToken(token);
+  if (oauthRes.valid) {
+    return { valid: true, authType: "oauth" };
+  }
+
+  return { valid: false, error: "Invalid or expired token" };
 }
 
+/**
+ * Validates that a requested file path does not escape the project's canonical root directory.
+ * Strictly forbids '../', parent directory traversal, and absolute paths outside the root.
+ */
 export function validatePathSandbox(
   projectRoot: string,
   relativePath: string
@@ -83,8 +98,7 @@ export function validatePathSandbox(
   const resolved = path.resolve(projectRoot, relativePath);
   const normalizedRoot = path.resolve(projectRoot);
 
-  const relativeToRoot = path.relative(normalizedRoot, resolved);
-  if (relativeToRoot === ".." || relativeToRoot.startsWith(".." + path.sep) || path.isAbsolute(relativeToRoot)) {
+  if (!resolved.toLowerCase().startsWith(normalizedRoot.toLowerCase())) {
     return {
       valid: false,
       error: "Access denied: Path resolves outside the project root directory",

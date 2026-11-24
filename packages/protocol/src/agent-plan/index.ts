@@ -10,7 +10,7 @@ export const PlanStepStatusSchema = z.enum([
   "completed",
   "failed",
   "cancelled",
-]);
+]).describe("合法值：pending | ready | running | blocked | completed | failed | cancelled");
 export type PlanStepStatus = z.infer<typeof PlanStepStatusSchema>;
 
 export const PlanStepSchema = z.object({
@@ -18,7 +18,7 @@ export const PlanStepSchema = z.object({
   title: z.string(),
   description: z.string().optional(),
   status: PlanStepStatusSchema.default("pending"),
-  priority: z.enum(["low", "medium", "high", "critical"]).default("medium"),
+  priority: z.enum(["low", "medium", "high", "critical"]).default("medium").describe("合法值：low | medium | high | critical"),
   dependencies: z.array(z.string()).default([]),
   assignedAgent: z.string().optional(),
   attempts: z.number().default(0),
@@ -37,7 +37,7 @@ export const PlanStatusSchema = z.enum([
   "completed",
   "failed",
   "cancelled",
-]);
+]).describe("合法值：draft | active | paused | completed | failed | cancelled");
 export type PlanStatus = z.infer<typeof PlanStatusSchema>;
 
 export const AgentPlanSchema = z.object({
@@ -54,7 +54,7 @@ export const AgentPlanSchema = z.object({
   failedSteps: z.array(z.string()).default([]),
   createdAt: z.number(),
   updatedAt: z.number(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 export type AgentPlan = z.infer<typeof AgentPlanSchema>;
 
@@ -68,13 +68,13 @@ export const AgentPlanCreateParamsSchema = z.object({
     z.object({
       title: z.string(),
       description: z.string().optional(),
-      priority: z.enum(["low", "medium", "high", "critical"]).optional(),
+      priority: z.enum(["low", "medium", "high", "critical"]).optional().describe("合法值：low | medium | high | critical"),
       dependencies: z.array(z.string()).optional(),
       assignedAgent: z.string().optional(),
     })
   ),
   dependencies: z.array(z.string()).optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 export type AgentPlanCreateParams = z.infer<typeof AgentPlanCreateParamsSchema>;
 
@@ -98,7 +98,7 @@ export const AgentPlanUpdateParamsSchema = z.object({
   status: PlanStatusSchema.optional(),
   currentStep: z.string().optional(),
   steps: z.array(PlanStepSchema).optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 export type AgentPlanUpdateParams = z.infer<typeof AgentPlanUpdateParamsSchema>;
 
@@ -133,7 +133,7 @@ export type AgentPlanCompleteResult = z.infer<typeof AgentPlanCompleteResultSche
 export const AgentPlanListParamsSchema = z.object({
   agentTaskId: z.string().optional(),
   sessionId: z.string().optional(),
-  status: PlanStatusSchema.optional(),
+  status: PlanStatusSchema.optional().describe("合法值：draft | active | paused | completed | failed | cancelled"),
   limit: z.number().default(50),
 });
 export type AgentPlanListParams = z.infer<typeof AgentPlanListParamsSchema>;
@@ -151,7 +151,7 @@ export const TodoStatusSchema = z.enum([
   "in_progress",
   "completed",
   "cancelled",
-]);
+]).describe("合法值：pending | in_progress | completed | cancelled");
 export type TodoStatus = z.infer<typeof TodoStatusSchema>;
 
 export const AgentTodoSchema = z.object({
@@ -163,7 +163,7 @@ export const AgentTodoSchema = z.object({
   agentId: z.string().optional(),
   title: z.string(),
   status: TodoStatusSchema.default("pending"),
-  priority: z.enum(["low", "medium", "high", "urgent"]).default("medium"),
+  priority: z.enum(["low", "medium", "high", "urgent"]).default("medium").describe("合法值：low | medium | high | urgent"),
   notes: z.string().optional(),
   createdAt: z.number(),
   completedAt: z.number().optional(),
@@ -177,7 +177,7 @@ export const AgentTodoCreateParamsSchema = z.object({
   sessionId: z.string().optional(),
   agentId: z.string().optional(),
   title: z.string().min(1),
-  priority: z.enum(["low", "medium", "high", "urgent"]).optional(),
+  priority: z.enum(["low", "medium", "high", "urgent"]).optional().describe("合法值：low | medium | high | urgent"),
   notes: z.string().optional(),
 });
 export type AgentTodoCreateParams = z.infer<typeof AgentTodoCreateParamsSchema>;
@@ -191,7 +191,7 @@ export const AgentTodoUpdateParamsSchema = z.object({
   todoId: z.string(),
   title: z.string().optional(),
   status: TodoStatusSchema.optional(),
-  priority: z.enum(["low", "medium", "high", "urgent"]).optional(),
+  priority: z.enum(["low", "medium", "high", "urgent"]).optional().describe("合法值：low | medium | high | urgent"),
   notes: z.string().optional(),
 });
 export type AgentTodoUpdateParams = z.infer<typeof AgentTodoUpdateParamsSchema>;
@@ -217,7 +217,7 @@ export const AgentTodoListParamsSchema = z.object({
   planId: z.string().optional(),
   sessionId: z.string().optional(),
   agentId: z.string().optional(),
-  status: TodoStatusSchema.optional(),
+  status: TodoStatusSchema.optional().describe("合法值：pending | in_progress | completed | cancelled"),
 });
 export type AgentTodoListParams = z.infer<typeof AgentTodoListParamsSchema>;
 
@@ -234,7 +234,7 @@ export const AgentDelegateParamsSchema = z.object({
   childAgentRole: z.string(),
   taskTitle: z.string(),
   planStepId: z.string().optional(),
-  context: z.record(z.any()).optional(),
+  context: z.record(z.string(), z.any()).optional(),
   timeoutMs: z.number().default(60000),
 });
 export type AgentDelegateParams = z.infer<typeof AgentDelegateParamsSchema>;
@@ -253,7 +253,7 @@ export const AgentForkParamsSchema = z.object({
   inheritPlan: z.boolean().default(true),
   isolatedMemory: z.boolean().default(true),
   role: z.string().optional(),
-  quota: z.record(z.any()).optional(),
+  quota: z.record(z.string(), z.any()).optional(),
 });
 export type AgentForkParams = z.infer<typeof AgentForkParamsSchema>;
 
@@ -274,7 +274,7 @@ export type AgentJoinParams = z.infer<typeof AgentJoinParamsSchema>;
 
 export const AgentJoinResultSchema = z.object({
   allJoined: z.boolean(),
-  results: z.record(z.any()),
+  results: z.record(z.string(), z.any()),
   activeChildrenCount: z.number(),
 });
 export type AgentJoinResult = z.infer<typeof AgentJoinResultSchema>;
@@ -284,7 +284,7 @@ export const AgentSuperviseParamsSchema = z.object({
   targetAgentIds: z.array(z.string()).optional(),
   action: z
     .enum(["status", "reconcile", "retry", "pause", "resume", "escalate"])
-    .default("status"),
+    .default("status").describe("合法值：status | reconcile | retry | pause | resume | escalate"),
   reason: z.string().optional(),
 });
 export type AgentSuperviseParams = z.infer<typeof AgentSuperviseParamsSchema>;
@@ -381,7 +381,7 @@ export type AgentBudgetUsage = z.infer<typeof AgentBudgetUsageSchema>;
 
 export const AgentBudgetSchema = z.object({
   targetId: z.string(), // agentId or projectId or sessionId
-  targetType: z.enum(["agent", "project", "session"]),
+  targetType: z.enum(["agent", "project", "session"]).describe("合法值：agent | project | session"),
   quota: AgentBudgetQuotaSchema,
   usage: AgentBudgetUsageSchema,
   status: z.enum(["normal", "warning", "exceeded", "locked"]).default("normal"),
@@ -391,7 +391,7 @@ export type AgentBudget = z.infer<typeof AgentBudgetSchema>;
 
 export const AgentBudgetSetParamsSchema = z.object({
   targetId: z.string(),
-  targetType: z.enum(["agent", "project", "session"]).default("agent"),
+  targetType: z.enum(["agent", "project", "session"]).default("agent").describe("合法值：agent | project | session"),
   quota: AgentBudgetQuotaSchema.partial(),
 });
 export type AgentBudgetSetParams = z.infer<typeof AgentBudgetSetParamsSchema>;

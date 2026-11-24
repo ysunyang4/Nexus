@@ -12,7 +12,7 @@ export const DocumentFormatSchema = z.enum([
   "odt",
   "ods",
   "odp",
-]);
+]).describe("合法值：docx | pdf | xlsx | pptx | md | txt | csv | rtf | odt | ods | odp");
 export type DocumentFormat = z.infer<typeof DocumentFormatSchema>;
 
 export const DocumentCreateParamsSchema = z.object({
@@ -35,7 +35,7 @@ export const DocumentCreateParamsSchema = z.object({
           "page_break",
           "sheet",
           "slide",
-        ]),
+        ]).describe("合法值：heading | paragraph | table | image | bullet_list | numbered_list | page_break | sheet | slide"),
         text: z.string().optional(),
         level: z.number().int().min(1).max(6).optional(),
         headers: z.array(z.string()).optional(),
@@ -64,8 +64,10 @@ export type DocumentCreateResult = z.infer<typeof DocumentCreateResultSchema>;
 
 export const DocumentReadParamsSchema = z.object({
   path: z.string(),
-  format: DocumentFormatSchema.optional(),
+  format: DocumentFormatSchema.optional().describe("合法值：docx | pdf | xlsx | pptx | md | txt | csv | rtf | odt | ods | odp"),
   maxChars: z.number().int().positive().default(50000).optional(),
+  limit: z.number().int().positive().optional().describe("Maximum characters to return"),
+  cursor: z.string().optional().describe("Pagination cursor (character offset)"),
 });
 export type DocumentReadParams = z.infer<typeof DocumentReadParamsSchema>;
 
@@ -73,10 +75,14 @@ export const DocumentReadResultSchema = z.object({
   path: z.string(),
   format: DocumentFormatSchema,
   content: z.string(),
-  metadata: z.record(z.any()).default({}),
+  metadata: z.record(z.string(), z.any()).default({}),
   pageCount: z.number().int().nonnegative().optional(),
   wordCount: z.number().int().nonnegative().optional(),
   elementsCount: z.number().int().nonnegative().optional(),
+  truncated: z.boolean().optional(),
+  totalCount: z.number().int().optional(),
+  returnedCount: z.number().int().optional(),
+  nextCursor: z.string().optional(),
 });
 export type DocumentReadResult = z.infer<typeof DocumentReadResultSchema>;
 
@@ -90,7 +96,7 @@ export const DocumentEditParamsSchema = z.object({
     "insert_table",
     "insert_image",
     "insert_page_break",
-  ]),
+  ]).describe("合法值：append | replace | insert_heading | insert_paragraph | insert_table | insert_image | insert_page_break"),
   text: z.string().optional(),
   target: z.string().optional(),
   replacement: z.string().optional(),
@@ -113,7 +119,7 @@ export type DocumentEditResult = z.infer<typeof DocumentEditResultSchema>;
 export const DocumentAppendParamsSchema = z.object({
   path: z.string(),
   text: z.string(),
-  type: z.enum(["paragraph", "heading", "bullet"]).default("paragraph"),
+  type: z.enum(["paragraph", "heading", "bullet"]).default("paragraph").describe("合法值：paragraph | heading | bullet"),
   level: z.number().int().optional(),
 });
 export type DocumentAppendParams = z.infer<typeof DocumentAppendParamsSchema>;
@@ -213,8 +219,8 @@ export const DocumentInspectResultSchema = z.object({
   imageCount: z.number().int().nonnegative().optional(),
   sheetCount: z.number().int().nonnegative().optional(),
   slideCount: z.number().int().nonnegative().optional(),
-  structure: z.record(z.any()).default({}),
-  metadata: z.record(z.any()).default({}),
+  structure: z.record(z.string(), z.any()).default({}),
+  metadata: z.record(z.string(), z.any()).default({}),
 });
 export type DocumentInspectResult = z.infer<typeof DocumentInspectResultSchema>;
 
@@ -236,7 +242,7 @@ export const DocumentValidateResultSchema = z.object({
   format: DocumentFormatSchema,
   sizeBytes: z.number().int().nonnegative(),
   pageCount: z.number().int().nonnegative().optional(),
-  checks: z.record(z.boolean()),
+  checks: z.record(z.string(), z.boolean()),
   errors: z.array(z.string()).default([]),
   warnings: z.array(z.string()).default([]),
   repaired: z.boolean().default(false),
@@ -292,7 +298,7 @@ export const DocumentTemplateSchema = z.object({
     "spreadsheet",
   ]),
   format: DocumentFormatSchema,
-  defaultStructure: z.array(z.record(z.any())),
+  defaultStructure: z.array(z.record(z.string(), z.any())),
 });
 export type DocumentTemplate = z.infer<typeof DocumentTemplateSchema>;
 
@@ -321,7 +327,7 @@ export type DocumentTemplateListResult = z.infer<
 export const DocumentTemplateApplyParamsSchema = z.object({
   templateId: z.string(),
   targetPath: z.string(),
-  variables: z.record(z.any()).default({}),
+  variables: z.record(z.string(), z.any()).default({}),
 });
 export type DocumentTemplateApplyParams = z.infer<
   typeof DocumentTemplateApplyParamsSchema

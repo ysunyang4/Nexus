@@ -18,7 +18,7 @@ export const WorkspaceCheckpointManifestSchema = z.object({
   gitBranch: z.string().optional(),
   gitCommit: z.string().optional(),
   files: z.array(CheckpointFileEntrySchema),
-  autoTrigger: z.enum(["manual", "pre-task", "pre-edit", "test-failure", "pre-reconcile"]).default("manual"),
+  autoTrigger: z.enum(["manual", "pre-task", "pre-edit", "test-failure", "pre-reconcile"]).default("manual").describe("合法值：manual | pre-task | pre-edit | test-failure | pre-reconcile"),
   createdAt: z.number(),
   snapshotDirPath: z.string().optional(),
 });
@@ -30,7 +30,7 @@ export const CheckpointCreateParamsSchema = z.object({
   sessionId: z.string().optional(),
   name: z.string().min(1),
   description: z.string().optional(),
-  autoTrigger: z.enum(["manual", "pre-task", "pre-edit", "test-failure", "pre-reconcile"]).optional(),
+  autoTrigger: z.enum(["manual", "pre-task", "pre-edit", "test-failure", "pre-reconcile"]).optional().describe("合法值：manual | pre-task | pre-edit | test-failure | pre-reconcile"),
   includePaths: z.array(z.string()).optional(),
 });
 export type CheckpointCreateParams = z.infer<typeof CheckpointCreateParamsSchema>;

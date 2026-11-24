@@ -103,6 +103,7 @@ export interface CanonicalToolDefinition {
   timeoutMs: number;
   timeout: number;
   enabled: boolean;
+  keywords?: string[];
   aliases?: string[];
   dependencies?: string[];
 }
@@ -199,6 +200,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
     "namespace": "project",
     "category": "project",
     "description": "List all authorized local projects and root drives available to LocalBridge. When Command Safety Layer is disabled, full unrestricted computer filesystem access is enabled, including C盘 (C:\\), all system drives, and unrestricted execution.",
+    "keywords": ["project", "project list", "projects", "项目", "项目列表", "工程列表"],
     "inputSchema": {
       "type": "object",
       "properties": {}
@@ -268,6 +270,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
     "namespace": "filesystem",
     "category": "filesystem",
     "description": "List directory contents within an authorized project or host drive (such as C盘 via projectId: 'drive-c') with opaque cursor pagination and security filtering.",
+    "keywords": ["directory", "directory list", "dir", "ls", "list dir", "目录", "目录列表", "文件夹"],
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -1012,6 +1015,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "type": {
           "type": "string",
+          "description": "合法值：file | directory | all",
           "enum": [
             "file",
             "directory",
@@ -1191,6 +1195,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "properties": {
               "action": {
                 "type": "string",
+                "description": "合法值：copy | move | delete",
                 "enum": [
                   "copy",
                   "move",
@@ -1340,6 +1345,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "scope": {
           "type": "string",
+          "description": "合法值：unstaged | staged",
           "enum": [
             "unstaged",
             "staged"
@@ -1739,7 +1745,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "package-script",
             "shell-command"
           ],
-          "description": "Kind of command to execute"
+          "description": "Kind of command to execute. One of: tool-version | node-script | python-script | package-script | shell-command"
         },
         "tool": {
           "type": "string",
@@ -1846,7 +1852,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
     "version": "1.0.0",
     "namespace": "command",
     "category": "command",
-    "description": "Execute an authorized, classified command (tool version, node script, python script, or package script) within project bounds.",
+    "description": "Execute an authorized, classified command (tool version, node script, python script, package script, or shell command) within project bounds.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -1863,7 +1869,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "package-script",
             "shell-command"
           ],
-          "description": "Kind of command to execute"
+          "description": "Kind of command to execute. One of: tool-version | node-script | python-script | package-script | shell-command"
         },
         "tool": {
           "type": "string",
@@ -1994,7 +2000,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
                 "package-script",
                 "shell-command"
               ],
-              "description": "Kind of command to execute"
+              "description": "Kind of command to execute. 合法值：tool-version | node-script | python-script | package-script | shell-command"
             },
             "tool": {
               "type": "string",
@@ -2270,7 +2276,8 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "timed_out",
             "timed-out",
             "interrupted"
-          ]
+          ],
+          "description": "Filter jobs by execution state. One of: queued | running | succeeded | failed | cancelled | timed_out | timed-out | interrupted"
         },
         "limit": {
           "type": "integer",
@@ -2315,6 +2322,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "manager": {
           "type": "string",
+          "description": "合法值：npm | pnpm",
           "enum": [
             "npm",
             "pnpm"
@@ -2386,6 +2394,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "manager": {
           "type": "string",
+          "description": "合法值：npm | pnpm",
           "enum": [
             "npm",
             "pnpm"
@@ -2489,6 +2498,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
     "namespace": "code",
     "category": "code",
     "description": "Extract hierarchical document symbols (functions, classes, interfaces, variables, etc.) from a source file inside an authorized project.",
+    "keywords": ["code symbols", "document symbols", "symbols", "ast", "代码符号", "函数列表", "符号列表"],
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -2501,6 +2511,20 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
           "type": "string",
           "minLength": 1,
           "description": "Relative path to source file inside project"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum number of symbols to return"
+        },
+        "depth": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum nesting depth of symbols"
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Pagination cursor for next page of symbols"
         },
         "sessionId": {
           "type": "string",
@@ -3220,7 +3244,8 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "active",
             "completed",
             "abandoned"
-          ]
+          ],
+          "description": "Filter sessions by state. One of: active | completed | abandoned"
         },
         "limit": {
           "type": "integer",
@@ -3485,6 +3510,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "outcome": {
           "type": "string",
+          "description": "合法值：completed | abandoned",
           "enum": [
             "completed",
             "abandoned"
@@ -3785,6 +3811,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
                 },
                 "manager": {
                   "type": "string",
+                  "description": "合法值：npm | pnpm | yarn | bun",
                   "enum": [
                     "npm",
                     "pnpm",
@@ -3829,6 +3856,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
                 },
                 "tool": {
                   "type": "string",
+                  "description": "合法值：node | npm | pnpm | yarn | bun | deno | python | pip | uv | java | javac | go | rustc | cargo | php | composer | ruby | gem | dotnet | gcc | g++ | clang | cmake | powershell | pwsh | docker | git",
                   "enum": [
                     "node",
                     "npm",
@@ -3906,6 +3934,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
                 },
                 "shell": {
                   "type": "string",
+                  "description": "合法值：cmd | powershell | pwsh | bash | sh",
                   "enum": [
                     "cmd",
                     "powershell",
@@ -3997,7 +4026,8 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "stopped",
             "failed",
             "interrupted"
-          ]
+          ],
+          "description": "Filter runtimes by state. One of: starting | running | stopping | stopped | failed | interrupted"
         },
         "limit": {
           "type": "integer",
@@ -4230,7 +4260,8 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "builtin",
             "user",
             "project"
-          ]
+          ],
+          "description": "Filter skills by source. One of: builtin | user | project"
         },
         "enabledOnly": {
           "type": "boolean"
@@ -4240,7 +4271,8 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
           "enum": [
             "nexus",
             "raw"
-          ]
+          ],
+          "description": "Filter skills by type. One of: nexus | raw"
         }
       }
     },
@@ -4478,6 +4510,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "source": {
           "type": "string",
+          "description": "合法值：BUILT_IN | USER_UPLOADED | AI_GENERATED",
           "enum": [
             "BUILT_IN",
             "USER_UPLOADED",
@@ -4914,6 +4947,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "action": {
           "type": "string",
+          "description": "合法值：accept | reject",
           "enum": [
             "accept",
             "reject"
@@ -5438,7 +5472,8 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "running",
             "idle",
             "stopped"
-          ]
+          ],
+          "description": "Filter terminals by session state. One of: running | idle | stopped"
         }
       }
     },
@@ -5469,6 +5504,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
     "namespace": "process",
     "category": "process",
     "description": "List running OS processes on the host with ownership evaluation (OWNED, VERIFIED_DERIVED, PROBABLE, UNOWNED, SYSTEM, FOREIGN), resource IDs, CPU/memory, and listening ports.",
+    "keywords": ["process", "process list", "tasklist", "ps", "进程", "进程列表", "系统进程"],
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -5476,6 +5512,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
           "type": "string"
         },
         "ownership": {
+          "description": "Filter processes by ownership grade. One of: OWNED | VERIFIED_DERIVED | PROBABLE | UNOWNED | SYSTEM | FOREIGN | ALL",
           "anyOf": [
             {
               "type": "string",
@@ -5668,6 +5705,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
           "maximum": 65535
         },
         "ownership": {
+          "description": "Filter ports by ownership grade. One of: OWNED | VERIFIED_DERIVED | PROBABLE | UNOWNED | SYSTEM | FOREIGN | ALL",
           "anyOf": [
             {
               "type": "string",
@@ -5954,7 +5992,8 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "error",
             "checkpoint",
             "resource"
-          ]
+          ],
+          "description": "Filter logs by type. One of: system | observation | plan | action | command | terminal | process | port | approval | error | checkpoint | resource"
         }
       },
       "required": [
@@ -6116,6 +6155,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "state": {
           "type": "string",
+          "description": "合法值：created | queued | assigned | attempting | planning | running | waiting | verifying | checkpointing | checkpointed | recovering | paused | interrupted | disconnected | waiting_for_agent | waiting_for_human | completed | failed | cancelled | timed_out | resource_limited",
           "enum": [
             "created",
             "queued",
@@ -6180,6 +6220,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "action": {
           "type": "string",
+          "description": "合法值：approve | reject",
           "enum": [
             "approve",
             "reject"
@@ -6565,6 +6606,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "trigger": {
           "type": "string",
+          "description": "合法值：manual | periodic | pre_risky | post_verification | on_failure | pre_attempt",
           "enum": [
             "manual",
             "periodic",
@@ -6759,6 +6801,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "action": {
           "type": "string",
+          "description": "合法值：takeover | return_control",
           "enum": [
             "takeover",
             "return_control"
@@ -7244,6 +7287,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "autoTrigger": {
           "type": "string",
+          "description": "合法值：manual | pre-task | pre-edit | test-failure | pre-reconcile",
           "enum": [
             "manual",
             "pre-task",
@@ -7848,7 +7892,8 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "middle",
             "double"
           ],
-          "default": "left"
+          "default": "left",
+          "description": "Mouse button to click. One of: left | right | middle | double"
         },
         "x": {
           "type": "integer"
@@ -7896,7 +7941,8 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "middle",
             "double"
           ],
-          "default": "left"
+          "default": "left",
+          "description": "Mouse button to click. One of: left | right | middle | double"
         },
         "x": {
           "type": "integer"
@@ -8232,7 +8278,8 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "down",
             "up"
           ],
-          "default": "press"
+          "default": "press",
+          "description": "Key action type. One of: press | down | up"
         }
       },
       "required": [
@@ -8283,7 +8330,8 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "down",
             "up"
           ],
-          "default": "press"
+          "default": "press",
+          "description": "Key action type. One of: press | down | up"
         }
       },
       "required": [
@@ -8778,6 +8826,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
     "namespace": "computer",
     "category": "computer-use",
     "description": "Observe current desktop state: captures screenshot, inspects active window, and checks target application readiness.",
+    "keywords": ["computer observe", "observe", "inspect desktop", "windows", "观察屏幕", "桌面状态", "查看窗口"],
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -8787,6 +8836,15 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         "includeScreenshot": {
           "type": "boolean",
           "default": true
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum number of windows to return"
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Pagination cursor for windows list"
         }
       }
     },
@@ -8887,6 +8945,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "action": {
           "type": "string",
+          "description": "合法值：click | invoke | focus | set_value",
           "enum": [
             "click",
             "invoke",
@@ -8930,6 +8989,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
     "namespace": "computer",
     "category": "computer-use",
     "description": "Capture a full screen or bounding-box snapshot as PNG image or Base64.",
+    "keywords": ["screenshot", "screen snapshot", "screen capture", "capture screen", "截图", "截屏", "屏幕快照"],
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -8949,7 +9009,17 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "png",
             "jpeg"
           ],
-          "default": "png"
+          "default": "png",
+          "description": "Screenshot image format. One of: png | jpeg"
+        },
+        "outputSize": {
+          "type": "string",
+          "enum": [
+            "1920x1080",
+            "native"
+          ],
+          "default": "1920x1080",
+          "description": "Output screenshot image size. One of: 1920x1080 | native"
         }
       }
     },
@@ -8980,6 +9050,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
     "namespace": "computer",
     "category": "computer-use",
     "description": "Alias for localbridge_computer_screen_snapshot: capture desktop screen snapshot.",
+    "keywords": ["screenshot", "screen snapshot", "screen capture", "capture screen", "截图", "截屏", "屏幕快照"],
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -8999,7 +9070,17 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "png",
             "jpeg"
           ],
-          "default": "png"
+          "default": "png",
+          "description": "Screenshot image format. One of: png | jpeg"
+        },
+        "outputSize": {
+          "type": "string",
+          "enum": [
+            "1920x1080",
+            "native"
+          ],
+          "default": "1920x1080",
+          "description": "Output screenshot image size. One of: 1920x1080 | native"
         }
       }
     },
@@ -9261,6 +9342,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "targetType": {
           "type": "string",
+          "description": "合法值：button | menu | input | text | window | canvas | any",
           "enum": [
             "button",
             "menu",
@@ -9326,6 +9408,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "targetType": {
           "type": "string",
+          "description": "合法值：button | menu | input | text | window | canvas | any",
           "enum": [
             "button",
             "menu",
@@ -9612,6 +9695,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
       "properties": {
         "tier": {
           "type": "string",
+          "description": "合法值：SUMMARY | RECENT | RAW | CHECKPOINT | IMPORTANT",
           "enum": [
             "SUMMARY",
             "RECENT",
@@ -9655,6 +9739,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
       "properties": {
         "tier": {
           "type": "string",
+          "description": "合法值：SUMMARY | RECENT | RAW | CHECKPOINT | IMPORTANT",
           "enum": [
             "SUMMARY",
             "RECENT",
@@ -9896,6 +9981,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
       "properties": {
         "status": {
           "type": "string",
+          "description": "合法值：online | busy | idle | offline",
           "enum": [
             "online",
             "busy",
@@ -9991,6 +10077,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "messageType": {
           "type": "string",
+          "description": "合法值：request | response | notification | handoff | error",
           "enum": [
             "request",
             "response",
@@ -10050,6 +10137,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "status": {
           "type": "string",
+          "description": "合法值：sent | delivered | read | acknowledged",
           "enum": [
             "sent",
             "delivered",
@@ -10305,6 +10393,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         "value": {},
         "scope": {
           "type": "string",
+          "description": "合法值：global | project | session | agent | task",
           "enum": [
             "global",
             "project",
@@ -10363,6 +10452,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "scope": {
           "type": "string",
+          "description": "合法值：global | project | session | agent | task",
           "enum": [
             "global",
             "project",
@@ -10415,6 +10505,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "scope": {
           "type": "string",
+          "description": "合法值：global | project | session | agent | task",
           "enum": [
             "global",
             "project",
@@ -10472,6 +10563,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "scope": {
           "type": "string",
+          "description": "合法值：global | project | session | agent | task",
           "enum": [
             "global",
             "project",
@@ -10521,6 +10613,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
       "properties": {
         "scope": {
           "type": "string",
+          "description": "合法值：global | project | session | agent | task",
           "enum": [
             "global",
             "project",
@@ -10572,6 +10665,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "scope": {
           "type": "string",
+          "description": "合法值：GLOBAL | USER | PROJECT | SESSION | TASK | AGENT | STEP",
           "enum": [
             "GLOBAL",
             "USER",
@@ -10587,6 +10681,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "type": {
           "type": "string",
+          "description": "合法值：FACT | PREFERENCE | EPISODIC | SEMANTIC | PROCEDURAL | EXPERIENCE | DECISION | ARTIFACT | ERROR | SOLUTION",
           "enum": [
             "FACT",
             "PREFERENCE",
@@ -10671,6 +10766,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "type": {
           "type": "string",
+          "description": "合法值：FACT | PREFERENCE | EPISODIC | SEMANTIC | PROCEDURAL | EXPERIENCE | DECISION | ARTIFACT | ERROR | SOLUTION",
           "enum": [
             "FACT",
             "PREFERENCE",
@@ -10687,6 +10783,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "scope": {
           "type": "string",
+          "description": "合法值：GLOBAL | USER | PROJECT | SESSION | TASK | AGENT | STEP",
           "enum": [
             "GLOBAL",
             "USER",
@@ -10715,6 +10812,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "source": {
           "type": "string",
+          "description": "合法值：USER | AI | CONVERSATION | SKILL | TASK | ACTION | PROJECT | FILE | IMPORT | SYSTEM",
           "enum": [
             "USER",
             "AI",
@@ -10756,6 +10854,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             },
             "result": {
               "type": "string",
+              "description": "合法值：SUCCESS | FAILURE | PARTIAL | UNKNOWN",
               "enum": [
                 "SUCCESS",
                 "FAILURE",
@@ -10907,6 +11006,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
       "properties": {
         "scope": {
           "type": "string",
+          "description": "合法值：GLOBAL | USER | PROJECT | SESSION | TASK | AGENT | STEP",
           "enum": [
             "GLOBAL",
             "USER",
@@ -10965,7 +11065,8 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "typecheck",
             "format"
           ],
-          "default": "all"
+          "default": "all",
+          "description": "Validation check type. One of: all | build | test | lint | typecheck | format"
         },
         "commandOverride": {
           "type": "string"
@@ -11275,6 +11376,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "browserType": {
           "type": "string",
+          "description": "合法值：chrome | edge | auto",
           "enum": [
             "chrome",
             "edge",
@@ -11459,6 +11561,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
     "namespace": "browser",
     "category": "browser",
     "description": "Navigate active tab to a specified URL with security boundary checks.",
+    "keywords": ["browser open", "open url", "navigate", "web", "打开网页", "网页", "访问网站", "浏览器打开"],
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -11475,6 +11578,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "waitUntil": {
           "type": "string",
+          "description": "合法值：load | domcontentloaded | networkidle",
           "enum": [
             "load",
             "domcontentloaded",
@@ -11647,6 +11751,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "state": {
           "type": "string",
+          "description": "合法值：visible | hidden | attached | detached",
           "enum": [
             "visible",
             "hidden",
@@ -11751,6 +11856,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "format": {
           "type": "string",
+          "description": "合法值：png | jpeg",
           "enum": [
             "png",
             "jpeg"
@@ -11934,6 +12040,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
     "namespace": "browser",
     "category": "browser",
     "description": "Perform real native mouse click on target element via CDP input injection.",
+    "keywords": ["browser click", "click element", "web click", "点击", "点击网页", "网页点击", "按钮点击"],
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -11945,6 +12052,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "button": {
           "type": "string",
+          "description": "合法值：left | right | middle",
           "enum": [
             "left",
             "right",
@@ -12060,6 +12168,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
           "type": "array",
           "items": {
             "type": "string",
+            "description": "合法值：Alt | Control | Meta | Shift",
             "enum": [
               "Alt",
               "Control",
@@ -12417,6 +12526,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "level": {
           "type": "string",
+          "description": "合法值：all | log | info | warn | error",
           "enum": [
             "all",
             "log",
@@ -12508,6 +12618,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "action": {
           "type": "string",
+          "description": "合法值：get | set | clear",
           "enum": [
             "get",
             "set",
@@ -12544,6 +12655,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
               },
               "sameSite": {
                 "type": "string",
+                "description": "合法值：Strict | Lax | None",
                 "enum": [
                   "Strict",
                   "Lax",
@@ -12598,6 +12710,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "type": {
           "type": "string",
+          "description": "合法值：local | session",
           "enum": [
             "local",
             "session"
@@ -12606,6 +12719,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "action": {
           "type": "string",
+          "description": "合法值：get | set | remove | clear",
           "enum": [
             "get",
             "set",
@@ -12779,6 +12893,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
               },
               "priority": {
                 "type": "string",
+                "description": "合法值：low | medium | high | critical",
                 "enum": [
                   "low",
                   "medium",
@@ -12892,6 +13007,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "status": {
           "type": "string",
+          "description": "合法值：draft | active | paused | completed | failed | cancelled",
           "enum": [
             "draft",
             "active",
@@ -12920,6 +13036,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
               },
               "status": {
                 "type": "string",
+                "description": "合法值：pending | ready | running | blocked | completed | failed | cancelled",
                 "enum": [
                   "pending",
                   "ready",
@@ -12933,6 +13050,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
               },
               "priority": {
                 "type": "string",
+                "description": "合法值：low | medium | high | critical",
                 "enum": [
                   "low",
                   "medium",
@@ -13110,6 +13228,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "status": {
           "type": "string",
+          "description": "合法值：draft | active | paused | completed | failed | cancelled",
           "enum": [
             "draft",
             "active",
@@ -13176,6 +13295,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "priority": {
           "type": "string",
+          "description": "合法值：low | medium | high | urgent",
           "enum": [
             "low",
             "medium",
@@ -13229,6 +13349,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "status": {
           "type": "string",
+          "description": "合法值：pending | in_progress | completed | cancelled",
           "enum": [
             "pending",
             "in_progress",
@@ -13238,6 +13359,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "priority": {
           "type": "string",
+          "description": "合法值：low | medium | high | urgent",
           "enum": [
             "low",
             "medium",
@@ -13338,6 +13460,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "status": {
           "type": "string",
+          "description": "合法值：pending | in_progress | completed | cancelled",
           "enum": [
             "pending",
             "in_progress",
@@ -13551,6 +13674,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "action": {
           "type": "string",
+          "description": "合法值：status | reconcile | retry | pause | resume | escalate",
           "enum": [
             "status",
             "reconcile",
@@ -13725,6 +13849,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "targetType": {
           "type": "string",
+          "description": "合法值：agent | project | session",
           "enum": [
             "agent",
             "project",
@@ -14278,6 +14403,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "status": {
           "type": "string",
+          "description": "合法值：unset | ok | error",
           "enum": [
             "unset",
             "ok",
@@ -14419,6 +14545,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "status": {
           "type": "string",
+          "description": "合法值：unset | ok | error",
           "enum": [
             "unset",
             "ok",
@@ -14463,6 +14590,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
       "properties": {
         "category": {
           "type": "string",
+          "description": "合法值：system | tool | agent | all",
           "enum": [
             "system",
             "tool",
@@ -15195,6 +15323,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
                   },
                   "relation": {
                     "type": "string",
+                    "description": "合法值：above | below | left_of | right_of | inside | contains | adjacent_to | overlapping",
                     "enum": [
                       "above",
                       "below",
@@ -15537,6 +15666,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
                   },
                   "relation": {
                     "type": "string",
+                    "description": "合法值：above | below | left_of | right_of | inside | contains | adjacent_to | overlapping",
                     "enum": [
                       "above",
                       "below",
@@ -15766,11 +15896,13 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
     "namespace": "document",
     "category": "document",
     "description": "Create standard office documents (DOCX, PDF, XLSX, PPTX, MD, TXT, CSV, RTF) with structured headings, tables, and paragraphs.",
+    "keywords": ["document create", "word", "pdf", "docx", "markdown", "创建文档", "写文档", "生成文档", "新建文档"],
     "inputSchema": {
       "type": "object",
       "properties": {
         "format": {
           "type": "string",
+          "description": "合法值：docx | pdf | xlsx | pptx | md | txt | csv | rtf | odt | ods | odp",
           "enum": [
             "docx",
             "pdf",
@@ -15808,6 +15940,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "properties": {
               "type": {
                 "type": "string",
+                "description": "合法值：heading | paragraph | table | image | bullet_list | numbered_list | page_break | sheet | slide",
                 "enum": [
                   "heading",
                   "paragraph",
@@ -15917,6 +16050,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
       "properties": {
         "format": {
           "type": "string",
+          "description": "合法值：docx | pdf | xlsx | pptx | md | txt | csv | rtf | odt | ods | odp",
           "enum": [
             "docx",
             "pdf",
@@ -15954,6 +16088,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
             "properties": {
               "type": {
                 "type": "string",
+                "description": "合法值：heading | paragraph | table | image | bullet_list | numbered_list | page_break | sheet | slide",
                 "enum": [
                   "heading",
                   "paragraph",
@@ -16055,6 +16190,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
     "namespace": "document",
     "category": "document",
     "description": "Read and extract structured content from DOCX, PDF, XLSX, PPTX, or text documents.",
+    "keywords": ["document read", "read document", "word", "pdf", "docx", "markdown", "读取文档", "查看文档", "读文档"],
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -16063,6 +16199,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "format": {
           "type": "string",
+          "description": "合法值：docx | pdf | xlsx | pptx | md | txt | csv | rtf | odt | ods | odp",
           "enum": [
             "docx",
             "pdf",
@@ -16081,6 +16218,15 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
           "type": "integer",
           "exclusiveMinimum": 0,
           "default": 50000
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum characters to return"
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Pagination cursor (character offset)"
         }
       },
       "required": [
@@ -16114,6 +16260,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
     "namespace": "document",
     "category": "document",
     "description": "Alias for localbridge_document_read.",
+    "keywords": ["document read", "read document", "word", "pdf", "docx", "markdown", "读取文档", "查看文档", "读文档"],
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -16122,6 +16269,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "format": {
           "type": "string",
+          "description": "合法值：docx | pdf | xlsx | pptx | md | txt | csv | rtf | odt | ods | odp",
           "enum": [
             "docx",
             "pdf",
@@ -16181,6 +16329,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "action": {
           "type": "string",
+          "description": "合法值：append | replace | insert_heading | insert_paragraph | insert_table | insert_image | insert_page_break",
           "enum": [
             "append",
             "replace",
@@ -16262,6 +16411,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "action": {
           "type": "string",
+          "description": "合法值：append | replace | insert_heading | insert_paragraph | insert_table | insert_image | insert_page_break",
           "enum": [
             "append",
             "replace",
@@ -16346,6 +16496,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "type": {
           "type": "string",
+          "description": "合法值：paragraph | heading | bullet",
           "enum": [
             "paragraph",
             "heading",
@@ -16400,6 +16551,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "type": {
           "type": "string",
+          "description": "合法值：paragraph | heading | bullet",
           "enum": [
             "paragraph",
             "heading",
@@ -16837,6 +16989,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "targetFormat": {
           "type": "string",
+          "description": "合法值：docx | pdf | xlsx | pptx | md | txt | csv | rtf | odt | ods | odp",
           "enum": [
             "docx",
             "pdf",
@@ -16896,6 +17049,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "targetFormat": {
           "type": "string",
+          "description": "合法值：docx | pdf | xlsx | pptx | md | txt | csv | rtf | odt | ods | odp",
           "enum": [
             "docx",
             "pdf",
@@ -17028,6 +17182,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "expectedFormat": {
           "type": "string",
+          "description": "合法值：docx | pdf | xlsx | pptx | md | txt | csv | rtf | odt | ods | odp",
           "enum": [
             "docx",
             "pdf",
@@ -17098,6 +17253,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "expectedFormat": {
           "type": "string",
+          "description": "合法值：docx | pdf | xlsx | pptx | md | txt | csv | rtf | odt | ods | odp",
           "enum": [
             "docx",
             "pdf",
@@ -17564,6 +17720,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
       "properties": {
         "scope": {
           "type": "string",
+          "description": "合法值：GLOBAL | USER_GLOBAL | PROJECT | TASK | SKILL",
           "enum": [
             "GLOBAL",
             "USER_GLOBAL",
@@ -17660,6 +17817,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "scope": {
           "type": "string",
+          "description": "合法值：GLOBAL | USER_GLOBAL | PROJECT | TASK | SKILL",
           "enum": [
             "GLOBAL",
             "USER_GLOBAL",
@@ -17674,6 +17832,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "priority": {
           "type": "string",
+          "description": "合法值：SYSTEM | CORE_GLOBAL | USER_GLOBAL | PROJECT | TASK | SKILL",
           "enum": [
             "SYSTEM",
             "CORE_GLOBAL",
@@ -17754,6 +17913,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "priority": {
           "type": "string",
+          "description": "合法值：SYSTEM | CORE_GLOBAL | USER_GLOBAL | PROJECT | TASK | SKILL",
           "enum": [
             "SYSTEM",
             "CORE_GLOBAL",
@@ -17765,6 +17925,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "status": {
           "type": "string",
+          "description": "合法值：ACTIVE | DISABLED | DEPRECATED",
           "enum": [
             "ACTIVE",
             "DISABLED",
@@ -17861,6 +18022,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "explicitType": {
           "type": "string",
+          "description": "合法值：MEMORY | RULE | SKILL | DOCUMENT",
           "enum": [
             "MEMORY",
             "RULE",
@@ -18131,6 +18293,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
                   },
                   "scope": {
                     "type": "string",
+                    "description": "合法值：GLOBAL | USER_GLOBAL | PROJECT | TASK | SKILL",
                     "enum": [
                       "GLOBAL",
                       "USER_GLOBAL",
@@ -18145,6 +18308,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
                   },
                   "priority": {
                     "type": "string",
+                    "description": "合法值：SYSTEM | CORE_GLOBAL | USER_GLOBAL | PROJECT | TASK | SKILL",
                     "enum": [
                       "SYSTEM",
                       "CORE_GLOBAL",
@@ -18161,6 +18325,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
                   },
                   "status": {
                     "type": "string",
+                    "description": "合法值：ACTIVE | DISABLED | DEPRECATED",
                     "enum": [
                       "ACTIVE",
                       "DISABLED",
@@ -18233,6 +18398,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
                   },
                   "type": {
                     "type": "string",
+                    "description": "合法值：FACT | PREFERENCE | EPISODIC | SEMANTIC | PROCEDURAL | EXPERIENCE | DECISION | ARTIFACT | ERROR | SOLUTION",
                     "enum": [
                       "FACT",
                       "PREFERENCE",
@@ -18249,6 +18415,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
                   },
                   "scope": {
                     "type": "string",
+                    "description": "合法值：GLOBAL | USER | PROJECT | SESSION | TASK | AGENT | STEP",
                     "enum": [
                       "GLOBAL",
                       "USER",
@@ -18277,6 +18444,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
                   },
                   "source": {
                     "type": "string",
+                    "description": "合法值：USER | AI | CONVERSATION | SKILL | TASK | ACTION | PROJECT | FILE | IMPORT | SYSTEM",
                     "enum": [
                       "USER",
                       "AI",
@@ -18318,6 +18486,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
                       },
                       "result": {
                         "type": "string",
+                        "description": "合法值：SUCCESS | FAILURE | PARTIAL | UNKNOWN",
                         "enum": [
                           "SUCCESS",
                           "FAILURE",
@@ -18375,6 +18544,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
                   },
                   "status": {
                     "type": "string",
+                    "description": "合法值：ACTIVE | ARCHIVED | FORGOTTEN",
                     "enum": [
                       "ACTIVE",
                       "ARCHIVED",
@@ -18696,6 +18866,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
           "type": "array",
           "items": {
             "type": "string",
+            "description": "合法值：drive | directory | file | application | executable | shortcut | process | window | document | project | browser | device | capability",
             "enum": [
               "drive",
               "directory",
@@ -18715,6 +18886,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "scope": {
           "type": "string",
+          "description": "合法值：local_machine | workspace | project",
           "enum": [
             "local_machine",
             "workspace",
@@ -18743,6 +18915,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "action": {
           "type": "string",
+          "description": "合法值：query | find_application | find_file | find_directory | search_content | find_process | find_window | inspect_resource",
           "enum": [
             "query",
             "find_application",
@@ -18795,6 +18968,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
           "type": "array",
           "items": {
             "type": "string",
+            "description": "合法值：drive | directory | file | application | executable | shortcut | process | window | document | project | browser | device | capability",
             "enum": [
               "drive",
               "directory",
@@ -18814,6 +18988,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "scope": {
           "type": "string",
+          "description": "合法值：local_machine | workspace | project",
           "enum": [
             "local_machine",
             "workspace",
@@ -18842,6 +19017,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "action": {
           "type": "string",
+          "description": "合法值：query | find_application | find_file | find_directory | search_content | find_process | find_window | inspect_resource",
           "enum": [
             "query",
             "find_application",
@@ -18943,6 +19119,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
       "properties": {
         "resourceType": {
           "type": "string",
+          "description": "合法值：file | process | window | operation | application | directory",
           "enum": [
             "file",
             "process",
@@ -19097,6 +19274,7 @@ const RAW_CANONICAL_TOOL_DEFINITIONS: any[] = [
         },
         "scope": {
           "type": "string",
+          "description": "合法值：local_machine | workspace | project",
           "enum": [
             "local_machine",
             "workspace",

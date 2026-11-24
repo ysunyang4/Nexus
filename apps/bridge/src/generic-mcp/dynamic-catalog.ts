@@ -239,6 +239,8 @@ export class DynamicCatalog {
    * Resolve tool by qualifiedName or short alias
    */
   public resolveTool(nameOrQualified: string): DynamicMcpTool | null {
+    if (!nameOrQualified) return null;
+
     // 1. Direct qualified match
     if (this.toolsByQualifiedName.has(nameOrQualified)) {
       return this.toolsByQualifiedName.get(nameOrQualified)!;
@@ -248,6 +250,28 @@ export class DynamicCatalog {
     if (this.aliasMap.has(nameOrQualified)) {
       const q = this.aliasMap.get(nameOrQualified)!;
       return this.toolsByQualifiedName.get(q) || null;
+    }
+
+    // 3. Normalization (hyphen <-> underscore)
+    const alt1 = nameOrQualified.replace(/_/g, "-");
+    if (this.toolsByQualifiedName.has(alt1)) return this.toolsByQualifiedName.get(alt1)!;
+    if (this.aliasMap.has(alt1)) return this.toolsByQualifiedName.get(this.aliasMap.get(alt1)!) || null;
+
+    const alt2 = nameOrQualified.replace(/-/g, "_");
+    if (this.toolsByQualifiedName.has(alt2)) return this.toolsByQualifiedName.get(alt2)!;
+    if (this.aliasMap.has(alt2)) return this.toolsByQualifiedName.get(this.aliasMap.get(alt2)!) || null;
+
+    // 4. Known Tool Aliases (Blender, Unity, etc.)
+    const cleanLower = nameOrQualified.toLowerCase().replace(/^(blender|unity)[-_:]+/, "");
+    if (cleanLower === "scene_info" || cleanLower === "scene-info" || cleanLower === "get_scene_info") {
+      const target = this.toolsByQualifiedName.get("blender-mcp::get_scene_info") || 
+                     (this.aliasMap.has("get_scene_info") ? this.toolsByQualifiedName.get(this.aliasMap.get("get_scene_info")!) : null);
+      if (target) return target;
+    }
+    if (cleanLower === "run_bpy_script" || cleanLower === "run-bpy-script" || cleanLower === "execute_blender_code") {
+      const target = this.toolsByQualifiedName.get("blender-mcp::execute_blender_code") || 
+                     (this.aliasMap.has("execute_blender_code") ? this.toolsByQualifiedName.get(this.aliasMap.get("execute_blender_code")!) : null);
+      if (target) return target;
     }
 
     return null;

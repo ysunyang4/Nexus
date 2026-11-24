@@ -21,7 +21,10 @@ export type PortSummary = z.infer<typeof PortSummarySchema>;
 export const PortListParamsSchema = z.object({
   projectId: z.string().optional(),
   port: z.number().int().min(1).max(65535).optional(),
-  ownership: z.union([ProcessOwnershipGradeSchema, z.literal("ALL")]).optional(),
+  ownership: z
+    .union([ProcessOwnershipGradeSchema, z.literal("ALL")])
+    .optional()
+    .describe("Filter ports by ownership grade. One of: OWNED | VERIFIED_DERIVED | PROBABLE | UNOWNED | SYSTEM | FOREIGN | ALL"),
 });
 export type PortListParams = z.infer<typeof PortListParamsSchema>;
 

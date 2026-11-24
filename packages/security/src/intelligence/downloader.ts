@@ -32,7 +32,7 @@ export function getDefaultModelDir(): string {
 }
 
 export function getDevFallbackModelDir(): string {
-  return path.resolve(process.env.NEXUS_LAYA_MODEL_DIR || path.join(os.homedir(), "Models", "laya-multilingual"));
+  return path.resolve("E:/workspace/models/laya-multilingual");
 }
 
 export function normalizeProxyUrl(raw: string): string {
@@ -253,7 +253,7 @@ export class ModelDownloadManager {
     }
 
     // If target directory is the default location and not yet populated,
-    // check if a known local dev repository is present (e.g. C:\Models\Example)
+    // check if a known local dev repository is present (e.g. E:\workspace\models\laya-multilingual)
     if (this.targetDir === getDefaultModelDir()) {
       const devFallback = getDevFallbackModelDir();
       const devRes = validateModelDir(devFallback);

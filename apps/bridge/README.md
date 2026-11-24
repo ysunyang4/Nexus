@@ -1,13 +1,13 @@
 # Nexus MCP Bridge
 
-> Standard MCP HTTP / Streamable HTTP Bridge for connecting external MCP clients to Nexus LocalBridge on Windows.
+> Standard MCP HTTP / Streamable HTTP Bridge for connecting Gemini Spark Custom Apps to Nexus LocalBridge on Windows.
 
 ---
 
 ## 架构
 
 ```text
-MCP Client (ChatGPT, Custom App)
+Gemini Spark (Custom App)
       │
       │ HTTPS (Streamable HTTP / MCP Protocol 2024-11-05)
       ▼

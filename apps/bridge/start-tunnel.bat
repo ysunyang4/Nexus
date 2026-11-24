@@ -1,18 +1,17 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-set "TUNNEL_EXECUTABLE=cloudflared"
-if defined CLOUDFLARED_EXE (
-  if not exist "%CLOUDFLARED_EXE%" (
-    echo Invalid CLOUDFLARED_EXE path.
-    exit /b 1
-  )
-  set "TUNNEL_EXECUTABLE=%CLOUDFLARED_EXE%"
+
+echo ==================================================
+echo   Starting Cloudflare Tunnel for Nexus MCP Bridge
+echo ==================================================
+echo Forwarding public HTTPS traffic to http://127.0.0.1:8787...
+echo.
+
+set "CLOUDFLARED_EXE=E:\workspace\tunnel-client-runtime-cloudflared-v0.0.14-windows-amd64\cloudflared.exe"
+
+if exist "%CLOUDFLARED_EXE%" (
+    "%CLOUDFLARED_EXE%" tunnel --url http://127.0.0.1:8787
 ) else (
-  where cloudflared >nul 2>&1
-  if errorlevel 1 (
-    echo cloudflared is not available; install or set CLOUDFLARED_EXE.
-    exit /b 1
-  )
+    cloudflared tunnel --url http://127.0.0.1:8787
 )
-"%TUNNEL_EXECUTABLE%" tunnel --url http://127.0.0.1:8787

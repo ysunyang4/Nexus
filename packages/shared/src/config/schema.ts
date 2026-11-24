@@ -41,10 +41,25 @@ export type ProjectConfig = z.infer<typeof ProjectConfigSchema>;
 
 export const AppConfigSchema = z.object({
   configVersion: z.number().int().default(1),
-  server: ServerConfigSchema.default({}),
-  runner: RunnerConfigSchema.default({}),
-  security: SecurityConfigSchema.default({}),
-  logging: LoggingConfigSchema.default({}),
+  server: ServerConfigSchema.default({
+    host: "127.0.0.1",
+    port: 18080,
+    dbPath: "localbridge.db",
+    corsOrigin: true,
+  }),
+  runner: RunnerConfigSchema.default({
+    name: "Local-Runner",
+    serverUrl: "ws://127.0.0.1:18080/runner",
+  }),
+  security: SecurityConfigSchema.default({
+    maxFileSize: 2097152,
+    commandTimeout: 60,
+    allowSensitiveFiles: false,
+  }),
+  logging: LoggingConfigSchema.default({
+    level: "info",
+    pretty: false,
+  }),
   projects: z.array(ProjectConfigSchema).default([]),
 });
 export type AppConfig = z.infer<typeof AppConfigSchema>;

@@ -25,7 +25,9 @@ export type ValidationCheckResult = z.infer<typeof ValidationCheckResultSchema>;
 
 export const UnifiedValidationParamsSchema = z.object({
   projectId: z.string(),
-  checkType: ValidationCheckTypeSchema.default("all"),
+  checkType: ValidationCheckTypeSchema
+    .default("all")
+    .describe("Validation check type. One of: all | build | test | lint | typecheck | format"),
   commandOverride: z.string().optional(),
   timeoutMs: z.number().int().positive().default(120000),
 });

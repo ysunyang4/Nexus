@@ -1,16 +1,16 @@
 [package]
 name = "localbridge-desktop"
-version = "1.3.2"
+version = "1.3.4"
 description = "Nexus Desktop Control Center"
 authors = ["Nexus Team"]
 edition = "2021"
-license = "AGPL-3.0-only"
+license = "Apache-2.0"
 
 [package.metadata.tauri-winres]
 OriginalFilename = "localbridge-desktop.exe"
 InternalName = "Nexus Control Center"
-FileDescription = "Nexus Open Source"
-ProductName = "Nexus Open Source"
+FileDescription = "Nexus"
+ProductName = "Nexus"
 CompanyName = "Nexus"
 LegalCopyright = "Copyright © 2026 Nexus"
 

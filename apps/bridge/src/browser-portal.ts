@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import http from "node:http";
 import https from "node:https";
+import { ensureEgoNovaRunning, callEgoNovaRpc } from "./meta-tools/advanced-meta-tools.js";
 
 let dedicatedBrowserProcess: child_process.ChildProcess | null = null;
 let dedicatedBrowserPid: number | null = null;
@@ -19,45 +20,11 @@ export function getDedicatedProfileDir(): string {
 }
 
 export function findBrowserExecutable(): string {
-  if (process.platform === "win32") {
-    const candidatePaths = [
-      "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
-      "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
-      "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-      "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-      path.join(process.env.LOCALAPPDATA || "", "Microsoft\\Edge\\Application\\msedge.exe"),
-      path.join(process.env.LOCALAPPDATA || "", "Google\\Chrome\\Application\\chrome.exe"),
-      path.join(process.env.ProgramFiles || "C:\\Program Files", "Microsoft\\Edge\\Application\\msedge.exe"),
-      path.join(process.env["ProgramFiles(x86)"] || "C:\\Program Files (x86)", "Microsoft\\Edge\\Application\\msedge.exe"),
-      path.join(process.env.ProgramFiles || "C:\\Program Files", "Google\\Chrome\\Application\\chrome.exe"),
-      path.join(process.env["ProgramFiles(x86)"] || "C:\\Program Files (x86)", "Google\\Chrome\\Application\\chrome.exe"),
-    ];
-
-    if (process.env.EDGE_PATH && fs.existsSync(process.env.EDGE_PATH)) {
-      return process.env.EDGE_PATH;
-    }
-    if (process.env.CHROME_PATH && fs.existsSync(process.env.CHROME_PATH)) {
-      return process.env.CHROME_PATH;
-    }
-
-    for (const p of candidatePaths) {
-      if (p && fs.existsSync(p)) return p;
-    }
-
-    try {
-      const edgeOutput = child_process.execSync("where msedge", { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
-      const firstLine = edgeOutput.split(/\r?\n/)[0]?.trim();
-      if (firstLine && fs.existsSync(firstLine)) return firstLine;
-    } catch {}
-
-    try {
-      const chromeOutput = child_process.execSync("where chrome", { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
-      const firstLine = chromeOutput.split(/\r?\n/)[0]?.trim();
-      if (firstLine && fs.existsSync(firstLine)) return firstLine;
-    } catch {}
+  const egoNovaPath = "E:\\Tesyt\\beo\\ego-nova.exe";
+  if (fs.existsSync(egoNovaPath)) {
+    return egoNovaPath;
   }
-
-  throw new Error("未检测到兼容的 Chromium 浏览器 (Edge 或 Chrome)");
+  return egoNovaPath;
 }
 
 export function getNexusIconBuffer(): Buffer | null {
@@ -75,6 +42,8 @@ export function getNexusIconBuffer(): Buffer | null {
     path.resolve(process.cwd(), "apps/desktop/src-tauri/icons/64x64.png"),
     path.resolve(process.cwd(), "../icons/64x64.png"),
     path.resolve(process.cwd(), "resources/icons/64x64.png"),
+    "E:\\workspace\\cod\\apps\\desktop\\src-tauri\\icons\\64x64.png",
+    "E:\\workspace\\cod\\apps\\desktop\\src\\assets\\nexus.png",
   ];
   for (const p of candidatePaths) {
     if (fs.existsSync(p)) {
@@ -194,81 +163,27 @@ try {
 
 export const createPermissiveExtension = ensureBrowserExtension;
 
-export function launchNexusBrowser(
+export async function launchNexusBrowser(
   targetUrl?: string,
   aiType?: string,
   forceRestart = false
-): { success: boolean; pid?: number; profileDir: string; error?: string } {
+): Promise<{ success: boolean; pid?: number; profileDir: string; error?: string }> {
   const profileDir = getDedicatedProfileDir();
-  const browserExe = findBrowserExecutable();
-
-  // Guarantee clean startup: terminate any zombie browser instances running on this dedicated profile
-  if (process.platform === "win32") {
-    try {
-      const psCmd = `Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like '*browser_profile*' -and $_.ProcessId -ne ${process.pid} } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }`;
-      child_process.spawnSync("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", psCmd], {
-        stdio: "ignore",
-        timeout: 5000,
-      });
-    } catch {}
-    // Clean stale lock files
-    try {
-      const singletonLock = path.join(profileDir, "SingletonLock");
-      if (fs.existsSync(singletonLock)) fs.unlinkSync(singletonLock);
-      const lockFile = path.join(profileDir, "LOCK");
-      if (fs.existsSync(lockFile)) fs.unlinkSync(lockFile);
-    } catch {}
-  }
-
-  if (dedicatedBrowserPid) {
-    try {
-      process.kill(dedicatedBrowserPid);
-    } catch {}
-    dedicatedBrowserPid = null;
-    dedicatedBrowserProcess = null;
-  }
-
-  const port = process.env.NEXUS_BRIDGE_PORT || process.env.PORT || "8787";
-  const queryParams = new URLSearchParams();
-  if (targetUrl) queryParams.set("url", targetUrl);
-  if (aiType) queryParams.set("ai", aiType);
-  const qStr = queryParams.toString();
-  const startUrl = qStr
-    ? `http://127.0.0.1:${port}/nexus-browser?${qStr}`
-    : `http://127.0.0.1:${port}/nexus-browser`;
-
-  const extDir = ensureBrowserExtension();
-  const args = [
-    `--user-data-dir=${profileDir}`,
-    "--no-first-run",
-    "--no-default-browser-check",
-    `--load-extension=${extDir}`,
-    `--disable-extensions-except=${extDir}`,
-    "--disable-site-isolation-trials",
-    "--allow-running-insecure-content",
-    `--app=${startUrl}`,
-  ];
-
   try {
-    const proc = child_process.spawn(browserExe, args, {
-      detached: true,
-      stdio: "ignore",
-    });
-    proc.unref();
-
-    dedicatedBrowserProcess = proc;
-    dedicatedBrowserPid = proc.pid ?? null;
-
+    await ensureEgoNovaRunning();
+    if (targetUrl) {
+      await callEgoNovaRpc("/navigate", { url: targetUrl });
+    }
+    await callEgoNovaRpc("/focus");
     return {
       success: true,
-      pid: dedicatedBrowserPid ?? undefined,
       profileDir,
     };
   } catch (err: any) {
     return {
       success: false,
       profileDir,
-      error: err.message || String(err),
+      error: err?.message || String(err),
     };
   }
 }
@@ -304,20 +219,8 @@ export function resetNexusBrowserProfile(): { success: boolean; error?: string }
 
 export function getNexusBrowserStatus(): { running: boolean; pid?: number; profileDir: string } {
   const profileDir = getDedicatedProfileDir();
-  let isRunning = false;
-  if (dedicatedBrowserPid) {
-    try {
-      process.kill(dedicatedBrowserPid, 0);
-      isRunning = true;
-    } catch {
-      isRunning = false;
-      dedicatedBrowserPid = null;
-      dedicatedBrowserProcess = null;
-    }
-  }
   return {
-    running: isRunning,
-    pid: dedicatedBrowserPid ?? undefined,
+    running: true,
     profileDir,
   };
 }
@@ -573,14 +476,22 @@ export function getNexusBrowserHtml(initialUrl: string = "", initialAi: string =
   const normAi = (initialAi || "").toLowerCase();
   const normUrl = (initialUrl || "").toLowerCase();
 
-  if (normAi === "reader") {
+  if (normAi === "gemini" || normUrl.includes("gemini.google.com") || normUrl.includes("gemini")) {
+    targetAi = "gemini";
+  } else if (normAi === "claude" || normUrl.includes("claude.ai") || normUrl.includes("claude")) {
+    targetAi = "claude";
+  } else if (normAi === "reader") {
     targetAi = "reader";
-  } else {
+  } else if (normAi === "chatgpt" || normUrl.includes("chatgpt.com")) {
     targetAi = "chatgpt";
   }
 
   let mainCanvasUrl = initialUrl;
-  if (mainCanvasUrl.includes("chatgpt.com")) {
+  if (
+    mainCanvasUrl.includes("chatgpt.com") ||
+    mainCanvasUrl.includes("claude.ai") ||
+    mainCanvasUrl.includes("gemini.google.com")
+  ) {
     mainCanvasUrl = "";
   }
 
@@ -858,7 +769,16 @@ export function getNexusBrowserHtml(initialUrl: string = "", initialAi: string =
       color: #34d399;
       background: rgba(16, 185, 129, 0.1);
     }
-
+    .ai-tab.active[data-ai="claude"] {
+      border-color: var(--accent-purple);
+      color: #d8b4fe;
+      background: rgba(192, 132, 252, 0.1);
+    }
+    .ai-tab.active[data-ai="gemini"] {
+      border-color: var(--accent-cyan);
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+    }
     .ai-tab.active[data-ai="reader"] {
       border-color: var(--accent-amber);
       color: #fbbf24;
@@ -1317,6 +1237,8 @@ export function getNexusBrowserHtml(initialUrl: string = "", initialAi: string =
     <!-- AI Companion Tabs -->
     <div class="ai-tabs">
       <button class="ai-tab ${targetAi === 'chatgpt' ? 'active' : ''}" data-ai="chatgpt" id="tab-chatgpt" onclick="switchCopilotTab('chatgpt')">🤖 ChatGPT</button>
+      <button class="ai-tab ${targetAi === 'claude' ? 'active' : ''}" data-ai="claude" id="tab-claude" onclick="switchCopilotTab('claude')">🟣 Claude</button>
+      <button class="ai-tab ${targetAi === 'gemini' ? 'active' : ''}" data-ai="gemini" id="tab-gemini" onclick="switchCopilotTab('gemini')">✨ Gemini</button>
       <button class="ai-tab ${targetAi === 'reader' ? 'active' : ''}" data-ai="reader" id="tab-reader" onclick="switchCopilotTab('reader')">📄 脱水提纯</button>
       <button class="ai-tab" data-ai="settings" id="tab-settings" onclick="switchCopilotTab('settings')" title="沙箱数据与重置">&#x2699;</button>
     </div>
@@ -1415,7 +1337,7 @@ export function getNexusBrowserHtml(initialUrl: string = "", initialAi: string =
       <div class="copilot-bar">
         <div class="copilot-indicator" id="copilotIndicator">
           <span class="pulse-dot"></span>
-          <span id="copilotTitle">${targetAi === 'reader' ? '📄 网页脱水' : '🤖 ChatGPT 官网'}</span>
+          <span id="copilotTitle">${targetAi === 'gemini' ? '✨ Gemini 官网' : targetAi === 'claude' ? '🟣 Claude 官网' : targetAi === 'reader' ? '📄 网页脱水' : '🤖 ChatGPT 官网'}</span>
         </div>
         <div class="copilot-actions">
           <button class="copilot-btn" onclick="sendContextToAi()" title="将左侧网页上下文与纯净文本投送到剪贴板 Ctrl+V">&#x1F4CB; 投送网页</button>
@@ -1431,6 +1353,15 @@ export function getNexusBrowserHtml(initialUrl: string = "", initialAi: string =
           <iframe class="ai-hub-iframe" id="aiFrame-chatgpt" src="${targetAi === 'chatgpt' ? 'https://chatgpt.com' : 'about:blank'}" data-src="https://chatgpt.com"></iframe>
         </div>
 
+        <!-- 2. Claude Embedded View -->
+        <div id="view-claude" class="ai-hub-view ${targetAi === 'claude' ? 'active' : ''}">
+          <iframe class="ai-hub-iframe" id="aiFrame-claude" src="${targetAi === 'claude' ? 'https://claude.ai' : 'about:blank'}" data-src="https://claude.ai"></iframe>
+        </div>
+
+        <!-- 3. Gemini Embedded View -->
+        <div id="view-gemini" class="ai-hub-view ${targetAi === 'gemini' ? 'active' : ''}">
+          <iframe class="ai-hub-iframe" id="aiFrame-gemini" src="${targetAi === 'gemini' ? 'https://gemini.google.com' : 'about:blank'}" data-src="https://gemini.google.com"></iframe>
+        </div>
 
         <!-- 4. Reader Viewport -->
         <div id="view-reader" class="reader-view ${targetAi === 'reader' ? 'active' : ''}">
@@ -1483,7 +1414,9 @@ export function getNexusBrowserHtml(initialUrl: string = "", initialAi: string =
       baidu: "https://www.baidu.com/s?wd="
     };
     const AI_URL_MAP = {
-      chatgpt: "https://chatgpt.com"
+      chatgpt: "https://chatgpt.com",
+      claude: "https://claude.ai",
+      gemini: "https://gemini.google.com"
     };
 
     // Clock
@@ -1605,6 +1538,8 @@ export function getNexusBrowserHtml(initialUrl: string = "", initialAi: string =
 
       const titleMap = {
         chatgpt: "🤖 ChatGPT 官网",
+        claude: "🟣 Claude 官网",
+        gemini: "✨ Gemini 官网",
         reader: "📄 网页脱水提纯",
         settings: "⚙ 沙箱隔离设置"
       };

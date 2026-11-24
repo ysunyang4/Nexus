@@ -44,7 +44,7 @@ export const RuntimeLaunchSpecShellCommandSchema = z
     args: z.array(z.string()).default([]),
     relativeCwd: z.string().optional(),
     shell: z.enum(["cmd", "powershell", "pwsh", "bash", "sh"]).optional(),
-    env: z.record(z.string()).optional(),
+    env: z.record(z.string(), z.string()).optional(),
     name: z.string().max(100).optional(),
     approvalId: z.string().optional(),
   })
@@ -115,7 +115,9 @@ export const RuntimeListParamsSchema = z
     projectId: z.string().optional(),
     sessionId: z.string().optional(),
     worktreeId: z.string().optional(),
-    state: RuntimeStateSchema.optional(),
+    state: RuntimeStateSchema
+      .optional()
+      .describe("Filter runtimes by state. One of: starting | running | stopping | stopped | failed | interrupted"),
     limit: z.number().int().min(1).max(100).default(50).optional(),
     cursor: z.string().optional(),
   })

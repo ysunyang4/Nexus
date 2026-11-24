@@ -43,7 +43,7 @@ export const LocalResourceSchema = z.object({
   modifiedAt: z.string().optional(),
   size: z.number().optional(),
   hash: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 
   // Application-specific fields
   executablePath: z.string().optional(),
@@ -57,7 +57,7 @@ export type LocalResource = z.infer<typeof LocalResourceSchema>;
 export const DiscoveryQueryParamsSchema = z.object({
   query: z.string().optional().default(""),
   resourceTypes: z.array(LocalResourceTypeSchema).optional(),
-  scope: z.enum(["local_machine", "workspace", "project"]).optional().default("local_machine"),
+  scope: z.enum(["local_machine", "workspace", "project"]).optional().default("local_machine").describe("合法值：local_machine | workspace | project"),
   deep: z.boolean().optional().default(false),
   fresh: z.boolean().optional().default(false),
   verify: z.boolean().optional().default(true),
@@ -75,7 +75,8 @@ export const DiscoveryQueryParamsSchema = z.object({
       "inspect_resource",
     ])
     .optional()
-    .default("query"),
+    .default("query")
+    .describe("合法值：query | find_application | find_file | find_directory | search_content | find_process | find_window | inspect_resource"),
 });
 export type DiscoveryQueryParams = z.infer<typeof DiscoveryQueryParamsSchema>;
 
@@ -120,9 +121,9 @@ export const LaunchApplicationResultSchema = z.object({
 export type LaunchApplicationResult = z.infer<typeof LaunchApplicationResultSchema>;
 
 export const VerifyResourceParamsSchema = z.object({
-  resourceType: z.enum(["file", "process", "window", "operation", "application", "directory"]),
+  resourceType: z.enum(["file", "process", "window", "operation", "application", "directory"]).describe("合法值：file | process | window | operation | application | directory"),
   target: z.string(),
-  expectedState: z.record(z.any()).optional(),
+  expectedState: z.record(z.string(), z.any()).optional(),
   timeoutMs: z.number().optional().default(5000),
 });
 export type VerifyResourceParams = z.infer<typeof VerifyResourceParamsSchema>;
@@ -131,7 +132,7 @@ export const VerifyResourceResultSchema = z.object({
   verified: z.boolean(),
   resourceType: z.string(),
   target: z.string(),
-  actualState: z.record(z.any()).optional(),
+  actualState: z.record(z.string(), z.any()).optional(),
   message: z.string(),
 });
 export type VerifyResourceResult = z.infer<typeof VerifyResourceResultSchema>;
@@ -152,7 +153,7 @@ export const ContentIndexRecordSchema = z.object({
   modifiedAt: z.string(),
   hash: z.string(),
   snippet: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 export type ContentIndexRecord = z.infer<typeof ContentIndexRecordSchema>;
 
@@ -177,7 +178,7 @@ export type InspectResourceResult = z.infer<typeof InspectResourceResultSchema>;
 
 export const DiscoveryRefreshParamsSchema = z.object({
   deep: z.boolean().optional().default(false),
-  scope: z.enum(["local_machine", "workspace", "project"]).optional(),
+  scope: z.enum(["local_machine", "workspace", "project"]).optional().describe("合法值：local_machine | workspace | project"),
 });
 export type DiscoveryRefreshParams = z.infer<typeof DiscoveryRefreshParamsSchema>;
 

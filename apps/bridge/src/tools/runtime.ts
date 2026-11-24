@@ -6,9 +6,9 @@ export function registerRuntimeTools(server: McpServer, nexusClient: NexusClient
   // 1. nexus_runtime_list
   server.tool(
     "nexus_runtime_list",
-    "查询项目中当前激活或已注册的本地持久化运行时服务列表（如 Web 开发服务器、常驻后台服务）",
+    "List currently active or registered local persistent runtime services (e.g. dev servers, daemon processes).",
     {
-      projectId: z.string().describe("项目名称或项目 ID，例如 'Myweb'"),
+      projectId: z.string().describe("Project name or project ID, e.g. 'Myweb'"),
     },
     async ({ projectId }) => {
       try {

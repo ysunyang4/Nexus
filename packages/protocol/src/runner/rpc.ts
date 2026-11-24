@@ -708,7 +708,7 @@ export type GitDiffScope = z.infer<typeof GitDiffScopeSchema>;
 export const GitDiffParamsSchema = z
   .object({
     projectId: z.string(),
-    scope: GitDiffScopeSchema.default("unstaged"),
+    scope: GitDiffScopeSchema.default("unstaged").describe("合法值：unstaged | staged"),
     path: z.string().optional(),
     contextLines: z.number().int().min(0).max(20).default(3),
     sessionId: z.string().optional(),
@@ -1053,7 +1053,7 @@ export const ShellCommandSchema = z
     command: z.string().min(1, "command is required"),
     args: z.array(z.string()).max(64).default([]),
     cwd: z.string().default("."),
-    env: z.record(z.string()).optional(),
+    env: z.record(z.string(), z.string()).optional(),
     shell: z.enum(["cmd", "powershell", "pwsh", "bash", "sh"]).optional(),
     timeoutMs: z.number().int().min(1000).max(300000).default(60000),
     approvalId: z.string().optional(),
@@ -1082,7 +1082,7 @@ export const CommandSpecToolSchema = z.object({
   projectId: z.string().describe("Target project identifier"),
   kind: z
     .enum(["tool-version", "node-script", "python-script", "package-script", "shell-command"])
-    .describe("Kind of command to execute"),
+    .describe("Kind of command to execute. One of: tool-version | node-script | python-script | package-script | shell-command"),
   tool: z
     .string()
     .optional()
@@ -1113,7 +1113,7 @@ export const CommandSpecToolSchema = z.object({
     .default(".")
     .describe("Working directory relative to project root"),
   env: z
-    .record(z.string())
+    .record(z.string(), z.string())
     .optional()
     .describe("Optional additional environment variables"),
   shell: z
@@ -1372,7 +1372,9 @@ export type JobCancelResult = z.infer<typeof JobCancelResultSchema>;
 export const JobListParamsSchema = z
   .object({
     projectId: z.string().optional(),
-    state: JobStateSchema.optional(),
+    state: JobStateSchema
+      .optional()
+      .describe("合法值：queued | running | succeeded | failed | cancelled | timed_out | timed-out | interrupted"),
     limit: z.number().int().min(1).max(100).default(50),
   })
   .strict();
@@ -1406,7 +1408,7 @@ export type JobListResult = z.infer<typeof JobListResultSchema>;
 export const BuildStartParamsSchema = z
   .object({
     projectId: z.string(),
-    manager: z.enum(["npm", "pnpm"]).default("pnpm"),
+    manager: z.enum(["npm", "pnpm"]).default("pnpm").describe("合法值：npm | pnpm"),
     script: z.string().default("build"),
     args: z.array(z.string()).max(64).default([]),
     cwd: z.string().default("."),
@@ -1429,7 +1431,7 @@ export type BuildStartResult = z.infer<typeof BuildStartResultSchema>;
 export const TestStartParamsSchema = z
   .object({
     projectId: z.string(),
-    manager: z.enum(["npm", "pnpm"]).default("pnpm"),
+    manager: z.enum(["npm", "pnpm"]).default("pnpm").describe("合法值：npm | pnpm"),
     script: z.string().default("test"),
     args: z.array(z.string()).max(64).default([]),
     cwd: z.string().default("."),
@@ -1593,7 +1595,7 @@ export type ApprovalRoutingMode = z.infer<typeof ApprovalRoutingModeSchema>;
 
 export const ApprovalSetModeParamsSchema = z
   .object({
-    mode: ApprovalRoutingModeSchema,
+    mode: ApprovalRoutingModeSchema.describe("合法值：chat | auto-trusted | desktop | hybrid"),
   })
   .strict();
 export type ApprovalSetModeParams = z.infer<typeof ApprovalSetModeParamsSchema>;
@@ -1657,7 +1659,7 @@ export const ApprovalCreateParamsSchema = z
   .object({
     projectId: z.string(),
     operation: z.string(),
-    risk: ApprovalRiskSchema,
+    risk: ApprovalRiskSchema.describe("合法值：CAUTION | DANGEROUS"),
     summary: z.string(),
     payloadHash: z.string(),
     timeoutMs: z.number().int().min(1000).max(3600000).default(300000),
@@ -1687,7 +1689,7 @@ export type ApprovalResolveResult = z.infer<typeof ApprovalResolveResultSchema>;
 export const ApprovalListParamsSchema = z
   .object({
     projectId: z.string().optional(),
-    status: ApprovalStatusSchema.optional(),
+    status: ApprovalStatusSchema.optional().describe("合法值：pending | approved | denied | expired | consumed"),
   })
   .strict();
 export type ApprovalListParams = z.infer<typeof ApprovalListParamsSchema>;

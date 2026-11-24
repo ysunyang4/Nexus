@@ -14,7 +14,7 @@ export const HygieneIssueSchema = z.object({
   pathOrIdentifier: z.string(),
   description: z.string(),
   sizeBytes: z.number().int().nonnegative().optional(),
-  extra: z.record(z.any()).optional(),
+  extra: z.record(z.string(), z.any()).optional(),
 });
 export type HygieneIssue = z.infer<typeof HygieneIssueSchema>;
 

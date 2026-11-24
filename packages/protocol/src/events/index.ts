@@ -16,7 +16,7 @@ export const LocalBridgeEventSchema = z.object({
   runner: z.string().default("windows"),
   correlationId: z.string().optional(),
   causationId: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 export type LocalBridgeEvent = z.infer<typeof LocalBridgeEventSchema>;
 
@@ -46,7 +46,7 @@ export const EventPublishParamsSchema = z.object({
   type: z.string().optional(),
   correlationId: z.string().optional(),
   causationId: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 export type EventPublishParams = z.infer<typeof EventPublishParamsSchema>;
 

@@ -23,15 +23,26 @@ export const MouseMoveParamsSchema = z.object({
   x: z.number().int(),
   y: z.number().int(),
   smooth: z.boolean().default(false),
+  coordinateSpace: z
+    .enum(["screen", "image"])
+    .default("screen")
+    .describe("Coordinate space of the given coordinates. One of: screen | image"),
 });
-export type MouseMoveParams = z.infer<typeof MouseMoveParamsSchema>;
+export type MouseMoveParams = z.input<typeof MouseMoveParamsSchema>;
 
 export const MouseClickParamsSchema = z.object({
-  button: z.enum(["left", "right", "middle", "double"]).default("left"),
+  button: z
+    .enum(["left", "right", "middle", "double"])
+    .default("left")
+    .describe("Mouse button to click. One of: left | right | middle | double"),
   x: z.number().int().optional(),
   y: z.number().int().optional(),
+  coordinateSpace: z
+    .enum(["screen", "image"])
+    .default("screen")
+    .describe("Coordinate space of the given coordinates. One of: screen | image"),
 });
-export type MouseClickParams = z.infer<typeof MouseClickParamsSchema>;
+export type MouseClickParams = z.input<typeof MouseClickParamsSchema>;
 
 export const MouseScrollParamsSchema = z.object({
   deltaY: z.number().int(),
@@ -58,7 +69,10 @@ export type KeyboardInputParams = z.infer<typeof KeyboardInputParamsSchema>;
 
 export const KeyboardKeyParamsSchema = z.object({
   keys: z.array(z.string()).min(1), // e.g. ["ctrl", "c"], ["enter"], ["alt", "tab"]
-  action: z.enum(["press", "down", "up"]).default("press"),
+  action: z
+    .enum(["press", "down", "up"])
+    .default("press")
+    .describe("Key action type. One of: press | down | up"),
 });
 export type KeyboardKeyParams = z.infer<typeof KeyboardKeyParamsSchema>;
 
@@ -207,7 +221,7 @@ export const UIElementActionParamsSchema = z.object({
     controlType: z.string().optional(),
     windowHandleOrTitle: z.string().optional(),
   }),
-  action: z.enum(["click", "invoke", "focus", "set_value"]),
+  action: z.enum(["click", "invoke", "focus", "set_value"]).describe("合法值：click | invoke | focus | set_value"),
   value: z.string().optional(),
 });
 export type UIElementActionParams = z.infer<typeof UIElementActionParamsSchema>;
@@ -224,15 +238,29 @@ export const ScreenSnapshotParamsSchema = z.object({
   displayId: z.string().optional(),
   windowHandleOrTitle: z.string().optional(),
   saveToArtifact: z.boolean().default(false),
-  format: z.enum(["png", "jpeg"]).default("png"),
+  format: z
+    .enum(["png", "jpeg"])
+    .default("png")
+    .describe("Screenshot image format. One of: png | jpeg"),
+  outputSize: z
+    .enum(["1920x1080", "native"])
+    .default("1920x1080")
+    .describe("Output screenshot image size. One of: 1920x1080 | native"),
 });
-export type ScreenSnapshotParams = z.infer<typeof ScreenSnapshotParamsSchema>;
+export type ScreenSnapshotParams = z.input<typeof ScreenSnapshotParamsSchema>;
 
 export const ScreenSnapshotResultSchema = z.object({
   width: z.number().int().positive(),
   height: z.number().int().positive(),
+  nativeWidth: z.number().int().positive().optional(),
+  nativeHeight: z.number().int().positive().optional(),
+  logicalWidth: z.number().int().positive().optional(),
+  logicalHeight: z.number().int().positive().optional(),
+  scaleFactor: z.number().positive().optional(),
+  outputScale: z.number().positive().optional(),
   format: z.string(),
   base64Data: z.string(),
+  base64DataSavedPath: z.string().optional(),
   artifactId: z.string().optional(),
   artifactPath: z.string().optional(),
   capturedAt: z.number(),
@@ -264,8 +292,12 @@ export const MouseDragParamsSchema = z.object({
   toX: z.number().int(),
   toY: z.number().int(),
   durationMs: z.number().int().positive().default(300).optional(),
+  coordinateSpace: z
+    .enum(["screen", "image"])
+    .default("screen")
+    .describe("Coordinate space of the given coordinates. One of: screen | image"),
 });
-export type MouseDragParams = z.infer<typeof MouseDragParamsSchema>;
+export type MouseDragParams = z.input<typeof MouseDragParamsSchema>;
 
 // 10. Window Close
 export const WindowCloseParamsSchema = z.object({
@@ -299,6 +331,8 @@ export type ComputerWaitResult = z.infer<typeof ComputerWaitResultSchema>;
 export const ComputerObserveParamsSchema = z.object({
   windowHandleOrTitle: z.string().optional(),
   includeScreenshot: z.boolean().default(true).optional(),
+  limit: z.number().int().positive().optional().describe("Maximum number of windows to return"),
+  cursor: z.string().optional().describe("Pagination cursor for windows list"),
 });
 export type ComputerObserveParams = z.infer<typeof ComputerObserveParamsSchema>;
 
@@ -307,8 +341,11 @@ export const ComputerObserveResultSchema = z.object({
   computer: z.object({
     os: z.string().default("Windows"),
     screenSize: z.string(),
+    nativeResolution: z.string().optional(),
+    logicalResolution: z.string().optional(),
     cursor: z.object({ x: z.number().int(), y: z.number().int() }),
-    dpi: z.record(z.any()).optional(),
+    dpi: z.record(z.string(), z.any()).optional(),
+    displays: z.array(DisplayItemSchema).optional(),
   }).optional(),
   activeWindow: WindowItemSchema.nullable().optional(),
   activeWindowReason: z.string().optional(),
@@ -316,8 +353,8 @@ export const ComputerObserveResultSchema = z.object({
   matchedWindow: WindowItemSchema.optional(), // backward compat alias for targetWindow
   windows: z.array(WindowItemSchema).optional(),
   processes: z.array(AppItemSchema).optional(),
-  ui: z.record(z.any()).optional(),
-  ocr: z.record(z.any()).optional(),
+  ui: z.record(z.string(), z.any()).optional(),
+  ocr: z.record(z.string(), z.any()).optional(),
   screen: z.object({
     path: z.string().optional(),
     hash: z.string().optional(),
@@ -330,8 +367,12 @@ export const ComputerObserveResultSchema = z.object({
   cursorPosition: z.object({ x: z.number().int(), y: z.number().int() }),
   screenshot: ScreenSnapshotResultSchema.optional(),
   stateHash: z.string().optional(),
-  target: z.record(z.any()).optional(),
-  verification: z.record(z.any()).optional(),
+  target: z.record(z.string(), z.any()).optional(),
+  verification: z.record(z.string(), z.any()).optional(),
+  truncated: z.boolean().optional(),
+  totalCount: z.number().int().optional(),
+  returnedCount: z.number().int().optional(),
+  nextCursor: z.string().optional(),
 });
 export type ComputerObserveResult = z.infer<typeof ComputerObserveResultSchema>;
 
@@ -452,7 +493,7 @@ export const ComputerExecutionContractSchema = z.object({
   actionId: z.string(),
   action: z.object({
     tool: z.string(),
-    params: z.record(z.any()).default({}),
+    params: z.record(z.string(), z.any()).default({}),
   }),
   before: ComputerStateSchema.optional(),
   execution: z.object({
@@ -471,7 +512,7 @@ export type ComputerExecutionContract = z.infer<typeof ComputerExecutionContract
 // 16. Multi-level Semantic UI Locator
 export const SemanticUILocatorParamsSchema = z.object({
   target: z.string(), // e.g. "保存按钮", "Word document canvas", "File menu"
-  targetType: z.enum(["button", "menu", "input", "text", "window", "canvas", "any"]).default("any"),
+  targetType: z.enum(["button", "menu", "input", "text", "window", "canvas", "any"]).default("any").describe("合法值：button | menu | input | text | window | canvas | any"),
   windowHandleOrTitle: z.string().optional(),
   preferredLevel: z.number().int().min(1).max(6).default(1),
   maxWaitMs: z.number().int().positive().default(5000),
@@ -496,8 +537,8 @@ export const SemanticUILocatorResultSchema = z.object({
   matchedText: z.string().optional(),
   elementInfo: AccessibilityElementSchema.optional(),
   level: z.string().optional(),
-  element: z.record(z.any()).optional(),
-  selector: z.record(z.any()).optional(),
+  element: z.record(z.string(), z.any()).optional(),
+  selector: z.record(z.string(), z.any()).optional(),
   window: WindowItemSchema.optional(),
 });
 export type SemanticUILocatorResult = z.infer<typeof SemanticUILocatorResultSchema>;

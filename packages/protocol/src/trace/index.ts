@@ -6,7 +6,7 @@ export type SpanStatus = z.infer<typeof SpanStatusSchema>;
 export const SpanEventSchema = z.object({
   name: z.string(),
   timestamp: z.number(),
-  attributes: z.record(z.any()).optional(),
+  attributes: z.record(z.string(), z.any()).optional(),
 });
 export type SpanEvent = z.infer<typeof SpanEventSchema>;
 
@@ -22,7 +22,7 @@ export const TraceSpanSchema = z.object({
   durationMs: z.number().optional(),
   status: SpanStatusSchema.default("unset"),
   error: z.string().optional(),
-  attributes: z.record(z.any()).default({}),
+  attributes: z.record(z.string(), z.any()).default({}),
   events: z.array(SpanEventSchema).default([]),
 });
 export type TraceSpan = z.infer<typeof TraceSpanSchema>;
@@ -105,7 +105,7 @@ export const ObservabilitySummarySchema = z.object({
       count: z.number(),
     })
   ),
-  activeComponents: z.record(z.number()),
+  activeComponents: z.record(z.string(), z.number()),
 });
 export type ObservabilitySummary = z.infer<typeof ObservabilitySummarySchema>;
 
@@ -117,7 +117,7 @@ export const TraceStartParamsSchema = z.object({
   service: z.string().optional(),
   traceId: z.string().optional(),
   parentSpanId: z.string().optional(),
-  attributes: z.record(z.any()).optional(),
+  attributes: z.record(z.string(), z.any()).optional(),
 });
 export type TraceStartParams = z.infer<typeof TraceStartParamsSchema>;
 
@@ -131,9 +131,9 @@ export type TraceStartResult = z.infer<typeof TraceStartResultSchema>;
 // 2. Trace End
 export const TraceEndParamsSchema = z.object({
   spanId: z.string(),
-  status: SpanStatusSchema.default("ok"),
+  status: SpanStatusSchema.default("ok").describe("合法值：unset | ok | error"),
   error: z.string().optional(),
-  attributes: z.record(z.any()).optional(),
+  attributes: z.record(z.string(), z.any()).optional(),
 });
 export type TraceEndParams = z.infer<typeof TraceEndParamsSchema>;
 
@@ -149,7 +149,7 @@ export type TraceEndResult = z.infer<typeof TraceEndResultSchema>;
 export const TraceRecordParamsSchema = z.object({
   spanId: z.string(),
   name: z.string(),
-  attributes: z.record(z.any()).optional(),
+  attributes: z.record(z.string(), z.any()).optional(),
   timestamp: z.number().optional(),
 });
 export type TraceRecordParams = z.infer<typeof TraceRecordParamsSchema>;
@@ -178,7 +178,7 @@ export type TraceGetResult = z.infer<typeof TraceGetResultSchema>;
 // 5. Trace List
 export const TraceListParamsSchema = z.object({
   service: z.string().optional(),
-  status: SpanStatusSchema.optional(),
+  status: SpanStatusSchema.optional().describe("合法值：unset | ok | error"),
   limit: z.number().default(50),
 });
 export type TraceListParams = z.infer<typeof TraceListParamsSchema>;
@@ -191,7 +191,7 @@ export type TraceListResult = z.infer<typeof TraceListResultSchema>;
 
 // 6. Metrics Get
 export const MetricsGetParamsSchema = z.object({
-  category: z.enum(["system", "tool", "agent", "all"]).default("all"),
+  category: z.enum(["system", "tool", "agent", "all"]).default("all").describe("合法值：system | tool | agent | all"),
 });
 export type MetricsGetParams = z.infer<typeof MetricsGetParamsSchema>;
 

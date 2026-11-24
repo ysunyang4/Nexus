@@ -7,7 +7,7 @@ export const JsonRpcRequestSchema = z.object({
   jsonrpc: z.literal("2.0"),
   id: JsonRpcIdSchema,
   method: z.string(),
-  params: z.record(z.unknown()).optional(),
+  params: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type JsonRpcRequest<TParams = Record<string, unknown>> = {
@@ -57,7 +57,7 @@ export type JsonRpcResponse<TResult = unknown> =
 export const JsonRpcNotificationSchema = z.object({
   jsonrpc: z.literal("2.0"),
   method: z.string(),
-  params: z.record(z.unknown()).optional(),
+  params: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type JsonRpcNotification<TParams = Record<string, unknown>> = {

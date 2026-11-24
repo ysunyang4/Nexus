@@ -176,14 +176,24 @@ class _NexusToolProxy:
     def __getattr__(self, name):
         def _invoke(*args, **kwargs):
             tool_name = name
-            if self._provider in ["unity-gamedev", "blender-mcp", "photoshop-mcp"] and not tool_name.startswith("localbridge_") and "_" in tool_name:
+            if self._provider == "unity-gamedev" and not tool_name.startswith("localbridge_") and "_" in tool_name:
                 tool_name = tool_name.replace("_", "-")
             url = "http://127.0.0.1:8787/api/mcp/execute"
             params = {}
             if kwargs:
                 params.update(kwargs)
             if args:
-                params["_args"] = args
+                if len(args) == 1 and isinstance(args[0], dict):
+                    params.update(args[0])
+                else:
+                    params["_args"] = args
+            if self._provider == "blender-mcp":
+                if tool_name == "scene_info":
+                    tool_name = "get_scene_info"
+                elif tool_name in ["run_bpy_script", "execute_code"]:
+                    tool_name = "execute_blender_code"
+                    if "script" in params and "code" not in params:
+                        params["code"] = params["script"]
             payload = json.dumps({
                 "tool": tool_name,
                 "provider": self._provider,
@@ -327,7 +337,7 @@ ${script}
         if (!isSettled && child?.pid) {
           try {
             // Force-kill entire process tree on Windows
-            child_process.exec(`taskkill /F /T /PID ${child.pid}`, { windowsHide: true }, () => {});
+            child_process.spawn("taskkill.exe", ["/F", "/T", "/PID", String(child.pid)], { windowsHide: true, stdio: "ignore" });
           } catch {}
           finish({
             success: false,
@@ -408,10 +418,18 @@ function createToolProxy(provider, toolList = []) {
       if (rawToolName === "tools") return () => toolList;
       if (rawToolName === "help") return () => "Provider '" + provider + "' (" + toolList.length + " tools): " + toolList.slice(0, 25).join(", ");
       let toolName = String(rawToolName);
-      if (["unity-gamedev", "blender-mcp", "photoshop-mcp"].includes(provider) && !toolName.startsWith("localbridge_") && toolName.includes("_")) {
+      if (provider === "unity-gamedev" && !toolName.startsWith("localbridge_") && toolName.includes("_")) {
         toolName = toolName.replace(/_/g, "-");
       }
+      if (provider === "blender-mcp") {
+        if (toolName === "scene_info") toolName = "get_scene_info";
+        else if (toolName === "run_bpy_script" || toolName === "execute_code") {
+          toolName = "execute_blender_code";
+          
+        }
+      }
       return async function(args = {}) {
+        if (provider === "blender-mcp" && args && args.script && !args.code) args.code = args.script;
         return new Promise((resolve, reject) => {
           const payload = JSON.stringify({
             tool: toolName,
@@ -551,7 +569,7 @@ __runUserCode__().catch((err) => {
       const timer = setTimeout(() => {
         if (!isSettled && child?.pid) {
           try {
-            child_process.exec(`taskkill /F /T /PID ${child.pid}`, { windowsHide: true }, () => {});
+            child_process.spawn("taskkill.exe", ["/F", "/T", "/PID", String(child.pid)], { windowsHide: true, stdio: "ignore" });
           } catch {}
           finish({
             success: false,
@@ -595,11 +613,14 @@ __runUserCode__().catch((err) => {
             elapsedMs,
           });
         } else {
+          const rawErr = stderr.trim();
+          const errLines = rawErr.split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith("Node.js v") && !l.startsWith("npm v") && !l.startsWith("at "));
+          const cleanErr = errLines.find(l => /^(Error|TypeError|ReferenceError|SyntaxError|RuntimeError|Exception|ERR|Command failed)/i.test(l)) || errLines[errLines.length - 1] || rawErr || `Script exited with exit code: ${code}`;
           finish({
             success: false,
             stdout: stdout.trim(),
             stderr: stderr.trim(),
-            error: stderr.trim() || `Script exited with exit code: ${code}`,
+            error: cleanErr,
             elapsedMs,
           });
         }

@@ -35,7 +35,10 @@ export type ProcessSummary = z.infer<typeof ProcessSummarySchema>;
 // 1. Process List
 export const ProcessListParamsSchema = z.object({
   projectId: z.string().optional(),
-  ownership: z.union([ProcessOwnershipGradeSchema, z.literal("ALL")]).optional(),
+  ownership: z
+    .union([ProcessOwnershipGradeSchema, z.literal("ALL")])
+    .optional()
+    .describe("Filter processes by ownership grade. One of: OWNED | VERIFIED_DERIVED | PROBABLE | UNOWNED | SYSTEM | FOREIGN | ALL"),
 });
 export type ProcessListParams = z.infer<typeof ProcessListParamsSchema>;
 
@@ -90,7 +93,7 @@ export type ProcessTreeNode = ProcessSummary & {
   children: ProcessTreeNode[];
 };
 
-export const ProcessTreeNodeSchema: z.ZodType<ProcessTreeNode, z.ZodTypeDef, any> = ProcessSummarySchema.extend({
+export const ProcessTreeNodeSchema: z.ZodType<ProcessTreeNode> = ProcessSummarySchema.extend({
   children: z.lazy(() => z.array(ProcessTreeNodeSchema)),
 }) as any;
 

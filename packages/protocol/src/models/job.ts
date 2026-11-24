@@ -1,10 +1,12 @@
 import { z } from "zod";
 
 export const JobStatus = {
+  QUEUED: "QUEUED",
   RUNNING: "RUNNING",
   SUCCESS: "SUCCESS",
   FAILED: "FAILED",
   CANCELLED: "CANCELLED",
+  OUTCOME_UNKNOWN: "OUTCOME_UNKNOWN",
 } as const;
 export type JobStatus = (typeof JobStatus)[keyof typeof JobStatus];
 
@@ -18,5 +20,7 @@ export const JobInfoSchema = z.object({
   endedAt: z.number().optional(),
   exitCode: z.number().optional(),
   error: z.string().optional(),
+  idempotencyKey: z.string().optional(),
+  executionId: z.string().optional(),
 });
 export type JobInfo = z.infer<typeof JobInfoSchema>;

@@ -15,7 +15,7 @@ export const FsSearchParamsSchema = z.object({
   path: z.string().default("."),
   maxResults: z.number().int().positive().max(500).default(100),
   fileExtensions: z.array(z.string()).optional(),
-  type: z.enum(["file", "directory", "all"]).default("all"),
+  type: z.enum(["file", "directory", "all"]).default("all").describe("合法值：file | directory | all"),
 });
 export type FsSearchParams = z.infer<typeof FsSearchParamsSchema>;
 
@@ -81,7 +81,7 @@ export const FileReadStreamResultSchema = z.object({
 export type FileReadStreamResult = z.infer<typeof FileReadStreamResultSchema>;
 
 export const FsBatchOperationSchema = z.object({
-  action: z.enum(["copy", "move", "delete"]),
+  action: z.enum(["copy", "move", "delete"]).describe("合法值：copy | move | delete"),
   sourcePath: z.string(),
   targetPath: z.string().optional(),
   force: z.boolean().default(false),

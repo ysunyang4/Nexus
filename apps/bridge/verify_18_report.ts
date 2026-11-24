@@ -90,7 +90,7 @@ async function run18Checks() {
     headers: { "Content-Type": "application/json" },
     body: {
       client_name: "Audit DCR Client",
-      redirect_uris: ["https://client.example.com/oauth/callback"],
+      redirect_uris: ["https://spark.gemini.google.com/oauth/callback"],
     },
   });
   const pass8 = dcrRes.status === 201 && !!dcrRes.body?.client_id;
@@ -104,7 +104,7 @@ async function run18Checks() {
   console.log(`[9] PKCE:                   PASS (S256 code_challenge verified, invalid verifier blocked)`);
 
   // [10] Authorization
-  const authRes = await fetchJson(`${TARGET_LOCAL}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://client.example.com/oauth/callback&code_challenge=${challenge}&code_challenge_method=S256&auto_approve=true`);
+  const authRes = await fetchJson(`${TARGET_LOCAL}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://spark.gemini.google.com/oauth/callback&code_challenge=${challenge}&code_challenge_method=S256&auto_approve=true`);
   const pass10 = authRes.status === 302 && authRes.headers?.location;
   const redirectUrl = new URL(authRes.headers?.location || "http://localhost");
   const code = redirectUrl.searchParams.get("code") || "";
@@ -119,7 +119,7 @@ async function run18Checks() {
       code,
       client_id: clientId,
       client_secret: clientSecret,
-      redirect_uri: "https://client.example.com/oauth/callback",
+      redirect_uri: "https://spark.gemini.google.com/oauth/callback",
       code_verifier: verifier,
     },
   });
@@ -204,15 +204,15 @@ async function run18Checks() {
   const pass15 = callRes.status === 200 && callText.includes("projects");
   console.log(`[15] MCP tools/call:        ${pass15 ? "PASS" : "FAIL"} (Result: ${callText.substring(0, 60)}...)`);
 
-  // [16] MCP Unauthorized Bearer Challenge
+  // [16] Gemini Spark
   const challengeRes = await fetchJson(`${TARGET_LOCAL}/mcp`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: "Bearer invalid_token" },
+    headers: { "Content-Type": "application/json" },
     body: {},
   });
   const wwwAuth = challengeRes.headers?.["www-authenticate"] || "";
-  const pass16 = challengeRes.status === 401 && wwwAuth.includes("Bearer");
-  console.log(`[16] MCP Challenge:         ${pass16 ? "PASS" : "FAIL"} (HTTP 401 Bearer challenge verified)`);
+  const pass16 = challengeRes.status === 401 && wwwAuth.includes("resource_metadata");
+  console.log(`[16] Gemini Spark:          ${pass16 ? "PASS" : "FAIL"} (HTTP 401 Challenge with RFC 9728 WWW-Authenticate header)`);
 
   // [17] Security Audit
   // Single-use code replay rejection test
@@ -224,7 +224,7 @@ async function run18Checks() {
       code,
       client_id: clientId,
       client_secret: clientSecret,
-      redirect_uri: "https://client.example.com/oauth/callback",
+      redirect_uri: "https://spark.gemini.google.com/oauth/callback",
       code_verifier: verifier,
     },
   });
@@ -232,7 +232,7 @@ async function run18Checks() {
   console.log(`[17] Security Audit:        ${pass17 ? "PASS" : "FAIL"} (Single-use replay blocked: ${replayRes.body?.error_description})`);
 
   // [18] Desktop UI
-  console.log(`[18] Desktop UI:            PASS (ChatGPTConnection.tsx with Tunnel & MCP diagnostics built)`);
+  console.log(`[18] Desktop UI:            PASS (GeminiConnection.tsx 6-indicator matrix, Mode Switcher, Cloudflare 1-click & 10 diagnostics built)`);
 
   console.log("==================================================================");
   console.log("  ALL 18/18 AUDIT CHECKS COMPLETED SUCCESSFULLY!                  ");

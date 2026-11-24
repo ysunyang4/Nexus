@@ -32,7 +32,7 @@ export const SessionStartResultSchema = z
     createdAt: z.number(),
     checkpointCount: z.number().optional(),
     eventCount: z.number().optional(),
-    session: z.record(z.unknown()).optional(),
+    session: z.record(z.string(), z.unknown()).optional(),
   })
   .passthrough();
 
@@ -40,7 +40,9 @@ export const SessionStartResultSchema = z
 export const SessionListParamsSchema = z
   .object({
     projectId: z.string().min(1, "projectId is required"),
-    state: WorkflowSessionStateSchema.optional(),
+    state: WorkflowSessionStateSchema
+      .optional()
+      .describe("Filter sessions by state. One of: active | completed | abandoned"),
     limit: z.number().int().positive().max(100).default(20).optional(),
     offset: z.number().int().nonnegative().optional(),
     cursor: z.string().optional(),
@@ -115,8 +117,8 @@ export const SessionStatusResultSchema = z
         })
       )
       .optional(),
-    activeSession: z.record(z.unknown()).nullable().optional(),
-    session: z.record(z.unknown()).nullable().optional(),
+    activeSession: z.record(z.string(), z.unknown()).nullable().optional(),
+    session: z.record(z.string(), z.unknown()).nullable().optional(),
     workspace: z
       .object({
         mode: z.enum(["direct", "managed-worktree", "worktree", "primary"]),
@@ -174,7 +176,7 @@ export const WorkflowSessionEventSchema = z
     refId: z.string().optional(),
     target: z.string().optional(),
     status: z.string().optional(),
-    summary: z.record(z.unknown()).optional(),
+    summary: z.record(z.string(), z.unknown()).optional(),
     createdAt: z.number(),
   })
   .passthrough();
@@ -213,7 +215,7 @@ export const SessionCheckpointResultSchema = z
     checkpointId: z.string(),
     sessionId: z.string(),
     createdAt: z.number(),
-    checkpoint: z.record(z.unknown()).optional(),
+    checkpoint: z.record(z.string(), z.unknown()).optional(),
   })
   .passthrough();
 
@@ -274,7 +276,7 @@ export const SessionHandoffResultSchema = z
       })
       .passthrough()
       .optional(),
-    currentStatus: z.record(z.unknown()).optional(),
+    currentStatus: z.record(z.string(), z.unknown()).optional(),
     files: z
       .object({
         touchedFiles: z.array(z.string()),
@@ -348,8 +350,8 @@ export const SessionHandoffResultSchema = z
         createdAt: z.number().optional(),
       })
       .passthrough(),
-    recentCheckpoints: z.array(z.record(z.unknown())).optional(),
-    recentEvents: z.array(z.record(z.unknown())).optional(),
+    recentCheckpoints: z.array(z.record(z.string(), z.unknown())).optional(),
+    recentEvents: z.array(z.record(z.string(), z.unknown())).optional(),
     recentErrors: z
       .object({
         recentFailedJobs: z.array(z.string()),
@@ -358,7 +360,7 @@ export const SessionHandoffResultSchema = z
       .passthrough(),
     warnings: z.array(z.string()),
     continuationPrompt: z.string().optional(),
-    handoff: z.record(z.unknown()).optional(),
+    handoff: z.record(z.string(), z.unknown()).optional(),
   })
   .passthrough();
 
@@ -366,7 +368,7 @@ export const SessionHandoffResultSchema = z
 export const SessionFinishParamsSchema = z
   .object({
     sessionId: z.string().min(1, "sessionId is required"),
-    outcome: WorkflowSessionOutcomeSchema.optional().default("completed"),
+    outcome: WorkflowSessionOutcomeSchema.optional().default("completed").describe("合法值：completed | abandoned"),
     finalNote: z.string().max(1000, "finalNote must be at most 1000 characters").optional(),
     reason: z.string().max(1000).optional(),
     notes: z.string().max(1000).optional(),
@@ -381,6 +383,6 @@ export const SessionFinishResultSchema = z
     finishedAt: z.number(),
     finishReason: z.string(),
     finalNote: z.string().optional(),
-    session: z.record(z.unknown()).optional(),
+    session: z.record(z.string(), z.unknown()).optional(),
   })
   .passthrough();

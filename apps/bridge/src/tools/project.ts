@@ -6,7 +6,7 @@ export function registerProjectTools(server: McpServer, nexusClient: NexusClient
   // 1. nexus_project_list
   server.tool(
     "nexus_project_list",
-    "列出当前 Nexus LocalBridge 中所有已登记并受控的本地项目，包含项目 ID、名称及路径信息",
+    "List all registered and managed local projects in Nexus LocalBridge with IDs, names, and path configurations.",
     {},
     async () => {
       try {
@@ -43,9 +43,9 @@ export function registerProjectTools(server: McpServer, nexusClient: NexusClient
   // 2. nexus_project_info
   server.tool(
     "nexus_project_info",
-    "获取指定项目的详细配置信息（支持输入项目名称如 'Myweb' 或项目 ID）",
+    "Retrieve detailed configuration and state for a specified project by project name or ID.",
     {
-      projectId: z.string().describe("项目名称或项目 ID，例如 'Myweb' 或 'proj_367f3b4a...'"),
+      projectId: z.string().describe("Project name or project ID, e.g. 'Myweb' or 'proj_367f3b4a...'"),
     },
     async ({ projectId }) => {
       try {

@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const BRIDGE_URL = "http://127.0.0.1:8787";
-const VALID_TOKEN = process.env.NEXUS_BRIDGE_TOKEN || "test-nexus-bridge-token";
+const VALID_TOKEN = process.env.NEXUS_BRIDGE_TOKEN || "gemini-spark-nexus-secure-token-2026";
 const INVALID_TOKEN = "wrong-token-12345";
 
 interface TestResult {
@@ -129,7 +129,7 @@ async function main() {
         protocolVersion: "2024-11-05",
         capabilities: {},
         clientInfo: {
-          name: "nexus-mcp-client",
+          name: "gemini-spark-custom-app",
           version: "1.0.0",
         },
       },

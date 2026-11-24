@@ -1,3 +1,4 @@
+import { isBlenderSocketOpen, sendBlenderSocketCommand } from "./blender-socket-fallback.js";
 /**
  * Nexus Generic Provider Runtime & Unified Provider Registry
  * 
@@ -62,7 +63,6 @@ export class ProviderRuntime {
   private connectionManager: MCPConnectionManager;
   private batchExecutor: MCPBatchExecutor;
   private initialized = false;
-  private deletedProviders: Set<string> = new Set();
 
   private constructor() {
     this.catalog = DynamicCatalog.getInstance();
@@ -92,7 +92,7 @@ export class ProviderRuntime {
     this.lastDefaultInitTime = now;
 
     const unityHandle = this.providers.get("unity-gamedev");
-    if (!unityHandle && !this.deletedProviders.has("unity-gamedev")) {
+    if (!unityHandle) {
       // 1. Register Unity GameDev MCP (Port 20705, Streamable HTTP)
       const unityConfig: ProviderConfig = {
         providerId: "unity-gamedev",
@@ -114,6 +114,42 @@ export class ProviderRuntime {
       });
     } else if (unityHandle.toolCount === 0 || unityHandle.status !== "READY") {
       await this.connectAndDiscover(unityHandle, true).catch(() => {});
+    }
+
+    // 2. Register all Managed MCP Services (Blender, Photoshop, AutoCAD, Windows-MCP, etc.)
+    try {
+      const { ManagedProcessManager } = await import("./managed-process-manager.js");
+      const managedMgr = ManagedProcessManager.getInstance();
+      const services = managedMgr.listServices();
+      for (const s of services) {
+        if (!this.providers.has(s.config.id)) {
+          const cfg: ProviderConfig = {
+            providerId: s.config.id,
+            displayName: s.config.name,
+            endpoint: s.config.endpoint,
+            transport: "streamableHttp",
+            authentication: { type: "none" },
+            policy: {
+              defaultPermission: "L2",
+              maxConsecutiveFailures: 3,
+              timeoutMs: 15000,
+              allowLocalLoopback: true,
+            },
+            enabled: true,
+          };
+          if (s.config.autoStart && s.status !== "RUNNING") {
+            void managedMgr.startService(s.config.id).catch(() => {});
+          }
+          await this.registerProvider(cfg).catch(() => {});
+        } else {
+          const handle = this.providers.get(s.config.id);
+          if (handle && (handle.toolCount === 0 || handle.status !== "READY")) {
+            await this.connectAndDiscover(handle, true).catch(() => {});
+          }
+        }
+      }
+    } catch (mErr) {
+      console.warn("[ProviderRuntime] Managed provider auto-enrollment note:", mErr);
     }
   }
 
@@ -181,7 +217,40 @@ export class ProviderRuntime {
    * Auto-spawn downstream server if configured and offline (e.g. Unity GameDev MCP 20705)
    */
   private async ensureDownstreamServer(providerId: string): Promise<void> {
-    if (providerId !== "unity-gamedev") return;
+    if (providerId !== "unity-gamedev") {
+      // Generic Managed MCP process supervisor
+      try {
+        const { ManagedProcessManager } = await import("./managed-process-manager.js");
+        const managedMgr = ManagedProcessManager.getInstance();
+        const service = managedMgr.getService(providerId);
+        if (service) {
+          try {
+            const probe = await fetch(service.config.endpoint, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json, text/event-stream" },
+              body: JSON.stringify({ jsonrpc: "2.0", id: 0, method: "ping" }),
+              signal: AbortSignal.timeout(800),
+            });
+            if (probe.status < 500) return;
+          } catch {}
+
+          await managedMgr.startService(providerId).catch(() => {});
+          for (let i = 0; i < 8; i++) {
+            await new Promise((r) => setTimeout(r, 400));
+            try {
+              const res = await fetch(service.config.endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Accept: "application/json, text/event-stream" },
+                body: JSON.stringify({ jsonrpc: "2.0", id: 0, method: "ping" }),
+                signal: AbortSignal.timeout(600),
+              });
+              if (res.status < 500) return;
+            } catch {}
+          }
+        }
+      } catch {}
+      return;
+    }
 
     // Quick probe
     try {
@@ -378,7 +447,6 @@ export class ProviderRuntime {
    * Remove a provider and atomically retract its tools
    */
   public removeProvider(providerId: string): boolean {
-    this.deletedProviders.add(providerId);
     const handle = this.providers.get(providerId);
     if (!handle) return false;
     if (handle.reconnectTimer) clearTimeout(handle.reconnectTimer);
@@ -444,8 +512,13 @@ export class ProviderRuntime {
     );
 
     if (!freshness.fresh || !freshness.tool) {
-      // On-demand refresh for dynamic providers (e.g. Unity MCP became online)
+      // On-demand refresh for dynamic providers (e.g. Unity MCP or Blender MCP became online)
       await this.refreshProvider("unity-gamedev").catch(() => {});
+      await this.refreshProvider("blender-mcp").catch(() => {});
+      if (typeof toolNameOrQualified === "string" && toolNameOrQualified.includes("::")) {
+        const [targetP] = toolNameOrQualified.split("::");
+        await this.refreshProvider(targetP).catch(() => {});
+      }
       freshness = this.catalog.validateFreshness(
         toolNameOrQualified,
         options?.expectedCatalogVersion,
@@ -479,6 +552,38 @@ export class ProviderRuntime {
 
     // 2. Provider Availability Check
     if (!handle || handle.status !== "READY") {
+      await this.ensureDownstreamServer(tool.providerId).catch(() => {});
+      if (handle) {
+        handle.client.resetCircuit();
+        await this.connectAndDiscover(handle, true).catch(() => {});
+      }
+    }
+
+    if (!handle || handle.status !== "READY") {
+      // Direct Blender TCP socket fallback if Blender is running on port 9876
+      if (tool.providerId === "blender-mcp" || tool.name.includes("blender") || tool.name.includes("scene_info")) {
+        try {
+          const isOpen = await isBlenderSocketOpen(9876);
+          if (isOpen) {
+            let cmdType = "get_scene_info";
+            let cmdParams: any = {};
+            if (tool.name === "execute_blender_code" || tool.name === "run_bpy_script") {
+              cmdType = "execute_code";
+              cmdParams = { code: args.code || args.script || args.bpy_script || "" };
+            }
+            const socketRes = await sendBlenderSocketCommand(cmdType, cmdParams, 9876);
+            return {
+              content: [{ type: "text", text: typeof socketRes === "string" ? socketRes : JSON.stringify(socketRes, null, 2) }],
+              isError: false,
+              catalogVersion: currentVersion,
+              durationMs: 15,
+            };
+          }
+        } catch (sErr: any) {
+          console.warn("[ProviderRuntime] Blender socket fallback error:", sErr.message);
+        }
+      }
+
       return {
         content: [
           {

@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <title>Nexus Bridge Pro</title>
+  <style>
+    :root {
+      /* Claude Signature Warm Light Theme */
+      --bg-base: #FAF9F5;
+      --bg-card: #FFFFFF;
+      --bg-card-hover: #F4F2EC;
+      --border-subtle: #E8E5DE;
+      --border-hover: #D6D2C4;
+      --text-main: #1F1E1D;
+      --text-sub: #5E5B54;
+      --text-muted: #8C887E;
+      
+      --accent: #CC5A36; /* Claude Terracotta */
+      --accent-bg: #FBF0EB;
+      --accent-border: #F3D5C8;
+      
+      --status-online-text: #166534;
+      --status-online-bg: #F0FDF4;
+      --status-online-border: #BBF7D0;
+      --status-online-dot: #16A34A;
+      
+      --status-standby-text: #9A3412;
+      --status-standby-bg: #FFF7ED;
+      --status-standby-border: #FED7AA;
+      --status-standby-dot: #EA580C;
+      
+      --status-offline-text: #991B1B;
+      --status-offline-bg: #FEF2F2;
+      --status-offline-border: #FECACA;
+      --status-offline-dot: #DC2626;
+
+      --card-shadow: 0 1px 3px rgba(31, 30, 29, 0.05), 0 1px 2px rgba(31, 30, 29, 0.03);
+      --card-shadow-hover: 0 4px 12px rgba(31, 30, 29, 0.08);
+    }
+
+    [data-theme="dark"] {
+      /* Claude Signature Warm Dark Theme (Espresso) */
+      --bg-base: #1F1E1D;
+      --bg-card: #282724;
+      --bg-card-hover: #32302C;
+      --border-subtle: #383632;
+      --border-hover: #4E4B45;
+      --text-main: #ECEBE4;
+      --text-sub: #A8A59D;
+      --text-muted: #7A7770;
+      
+      --accent: #DA7756;
+      --accent-bg: rgba(218, 119, 86, 0.16);
+      --accent-border: rgba(218, 119, 86, 0.32);
+      
+      --status-online-text: #4ADE80;
+      --status-online-bg: rgba(34, 197, 94, 0.12);
+      --status-online-border: rgba(34, 197, 94, 0.28);
+      --status-online-dot: #22C55E;
+      
+      --status-standby-text: #FB923C;
+      --status-standby-bg: rgba(249, 115, 22, 0.14);
+      --status-standby-border: rgba(249, 115, 22, 0.28);
+      --status-standby-dot: #F97316;
+      
+      --status-offline-text: #F87171;
+      --status-offline-bg: rgba(239, 68, 68, 0.14);
+      --status-offline-border: rgba(239, 68, 68, 0.28);
+      --status-offline-dot: #EF4444;
+
+      --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      --card-shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 380px;
+      margin: 0;
+      padding: 0;
+      background: var(--bg-base);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      user-select: none;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .app-container {
+      padding: 16px;
+      background: var(--bg-base);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: auto;
+    }
+
+    /* 顶栏 Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .brand-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title {
+      font-size: 14.5px;
+      font-weight: 650;
+      color: var(--text-main);
+      letter-spacing: -0.2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-tag {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      padding: 1px 5px;
+      border-radius: 5px;
+      letter-spacing: 0.3px;
+    }
+
+    .brand-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-theme {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-sub);
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.15s ease;
+      box-shadow: var(--card-shadow);
+    }
+
+    .btn-theme:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-hover);
+      color: var(--text-main);
+    }
+
+    /* 状态连接胶囊 */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      box-shadow: var(--card-shadow);
+    }
+
+    .status-pill-online {
+      background: var(--status-online-bg);
+      color: var(--status-online-text);
+      border-color: var(--status-online-border);
+    }
+
+    .status-pill-offline {
+      background: var(--status-offline-bg);
+      color: var(--status-offline-text);
+      border-color: var(--status-offline-border);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .pulse {
+      animation: pulseAnimation 2s infinite;
+    }
+
+    @keyframes pulseAnimation {
+      0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.5); }
+      70% { box-shadow: 0 0 0 5px rgba(22, 163, 74, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+    }
+
+    /* 调度授权卡片 */
+    .gateway-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 10px 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      box-shadow: var(--card-shadow);
+      transition: all 0.15s ease;
+    }
+
+    .gateway-label {
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+
+    .gateway-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .tag-open {
+      background: var(--accent-bg);
+      color: var(--accent);
+      border: 1px solid var(--accent-border);
+    }
+
+    .tag-closed {
+      background: var(--status-offline-bg);
+      color: var(--status-offline-text);
+      border: 1px solid var(--status-offline-border);
+    }
+
+    /* 算力标签页 Section Header */
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+    }
+
+    .section-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-title {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      letter-spacing: -0.1px;
+    }
+
+    .count-chip {
+      background: var(--border-subtle);
+      color: var(--text-sub);
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 9999px;
+    }
+
+    .btn-refresh {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-sub);
+      border-radius: 8px;
+      padding: 4px 9px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: var(--card-shadow);
+      transition: all 0.15s ease;
+    }
+
+    .btn-refresh:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-hover);
+      color: var(--text-main);
+    }
+
+    .refresh-icon {
+      transition: transform 0.4s ease;
+      display: inline-block;
+      font-size: 11px;
+    }
+
+    .spinning {
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* 节点列表容器 */
+    .node-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* 算力节点卡片 - Claude 暖调卡片 */
+    .node-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 11px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      box-shadow: var(--card-shadow);
+      text-decoration: none;
+    }
+
+    .node-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-hover);
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-1px);
+    }
+
+    .node-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .brand-icon-wrap {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* 品牌图标底色 (Claude 风格温和色块) */
+    .icon-deepseek {
+      background: #EFF6FF;
+      color: #2563EB;
+      border-color: #DBEAFE;
+    }
+    [data-theme="dark"] .icon-deepseek {
+      background: rgba(37, 99, 235, 0.18);
+      color: #60A5FA;
+      border-color: rgba(37, 99, 235, 0.3);
+    }
+
+    .icon-chatgpt {
+      background: #ECFDF5;
+      color: #059669;
+      border-color: #D1FAE5;
+    }
+    [data-theme="dark"] .icon-chatgpt {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34D399;
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .icon-claude {
+      background: #FDF2E9;
+      color: #CC5A36;
+      border-color: #FAD7C0;
+    }
+    [data-theme="dark"] .icon-claude {
+      background: rgba(218, 119, 86, 0.2);
+      color: #DA7756;
+      border-color: rgba(218, 119, 86, 0.35);
+    }
+
+    .icon-kimi {
+      background: #F5F3FF;
+      color: #7C3AED;
+      border-color: #DDD6FE;
+    }
+    [data-theme="dark"] .icon-kimi {
+      background: rgba(124, 58, 237, 0.18);
+      color: #A78BFA;
+      border-color: rgba(124, 58, 237, 0.3);
+    }
+
+    .icon-doubao {
+      background: #ECFEFF;
+      color: #0891B2;
+      border-color: #CFFAFE;
+    }
+    [data-theme="dark"] .icon-doubao {
+      background: rgba(8, 145, 178, 0.18);
+      color: #22D3EE;
+      border-color: rgba(8, 145, 178, 0.3);
+    }
+
+    .icon-duck {
+      background: #FFF7ED;
+      color: #EA580C;
+      border-color: #FFEDD5;
+    }
+    [data-theme="dark"] .icon-duck {
+      background: rgba(234, 88, 12, 0.18);
+      color: #FB923C;
+      border-color: rgba(234, 88, 12, 0.3);
+    }
+
+    .node-text-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow: hidden;
+    }
+
+    .node-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .jump-icon {
+      font-size: 11px;
+      color: var(--text-muted);
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .node-card:hover .jump-icon {
+      opacity: 1;
+      color: var(--accent);
+    }
+
+    .node-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .node-status-pill {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      flex-shrink: 0;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .status-online {
+      background: var(--status-online-bg);
+      color: var(--status-online-text);
+      border-color: var(--status-online-border);
+    }
+
+    .status-standby {
+      background: var(--status-standby-bg);
+      color: var(--status-standby-text);
+      border-color: var(--status-standby-border);
+      cursor: pointer;
+    }
+
+    .status-standby:hover {
+      filter: brightness(0.96);
+    }
+
+    .status-unauthorized {
+      background: var(--status-offline-bg);
+      color: var(--status-offline-text);
+      border-color: var(--status-offline-border);
+    }
+
+    .empty-state {
+      padding: 24px 16px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+      background: var(--bg-card);
+      border: 1px dashed var(--border-subtle);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .empty-action-hint {
+      color: var(--text-sub);
+      font-size: 11px;
+    }
+
+    /* 底部安全护航 Footer */
+    .footer {
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .security-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-sub);
+      margin-bottom: 2px;
+      font-weight: 500;
+    }
+
+    .shield-icon {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- 头部品牌栏 -->
+    <div class="header">
+      <div class="brand-wrap">
+        <div class="avatar-box">
+          <img class="avatar-img" src="icons/icon-64.png" alt="Nexus">
+        </div>
+        <div class="brand-info">
+          <div class="brand-title">
+            Nexus Bridge
+            <span class="brand-tag">PRO</span>
+          </div>
+          <div class="brand-desc" id="brandVersion">v1.3.5 · 网页多模型算力中枢</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btnTheme" class="btn-theme" title="切换 Claude 暖浅 / 暖深模式">🌙</button>
+        <div id="connBadge" class="status-pill status-pill-offline" title="点击重新探测与 Nexus 的连接">
+          <span class="status-dot"></span>
+          <span id="connText">连接中...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 桌面调度授权状态 -->
+    <div class="gateway-card">
+      <div class="gateway-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        Nexus 桌面调度授权
+      </div>
+      <span id="gatewayBadge" class="gateway-tag tag-open">已开放 (Claude / AI 可调度)</span>
+    </div>
+
+    <!-- 算力标签页列表标题 -->
+    <div class="section-head">
+      <div class="section-title-wrap">
+        <span class="section-title">活跃 AI 算力标签页</span>
+        <span id="nodeCount" class="count-chip">0</span>
+      </div>
+      <button id="btnScan" class="btn-refresh" title="重新扫描 Edge 浏览器中的 AI 标签页">
+        <span class="refresh-icon">🔄</span>
+        <span>刷新检测</span>
+      </button>
+    </div>
+
+    <!-- 算力节点容器 (自动贴合高度，无底部死黑空洞) -->
+    <div id="nodeList" class="node-list">
+      <div class="empty-state">
+        <div>正在实时扫描浏览器算力标签页...</div>
+      </div>
+    </div>
+
+    <!-- 底部安全背书 -->
+    <div class="footer">
+      <div class="security-badge">
+        <svg class="shield-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        物理级隔离 · 0 键鼠抢占 · 0 视觉 Token
+      </div>
+      <div>由 Nexus LocalBridge 本地引擎安全托管</div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

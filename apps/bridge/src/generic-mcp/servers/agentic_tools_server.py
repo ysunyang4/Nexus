@@ -13,7 +13,7 @@ mcp = FastMCP("Agentic-Tools")
 _TASKS = []
 _MEMORIES = {}
 
-@mcp.tool()
+@mcp.tool(readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False)
 def create_task(title: str, description: str = "", priority: str = "medium") -> str:
     """Create a new agent task with title, description and priority (low, medium, high)."""
     task_id = f"task_{int(time.time() * 1000)}"
@@ -28,7 +28,7 @@ def create_task(title: str, description: str = "", priority: str = "medium") -> 
     _TASKS.append(item)
     return json.dumps(item, ensure_ascii=False, indent=2)
 
-@mcp.tool()
+@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=False)
 def list_tasks(status: str = "all") -> str:
     """List agent tasks, optionally filtered by status (all, pending, completed)."""
     if status == "all":
@@ -37,7 +37,7 @@ def list_tasks(status: str = "all") -> str:
         res = [t for t in _TASKS if t.get("status") == status]
     return json.dumps({"count": len(res), "tasks": res}, ensure_ascii=False, indent=2)
 
-@mcp.tool()
+@mcp.tool(readOnlyHint=False, destructiveHint=True, idempotentHint=True, openWorldHint=False)
 def update_task_status(task_id: str, status: str) -> str:
     """Update task lifecycle status (pending, in_progress, completed, failed)."""
     for t in _TASKS:
@@ -47,7 +47,7 @@ def update_task_status(task_id: str, status: str) -> str:
             return json.dumps({"success": True, "task": t}, ensure_ascii=False)
     return json.dumps({"success": False, "error": f"Task '{task_id}' not found"}, ensure_ascii=False)
 
-@mcp.tool()
+@mcp.tool(readOnlyHint=False, destructiveHint=True, idempotentHint=True, openWorldHint=False)
 def save_agent_memory(key: str, content: str, tags: str = "") -> str:
     """Save an agent memory snippet under a unique key with optional comma-separated tags."""
     tag_list = [t.strip() for t in tags.split(",") if t.strip()] if tags else []
@@ -59,7 +59,7 @@ def save_agent_memory(key: str, content: str, tags: str = "") -> str:
     }
     return json.dumps({"success": True, "key": key, "tags": tag_list}, ensure_ascii=False)
 
-@mcp.tool()
+@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=False)
 def search_agent_memories(query: str) -> str:
     """Search stored agent memories matching keywords in key or content."""
     q = query.lower()
@@ -69,7 +69,7 @@ def search_agent_memories(query: str) -> str:
             matches.append(v)
     return json.dumps({"count": len(matches), "matches": matches}, ensure_ascii=False, indent=2)
 
-@mcp.tool()
+@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=False)
 def get_project_context(project_name: str = "default") -> str:
     """Get active workspace and agentic context summary."""
     return json.dumps({

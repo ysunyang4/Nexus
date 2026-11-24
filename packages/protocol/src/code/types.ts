@@ -56,6 +56,9 @@ export interface DocumentSymbolItem {
 export interface DocumentSymbolsResult {
   symbols: DocumentSymbolItem[];
   truncated: boolean;
+  totalCount?: number;
+  returnedCount?: number;
+  nextCursor?: string;
 }
 
 export interface WorkspaceSymbolItem {
@@ -69,6 +72,9 @@ export interface WorkspaceSymbolItem {
 export interface WorkspaceSymbolsResult {
   symbols: WorkspaceSymbolItem[];
   truncated: boolean;
+  totalCount?: number;
+  returnedCount?: number;
+  nextCursor?: string;
 }
 
 export interface DefinitionItem {

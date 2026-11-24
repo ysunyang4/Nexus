@@ -150,9 +150,7 @@ export class ManagedProcessManager {
   private childProcesses: Map<string, child_process.ChildProcess> = new Map();
   private gateways: Map<string, NativeStdioGateway> = new Map();
   private configFilePath: string;
-  private deletedServicesFilePath: string;
   private nexusDataDir: string;
-  private deletedServiceIds: Set<string> = new Set();
 
   private constructor() {
     const localAppData =
@@ -164,17 +162,6 @@ export class ManagedProcessManager {
     }
     this.nexusDataDir = nexusDataDir;
     this.configFilePath = path.join(nexusDataDir, "managed-mcp-services.json");
-    this.deletedServicesFilePath = path.join(nexusDataDir, "deleted-managed-services.json");
-
-    if (fs.existsSync(this.deletedServicesFilePath)) {
-      try {
-        const raw = fs.readFileSync(this.deletedServicesFilePath, "utf8");
-        const list = JSON.parse(raw);
-        if (Array.isArray(list)) {
-          this.deletedServiceIds = new Set(list);
-        }
-      } catch {}
-    }
 
     this.deployServerScripts();
     this.initDefaultPresets();
@@ -199,6 +186,7 @@ export class ManagedProcessManager {
     ];
 
     const scriptFiles = [
+      "blender_server.py",
       "crawl4ai_server.py",
       "wikipedia_server.py",
       "playwright_server.py",
@@ -242,6 +230,7 @@ export class ManagedProcessManager {
 
   private repairServiceConfig(config: ManagedMcpConfig): ManagedMcpConfig {
     const isWindows = process.platform === "win32";
+    const blenderPath = this.getServerScriptPath("blender_server.py");
     const crawlPath = this.getServerScriptPath("crawl4ai_server.py");
     const wikiPath = this.getServerScriptPath("wikipedia_server.py");
     const playwrightPath = this.getServerScriptPath("playwright_server.py");
@@ -258,12 +247,12 @@ export class ManagedProcessManager {
           "--with",
           "mcp-for-blender",
           "python",
-          "-c",
-          "import os; os.environ['BLENDER_PORT']=os.environ.get('BLENDER_PORT', '9876'); from blender_mcp.server import mcp; mcp.settings.host='127.0.0.1'; mcp.settings.port=int(os.environ.get('MCP_PORT', '9099')); mcp.run(transport='streamable-http')",
+          blenderPath,
         ];
-        config.rawCommand = 'uv run --with mcp-for-blender python -c "import os; os.environ[\'BLENDER_PORT\']=os.environ.get(\'BLENDER_PORT\', \'9876\'); from blender_mcp.server import mcp; mcp.settings.host=\'127.0.0.1\'; mcp.settings.port=int(os.environ.get(\'MCP_PORT\', \'9099\')); mcp.run(transport=\'streamable-http\')"';
+        config.rawCommand = `uv run --with mcp-for-blender python "${blenderPath}"`;
         config.port = 9099;
         config.endpoint = "http://127.0.0.1:9099/mcp";
+        config.autoStart = true;
         break;
 
       case "photoshop-mcp":
@@ -436,9 +425,6 @@ export class ManagedProcessManager {
     ];
 
     for (const id of rawIds) {
-      if (this.deletedServiceIds.has(id)) {
-        continue;
-      }
       const initialConfig: ManagedMcpConfig = {
         id,
         name: id,
@@ -537,17 +523,27 @@ export class ManagedProcessManager {
       return { success: true };
     }
 
-    // Ensure port is free before starting on Windows
-    if (process.platform === "win32") {
+        // Ensure port is free before starting on Windows safely without shell-outs
+    if (process.platform === "win32" && typeof service.config.port === "number") {
       try {
-        const netstatOut = child_process.execSync(`netstat -ano | findstr :${service.config.port}`, { encoding: "utf8" });
-        const lines = netstatOut.split(/\r?\n/).filter((l) => l.includes("LISTENING"));
-        for (const line of lines) {
-          const parts = line.trim().split(/\s+/);
-          const pidStr = parts[parts.length - 1];
-          const killPid = parseInt(pidStr, 10);
-          if (killPid && killPid !== process.pid) {
-            child_process.execSync(`taskkill /pid ${killPid} /T /F`, { stdio: "ignore" });
+        const portStr = `:${service.config.port}`;
+        const netstatResult = child_process.spawnSync("netstat.exe", ["-ano"], {
+          encoding: "utf8",
+          stdio: ["ignore", "pipe", "ignore"],
+          timeout: 4000,
+        });
+        if (netstatResult.stdout) {
+          const lines = netstatResult.stdout.split(/\r?\n/).filter((l) => l.includes("LISTENING") && l.includes(portStr));
+          for (const line of lines) {
+            const parts = line.trim().split(/\s+/);
+            const pidStr = parts[parts.length - 1];
+            const killPid = parseInt(pidStr, 10);
+            if (killPid && killPid > 0 && killPid !== process.pid) {
+              child_process.spawnSync("taskkill.exe", ["/pid", String(killPid), "/T", "/F"], {
+                stdio: "ignore",
+                timeout: 3000,
+              });
+            }
           }
         }
         await new Promise((r) => setTimeout(r, 400));
@@ -570,6 +566,7 @@ export class ManagedProcessManager {
       path.join(process.env.LOCALAPPDATA || "", "uv"),
       path.join(process.env.USERPROFILE || "", ".cargo", "bin"),
       path.join(process.env.USERPROFILE || "", ".local", "bin"),
+      "E:\\workspace\\release\\verify_install\\resources\\runtime",
     ];
     let resolvedPath = process.env.PATH || process.env.Path || "";
     for (const d of [nodeDir, ...uvCandidateDirs]) {
@@ -837,25 +834,32 @@ export class ManagedProcessManager {
     if (pid) {
       this.appendLog(id, `[Nexus] Terminating process tree for PID ${pid}...`);
       try {
-        if (process.platform === "win32") {
-          child_process.execSync(`taskkill /pid ${pid} /T /F`, { stdio: "ignore" });
+                if (process.platform === "win32") {
+          child_process.spawnSync("taskkill.exe", ["/pid", String(pid), "/T", "/F"], { stdio: "ignore", timeout: 3000 });
         } else {
           child?.kill("SIGKILL");
         }
       } catch {}
     }
 
-    // 3. Ensure port is completely free on Windows
-    if (process.platform === "win32") {
+    // 3. Ensure port is completely free on Windows safely without shell-outs
+    if (process.platform === "win32" && typeof service.config.port === "number") {
       try {
-        const netstatOut = child_process.execSync(`netstat -ano | findstr :${service.config.port}`, { encoding: "utf8" });
-        const lines = netstatOut.split(/\r?\n/).filter((l) => l.includes("LISTENING"));
-        for (const line of lines) {
-          const parts = line.trim().split(/\s+/);
-          const pidStr = parts[parts.length - 1];
-          const killPidNum = parseInt(pidStr, 10);
-          if (killPidNum && killPidNum !== process.pid) {
-            child_process.execSync(`taskkill /pid ${killPidNum} /T /F`, { stdio: "ignore" });
+        const portStr = `:${service.config.port}`;
+        const netstatResult = child_process.spawnSync("netstat.exe", ["-ano"], {
+          encoding: "utf8",
+          stdio: ["ignore", "pipe", "ignore"],
+          timeout: 4000,
+        });
+        if (netstatResult.stdout) {
+          const lines = netstatResult.stdout.split(/\r?\n/).filter((l) => l.includes("LISTENING") && l.includes(portStr));
+          for (const line of lines) {
+            const parts = line.trim().split(/\s+/);
+            const pidStr = parts[parts.length - 1];
+            const killPidNum = parseInt(pidStr, 10);
+            if (killPidNum && killPidNum > 0 && killPidNum !== process.pid) {
+              child_process.spawnSync("taskkill.exe", ["/pid", String(killPidNum), "/T", "/F"], { stdio: "ignore", timeout: 3000 });
+            }
           }
         }
       } catch {}
@@ -943,16 +947,11 @@ export class ManagedProcessManager {
   }
 
   public deleteCustomService(id: string): { success: boolean; error?: string } {
+    if (id === "blender-mcp") {
+      return { success: false, error: "Cannot delete built-in preset service" };
+    }
     this.stopService(id);
     this.services.delete(id);
-    this.deletedServiceIds.add(id);
-    try {
-      fs.writeFileSync(
-        this.deletedServicesFilePath,
-        JSON.stringify(Array.from(this.deletedServiceIds), null, 2),
-        "utf8"
-      );
-    } catch {}
     this.persistConfigs();
     return { success: true };
   }

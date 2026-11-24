@@ -60,7 +60,7 @@ export const DurableActionSchema = z.object({
   category: z.string().optional(),
   precondition: z.any().optional(),
   executionState: z.string().optional(),
-  params: z.record(z.any()).default({}),
+  params: z.record(z.string(), z.any()).default({}),
   status: DurableActionStatusSchema.default("PREPARED"),
   preparedAt: z.number(),
   startedAt: z.number().optional(),
@@ -147,7 +147,7 @@ export const DurableComputerStateSchema = z.object({
 export type DurableComputerState = z.infer<typeof DurableComputerStateSchema>;
 
 export const DurableContextStateSchema = z.object({
-  criticalContext: z.record(z.any()).default({}),
+  criticalContext: z.record(z.string(), z.any()).default({}),
   summaryContext: z.string().default(""),
   executionHistory: z.array(z.any()).default([]),
   failureHistory: z.array(z.any()).default([]),
@@ -212,13 +212,13 @@ export const AgentCheckpointSchema = z.object({
     failureReason: z.string().optional(),
     isSafeToResume: z.boolean().default(true),
     lastVerifiedAt: z.number().optional(),
-    checkpointTrigger: z.enum(["manual", "periodic", "pre_risky", "post_verification", "on_failure", "pre_attempt"]).default("periodic"),
+    checkpointTrigger: z.enum(["manual", "periodic", "pre_risky", "post_verification", "on_failure", "pre_attempt"]).default("periodic").describe("合法值：manual | periodic | pre_risky | post_verification | on_failure | pre_attempt"),
   }).optional(),
   intelligenceState: z
     .object({
       memoryIds: z.array(z.string()).default([]),
       ruleIds: z.array(z.string()).default([]),
-      skillVersions: z.record(z.string()).default({}),
+      skillVersions: z.record(z.string(), z.string()).default({}),
       contextHash: z.string().optional(),
       compactionBoundary: z.number().int().optional(),
       ledgerPosition: z.number().int().optional(),
@@ -264,7 +264,7 @@ export const AgentTaskLogEntrySchema = z.object({
   logType: AgentTaskLogTypeSchema,
   level: z.enum(["info", "warn", "error", "debug"]),
   message: z.string(),
-  data: z.record(z.any()).optional(),
+  data: z.record(z.string(), z.any()).optional(),
   timestamp: z.number(),
 });
 export type AgentTaskLogEntry = z.infer<typeof AgentTaskLogEntrySchema>;
@@ -325,9 +325,9 @@ export const AgentTaskStatusResultSchema = AgentTaskSummarySchema.extend({
   lastFailureFingerprint: z.string().nullable().optional(),
   sameActionRepeats: z.number().int(),
   latestCheckpoint: AgentCheckpointSchema.nullable().optional(),
-  executionEvidence: z.record(z.any()).optional(),
+  executionEvidence: z.record(z.string(), z.any()).optional(),
   modifiedFiles: z.array(z.string()).default([]),
-  lastToolResult: z.record(z.any()).optional(),
+  lastToolResult: z.record(z.string(), z.any()).optional(),
   artifacts: z.array(z.string()).default([]),
   checkpointCount: z.number().int().nonnegative().optional(),
 });
@@ -338,7 +338,9 @@ export const AgentTaskLogsParamsSchema = z.object({
   agentTaskId: z.string(),
   fromSequence: z.number().int().min(0).default(0),
   limit: z.number().int().min(1).max(1000).default(100),
-  logType: AgentTaskLogTypeSchema.optional(),
+  logType: AgentTaskLogTypeSchema
+    .optional()
+    .describe("Filter logs by type. One of: system | observation | plan | action | command | terminal | process | port | approval | error | checkpoint | resource"),
 });
 export type AgentTaskLogsParams = z.infer<typeof AgentTaskLogsParamsSchema>;
 
@@ -383,7 +385,7 @@ export type AgentTaskPauseResult = z.infer<typeof AgentTaskPauseResultSchema>;
 // 6. Agent Task Resume
 export const ComputerStateCheckSchema = z.object({
   status: z.enum(["STATE_MATCH", "STATE_MISMATCH", "STATE_UNVERIFIED", "NO_CHECKPOINT_STATE"]),
-  stateDiff: z.record(z.any()).optional(),
+  stateDiff: z.record(z.string(), z.any()).optional(),
   canResume: z.boolean(),
   activeWindow: z.any().optional(),
   checkpointState: z.any().optional(),
@@ -401,7 +403,7 @@ export const AgentTaskResumeResultSchema = z.object({
   state: z.string(),
   canResume: z.boolean().default(true),
   resumedAt: z.number(),
-  reconciledActualState: z.record(z.any()).optional(),
+  reconciledActualState: z.record(z.string(), z.any()).optional(),
   computerStateCheck: ComputerStateCheckSchema.optional(),
   resumedFromCheckpointId: z.string().optional(),
   pendingActionsCount: z.number().optional(),
@@ -413,7 +415,7 @@ export type AgentTaskResumeResult = z.infer<typeof AgentTaskResumeResultSchema>;
 // 7. Agent Task List
 export const AgentTaskListParamsSchema = z.object({
   projectId: z.string().optional(),
-  state: AgentTaskStateSchema.optional(),
+  state: AgentTaskStateSchema.optional().describe("合法值：created | queued | assigned | attempting | planning | running | waiting | verifying | checkpointing | checkpointed | recovering | paused | interrupted | disconnected | waiting_for_agent | waiting_for_human | completed | failed | cancelled | timed_out | resource_limited"),
 });
 export type AgentTaskListParams = z.infer<typeof AgentTaskListParamsSchema>;
 
@@ -427,7 +429,7 @@ export type AgentTaskListResult = z.infer<typeof AgentTaskListResultSchema>;
 export const AgentTaskApproveParamsSchema = z.object({
   agentTaskId: z.string(),
   approvalId: z.string(),
-  action: z.enum(["approve", "reject"]),
+  action: z.enum(["approve", "reject"]).describe("合法值：approve | reject"),
   reason: z.string().optional(),
 });
 export type AgentTaskApproveParams = z.infer<typeof AgentTaskApproveParamsSchema>;
@@ -435,7 +437,7 @@ export type AgentTaskApproveParams = z.infer<typeof AgentTaskApproveParamsSchema
 export const AgentTaskApproveResultSchema = z.object({
   agentTaskId: z.string(),
   approvalId: z.string(),
-  action: z.enum(["approve", "reject"]),
+  action: z.enum(["approve", "reject"]).describe("合法值：approve | reject"),
   state: AgentTaskStateSchema,
   message: z.string(),
 });
@@ -569,7 +571,7 @@ export type AgentTaskHandoffResult = z.infer<typeof AgentTaskHandoffResultSchema
 // 16. Agent Task Checkpoint Create
 export const AgentTaskCheckpointCreateParamsSchema = z.object({
   agentTaskId: z.string(),
-  trigger: z.enum(["manual", "periodic", "pre_risky", "post_verification", "on_failure", "pre_attempt"]).default("manual"),
+  trigger: z.enum(["manual", "periodic", "pre_risky", "post_verification", "on_failure", "pre_attempt"]).default("manual").describe("合法值：manual | periodic | pre_risky | post_verification | on_failure | pre_attempt"),
   description: z.string().optional(),
   includeComputerState: z.boolean().default(true),
 });
@@ -636,7 +638,7 @@ export type AgentTaskDisconnectResult = z.infer<typeof AgentTaskDisconnectResult
 export const AgentTaskTakeoverParamsSchema = z.object({
   agentTaskId: z.string(),
   takeoverBy: z.string().default("human"),
-  action: z.enum(["takeover", "return_control"]),
+  action: z.enum(["takeover", "return_control"]).describe("合法值：takeover | return_control"),
   reason: z.string().optional(),
 });
 export type AgentTaskTakeoverParams = z.infer<typeof AgentTaskTakeoverParamsSchema>;

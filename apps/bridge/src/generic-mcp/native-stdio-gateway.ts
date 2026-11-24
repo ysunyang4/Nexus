@@ -385,7 +385,7 @@ export class NativeStdioGateway {
       if (pid) {
         try {
           if (process.platform === "win32") {
-            child_process.execSync(`taskkill /pid ${pid} /T /F`, { stdio: "ignore" });
+            child_process.spawnSync("taskkill.exe", ["/pid", String(pid), "/T", "/F"], { stdio: "ignore", timeout: 3000 });
           } else {
             this.child.kill("SIGKILL");
           }

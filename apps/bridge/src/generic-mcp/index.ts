@@ -20,3 +20,4 @@ export * from "./script-runner.js";
 export * from "./native-stdio-gateway.js";
 export * from "./smart-installer.js";
 export * from "./token-guardrail.js";
+export * from "./blender-socket-fallback.js";

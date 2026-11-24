@@ -13,7 +13,7 @@ from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("Cloudflare-Observability")
 
-@mcp.tool()
+@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=True)
 def resolve_dns_records(domain: str, record_type: str = "A") -> str:
     """Resolve DNS records using Cloudflare 1.1.1.1 DNS-over-HTTPS (DoH)."""
     clean_domain = domain.replace("http://", "").replace("https://", "").split("/")[0]
@@ -32,7 +32,7 @@ def resolve_dns_records(domain: str, record_type: str = "A") -> str:
     except Exception as e:
         return json.dumps({"domain": clean_domain, "error": str(e)}, ensure_ascii=False)
 
-@mcp.tool()
+@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=True)
 def verify_ssl_certificate(domain: str, port: int = 443) -> str:
     """Connect to host via TLS and inspect SSL/TLS certificate validity, issuer, and expiration date."""
     clean_host = domain.replace("http://", "").replace("https://", "").split("/")[0]
@@ -54,7 +54,7 @@ def verify_ssl_certificate(domain: str, port: int = 443) -> str:
     except Exception as e:
         return json.dumps({"host": clean_host, "valid": False, "error": str(e)}, ensure_ascii=False)
 
-@mcp.tool()
+@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=True)
 def probe_http_latency(url: str) -> str:
     """Probe an HTTP/HTTPS endpoint and measure DNS/Handshake latency and response status."""
     if not url.startswith("http://") and not url.startswith("https://"):
@@ -79,7 +79,7 @@ def probe_http_latency(url: str) -> str:
             "error": str(e)
         }, ensure_ascii=False)
 
-@mcp.tool()
+@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=True)
 def inspect_security_headers(url: str) -> str:
     """Inspect critical web security headers: Strict-Transport-Security, Content-Security-Policy, etc."""
     if not url.startswith("http://") and not url.startswith("https://"):
@@ -99,7 +99,7 @@ def inspect_security_headers(url: str) -> str:
     except Exception as e:
         return json.dumps({"url": url, "error": str(e)}, ensure_ascii=False)
 
-@mcp.tool()
+@mcp.tool(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=True)
 def whois_lookup(domain: str) -> str:
     """Perform RDAP / WHOIS lookup for domain registration information."""
     clean_domain = domain.replace("http://", "").replace("https://", "").split("/")[0]

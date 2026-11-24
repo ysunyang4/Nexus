@@ -201,7 +201,7 @@ export class RemoteRpcError extends Error {
 export const LocalBridgeErrorSchema = z.object({
   code: z.nativeEnum(LocalBridgeErrorCode),
   message: z.string(),
-  details: z.record(z.unknown()).optional(),
+  details: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type LocalBridgeErrorPayload = z.infer<typeof LocalBridgeErrorSchema>;

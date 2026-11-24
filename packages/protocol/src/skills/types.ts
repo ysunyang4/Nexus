@@ -80,6 +80,20 @@ export interface SkillMetadata {
   documents?: string[];
   importedAt?: string;
   filesCount?: number;
+  originAgent?: "claude" | "antigravity" | "codex" | "cursor" | "custom" | string;
+  externalPath?: string;
+  isReadOnly?: boolean;
+}
+
+export interface ExternalSkillSourceConfig {
+  id: string;
+  name: string;
+  origin: "claude" | "antigravity" | "codex" | "cursor" | "custom";
+  path: string;
+  enabled: boolean;
+  autoDiscovered?: boolean;
+  skillCount?: number;
+  description?: string;
 }
 
 export interface SkillDefinition extends SkillMetadata {
@@ -288,28 +302,4 @@ export interface SkillRawContentResult {
   skillId: string;
   rawYaml: string;
   markdownContent: string;
-}
-
-
-export interface ExternalSkillSourceConfig {
-  id: string;
-  name: string;
-  path: string;
-  enabled: boolean;
-  agentType?: "chatgpt" | "cursor" | "deepseek" | "codex" | "custom";
-  isCustom?: boolean;
-  available?: boolean;
-  skillsCount?: number;
-  error?: string;
-}
-
-export type NexusSkillsAction = "list" | "search" | "load" | "read_file" | "refresh" | "status";
-
-export interface NexusSkillsParams {
-  action: NexusSkillsAction;
-  query?: string;
-  name?: string;
-  path?: string;
-  source?: string;
-  mode?: "compact" | "full";
 }

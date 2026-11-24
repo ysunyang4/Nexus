@@ -1,4 +1,8 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
+import net from "node:net";
 import { ListToolsRequestSchema, CallToolRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { createMcpServer, UNIVERSAL_META_TOOLS } from "../src/server.js";
 import { McpSecurityPolicyManager } from "../src/generic-mcp/mcp-security-policy.js";
@@ -104,10 +108,17 @@ async function runMcpServerProtocolTests() {
     assert.ok(result && Array.isArray(result.tools));
     const toolNames = result.tools.map((t: any) => t.name);
     console.log(`       [Verified] Exposed Tools Count: ${result.tools.length} ->`, toolNames);
-    assert.equal(result.tools.length, 3);
+    assert.equal(result.tools.length, 30);
     assert.ok(toolNames.includes("nexus_run_script"));
     assert.ok(toolNames.includes("nexus_discover_tools"));
     assert.ok(toolNames.includes("nexus_execute_action"));
+    assert.ok(toolNames.includes("nexus_relay_dispatch"));
+    assert.ok(toolNames.includes("nexus_session_handoff"));
+    assert.ok(toolNames.includes("nexus_batch_execute"));
+    assert.ok(toolNames.includes("nexus_wait_condition"));
+    assert.ok(toolNames.includes("nexus_adb_controller"));
+    assert.ok(toolNames.includes("nexus_deobfuscate_synthesize"));
+    assert.ok(toolNames.includes("nexus_data_codec_transform"));
   });
 
   // --- Test 4: Selective Exposure When Single Provider Token Mode is OFF ---
@@ -122,8 +133,13 @@ async function runMcpServerProtocolTests() {
 
     const toolNames = result.tools.map((t: any) => t.name);
     console.log(`       [Verified] Selective Tools Count: ${result.tools.length} ->`, toolNames);
-    // Must contain the 3 meta tools + the 2 autocad native tools
+    // Must contain the 30 meta tools + the 2 autocad native tools (total 32)
+    assert.equal(result.tools.length, 32);
     assert.ok(toolNames.includes("nexus_run_script"));
+    assert.ok(toolNames.includes("nexus_session_handoff"));
+    assert.ok(toolNames.includes("nexus_batch_execute"));
+    assert.ok(toolNames.includes("nexus_wait_condition"));
+    assert.ok(toolNames.includes("nexus_adb_controller"));
     assert.ok(toolNames.includes("cad_create_line"));
     assert.ok(toolNames.includes("cad_get_layers"));
     // Unity tools must NOT be exposed since unity is still saving tokens!
@@ -168,15 +184,223 @@ async function runMcpServerProtocolTests() {
         name: "nexus_discover_tools",
         arguments: {
           query: "line",
+          detail: true,
         },
       },
     });
 
     assert.equal(discoverResult.isError, undefined);
     const parsed = JSON.parse(discoverResult.content[0].text);
-    console.log(`       [Verified] nexus_discover_tools matched:`, parsed.tools.map((t: any) => t.name));
+    console.log(`       [Verified] nexus_discover_tools matched:`, parsed.tools.map((t: any) => typeof t === "string" ? t : (t.name || t.tool)));
     assert.ok(parsed.totalMatches >= 1);
-    assert.ok(parsed.tools.some((t: any) => t.name === "cad_create_line"));
+    assert.ok(parsed.tools.some((t: any) => typeof t === "string" ? t.includes("cad_create_line") : (t.name === "cad_create_line" || t.tool === "cad_create_line")));
+  });
+
+  // --- Test 7: Tool Call: nexus_batch_execute with Variable Interpolation ---
+  await test("tools/call: nexus_batch_execute runs pipeline with variable interpolation", async () => {
+    policy.setMasterTokenOptimization(true);
+    const server = createMcpServer(dummyClient);
+    const callHandler = (server as any)._requestHandlers.get(CallToolRequestSchema.shape.method.value);
+
+    // Run batch with session cache save -> session cache load with interpolation
+    const batchResult = await callHandler({
+      method: "tools/call",
+      params: {
+        name: "nexus_batch_execute",
+        arguments: {
+          pipeline: [
+            {
+              id: "step1",
+              tool: "nexus_run_script",
+              arguments: {
+                runtime: "python",
+                script: "import nexus\nprint('DATA_CHUNK_7788')",
+              },
+            },
+            {
+              id: "step2",
+              tool: "nexus_run_script",
+              arguments: {
+                runtime: "python",
+                script: "import nexus\nprint('INTERPOLATED: ' + '${step1.stdout}'.strip())",
+              },
+            },
+          ],
+          stop_on_error: true,
+        },
+      },
+    });
+
+    assert.equal(batchResult.isError, false);
+    const text = batchResult.content[0].text;
+    assert.ok(text.includes("[nexus_batch_execute]"));
+    assert.ok(text.includes("step1 (nexus_run_script)"));
+    assert.ok(text.includes("step2 (nexus_run_script)"));
+    assert.equal(batchResult.structuredContent.success, true);
+    assert.equal(batchResult.structuredContent.succeededSteps, 2);
+    const step2Output = batchResult.structuredContent.steps[1].output;
+    assert.ok(JSON.stringify(step2Output).includes("INTERPOLATED: DATA_CHUNK_7788"));
+    console.log(`       [Verified] nexus_batch_execute output:`, text.split("\n")[0]);
+  });
+
+  // --- Test 8: Tool Call: nexus_wait_condition ---
+  await test("tools/call: nexus_wait_condition validates port_open and log_contains", async () => {
+    policy.setMasterTokenOptimization(true);
+    const server = createMcpServer(dummyClient);
+    const callHandler = (server as any)._requestHandlers.get(CallToolRequestSchema.shape.method.value);
+
+    // 8.1 Test port_open with an ephemeral local TCP server
+    const tcpServer = net.createServer();
+    await new Promise<void>((resolve) => tcpServer.listen(0, "127.0.0.1", resolve));
+    const port = (tcpServer.address() as net.AddressInfo).port;
+
+    try {
+      const portResult = await callHandler({
+        method: "tools/call",
+        params: {
+          name: "nexus_wait_condition",
+          arguments: {
+            condition_type: "port_open",
+            target: `127.0.0.1:${port}`,
+            timeout_seconds: 5,
+            poll_interval_ms: 100,
+          },
+        },
+      });
+
+      assert.equal(portResult.isError, undefined);
+      assert.equal(portResult.structuredContent.satisfied, true);
+      assert.equal(portResult.structuredContent.condition_type, "port_open");
+      console.log(`       [Verified] port_open succeeded on port ${port}`);
+    } finally {
+      await new Promise<void>((resolve) => tcpServer.close(() => resolve()));
+    }
+
+    // 8.2 Test log_contains on a temporary log file
+    const tmpLogPath = path.join(os.tmpdir(), `nexus_test_wait_${Date.now()}.log`);
+    fs.writeFileSync(tmpLogPath, "2026-10-16 Initializing server...\n2026-10-16 Service ready in 452ms.\n");
+
+    try {
+      const logResult = await callHandler({
+        method: "tools/call",
+        params: {
+          name: "nexus_wait_condition",
+          arguments: {
+            condition_type: "log_contains",
+            target: tmpLogPath,
+            expected_pattern: "ready in",
+            timeout_seconds: 5,
+            poll_interval_ms: 100,
+          },
+        },
+      });
+
+      assert.equal(logResult.isError, undefined);
+      assert.equal(logResult.structuredContent.satisfied, true);
+      assert.equal(logResult.structuredContent.condition_type, "log_contains");
+      assert.ok(logResult.content[0].text.includes("ready in 452ms"));
+      console.log(`       [Verified] log_contains matched snippet:`, logResult.structuredContent.matchedSnippet);
+    } finally {
+      if (fs.existsSync(tmpLogPath)) fs.unlinkSync(tmpLogPath);
+    }
+  });
+
+  // --- Test 9: Tool Call: nexus_adb_controller ---
+  await test("tools/call: nexus_adb_controller handles device discovery and tap gestures", async () => {
+    const server = createMcpServer(dummyClient);
+    const callHandler = (server as any)._requestHandlers.get(CallToolRequestSchema.shape.method.value);
+
+    // 9.1 Devices query
+    const devRes = await callHandler({
+      method: "tools/call",
+      params: {
+        name: "nexus_adb_controller",
+        arguments: { action: "devices" },
+      },
+    });
+    assert.equal(devRes.isError, undefined);
+    assert.equal(devRes.structuredContent.success, true);
+    console.log(`       [Verified] ADB devices scanned:`, devRes.structuredContent.count);
+
+    // 9.2 Virtual tap action
+    const tapRes = await callHandler({
+      method: "tools/call",
+      params: {
+        name: "nexus_adb_controller",
+        arguments: { action: "tap", x: 500, y: 800 },
+      },
+    });
+    // Even if no physical device plugged in, structure is valid
+    assert.ok(tapRes.content && tapRes.content[0].text);
+    console.log(`       [Verified] ADB tap executed: (500, 800)`);
+  });
+
+  // --- Test 10: Tool Call: nexus_deobfuscate_synthesize ---
+  await test("tools/call: nexus_deobfuscate_synthesize sanitizes code and detects AES/MD5 constants", async () => {
+    const server = createMcpServer(dummyClient);
+    const callHandler = (server as any)._requestHandlers.get(CallToolRequestSchema.shape.method.value);
+
+    const obfuscatedCode = `
+      function sign_token(param) {
+        var sbox = [0x63, 0x7c, 0x77, 0x7b];
+        var h0 = 0x67452301;
+        var url = "https://api.commercial-app.com/v1/auth/login";
+        return sbox[0] ^ h0;
+      }
+    `;
+
+    const res = await callHandler({
+      method: "tools/call",
+      params: {
+        name: "nexus_deobfuscate_synthesize",
+        arguments: { raw_code: obfuscatedCode, language: "javascript" },
+      },
+    });
+
+    assert.equal(res.isError, undefined);
+    assert.equal(res.structuredContent.status, "SANITIZED_AND_SYNTHESIZED");
+    assert.ok(res.structuredContent.detectedCryptoAlgorithms.some((a: string) => a.includes("AES")));
+    assert.ok(res.structuredContent.detectedCryptoAlgorithms.some((a: string) => a.includes("MD5")));
+    assert.ok(!res.content[0].text.includes("commercial-app.com"));
+    console.log(`       [Verified] Detected algorithms:`, res.structuredContent.detectedCryptoAlgorithms);
+  });
+
+  // --- Test 11: Tool Call: nexus_data_codec_transform ---
+  await test("tools/call: nexus_data_codec_transform performs hex, base64, hash, and markdown table conversions", async () => {
+    const server = createMcpServer(dummyClient);
+    const callHandler = (server as any)._requestHandlers.get(CallToolRequestSchema.shape.method.value);
+
+    // 11.1 String to Hex and back
+    const hexRes = await callHandler({
+      method: "tools/call",
+      params: {
+        name: "nexus_data_codec_transform",
+        arguments: { operation: "string_to_hex", payload: "Nexus 1.3.4 Mobile Suite" },
+      },
+    });
+    assert.equal(hexRes.isError, undefined);
+    const hex = hexRes.structuredContent.result;
+    assert.ok(hex.length > 0);
+
+    const strRes = await callHandler({
+      method: "tools/call",
+      params: {
+        name: "nexus_data_codec_transform",
+        arguments: { operation: "hex_to_string", payload: hex },
+      },
+    });
+    assert.equal(strRes.structuredContent.result, "Nexus 1.3.4 Mobile Suite");
+
+    // 11.2 SHA-256 Hash
+    const hashRes = await callHandler({
+      method: "tools/call",
+      params: {
+        name: "nexus_data_codec_transform",
+        arguments: { operation: "hash", payload: "test_payload", hash_algorithm: "sha256" },
+      },
+    });
+    assert.equal(hashRes.structuredContent.result.length, 64);
+    console.log(`       [Verified] SHA-256 result:`, hashRes.structuredContent.result);
   });
 
   console.log("\n=================================================================");

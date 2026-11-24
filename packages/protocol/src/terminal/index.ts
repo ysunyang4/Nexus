@@ -33,7 +33,7 @@ export const TerminalStartParamsSchema = z.object({
   cols: z.number().int().min(20).max(500).default(80),
   rows: z.number().int().min(5).max(200).default(24),
   cwd: z.string().optional(),
-  env: z.record(z.string()).optional(),
+  env: z.record(z.string(), z.string()).optional(),
 });
 export type TerminalStartParams = z.infer<typeof TerminalStartParamsSchema>;
 
@@ -150,7 +150,9 @@ export type TerminalStopResult = z.infer<typeof TerminalStopResultSchema>;
 // 7. Terminal List
 export const TerminalListParamsSchema = z.object({
   projectId: z.string().optional(),
-  state: TerminalStateSchema.optional(),
+  state: TerminalStateSchema
+    .optional()
+    .describe("Filter terminals by session state. One of: running | idle | stopped"),
 });
 export type TerminalListParams = z.infer<typeof TerminalListParamsSchema>;
 

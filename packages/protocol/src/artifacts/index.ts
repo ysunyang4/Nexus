@@ -14,7 +14,7 @@ export const ArtifactMetadataSchema = z.object({
   status: z.enum(["uploading", "ready", "error", "deleted"]).default("ready"),
   createdAt: z.number(),
   updatedAt: z.number(),
-  extra: z.record(z.any()).optional(),
+  extra: z.record(z.string(), z.any()).optional(),
 });
 export type ArtifactMetadata = z.infer<typeof ArtifactMetadataSchema>;
 
@@ -25,7 +25,7 @@ export const ArtifactCreateParamsSchema = z.object({
   name: z.string().min(1),
   mimeType: z.string().optional(),
   tags: z.array(z.string()).optional(),
-  extra: z.record(z.any()).optional(),
+  extra: z.record(z.string(), z.any()).optional(),
 });
 export type ArtifactCreateParams = z.infer<typeof ArtifactCreateParamsSchema>;
 

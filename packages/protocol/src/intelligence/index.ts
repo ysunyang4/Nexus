@@ -24,7 +24,7 @@ export const SkillStepSchema = z.object({
   actionName: z.string(),
   toolName: z.string(),
   description: z.string(),
-  paramsTemplate: z.record(z.any()).optional(),
+  paramsTemplate: z.record(z.string(), z.any()).optional(),
   preconditions: z.array(z.string()).default([]),
   successConditions: z.array(z.string()).default([]),
 });
@@ -38,10 +38,10 @@ export const SkillVersionSchema = z.object({
   capabilities: z.array(z.string()).default([]),
   steps: z.array(SkillStepSchema).default([]),
   tools: z.array(z.string()).default([]),
-  parameters: z.record(z.any()).default({}),
+  parameters: z.record(z.string(), z.any()).default({}),
   preconditions: z.array(z.string()).default([]),
   successConditions: z.array(z.string()).default([]),
-  errorHandling: z.record(z.any()).default({}),
+  errorHandling: z.record(z.string(), z.any()).default({}),
   dependencies: z.array(z.string()).default([]),
   instructions: z.string().default(""),
   source: SkillSourceEnum.default("USER_UPLOADED"),
@@ -58,7 +58,7 @@ export const AiSkillCandidateEvidenceSchema = z.object({
   actionIds: z.array(z.string()).default([]),
   executionIds: z.array(z.string()).default([]),
   toolNames: z.array(z.string()).default([]),
-  executionResults: z.record(z.any()).default({}),
+  executionResults: z.record(z.string(), z.any()).default({}),
   successCount: z.number().int().nonnegative().default(0),
   failureCount: z.number().int().nonnegative().default(0),
   executionCount: z.number().int().nonnegative().optional(),
@@ -75,10 +75,10 @@ export const AiSkillCandidateSchema = z.object({
   proposedBy: z.string().default("WebAI/GPT"),
   extractedSteps: z.array(SkillStepSchema).default([]),
   tools: z.array(z.string()).default([]),
-  parameters: z.record(z.any()).default({}),
+  parameters: z.record(z.string(), z.any()).default({}),
   preconditions: z.array(z.string()).default([]),
   successConditions: z.array(z.string()).default([]),
-  errorHandling: z.record(z.any()).default({}),
+  errorHandling: z.record(z.string(), z.any()).default({}),
   dependencies: z.array(z.string()).default([]),
   instructions: z.string().default(""),
   evidence: AiSkillCandidateEvidenceSchema,
@@ -137,7 +137,7 @@ export const EnhancedMemoryScopeEnum = z.enum([
   "TASK",
   "AGENT",
   "STEP",
-]);
+]).describe("合法值：GLOBAL | USER | PROJECT | SESSION | TASK | AGENT | STEP");
 export type EnhancedMemoryScope = z.infer<typeof EnhancedMemoryScopeEnum>;
 
 export const MemoryTypeEnum = z.enum([
@@ -151,7 +151,7 @@ export const MemoryTypeEnum = z.enum([
   "ARTIFACT",
   "ERROR",
   "SOLUTION",
-]);
+]).describe("合法值：FACT | PREFERENCE | EPISODIC | SEMANTIC | PROCEDURAL | EXPERIENCE | DECISION | ARTIFACT | ERROR | SOLUTION");
 export type MemoryType = z.infer<typeof MemoryTypeEnum>;
 
 export const MemorySourceEnum = z.enum([
@@ -165,10 +165,10 @@ export const MemorySourceEnum = z.enum([
   "FILE",
   "IMPORT",
   "SYSTEM",
-]);
+]).describe("合法值：USER | AI | CONVERSATION | SKILL | TASK | ACTION | PROJECT | FILE | IMPORT | SYSTEM");
 export type MemorySource = z.infer<typeof MemorySourceEnum>;
 
-export const MemoryStatusEnum = z.enum(["ACTIVE", "ARCHIVED", "FORGOTTEN"]);
+export const MemoryStatusEnum = z.enum(["ACTIVE", "ARCHIVED", "FORGOTTEN"]).describe("合法值：ACTIVE | ARCHIVED | FORGOTTEN");
 export type MemoryStatus = z.infer<typeof MemoryStatusEnum>;
 
 export const MemoryCandidateStatusEnum = z.enum([
@@ -188,7 +188,7 @@ export const MemoryProvenanceSchema = z.object({
   sessionId: z.string().optional(),
   actionIds: z.array(z.string()).default([]),
   executionId: z.string().optional(),
-  result: z.enum(["SUCCESS", "FAILURE", "PARTIAL", "UNKNOWN"]).optional(),
+  result: z.enum(["SUCCESS", "FAILURE", "PARTIAL", "UNKNOWN"]).optional().describe("合法值：SUCCESS | FAILURE | PARTIAL | UNKNOWN"),
   evidence: z.string().optional(),
   observedPath: z.string().optional(),
   recoveryAction: z.string().optional(),
@@ -214,7 +214,11 @@ export const EnhancedMemoryEntrySchema = z.object({
   source: MemorySourceEnum.default("USER"),
   provenance: MemoryProvenanceSchema.optional(),
   version: z.number().int().positive().default(1),
-  relations: MemoryRelationsSchema.default({}),
+  relations: MemoryRelationsSchema.default({
+    relatedMemoryIds: [],
+    conflictsWith: [],
+    supersedes: [],
+  }),
   status: MemoryStatusEnum.default("ACTIVE"),
   tags: z.array(z.string()).default([]),
   createdAt: z.number(),
@@ -275,7 +279,7 @@ export const RulePriorityEnum = z.enum([
   "PROJECT",
   "TASK",
   "SKILL",
-]);
+]).describe("合法值：SYSTEM | CORE_GLOBAL | USER_GLOBAL | PROJECT | TASK | SKILL");
 export type RulePriority = z.infer<typeof RulePriorityEnum>;
 
 export const RULE_PRIORITY_RANK: Record<RulePriority, number> = {
@@ -287,10 +291,10 @@ export const RULE_PRIORITY_RANK: Record<RulePriority, number> = {
   SKILL: 10,
 };
 
-export const RuleScopeEnum = z.enum(["GLOBAL", "USER_GLOBAL", "PROJECT", "TASK", "SKILL"]);
+export const RuleScopeEnum = z.enum(["GLOBAL", "USER_GLOBAL", "PROJECT", "TASK", "SKILL"]).describe("合法值：GLOBAL | USER_GLOBAL | PROJECT | TASK | SKILL");
 export type RuleScope = z.infer<typeof RuleScopeEnum>;
 
-export const RuleStatusEnum = z.enum(["ACTIVE", "DISABLED", "DEPRECATED"]);
+export const RuleStatusEnum = z.enum(["ACTIVE", "DISABLED", "DEPRECATED"]).describe("合法值：ACTIVE | DISABLED | DEPRECATED");
 export type RuleStatus = z.infer<typeof RuleStatusEnum>;
 
 export const GlobalRuleSchema = z.object({
@@ -336,7 +340,7 @@ export type RuleConflictReport = z.infer<typeof RuleConflictReportSchema>;
 // 4. Knowledge Import & Documents Schemas
 // ============================================================================
 
-export const KnowledgeTypeEnum = z.enum(["MEMORY", "RULE", "SKILL", "DOCUMENT"]);
+export const KnowledgeTypeEnum = z.enum(["MEMORY", "RULE", "SKILL", "DOCUMENT"]).describe("合法值：MEMORY | RULE | SKILL | DOCUMENT");
 export type KnowledgeType = z.infer<typeof KnowledgeTypeEnum>;
 
 export const KnowledgeDocumentSchema = z.object({
@@ -349,7 +353,7 @@ export const KnowledgeDocumentSchema = z.object({
   contentReference: z.string().optional(),
   textSummary: z.string().optional(),
   tags: z.array(z.string()).default([]),
-  metadata: z.record(z.any()).default({}),
+  metadata: z.record(z.string(), z.any()).default({}),
   createdAt: z.number(),
 });
 export type KnowledgeDocument = z.infer<typeof KnowledgeDocumentSchema>;
@@ -384,7 +388,7 @@ export const ContextCompactionStateSchema = z.object({
   preservedStepCount: z.number().int().nonnegative(),
   preservedMemoryIds: z.array(z.string()).default([]),
   preservedRuleIds: z.array(z.string()).default([]),
-  preservedSkillVersions: z.record(z.string()).default({}),
+  preservedSkillVersions: z.record(z.string(), z.string()).default({}),
   compactedActionSummary: z.string(),
   compactedAt: z.number(),
   version: z.number().int().positive().default(1),
@@ -418,7 +422,7 @@ export const ContextSnapshotSchema = z.object({
       })
     )
     .default([]),
-  currentState: z.record(z.any()).default({}),
+  currentState: z.record(z.string(), z.any()).default({}),
   recentActions: z
     .array(
       z.object({
@@ -441,7 +445,7 @@ export const ContextSnapshotSchema = z.object({
   traceMetadata: z.object({
     usedMemoryIds: z.array(z.string()).default([]),
     usedRuleIds: z.array(z.string()).default([]),
-    usedSkillVersions: z.record(z.string()).default({}),
+    usedSkillVersions: z.record(z.string(), z.string()).default({}),
     usedDocumentIds: z.array(z.string()).default([]),
     checkpointId: z.string().optional(),
     actionIds: z.array(z.string()).default([]),
@@ -463,13 +467,13 @@ export const SkillCreateParamsSchema = z.object({
   capabilities: z.array(z.string()).default([]),
   steps: z.array(SkillStepSchema).default([]),
   tools: z.array(z.string()).default([]),
-  parameters: z.record(z.any()).default({}),
+  parameters: z.record(z.string(), z.any()).default({}),
   preconditions: z.array(z.string()).default([]),
   successConditions: z.array(z.string()).default([]),
-  errorHandling: z.record(z.any()).default({}),
+  errorHandling: z.record(z.string(), z.any()).default({}),
   dependencies: z.array(z.string()).default([]),
   instructions: z.string().default(""),
-  source: SkillSourceEnum.default("USER_UPLOADED"),
+  source: SkillSourceEnum.default("USER_UPLOADED").describe("合法值：BUILT_IN | USER_UPLOADED | AI_GENERATED"),
   projectId: z.string().optional(),
   tags: z.array(z.string()).default([]),
 });
@@ -478,7 +482,7 @@ export type SkillCreateParams = z.infer<typeof SkillCreateParamsSchema>;
 export const SkillValidateParamsSchema = z.object({
   skillId: z.string().optional(),
   version: z.string().optional(),
-  skillData: z.record(z.any()).optional(),
+  skillData: z.record(z.string(), z.any()).optional(),
 });
 export type SkillValidateParams = z.infer<typeof SkillValidateParamsSchema>;
 
@@ -506,10 +510,10 @@ export const SkillCandidateProposeParamsSchema = z.object({
   proposedBy: z.string().default("WebAI/GPT"),
   extractedSteps: z.array(SkillStepSchema).default([]),
   tools: z.array(z.string()).default([]),
-  parameters: z.record(z.any()).default({}),
+  parameters: z.record(z.string(), z.any()).default({}),
   preconditions: z.array(z.string()).default([]),
   successConditions: z.array(z.string()).default([]),
-  errorHandling: z.record(z.any()).default({}),
+  errorHandling: z.record(z.string(), z.any()).default({}),
   dependencies: z.array(z.string()).default([]),
   instructions: z.string().default(""),
   evidence: AiSkillCandidateEvidenceSchema,
@@ -518,7 +522,7 @@ export type SkillCandidateProposeParams = z.infer<typeof SkillCandidateProposePa
 
 export const SkillCandidateReviewParamsSchema = z.object({
   candidateId: z.string(),
-  action: z.enum(["accept", "reject"]),
+  action: z.enum(["accept", "reject"]).describe("合法值：accept | reject"),
   reviewNotes: z.string().optional(),
   reviewedBy: z.string().default("user"),
 });
@@ -557,7 +561,7 @@ export const MemoryConsolidateParamsSchema = z.object({
 export type MemoryConsolidateParams = z.infer<typeof MemoryConsolidateParamsSchema>;
 
 export const RuleListParamsSchema = z.object({
-  scope: RuleScopeEnum.optional(),
+  scope: RuleScopeEnum.optional().describe("合法值：GLOBAL | USER_GLOBAL | PROJECT | TASK | SKILL"),
   scopeId: z.string().optional(),
   activeOnly: z.boolean().default(true),
 });
@@ -724,3 +728,5 @@ export const SkillLearningParamsSchema = z.object({
 });
 export type SkillLearningParams = z.infer<typeof SkillLearningParamsSchema>;
 
+
+export * from "./nexus-knowledge.js";

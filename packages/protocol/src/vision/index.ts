@@ -14,7 +14,7 @@ export const VisionObjectSchema = z.object({
   label: z.string(),
   confidence: z.number(),
   boundingBox: VisionBoundingBoxSchema,
-  attributes: z.record(z.any()).optional(),
+  attributes: z.record(z.string(), z.any()).optional(),
 });
 export type VisionObject = z.infer<typeof VisionObjectSchema>;
 
@@ -80,7 +80,7 @@ export const VisionSpatialRelationshipSchema = z.object({
     "contains",
     "adjacent_to",
     "overlapping",
-  ]),
+  ]).describe("合法值：above | below | left_of | right_of | inside | contains | adjacent_to | overlapping"),
   objectId: z.string(),
   distance: z.number().optional(),
 });
@@ -168,7 +168,7 @@ export const VisionOcrResultSchema = z.object({
     sha256: z.string().optional(),
     fileSizeBytes: z.number().int().optional(),
   }).optional(),
-  diagnostics: z.record(z.any()).optional(),
+  diagnostics: z.record(z.string(), z.any()).optional(),
 });
 export type VisionOcrResult = z.infer<typeof VisionOcrResultSchema>;
 

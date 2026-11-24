@@ -36,7 +36,7 @@ export const ElementInfoSchema = z.object({
   selector: z.string(),
   tagName: z.string(),
   text: z.string().optional(),
-  attributes: z.record(z.string()).optional(),
+  attributes: z.record(z.string(), z.string()).optional(),
   boundingBox: z
     .object({
       x: z.number(),
@@ -79,7 +79,7 @@ export const CookieParamSchema = z.object({
   expires: z.number().optional(),
   httpOnly: z.boolean().optional(),
   secure: z.boolean().optional(),
-  sameSite: z.enum(["Strict", "Lax", "None"]).optional(),
+  sameSite: z.enum(["Strict", "Lax", "None"]).optional().describe("合法值：Strict | Lax | None"),
 });
 export type CookieParam = z.infer<typeof CookieParamSchema>;
 
@@ -90,7 +90,7 @@ export const BrowserLaunchParamsSchema = z.object({
   projectId: z.string().optional(),
   name: z.string().optional(),
   headless: z.boolean().default(true),
-  browserType: z.enum(["chrome", "edge", "auto"]).default("auto"),
+  browserType: z.enum(["chrome", "edge", "auto"]).default("auto").describe("合法值：chrome | edge | auto"),
   viewport: z
     .object({
       width: z.number().default(1280),
@@ -163,7 +163,7 @@ export const BrowserOpenParamsSchema = z.object({
   browserSessionId: z.string(),
   url: z.string().url(),
   timeoutMs: z.number().default(30000),
-  waitUntil: z.enum(["load", "domcontentloaded", "networkidle"]).default("load"),
+  waitUntil: z.enum(["load", "domcontentloaded", "networkidle"]).default("load").describe("合法值：load | domcontentloaded | networkidle"),
 });
 export type BrowserOpenParams = z.infer<typeof BrowserOpenParamsSchema>;
 
@@ -221,7 +221,7 @@ export const BrowserWaitParamsSchema = z.object({
   browserSessionId: z.string(),
   selector: z.string().optional(),
   durationMs: z.number().optional(),
-  state: z.enum(["visible", "hidden", "attached", "detached"]).default("visible"),
+  state: z.enum(["visible", "hidden", "attached", "detached"]).default("visible").describe("合法值：visible | hidden | attached | detached"),
   timeoutMs: z.number().default(10000),
 });
 export type BrowserWaitParams = z.infer<typeof BrowserWaitParamsSchema>;
@@ -255,7 +255,7 @@ export const BrowserScreenshotParamsSchema = z.object({
   browserSessionId: z.string(),
   selector: z.string().optional(),
   fullPage: z.boolean().default(false),
-  format: z.enum(["png", "jpeg"]).default("png"),
+  format: z.enum(["png", "jpeg"]).default("png").describe("合法值：png | jpeg"),
   quality: z.number().min(0).max(100).optional(),
 });
 export type BrowserScreenshotParams = z.infer<typeof BrowserScreenshotParamsSchema>;
@@ -299,7 +299,7 @@ export const BrowserExtractResultSchema = z.object({
   items: z.array(
     z.object({
       text: z.string().optional(),
-      attributes: z.record(z.string()).optional(),
+      attributes: z.record(z.string(), z.string()).optional(),
     })
   ),
   count: z.number(),
@@ -336,7 +336,7 @@ export type BrowserElementStateResult = z.infer<typeof BrowserElementStateResult
 export const BrowserClickParamsSchema = z.object({
   browserSessionId: z.string(),
   selector: z.string(),
-  button: z.enum(["left", "right", "middle"]).default("left"),
+  button: z.enum(["left", "right", "middle"]).default("left").describe("合法值：left | right | middle"),
   clickCount: z.number().default(1),
   waitForNavigation: z.boolean().default(false),
 });
@@ -490,7 +490,7 @@ export type BrowserTabSwitchResult = z.infer<typeof BrowserTabSwitchResultSchema
 export const BrowserConsoleParamsSchema = z.object({
   browserSessionId: z.string(),
   limit: z.number().default(50),
-  level: z.enum(["all", "log", "info", "warn", "error"]).default("all"),
+  level: z.enum(["all", "log", "info", "warn", "error"]).default("all").describe("合法值：all | log | info | warn | error"),
 });
 export type BrowserConsoleParams = z.infer<typeof BrowserConsoleParamsSchema>;
 
@@ -518,14 +518,14 @@ export type BrowserNetworkResult = z.infer<typeof BrowserNetworkResultSchema>;
 // 27. Cookies
 export const BrowserCookiesParamsSchema = z.object({
   browserSessionId: z.string(),
-  action: z.enum(["get", "set", "clear"]).default("get"),
+  action: z.enum(["get", "set", "clear"]).default("get").describe("合法值：get | set | clear"),
   cookies: z.array(CookieParamSchema).optional(),
 });
 export type BrowserCookiesParams = z.infer<typeof BrowserCookiesParamsSchema>;
 
 export const BrowserCookiesResultSchema = z.object({
   browserSessionId: z.string(),
-  action: z.enum(["get", "set", "clear"]),
+  action: z.enum(["get", "set", "clear"]).describe("合法值：get | set | clear"),
   cookies: z.array(CookieParamSchema),
   count: z.number(),
 });
@@ -534,8 +534,8 @@ export type BrowserCookiesResult = z.infer<typeof BrowserCookiesResultSchema>;
 // 28. Storage
 export const BrowserStorageParamsSchema = z.object({
   browserSessionId: z.string(),
-  type: z.enum(["local", "session"]).default("local"),
-  action: z.enum(["get", "set", "remove", "clear"]).default("get"),
+  type: z.enum(["local", "session"]).default("local").describe("合法值：local | session"),
+  action: z.enum(["get", "set", "remove", "clear"]).default("get").describe("合法值：get | set | remove | clear"),
   key: z.string().optional(),
   value: z.string().optional(),
 });
@@ -543,9 +543,9 @@ export type BrowserStorageParams = z.infer<typeof BrowserStorageParamsSchema>;
 
 export const BrowserStorageResultSchema = z.object({
   browserSessionId: z.string(),
-  type: z.enum(["local", "session"]),
-  action: z.enum(["get", "set", "remove", "clear"]),
-  data: z.record(z.string()),
+  type: z.enum(["local", "session"]).describe("合法值：local | session"),
+  action: z.enum(["get", "set", "remove", "clear"]).describe("合法值：get | set | remove | clear"),
+  data: z.record(z.string(), z.string()),
 });
 export type BrowserStorageResult = z.infer<typeof BrowserStorageResultSchema>;
 

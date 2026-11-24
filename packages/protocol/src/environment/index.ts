@@ -13,16 +13,19 @@ export const ToolCategorySchema = z.enum([
   "shell",
   "container",
   "vcs",
+  "android",
+  "tools",
 ]);
+
 export type ToolCategory = z.infer<typeof ToolCategorySchema>;
 
 export const DetectedToolSchema = z.object({
   tool: z.string(),
-  category: ToolCategorySchema,
+  category: ToolCategorySchema.describe("合法值：javascript | python | jvm | go | rust | php | ruby | dotnet | cpp | shell | container | vcs | android | tools"),
   installed: z.boolean(),
   version: z.string().nullable().optional(),
   path: z.string().nullable().optional(),
-  details: z.record(z.any()).optional(),
+  details: z.record(z.string(), z.any()).optional(),
 });
 export type DetectedTool = z.infer<typeof DetectedToolSchema>;
 
@@ -63,6 +66,6 @@ export const ProjectDetectResultSchema = z.object({
   detectedRuntimes: z.array(z.string()),
   configFiles: z.array(z.string()),
   recommendedCommands: z.array(RecommendedCommandSchema),
-  scripts: z.record(z.string()).optional(),
+  scripts: z.record(z.string(), z.string()).optional(),
 });
 export type ProjectDetectResult = z.infer<typeof ProjectDetectResultSchema>;

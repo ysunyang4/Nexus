@@ -19,6 +19,9 @@ export const CodeDocumentSymbolsParamsSchema = z
   .object({
     projectId: z.string().min(1).describe("Target project identifier"),
     path: z.string().min(1).describe("Relative path to source file inside project"),
+    limit: z.number().int().min(1).optional().describe("Maximum number of symbols to return"),
+    depth: z.number().int().min(1).optional().describe("Maximum nesting depth of symbols"),
+    cursor: z.string().optional().describe("Pagination cursor for next page of symbols"),
     sessionId: z
       .string()
       .min(1)
@@ -41,6 +44,7 @@ export const CodeWorkspaceSymbolsParamsSchema = z
       .default(50)
       .optional()
       .describe("Maximum number of symbols to return (max 200, default 50)"),
+    cursor: z.string().optional().describe("Pagination cursor for next page of symbols"),
     sessionId: z
       .string()
       .min(1)
@@ -224,11 +228,19 @@ export type LspStopParams = z.infer<typeof LspStopParamsSchema>;
 export const DocumentSymbolsResultSchema = z.object({
   symbols: z.array(z.any()),
   truncated: z.boolean(),
+  totalCount: z.number().optional(),
+  returnedCount: z.number().optional(),
+  nextCursor: z.string().optional(),
+  filePath: z.string().optional(),
 });
 
 export const WorkspaceSymbolsResultSchema = z.object({
   symbols: z.array(z.any()),
   truncated: z.boolean(),
+  totalCount: z.number().optional(),
+  returnedCount: z.number().optional(),
+  nextCursor: z.string().optional(),
+  filePath: z.string().optional(),
 });
 
 export const DefinitionResultSchema = z.object({

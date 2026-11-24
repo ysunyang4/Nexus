@@ -18,7 +18,7 @@ export type MemoryEntry = z.infer<typeof MemoryEntrySchema>;
 export const MemorySetParamsSchema = z.object({
   key: z.string().min(1),
   value: z.any(),
-  scope: MemoryScopeSchema.default("project"),
+  scope: MemoryScopeSchema.default("project").describe("合法值：global | project | session | agent | task"),
   scopeId: z.string().optional(),
   tags: z.array(z.string()).optional(),
 });
@@ -31,7 +31,7 @@ export type MemorySetResult = z.infer<typeof MemorySetResultSchema>;
 
 export const MemoryGetParamsSchema = z.object({
   key: z.string(),
-  scope: MemoryScopeSchema.default("project"),
+  scope: MemoryScopeSchema.default("project").describe("合法值：global | project | session | agent | task"),
   scopeId: z.string().optional(),
 });
 export type MemoryGetParams = z.infer<typeof MemoryGetParamsSchema>;
@@ -43,7 +43,7 @@ export type MemoryGetResult = z.infer<typeof MemoryGetResultSchema>;
 
 export const MemorySearchParamsSchema = z.object({
   query: z.string().optional(),
-  scope: MemoryScopeSchema.optional(),
+  scope: MemoryScopeSchema.optional().describe("合法值：global | project | session | agent | task"),
   scopeId: z.string().optional(),
   tag: z.string().optional(),
   limit: z.number().int().positive().max(100).default(50),
@@ -58,7 +58,7 @@ export type MemorySearchResult = z.infer<typeof MemorySearchResultSchema>;
 
 export const MemoryDeleteParamsSchema = z.object({
   key: z.string(),
-  scope: MemoryScopeSchema.default("project"),
+  scope: MemoryScopeSchema.default("project").describe("合法值：global | project | session | agent | task"),
   scopeId: z.string().optional(),
 });
 export type MemoryDeleteParams = z.infer<typeof MemoryDeleteParamsSchema>;
@@ -69,7 +69,7 @@ export const MemoryDeleteResultSchema = z.object({
 export type MemoryDeleteResult = z.infer<typeof MemoryDeleteResultSchema>;
 
 export const MemoryPurgeParamsSchema = z.object({
-  scope: MemoryScopeSchema,
+  scope: MemoryScopeSchema.describe("合法值：global | project | session | agent | task"),
   scopeId: z.string().optional(),
 });
 export type MemoryPurgeParams = z.infer<typeof MemoryPurgeParamsSchema>;

@@ -30,6 +30,28 @@ export interface HandleEntry {
   createdAt: number;
 }
 
+export const DEFAULT_OMITTED_FIELDS = new Set([
+  "commandLine",
+  "cmdline",
+  "cmdLine",
+  "rawCommandLine",
+  "score",
+  "startTime",
+  "start_time",
+  "starttime",
+]);
+
+export function cleanDefaultItem(item: any): any {
+  if (!item || typeof item !== "object" || Array.isArray(item)) return item;
+  const cleaned: Record<string, any> = {};
+  for (const [k, v] of Object.entries(item)) {
+    if (!DEFAULT_OMITTED_FIELDS.has(k)) {
+      cleaned[k] = v;
+    }
+  }
+  return cleaned;
+}
+
 export class HandleManager {
   private static handles: Map<string, HandleEntry> = new Map();
 
@@ -52,7 +74,7 @@ export class HandleManager {
     return this.handles.get(handleId);
   }
 
-  public static readHandle(handleId: string, offset = 0, limit = 20, filter?: any): any {
+  public static readHandle(handleId: string, offset = 0, limit = 20, filter?: any, fields?: string[]): any {
     const entry = this.handles.get(handleId);
     if (!entry) {
       return { error: `Handle "${handleId}" not found or expired.` };
@@ -94,6 +116,25 @@ export class HandleManager {
       }
     }
     const page = list.slice(offset, offset + limit);
+
+    // Apply fields projection
+    const projectedPage = page.map((item) => {
+      if (!item || typeof item !== "object" || Array.isArray(item)) {
+        return item;
+      }
+      if (fields && Array.isArray(fields) && fields.length > 0) {
+        const projected: Record<string, any> = {};
+        for (const k of fields) {
+          if (k in item) {
+            projected[k] = item[k];
+          }
+        }
+        return projected;
+      }
+      // When fields is not specified, omit known excessively long/low-value fields (commandLine, score, startTime, etc.) by default
+      return cleanDefaultItem(item);
+    });
+
     return {
       handleId,
       sourceTool: entry.sourceTool,
@@ -101,8 +142,9 @@ export class HandleManager {
       filteredCount: list.length,
       offset,
       limit,
+      fields: fields && fields.length > 0 ? fields : undefined,
       hasMore: offset + limit < list.length,
-      items: page,
+      items: projectedPage,
     };
   }
 }
@@ -176,9 +218,7 @@ export class TokenGuardrail {
     });
 
     // 3. Middle-truncation for long outputs (prevent context blowup)
-    // NOTE: Skills and documentation reads are exempted to preserve full, unmodified instruction text
-    const isExempted = Boolean(options.full) || /nexus_skills|skill_get|localbridge_skill_get/i.test(options.sourceTool || "");
-    if (!isExempted && text.length > maxChars) {
+    if (text.length > maxChars) {
       const headLength = Math.floor(maxChars * 0.55); // ~8,800 chars
       const tailLength = Math.floor(maxChars * 0.35); // ~5,600 chars
       const omitted = text.length - headLength - tailLength;
@@ -186,7 +226,7 @@ export class TokenGuardrail {
         const head = text.substring(0, headLength);
         const tail = text.substring(text.length - tailLength);
         const savedTokens = Math.round(omitted / 4);
-        text = `${head}\n\n... [⚠️ Nexus Token Guardrail: 输出内容过长 (总计 ${text.length.toLocaleString()} 字符)，已自动截断中间 ${omitted.toLocaleString()} 字符以保护模型上下文 (为您节省约 ${savedTokens.toLocaleString()} Token)。如需完整数据请分块读取或重定向至文件] ...\n\n${tail}`;
+        text = `${head}\n\n... [⚠️ Nexus Token Guardrail: 输出内容过长 (原始总长度: ${text.length.toLocaleString()} 字符，截断范围: 字符偏移 ${headLength} 至 ${text.length - tailLength})，已自动截断中间 ${omitted.toLocaleString()} 字符以保护模型上下文 (为您节省约 ${savedTokens.toLocaleString()} Token)。如需完整数据请分块读取或重定向至文件] ...\n\n${tail}`;
       }
     }
 
@@ -251,7 +291,10 @@ export class TokenGuardrail {
    * Applies P1 handle-ization to list and snapshot payloads (BOTH content AND structuredContent)
    */
   public static applyHandleization(res: any, options: SanitizeOptions = {}): any {
-    if (process.env.NEXUS_TOKEN_P1_ENABLED === "false") {
+    if (
+      process.env.NEXUS_TOKEN_P1_ENABLED === "false" ||
+      process.env.NEXUS_HANDLE_STORAGE_ENABLED === "false"
+    ) {
       return res;
     }
 
@@ -319,40 +362,37 @@ export class TokenGuardrail {
 
     const displayTool = /run_script|script/i.test(sourceTool) ? "process_list" : sourceTool;
     const handleId = HandleManager.createHandle(displayTool, items);
-    const sample = items.slice(0, 3);
+    const sample = items.slice(0, 3).map((item) => cleanDefaultItem(item));
 
     const copy = { ...res };
 
-    // 1. Slim down structuredContent
+    // 1. structuredContent only retains lightweight metadata (no duplicate samples)
+    const newSc: Record<string, any> = {
+      handleId,
+      sourceTool: displayTool,
+      totalCount: items.length,
+      hasMore: true,
+    };
     if (copy.structuredContent && typeof copy.structuredContent === "object") {
-      const newSc: Record<string, any> = {
-        handleId,
-        sourceTool: displayTool,
-        totalCount: items.length,
-        sample,
-        hasMore: true,
-        notice: `已自动句柄化 (原包含 ${items.length} 条记录)。使用 nexus_execute_action(tool='nexus_handle_read', arguments={handleId: '${handleId}', offset: 0, limit: 20, filter: '关键词或{key:value}'}) 查阅详情，或传入 full=true 获取全量数据`,
-      };
-      // Retain scalar properties (e.g. browserSessionId, status, exitCode, etc.)
       for (const [k, v] of Object.entries(copy.structuredContent)) {
-        if (k !== "stdout" && k !== "stderr" && k !== "rawStdout" && k !== "result" && (typeof v !== "object" || v === null)) {
+        if (
+          k !== "stdout" &&
+          k !== "stderr" &&
+          k !== "rawStdout" &&
+          k !== "result" &&
+          k !== "sample" &&
+          k !== "items" &&
+          (typeof v !== "object" || v === null)
+        ) {
           newSc[k] = v;
         }
       }
-      copy.structuredContent = newSc;
-    } else {
-      copy.structuredContent = {
-        handleId,
-        sourceTool: displayTool,
-        totalCount: items.length,
-        sample,
-        hasMore: true,
-        notice: `已自动句柄化。使用 nexus_execute_action(tool='nexus_handle_read', arguments={handleId: '${handleId}', offset: 0, limit: 20, filter: '关键词或{key:value}'}) 分页查询`,
-      };
     }
+    copy.structuredContent = newSc;
 
-    // 2. Slim down content: single-channel deduplication (no duplicate sample in content)
-    const summaryText = `[📦 句柄已生成] 工具: ${displayTool} | 共 ${items.length} 项记录已暂存。\n💡 调用指引: nexus_execute_action(tool='nexus_handle_read', arguments={handleId: '${handleId}', offset: 0, limit: 20, filter: '关键词或{key:value}'})\nfilter 参数支持字符串模糊检索 (如 filter: '39871') 或对象属性精确匹配 (如 filter: { port: 39871 })；若需全量数据请传入 full=true。`;
+    // 2. Put summary, preview sample (first 3 items), and retrieval hint directly into content so Claude can see it
+    const sampleJson = JSON.stringify(sample);
+    const summaryText = `[📦 句柄已生成] 工具: ${displayTool} | 共 ${items.length} 项记录已暂存至句柄 ${handleId}。\n前 3 项预览:\n${sampleJson}\n\n💡 完整数据/条件筛选调用指引:\nnexus_execute_action(tool='nexus_handle_read', arguments={handleId: '${handleId}', offset: 0, limit: 20, filter: '关键词或{key:value}', fields: ['字段1', '字段2']})\n若需当前工具原始全量数据，请传入 full=true。`;
     copy.content = [{ type: "text", text: summaryText }];
 
     return copy;
@@ -389,8 +429,11 @@ export class TokenGuardrail {
       copy.result = this.sanitizeObject(copy.result);
     }
 
-    // P0: On error, compact structuredContent error details and tracebacks into a single-line summary
-    if ((copy.isError || copy.structuredContent?.success === false || Boolean(copy.structuredContent?.error)) && process.env.NEXUS_TOKEN_P0_ENABLED !== "false") {
+    if (
+      (copy.isError || copy.structuredContent?.success === false || Boolean(copy.structuredContent?.error)) &&
+      process.env.NEXUS_TOKEN_P0_ENABLED !== "false" &&
+      process.env.NEXUS_TOKEN_SLIM_ENABLED !== "false"
+    ) {
       if (copy.structuredContent && typeof copy.structuredContent === "object") {
         const sc = { ...copy.structuredContent };
         if (sc.error && typeof sc.error === "string") {
