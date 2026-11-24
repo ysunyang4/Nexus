@@ -264,14 +264,12 @@ pub struct SystemStatus {
 fn desktop_open_url(url: String) -> Result<(), String> {
     #[cfg(target_os = "windows")]
     {
-        let mut cmd = Command::new("cmd");
-        cmd.args(["/c", "start", "", &url]);
-        cmd.creation_flags(CREATE_NO_WINDOW);
-        if let Err(_) = cmd.spawn() {
-            let mut fallback = Command::new("rundll32");
-            fallback.args(["url.dll,FileProtocolHandler", &url]);
-            fallback.creation_flags(CREATE_NO_WINDOW);
-            let _ = fallback.spawn();
+        // On Windows, explorer.exe invokes the Windows Shell association directly
+        // to open the user's default browser (Edge, Chrome, Firefox, etc.)
+        if let Err(_) = Command::new("explorer").arg(&url).spawn() {
+            let _ = Command::new("rundll32")
+                .args(["url.dll,FileProtocolHandler", &url])
+                .spawn();
         }
     }
     #[cfg(target_os = "macos")]

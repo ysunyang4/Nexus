@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Server, RefreshCw, RotateCw, Play, Shield, ShieldCheck, AlertTriangle, Trash2 } from "lucide-react";
+import { Server, RefreshCw, RotateCw, Play, Square, Shield, ShieldCheck, AlertTriangle, Trash2 } from "lucide-react";
 import type { McpStatus, TunnelStatusDto } from "../../types.js";
 import { useTranslation } from "../../i18n/useTranslation.js";
 import {
@@ -37,11 +37,36 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
   const loadData = async () => {
     setIsLoading(true);
     try {
-      const [list, policy] = await Promise.all([
+      const [list, policy, managedServices] = await Promise.all([
         projectBuilderApi.listProviders(),
         mcpSecurityApi.getPolicy(),
+        managedMcpApi.listServices().catch(() => []),
       ]);
-      setProviders(list);
+
+      const providerMap = new Map<string, ProviderItem>();
+      (list || []).forEach((p) => {
+        if (p.id !== "crawl4ai" && p.id !== "telegram-mcp" && p.id !== "maya") {
+          providerMap.set(p.id, p);
+        }
+      });
+
+      if (Array.isArray(managedServices)) {
+        managedServices.forEach((s) => {
+          if (!providerMap.has(s.config.id) && s.config.id !== "crawl4ai" && s.config.id !== "telegram-mcp" && s.config.id !== "maya") {
+            providerMap.set(s.config.id, {
+              id: s.config.id,
+              name: s.config.name,
+              type: "external-mcp",
+              endpoint: s.config.endpoint,
+              connected: s.status === "RUNNING",
+              toolCount: s.toolCount || 0,
+              capabilities: ["tools"],
+            });
+          }
+        });
+      }
+
+      setProviders(Array.from(providerMap.values()));
       setSecurityPolicy(policy);
     } finally {
       setIsLoading(false);
@@ -76,6 +101,18 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
     }
   };
 
+  const handleStopManagedService = async (id: string) => {
+    setActionBusy((prev) => ({ ...prev, [id]: true }));
+    try {
+      await managedMcpApi.stopService(id);
+      await new Promise((r) => setTimeout(r, 400));
+      await fetch(`${bridge.getBaseUrl()}/api/mcp/providers/${encodeURIComponent(id)}/refresh`, { method: "POST" }).catch(() => {});
+      await loadData();
+    } finally {
+      setActionBusy((prev) => ({ ...prev, [id]: false }));
+    }
+  };
+
   const handleDeleteProvider = async (id: string, name: string) => {
     if (!window.confirm(isZh ? `确定要删除此外部 MCP Provider "${name}" 吗？此操作将立即卸载该 Provider。` : `Are you sure you want to delete Provider "${name}"?`)) {
       return;
@@ -84,6 +121,8 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
     try {
       await fetch(`${bridge.getBaseUrl()}/api/mcp/providers/${encodeURIComponent(id)}`, { method: "DELETE" }).catch(() => {});
       await projectBuilderApi.unregisterProvider(id).catch(() => {});
+      await managedMcpApi.stopService(id).catch(() => {});
+      await managedMcpApi.deleteCustomService(id).catch(() => {});
       await loadData();
     } catch (err: any) {
       alert(err.message || (isZh ? "删除失败" : "Failed to delete provider"));
@@ -342,7 +381,18 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
                       >
                         <RotateCw className={`w-3 h-3 ${actionBusy[prov.id] ? "animate-spin" : ""}`} />
                       </button>
-                      {!prov.connected && (
+                      {prov.connected ? (
+                        <button
+                          type="button"
+                          onClick={() => handleStopManagedService(prov.id)}
+                          disabled={actionBusy[prov.id]}
+                          className="flex items-center gap-1 px-2 py-0.5 bg-rose-600 hover:bg-rose-500 text-white rounded text-[10px] font-semibold shadow-xs transition cursor-pointer"
+                          title={isZh ? "停止服务进程" : "Stop Process"}
+                        >
+                          <Square className="w-2.5 h-2.5" />
+                          <span>{isZh ? "停止" : "Stop"}</span>
+                        </button>
+                      ) : (
                         <button
                           type="button"
                           onClick={() => handleStartManagedService(prov.id)}

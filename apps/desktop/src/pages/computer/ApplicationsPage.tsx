@@ -21,8 +21,10 @@ import { useTranslation } from "../../i18n/useTranslation.js";
 import { managedMcpApi, type ManagedMcpStateDto } from "../../api/managed-mcp-api.js";
 import { unityApi } from "../../api/unity-api.js";
 import { openExternalUrl } from "../../api/browser-helper.js";
+import { projectBuilderApi } from "../../api/project-builder-api.js";
+import { bridge } from "../../api/bridge.js";
 
-// Core Preset Installed Services (Defaults to Unity + Blender, BOTH STOPPED)
+// Core Preset Installed Services (Defaults to Unity GameDev MCP, STOPPED)
 const INITIAL_INSTALLED_SERVICES: ManagedMcpStateDto[] = [
   {
     config: {
@@ -36,19 +38,6 @@ const INITIAL_INSTALLED_SERVICES: ManagedMcpStateDto[] = [
     status: "STOPPED",
     logs: [],
     toolCount: 19,
-  },
-  {
-    config: {
-      id: "blender-mcp",
-      name: "Blender 3D Automation",
-      command: "uv",
-      args: ["run", "--with", "mcp-for-blender", "python", "blender_server.py"],
-      port: 9099,
-      endpoint: "http://127.0.0.1:9099/mcp",
-    },
-    status: "STOPPED",
-    logs: [],
-    toolCount: 9,
   },
 ];
 
@@ -361,6 +350,8 @@ export const ApplicationsPage: React.FC = () => {
       } else {
         await managedMcpApi.stopService(id).catch(() => {});
         await managedMcpApi.deleteCustomService(id).catch(() => {});
+        await fetch(`${bridge.getBaseUrl()}/api/mcp/providers/${encodeURIComponent(id)}`, { method: "DELETE" }).catch(() => {});
+        await projectBuilderApi.unregisterProvider(id).catch(() => {});
       }
       setServices((prev) => prev.filter((s) => s.config?.id !== id));
       await loadData();

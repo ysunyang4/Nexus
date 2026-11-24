@@ -1,3 +1,4 @@
+import { invoke, isTauri } from "@tauri-apps/api/core";
 import { bridge } from "./bridge.js";
 
 /**
@@ -7,16 +8,20 @@ import { bridge } from "./bridge.js";
 export async function openExternalUrl(url: string): Promise<void> {
   if (!url) return;
 
-  // 1. Try Tauri invoke IPC first
+  // 1. Try Tauri invoke IPC first if running inside desktop app
   try {
-    const { invoke } = await import("@tauri-apps/api/core");
-    await invoke("desktop_open_url", { url });
-    return;
-  } catch {}
+    if (isTauri()) {
+      await invoke("desktop_open_url", { url });
+      return;
+    }
+  } catch (tauriErr) {
+    console.warn("[browser-helper] Tauri desktop_open_url invocation note:", tauriErr);
+  }
 
-  // 2. Try Bridge API
+  // 2. Try Bridge / Server system browser open endpoint
   try {
-    const res = await fetch(`${bridge.getBaseUrl()}/api/browser/open`, {
+    const baseUrl = bridge.getBaseUrl() || "http://127.0.0.1:8787";
+    const res = await fetch(`${baseUrl}/api/browser/open-system`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url }),
@@ -24,7 +29,17 @@ export async function openExternalUrl(url: string): Promise<void> {
     if (res.ok) return;
   } catch {}
 
-  // 3. Fallback to window.open
+  // 3. Try Local Server management endpoint fallback
+  try {
+    const res = await fetch("http://127.0.0.1:18080/api/browser/open", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url }),
+    });
+    if (res.ok) return;
+  } catch {}
+
+  // 4. Fallback to standard window.open
   try {
     window.open(url, "_blank");
   } catch {}

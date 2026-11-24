@@ -1796,6 +1796,33 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (pathname === "/api/browser/open-system" && req.method === "POST") {
+    const rawBody = await readRequestBody(req, 10 * 1024 * 1024);
+    const data = parseFormOrJsonBody(rawBody, req.headers["content-type"]);
+    const targetUrl = data.url;
+    if (targetUrl && typeof targetUrl === "string") {
+      try {
+        if (process.platform === "win32") {
+          child_process.spawn("explorer.exe", [targetUrl], { detached: true, stdio: "ignore" }).unref();
+        } else if (process.platform === "darwin") {
+          child_process.spawn("open", [targetUrl], { detached: true, stdio: "ignore" }).unref();
+        } else {
+          child_process.spawn("xdg-open", [targetUrl], { detached: true, stdio: "ignore" }).unref();
+        }
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ success: true }));
+        return;
+      } catch (err: any) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+        return;
+      }
+    }
+    res.writeHead(400, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ success: false, error: "Missing url parameter" }));
+    return;
+  }
+
   if (pathname === "/api/browser/open" && req.method === "POST") {
     const rawBody = await readRequestBody(req, 10 * 1024 * 1024);
     const data = parseFormOrJsonBody(rawBody, req.headers["content-type"]);

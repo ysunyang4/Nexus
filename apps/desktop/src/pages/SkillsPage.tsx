@@ -22,6 +22,7 @@ import type {
 } from "../types.js";
 import { useTranslation } from "../i18n/useTranslation.js";
 import { bridge } from "../api/bridge.js";
+import { openExternalUrl } from "../api/browser-helper.js";
 
 interface SkillsPageProps {
   uxMode: UserExperienceMode;
@@ -611,7 +612,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
               <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
                 <button
                   type="button"
-                  onClick={() => void bridge.openUrl("https://github.com/ysunyang4")}
+                  onClick={() => void openExternalUrl("https://github.com/ysunyang4")}
                   className="flex items-center gap-1.5 px-3.5 py-2 bg-theme-base hover:bg-theme-card-hover border border-theme-subtle text-theme-primary rounded-xl text-xs font-medium transition cursor-pointer"
                 >
                   <ExternalLink className="w-3.5 h-3.5 text-sky-500" />

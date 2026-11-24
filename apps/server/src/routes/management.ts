@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
+import child_process from "node:child_process";
 import type { FastifyPluginAsync, FastifyRequest, FastifyReply } from "fastify";
 import { SessionHandoffManager } from "../session/handoff.js";
 import {
@@ -1367,6 +1368,44 @@ export const managementRoutes: FastifyPluginAsync<ManagementRoutesOptions> = asy
     }
 
     return reply.status(200).send({ success: true, config });
+  });
+
+  fastify.post("/api/browser/open", async (request, reply) => {
+    const { url } = (request.body as any) || {};
+    if (typeof url === "string" && url) {
+      try {
+        if (process.platform === "win32") {
+          child_process.spawn("explorer.exe", [url], { detached: true, stdio: "ignore" }).unref();
+        } else if (process.platform === "darwin") {
+          child_process.spawn("open", [url], { detached: true, stdio: "ignore" }).unref();
+        } else {
+          child_process.spawn("xdg-open", [url], { detached: true, stdio: "ignore" }).unref();
+        }
+        return reply.status(200).send({ success: true });
+      } catch (err: any) {
+        return reply.status(500).send({ success: false, error: err.message });
+      }
+    }
+    return reply.status(400).send({ success: false, error: "Missing url parameter" });
+  });
+
+  fastify.post("/api/browser/open-system", async (request, reply) => {
+    const { url } = (request.body as any) || {};
+    if (typeof url === "string" && url) {
+      try {
+        if (process.platform === "win32") {
+          child_process.spawn("explorer.exe", [url], { detached: true, stdio: "ignore" }).unref();
+        } else if (process.platform === "darwin") {
+          child_process.spawn("open", [url], { detached: true, stdio: "ignore" }).unref();
+        } else {
+          child_process.spawn("xdg-open", [url], { detached: true, stdio: "ignore" }).unref();
+        }
+        return reply.status(200).send({ success: true });
+      } catch (err: any) {
+        return reply.status(500).send({ success: false, error: err.message });
+      }
+    }
+    return reply.status(400).send({ success: false, error: "Missing url parameter" });
   });
 
   fastify.post("/management/clear-handle-file", async (_request, reply) => {

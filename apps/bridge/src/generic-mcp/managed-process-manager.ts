@@ -368,6 +368,11 @@ export class ManagedProcessManager {
   }
 
   private initDefaultPresets(): void {
+    // If user's configuration file exists on disk, respect it completely (do not resurrect deleted services)
+    if (fs.existsSync(this.configFilePath)) {
+      return;
+    }
+
     const rawIds = [
       "blender-mcp",
     ];
