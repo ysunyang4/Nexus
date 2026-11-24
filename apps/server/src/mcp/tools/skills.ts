@@ -11,7 +11,6 @@ import {
   SkillRollbackParamsSchema,
   SkillCandidateProposeParamsSchema,
   SkillCandidateReviewParamsSchema,
-  NexusSkillsSchema,
   LocalBridgeError,
   LocalBridgeErrorCode,
 } from "@localbridge/protocol";
@@ -534,23 +533,4 @@ export function registerSkillTools(server: McpServer, context: McpContext): void
       }
     }
   );
-  // 11. nexus_skills (Universal Meta-Tool for Skills)
-  server.registerTool(
-    "nexus_skills",
-    {
-      description:
-        "Unified skills meta-tool for managing, searching, loading, reading, and inspecting cross-agent skills (ChatGPT, Cursor, Antigravity, Codex, etc.). Action: list | search | load | read_file | refresh | status.",
-      inputSchema: toMcpSchema(NexusSkillsSchema),
-      annotations: { readOnlyHint: true },
-    },
-    async (args: any) => {
-      try {
-        const result = await context.skillRegistry.executeNexusSkills(args);
-        return formatToolSuccess(result);
-      } catch (err) {
-        return McpErrorMapper.toMcpToolError(err);
-      }
-    }
-  );
-
 }

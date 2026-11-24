@@ -106,6 +106,30 @@ export class WorkflowSessionManager {
       .prepare("SELECT * FROM workflow_sessions WHERE id = ?")
       .get(sessionId) as WorkflowSessionRow | undefined;
     if (!row) {
+      try {
+        const handoffRow = this.db
+          .prepare("SELECT * FROM nexus_session_handoff WHERE handle = ?")
+          .get(sessionId) as any;
+        if (handoffRow) {
+          const now = Date.now();
+          return {
+            id: handoffRow.handle,
+            projectId: "default",
+            goal: handoffRow.summary || handoffRow.title || "Cross-account handoff session",
+            goals: [handoffRow.title || "Cross-account handoff session"],
+            title: handoffRow.title,
+            state: (handoffRow.expires_at < now ? "expired" : "active") as any,
+            createdAt: handoffRow.created_at,
+            updatedAt: handoffRow.accessed_at || handoffRow.created_at,
+            lastActivityAt: handoffRow.accessed_at || handoffRow.created_at,
+            createdBy: "chat",
+            eventCount: 1,
+            eventsTruncated: false,
+            checkpointCount: 0,
+          };
+        }
+      } catch {}
+
       throw new LocalBridgeError(
         LocalBridgeErrorCode.SESSION_NOT_FOUND,
         `Workflow session "${sessionId}" not found`
@@ -707,6 +731,71 @@ export class WorkflowSessionManager {
    * 6. Build deterministic Handoff Packet for a session.
    */
   async buildHandoffPacket(sessionId: string): Promise<WorkflowHandoffPacket> {
+    let handoffRow: any = null;
+    try {
+      handoffRow = this.db
+        .prepare("SELECT * FROM nexus_session_handoff WHERE handle = ?")
+        .get(sessionId) as any;
+    } catch {}
+    if (handoffRow) {
+      let activeFiles: string[] = [];
+      let keyDecisions: string[] = [];
+      let pendingTasks: string[] = [];
+      try {
+        if (handoffRow.active_files) activeFiles = JSON.parse(handoffRow.active_files);
+        if (handoffRow.key_decisions) keyDecisions = JSON.parse(handoffRow.key_decisions);
+        if (handoffRow.pending_tasks) pendingTasks = JSON.parse(handoffRow.pending_tasks);
+      } catch {}
+
+      return {
+        sessionId: handoffRow.handle,
+        project: {
+          projectId: "default",
+          projectName: "Nexus Default Workspace",
+          enabled: true,
+        },
+        goals: [handoffRow.title || "Cross-account handoff session"],
+        currentStatus: {
+          git: { isRepository: false, dirty: false },
+          jobs: { running: 0, pendingApprovals: 0 },
+        },
+        workspace: { mode: "primary", projectRoot: "" },
+        activeFiles,
+        recentCheckpoints: [
+          {
+            id: `cp_${handoffRow.handle}`,
+            checkpointNumber: 1,
+            summary: handoffRow.summary,
+            nextSteps: pendingTasks,
+            blockers: [],
+            createdAt: handoffRow.created_at,
+          },
+        ],
+        checkpoint: {
+          latestSummary: handoffRow.summary,
+          nextSteps: pendingTasks,
+          blockers: [],
+          createdAt: handoffRow.created_at,
+        },
+        recentJobs: [],
+        recentApprovals: [],
+        recentEvents: [],
+        recentErrors: [],
+        warnings: [],
+        generatedAt: Date.now(),
+        handoff: {
+          handle: handoffRow.handle,
+          title: handoffRow.title,
+          summary: handoffRow.summary,
+          keyDecisions,
+          activeFiles,
+          pendingTasks,
+          rawContext: handoffRow.raw_context,
+          wakePrompt: handoffRow.wake_prompt,
+        },
+      } as any;
+    }
+
     const session = this.getSession(sessionId);
     const warnings: string[] = [];
 

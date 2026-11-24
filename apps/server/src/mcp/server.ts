@@ -37,6 +37,9 @@ import { registerRuleTools } from "./tools/rules.js";
 import { registerKnowledgeTools } from "./tools/knowledge.js";
 import { registerContextTools } from "./tools/context.js";
 import { registerDiscoveryTools } from "./tools/discovery.js";
+import { registerPromptTools } from "./tools/prompts.js";
+import { registerSessionCacheTools } from "./tools/session-cache.js";
+import { registerRelayHubTools } from "./tools/relay-hub.js";
 
 import { TOOL_ANNOTATIONS } from "./annotations.js";
 
@@ -63,6 +66,40 @@ export function createLocalBridgeMcpServer(
   // Set negotiated protocol version to 2026-07-28 so the wire codec resolves server/discover and other 2026-era methods
   (server.server as any)._negotiatedProtocolVersion = MCP_PROTOCOL_VERSION;
 
+  const SERVER_ONLY_TOOLS = new Set([
+    "localbridge_project_list",
+    "localbridge_project_info",
+    "localbridge_rule_list",
+    "localbridge_rule_get",
+    "localbridge_rule_add",
+    "localbridge_rule_update",
+    "localbridge_rule_remove",
+    "localbridge_knowledge_list",
+    "localbridge_knowledge_get",
+    "localbridge_knowledge_search",
+    "localbridge_context_get",
+    "localbridge_context_save",
+    "localbridge_approval_list",
+    "localbridge_approval_get",
+    "localbridge_approval_status",
+    "localbridge_system_status",
+    "localbridge_session_list",
+    "localbridge_session_status",
+    "localbridge_session_events",
+    "localbridge_job_list",
+    "localbridge_skill_list",
+    "localbridge_skill_get",
+    "localbridge_skill_match",
+    "nexus_session_cache_load",
+    "nexus_session_cache_list",
+    "nexus_session_cache_save",
+    "nexus_session_cache_clear",
+    "nexus_session_handoff",
+    "nexus_get_active_directives",
+    "localbridge_relay_discover_nodes",
+    "localbridge_relay_dispatch_task",
+  ]);
+
   // Auto-inject annotations from TOOL_ANNOTATIONS if omitted and track toolName in execution context
   const originalRegisterTool = server.registerTool.bind(server);
   server.registerTool = ((name: string, config: any, handler: any) => {
@@ -77,24 +114,191 @@ export function createLocalBridgeMcpServer(
         toolName: name,
         runnerInvoked: false,
       };
-      return mcpExecutionContext.run(store, async () => {
-        const res = await handler(args, extra);
-        const isMockRpc = Boolean((context.rpcService?.request as any)?.mock);
-        if (!res?.isError && !store.runnerInvoked && !isMockRpc && context.runnerRegistry?.list().length > 0) {
-          try {
-            const runnerId = context.resolveAnyRunner();
-            const conn = context.runnerRegistry.get(runnerId);
-            if (!conn || !(conn.request as any)?.mock) {
-              await context.request(runnerId, "system.ping", {
-                _toolName: name,
-                idempotencyKey: `srv_tool_${name}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-              });
-            }
-          } catch {
-            // Runner disconnected or unavailable
+
+      const targetProjectId = args?.projectId ?? args?.command?.projectId;
+      const isMockRpc = Boolean((context.rpcService?.request as any)?.mock);
+
+      // Gate 1: Health Guard (Runner Preflight)
+      if (!SERVER_ONLY_TOOLS.has(name) && !isMockRpc && context.runnerRegistry?.list().length === 0) {
+        context.logAudit("mcp_tool_blocked", {
+          toolName: name,
+          projectId: targetProjectId,
+          errorCode: "RUNNER_OFFLINE",
+          resultStatus: "error",
+          reason: "Runner is offline or unavailable",
+        });
+        return {
+          isError: true,
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                status: "BLOCKED",
+                code: "RUNNER_OFFLINE",
+                message: `Health Guard: Runner is offline. Tool "${name}" requires an active connected runner.`,
+              }),
+            },
+          ],
+          structuredContent: {
+            status: "BLOCKED",
+            code: "RUNNER_OFFLINE",
+          },
+        };
+      }
+
+      // Gate 2: Workspace Contract (Project authorization & Path traversal protection)
+      if (targetProjectId) {
+        const project = context.projectService?.getProject(targetProjectId);
+        if (!project && !context.projectService?.getSafetyLayerDisabled()) {
+          context.logAudit("mcp_permission_denied", {
+            toolName: name,
+            projectId: targetProjectId,
+            errorCode: "WORKSPACE_CONTRACT_VIOLATION",
+            resultStatus: "error",
+            reason: `Project "${targetProjectId}" not found or unauthorized`,
+          });
+          return {
+            isError: true,
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify({
+                  status: "PERMISSION_DENIED",
+                  code: "WORKSPACE_CONTRACT_VIOLATION",
+                  message: `Workspace Contract: Project "${targetProjectId}" not found or unauthorized.`,
+                }),
+              },
+            ],
+            structuredContent: {
+              status: "PERMISSION_DENIED",
+              code: "WORKSPACE_CONTRACT_VIOLATION",
+            },
+          };
+        }
+      }
+
+      // Path traversal check in Workspace Contract
+      const pathKeys = ["path", "relativePath", "target", "cwd", "destination", "source", "filePath"];
+      for (const key of pathKeys) {
+        const val = args?.[key] ?? args?.command?.[key];
+        if (typeof val === "string") {
+          const norm = val.replace(/\\/g, "/");
+          if (norm === ".." || norm.includes("../") || norm.endsWith("/..") || norm.includes("..\\")) {
+            context.logAudit("mcp_permission_denied", {
+              toolName: name,
+              projectId: targetProjectId,
+              relativePath: val,
+              errorCode: "PATH_TRAVERSAL",
+              resultStatus: "error",
+              reason: `Path traversal detected in parameter "${key}"`,
+            });
+            return {
+              isError: true,
+              content: [
+                {
+                  type: "text",
+                  text: `Path traversal rejected: "${val}"`,
+                },
+              ],
+              structuredContent: {
+                status: "PERMISSION_DENIED",
+                code: "PATH_TRAVERSAL",
+              },
+            };
           }
         }
-        return res;
+      }
+
+      // Gate 3: Job Idempotency Guard (Block retry on OUTCOME_UNKNOWN)
+      if (name === "localbridge_job_start") {
+        const idempKey = args?.idempotencyKey ?? store.idempotencyKey;
+        if (idempKey && context.db) {
+          try {
+            const prevJob = context.db
+              .prepare(
+                "SELECT id, state FROM jobs WHERE idempotency_key = ? ORDER BY created_at DESC LIMIT 1"
+              )
+              .get(idempKey) as { id: string; state: string } | undefined;
+            if (
+              prevJob &&
+              (prevJob.state === "OUTCOME_UNKNOWN" ||
+                prevJob.state === "outcome_unknown" ||
+                prevJob.state === "timed_out")
+            ) {
+              context.logAudit("mcp_tool_blocked", {
+                toolName: name,
+                projectId: targetProjectId,
+                errorCode: "RETRY_UNSAFE_BLOCKED",
+                resultStatus: "error",
+                idempotencyKey: idempKey,
+              });
+              return {
+                isError: true,
+                content: [
+                  {
+                    type: "text",
+                    text: JSON.stringify({
+                      status: "BLOCKED",
+                      code: "RETRY_UNSAFE_BLOCKED",
+                      message: `Retry blocked: previous execution with idempotencyKey "${idempKey}" is in OUTCOME_UNKNOWN state.`,
+                    }),
+                  },
+                ],
+                structuredContent: {
+                  status: "BLOCKED",
+                  code: "RETRY_UNSAFE_BLOCKED",
+                  previousJobId: prevJob.id,
+                },
+              };
+            }
+          } catch {}
+        }
+      }
+
+      return mcpExecutionContext.run(store, async () => {
+        const startTime = Date.now();
+        try {
+          const res = await handler(args, extra);
+          if (!res?.isError && !store.runnerInvoked && !isMockRpc && context.runnerRegistry?.list().length > 0) {
+            try {
+              const runnerId = context.resolveAnyRunner();
+              const conn = context.runnerRegistry.get(runnerId);
+              if (!conn || !(conn.request as any)?.mock) {
+                await context.request(runnerId, "system.ping", {
+                  _toolName: name,
+                  idempotencyKey: `srv_tool_${name}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+                });
+              }
+            } catch {
+              // Runner disconnected or unavailable
+            }
+          }
+          const durationMs = Date.now() - startTime;
+          const isError = Boolean(res?.isError);
+          const relPath = typeof args?.path === "string" ? args.path : (typeof args?.relativePath === "string" ? args.relativePath : undefined);
+          context.logAudit(isError ? "mcp_tool_failed" : "mcp_tool_completed", {
+            toolName: name,
+            projectId: targetProjectId,
+            durationMs,
+            resultStatus: isError ? "error" : "success",
+            clientId: (store as any).clientId || "claude_client",
+            actorDisplayName: (store as any).clientId || "Claude",
+            relativePath: relPath,
+          });
+          return res;
+        } catch (err: any) {
+          const durationMs = Date.now() - startTime;
+          context.logAudit("mcp_tool_failed", {
+            toolName: name,
+            projectId: targetProjectId,
+            durationMs,
+            resultStatus: "error",
+            errorCode: err?.code || "ERROR",
+            clientId: (store as any).clientId || "claude_client",
+            actorDisplayName: (store as any).clientId || "Claude",
+          });
+          throw err;
+        }
       });
     };
     return originalRegisterTool(name, { ...config, annotations }, wrappedHandler);
@@ -137,6 +341,9 @@ export function createLocalBridgeMcpServer(
   registerKnowledgeTools(server, context);
   registerContextTools(server, context);
   registerDiscoveryTools(server, context);
+  registerPromptTools(server, context);
+  registerSessionCacheTools(server, context);
+  registerRelayHubTools(server, context);
 
   return server;
 }

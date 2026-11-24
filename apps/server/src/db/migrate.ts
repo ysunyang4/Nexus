@@ -62,7 +62,7 @@ export function runMigrations(
 
   const files = fs
     .readdirSync(dir)
-    .filter((f) => f.endsWith(".sql"))
+    .filter((f) => f.endsWith(".sql") && !f.endsWith(".down.sql"))
     .sort();
 
   const appliedMigrations: string[] = [];

@@ -8,8 +8,6 @@ import type {
   SkillMatchResult,
   SkillCollection,
   SkillSource,
-  ExternalSkillSourceConfig,
-  NexusSkillsParams,
 } from "@localbridge/protocol";
 import type { SkillLoader } from "./skill-loader.js";
 import { SkillResolver } from "./skill-resolver.js";
@@ -27,20 +25,21 @@ export class SkillRegistry {
     const loaded = this.loader.loadAll(projectDirs);
     this.skills.clear();
 
-    // Pass 1: Built-in skills
+    // Pass 1: Register Built-in skills first (they have highest precedence)
     for (const skill of loaded) {
       if (skill.source === "builtin") {
         this.skills.set(skill.id, skill);
       }
     }
 
-    // Pass 2: User and Project skills
+    // Pass 2: Register User and Project skills, detecting conflicts
     for (const skill of loaded) {
-      if (skill.source === "builtin" || skill.source === "external") continue;
+      if (skill.source === "builtin") continue;
 
       const existing = this.skills.get(skill.id);
       if (existing) {
         if (existing.source === "builtin") {
+          // Cannot override built-in skill
           this.skills.set(`${skill.id}__conflict_${skill.source}_${skill.projectId || "user"}`, {
             ...skill,
             enabled: false,
@@ -51,6 +50,7 @@ export class SkillRegistry {
             ],
           });
         } else {
+          // Duplicate user/project skill
           this.skills.set(`${skill.id}__conflict_${Date.now()}`, {
             ...skill,
             enabled: false,
@@ -65,23 +65,13 @@ export class SkillRegistry {
         this.skills.set(skill.id, skill);
       }
     }
-
-    // Pass 3: External Zero-Copy Skills
-    for (const skill of loaded) {
-      if (skill.source !== "external") continue;
-      const existing = this.skills.get(skill.id);
-      if (existing) {
-        this.skills.set(`${skill.id}__ext_${skill.originAgent || "ext"}`, skill);
-      } else {
-        this.skills.set(skill.id, skill);
-      }
-    }
   }
 
   listSkills(filter: SkillListFilter = {}): SkillMetadata[] {
     const results: SkillMetadata[] = [];
 
     for (const skill of this.skills.values()) {
+      // Filter out project-scoped skills that belong to other projects
       if (skill.source === "project") {
         if (!filter.projectId || skill.projectId !== filter.projectId) {
           continue;
@@ -108,6 +98,7 @@ export class SkillRegistry {
         continue;
       }
 
+      // Convert definition to metadata (exclude full instructions markdown to save memory / bandwidth)
       const { instructions: _unused, ...meta } = skill;
       results.push(meta);
     }
@@ -164,6 +155,7 @@ export class SkillRegistry {
       return null;
     }
 
+    // If it's a project skill, it can only be accessed with matching projectId
     if (skill.source === "project" && projectId && skill.projectId !== projectId) {
       return null;
     }
@@ -177,12 +169,14 @@ export class SkillRegistry {
       return false;
     }
 
+    // Cannot enable an invalid or conflict skill
     if (enabled && (skill.validationStatus === "invalid" || skill.validationStatus === "conflict")) {
       return false;
     }
 
     skill.enabled = enabled;
 
+    // Persist to raw-skill.json or skill.yaml on disk if possible
     try {
       if (skill.sourcePath) {
         const rawJsonPath = path.join(skill.sourcePath, "raw-skill.json");
@@ -240,330 +234,5 @@ export class SkillRegistry {
     collectionId?: string
   ): SkillMatchResult {
     return this.resolver.resolve(query, projectId, layaRecommendation, collectionId);
-  }
-
-  // --- External Source Management ---
-
-  getExternalSources(): ExternalSkillSourceConfig[] {
-    const configs = this.loader.loadExternalSourceConfigs();
-    const allSkills = Array.from(this.skills.values());
-    for (const cfg of configs) {
-      cfg.skillsCount = allSkills.filter(
-        (s) => s.source === "external" && (s.originAgent === cfg.id || s.originAgent === cfg.agentType)
-      ).length;
-    }
-    return configs;
-  }
-
-  toggleExternalSource(id: string, enabled: boolean): ExternalSkillSourceConfig[] {
-    const configs = this.loader.loadExternalSourceConfigs();
-    const target = configs.find((c) => c.id === id);
-    if (target) {
-      target.enabled = enabled;
-      this.loader.saveExternalSourceConfigs(configs);
-      this.reload();
-    }
-    return this.getExternalSources();
-  }
-
-  addExternalSource(customPath: string, name?: string): ExternalSkillSourceConfig[] {
-    const resolved = path.resolve(customPath);
-    if (!fs.existsSync(resolved)) {
-      throw new Error(`Directory does not exist: ${customPath}`);
-    }
-    const configs = this.loader.loadExternalSourceConfigs();
-    const existing = configs.find((c) => path.resolve(c.path) === resolved);
-    if (existing) {
-      existing.enabled = true;
-    } else {
-      const id = `custom-${Date.now()}`;
-      configs.push({
-        id,
-        name: name || path.basename(resolved),
-        path: resolved,
-        enabled: true,
-        agentType: "custom",
-        isCustom: true,
-        available: true,
-      });
-    }
-    this.loader.saveExternalSourceConfigs(configs);
-    this.reload();
-    return this.getExternalSources();
-  }
-
-  removeExternalSource(id: string): ExternalSkillSourceConfig[] {
-    const configs = this.loader.loadExternalSourceConfigs();
-    const index = configs.findIndex((c) => c.id === id);
-    if (index !== -1) {
-      configs.splice(index, 1);
-      this.loader.saveExternalSourceConfigs(configs);
-      this.reload();
-    }
-    return this.getExternalSources();
-  }
-
-  rescanExternalSources(): ExternalSkillSourceConfig[] {
-    const configs = this.loader.loadExternalSourceConfigs();
-    this.loader.saveExternalSourceConfigs(configs);
-    this.reload();
-    return this.getExternalSources();
-  }
-
-  // --- Meta-Tool Action Executor: nexus_skills ---
-
-  async executeNexusSkills(params: NexusSkillsParams): Promise<any> {
-    switch (params.action) {
-      case "match" as any: {
-        const queryStr = ((params as any).query || (params as any).name || "").trim();
-        const matchRes = this.matchSkills(queryStr, (params as any).projectId);
-        return matchRes;
-      }
-
-      case "list": {
-        const list = this.listSkills({ source: params.source as any });
-        return {
-          count: list.length,
-          skills: list.map((s) => ({
-            name: s.id,
-            displayName:
-              typeof s.name === "string" ? s.name : s.name?.["en-US"] || s.name?.["zh-CN"] || s.id,
-            description:
-              typeof s.description === "string"
-                ? s.description
-                : s.description?.["en-US"] || s.description?.["zh-CN"] || s.summary || "",
-            source: s.originAgent || s.source,
-            available: s.isAvailable !== false,
-            needs_tools: s.tools || [],
-            risk: s.risk || "low",
-            triggers: s.triggers || [],
-            workflow: s.workflow || [],
-            sourcePath: s.sourcePath,
-          })),
-        };
-      }
-
-      case "search": {
-        const q = (params.query || "").toLowerCase().trim();
-        const all = this.listSkills({ source: params.source as any });
-        const matched = all.filter((s) => {
-          if (!q) return true;
-          const nameStr = (
-            typeof s.name === "string" ? s.name : `${s.name?.["en-US"]} ${s.name?.["zh-CN"]}`
-          ).toLowerCase();
-          const descStr = (
-            typeof s.description === "string"
-              ? s.description
-              : `${s.description?.["en-US"]} ${s.description?.["zh-CN"]}`
-          ).toLowerCase();
-          const trigsStr = (s.triggers || []).join(" ").toLowerCase();
-          return (
-            s.id.toLowerCase().includes(q) ||
-            nameStr.includes(q) ||
-            descStr.includes(q) ||
-            trigsStr.includes(q)
-          );
-        });
-
-        return {
-          count: matched.length,
-          skills: matched.map((s) => ({
-            name: s.id,
-            displayName:
-              typeof s.name === "string" ? s.name : s.name?.["en-US"] || s.name?.["zh-CN"] || s.id,
-            description:
-              typeof s.description === "string"
-                ? s.description
-                : s.description?.["en-US"] || s.description?.["zh-CN"] || "",
-            source: s.originAgent || s.source,
-            available: s.isAvailable !== false,
-            needs_tools: s.tools || [],
-            risk: s.risk || "low",
-            triggers: s.triggers || [],
-            workflow: s.workflow || [],
-          })),
-        };
-      }
-
-      case "get" as any:
-      case "load": {
-        const targetId = ((params as any).skillId || params.name || "").trim();
-        if (!targetId) {
-          throw new Error("Parameter 'name' or 'skillId' is required for action 'load'/'get'");
-        }
-        let skill = this.skills.get(targetId);
-        if (!skill) {
-          for (const [k, s] of this.skills.entries()) {
-            if (
-              k === targetId ||
-              s.id === targetId ||
-              path.basename(s.sourcePath) === targetId ||
-              `${s.originAgent}/${path.basename(s.sourcePath)}` === targetId
-            ) {
-              skill = s;
-              break;
-            }
-          }
-        }
-        if (!skill) {
-          throw new Error(`Skill not found: ${targetId}`);
-        }
-
-        let instructions = skill.instructions || "";
-        if (!instructions && skill.sourcePath) {
-          const mdPath = path.join(skill.sourcePath, "SKILL.md");
-          if (fs.existsSync(mdPath)) {
-            instructions = fs.readFileSync(mdPath, "utf-8");
-          }
-        }
-
-        // Rewrite relative paths inside instructions to absolute paths
-        const absBase = skill.sourcePath.replace(/\\/g, "/");
-        instructions = instructions.replace(
-          /(\b(?:scripts|references|docs|assets)\/[a-zA-Z0-9_\-\.\/]+)/g,
-          `${absBase}/$1`
-        );
-
-        // Scan references/ and scripts/ directories
-        const files: Array<{ path: string; relPath: string; size: number }> = [];
-        try {
-          const scanDir = (dir: string, rel = "") => {
-            if (!fs.existsSync(dir)) return;
-            const entries = fs.readdirSync(dir, { withFileTypes: true });
-            for (const e of entries) {
-              const eRel = rel ? `${rel}/${e.name}` : e.name;
-              const eAbs = path.join(dir, e.name);
-              if (e.isDirectory()) {
-                scanDir(eAbs, eRel);
-              } else if (e.isFile()) {
-                const st = fs.statSync(eAbs);
-                files.push({ path: eAbs, relPath: eRel, size: st.size });
-              }
-            }
-          };
-          scanDir(path.join(skill.sourcePath, "scripts"), "scripts");
-          scanDir(path.join(skill.sourcePath, "references"), "references");
-        } catch {}
-
-        const result: any = {
-          name: skill.id,
-          displayName:
-            typeof skill.name === "string"
-              ? skill.name
-              : skill.name?.["en-US"] || skill.name?.["zh-CN"] || skill.id,
-          description:
-            typeof skill.description === "string"
-              ? skill.description
-              : skill.description?.["en-US"] || skill.description?.["zh-CN"] || "",
-          source: skill.originAgent || skill.source,
-          path: skill.sourcePath,
-          available: skill.isAvailable !== false,
-          triggers: skill.triggers || [],
-          workflow: skill.workflow || [],
-          tools: skill.tools || [],
-          instructions,
-          files,
-        };
-
-        if (params.mode === "full") {
-          const fullFiles: Record<string, string> = {};
-          for (const f of files.slice(0, 15)) {
-            try {
-              if (f.size < 65536) {
-                fullFiles[f.relPath] = fs.readFileSync(f.path, "utf-8");
-              }
-            } catch {}
-          }
-          result.fileContents = fullFiles;
-        }
-
-        return result;
-      }
-
-      case "read_file": {
-        const targetId = ((params as any).skillId || params.name || "").trim();
-        const docRelPath = ((params as any).documentPath || params.path || "").trim();
-        if (!targetId || !docRelPath) {
-          throw new Error("Parameters 'name' (or 'skillId') and 'path' (or 'documentPath') are required for action 'read_file'");
-        }
-        let skill = this.skills.get(targetId);
-        if (!skill) {
-          for (const [k, s] of this.skills.entries()) {
-            if (
-              k === targetId ||
-              s.id === targetId ||
-              path.basename(s.sourcePath) === targetId ||
-              `${s.originAgent}/${path.basename(s.sourcePath)}` === targetId
-            ) {
-              skill = s;
-              break;
-            }
-          }
-        }
-        if (!skill) {
-          throw new Error(`Skill not found: ${targetId}`);
-        }
-
-        const rootPath = path.resolve(skill.sourcePath);
-        const targetFilePath = path.resolve(skill.sourcePath, docRelPath);
-        if (!targetFilePath.startsWith(rootPath)) {
-          throw new Error("Access denied: path traversal outside skill directory is forbidden");
-        }
-        if (!fs.existsSync(targetFilePath)) {
-          throw new Error(`File not found: ${docRelPath}`);
-        }
-
-        const content = fs.readFileSync(targetFilePath, "utf-8");
-        return {
-          skill: skill.id,
-          path: docRelPath,
-          content,
-        };
-      }
-
-      case "refresh": {
-        this.reload();
-        return {
-          refreshed: true,
-          totalSkills: this.skills.size,
-          timestamp: new Date().toISOString(),
-        };
-      }
-
-      case "status": {
-        const configs = this.loader.loadExternalSourceConfigs();
-        const allSkills = Array.from(this.skills.values());
-        const sourcesStatus = configs.map((c) => {
-          const srcSkills = allSkills.filter(
-            (s) =>
-              s.source === "external" && (s.originAgent === c.id || s.originAgent === c.agentType)
-          );
-          return {
-            id: c.id,
-            name: c.name,
-            path: c.path,
-            enabled: c.enabled,
-            available: fs.existsSync(c.path),
-            totalSkills: srcSkills.length,
-            accessibleSkills: srcSkills.filter((s) => s.isAvailable !== false).length,
-            brokenSkills: srcSkills
-              .filter((s) => s.isAvailable === false)
-              .map((s) => ({
-                id: s.id,
-                reason: s.readError || "Inaccessible",
-              })),
-          };
-        });
-
-        return {
-          totalSkills: allSkills.length,
-          sources: sourcesStatus,
-          timestamp: new Date().toISOString(),
-        };
-      }
-
-      default:
-        throw new Error(`Unknown action: ${(params as any).action}`);
-    }
   }
 }

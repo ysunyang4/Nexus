@@ -15,6 +15,16 @@ for (const tool of CANONICAL_TOOL_DEFINITIONS) {
   derivedScopes[tool.name] = scope;
 }
 
+// Session cache and directive tools: explicit least-privilege whitelist registration
+derivedScopes["nexus_session_cache_load"] = "read";
+derivedScopes["nexus_session_cache_list"] = "read";
+derivedScopes["nexus_get_active_directives"] = "read";
+derivedScopes["nexus_session_cache_save"] = "write";
+derivedScopes["nexus_session_cache_clear"] = "write";
+derivedScopes["nexus_session_handoff"] = "write";
+derivedScopes["localbridge_relay_discover_nodes"] = "read";
+derivedScopes["localbridge_relay_dispatch_task"] = "execute";
+
 export const MCP_TOOL_SCOPE: Readonly<Record<string, McpScope>> = Object.freeze(derivedScopes);
 
 export function requiredScopeForTool(toolName: string): McpScope | undefined {

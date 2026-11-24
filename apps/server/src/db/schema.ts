@@ -216,3 +216,32 @@ export interface AiConnectionRow {
   last_connected_at: number | null;
   last_error: string | null;
 }
+
+export interface NexusPromptRow {
+  id: string;
+  category: "system" | "project" | "user" | "tool";
+  name: string;
+  description: string | null;
+  content: string;
+  project_id: string | null;
+  enabled: number;
+  created_at: number;
+  updated_at: number;
+}
+
+export interface NexusSessionCacheRow {
+  handle: string;
+  title: string;
+  summary: string;
+  key_decisions: string | null; // JSON string
+  active_files: string | null; // JSON string
+  pending_tasks: string | null; // JSON string
+  raw_context: string | null;
+  token_count: number;
+  created_at: number;
+  expires_at: number;
+  accessed_at: number | null;
+  access_count: number;
+}
+
+

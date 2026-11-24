@@ -230,11 +230,8 @@ export class SkillResolver {
         }
       } else if (skill.id === "nexus.project-inspect") {
         if (matchedProjectTarget && matchedInspectAction) {
-          score += 0.85;
-          matchedIntent = `project architecture & inspection: ${matchedProjectTarget} + ${matchedInspectAction}`;
-        } else if (lowerQuery.includes("项目结构") || lowerQuery.includes("代码结构") || lowerQuery.includes("架构") || (lowerQuery.includes("分析") && (lowerQuery.includes("项目") || lowerQuery.includes("代码")))) {
           score += 0.82;
-          matchedIntent = `project structure & architecture analysis: ${lowerQuery}`;
+          matchedIntent = `project architecture & inspection: ${matchedProjectTarget} + ${matchedInspectAction}`;
         } else if (matchedProjectTarget && matchedDebugAction && !hasSpecificFileTarget) {
           score += 0.78;
           matchedIntent = `project-level health check: ${matchedProjectTarget} + ${matchedDebugAction}`;
@@ -242,8 +239,8 @@ export class SkillResolver {
           score += 0.76;
           matchedIntent = `project overview inspection: ${matchedProjectTarget}`;
         }
-      } else if (skill.id === "nexus.run-tests" && (lowerQuery.includes("test") || lowerQuery.includes("测试") || lowerQuery.includes("单测") || lowerQuery.includes("跑测试") || lowerQuery.includes("运行测试"))) {
-        score += 0.85;
+      } else if (skill.id === "nexus.run-tests" && (lowerQuery.includes("test") || lowerQuery.includes("测试"))) {
+        score += 0.75;
         matchedIntent = "test execution intent";
       } else if (skill.id === "nexus.fix-build" && (lowerQuery.includes("build") || lowerQuery.includes("构建") || lowerQuery.includes("编译") || lowerQuery.includes("compile"))) {
         score += 0.75;
@@ -251,18 +248,6 @@ export class SkillResolver {
       } else if (skill.id === "nexus.git-review" && (lowerQuery.includes("git") || lowerQuery.includes("diff") || lowerQuery.includes("提交") || lowerQuery.includes("审查"))) {
         score += 0.75;
         matchedIntent = "git review intent";
-      }
-
-      // Check availableDocuments / document filenames for document-oriented queries
-      if (skill.availableDocuments && skill.availableDocuments.length > 0) {
-        for (const doc of skill.availableDocuments) {
-          const docBase = (doc.split("/").pop() || doc).replace(/\.(md|markdown|txt)$/i, "").toLowerCase();
-          if (docBase.length >= 2 && (lowerQuery.includes(docBase) || docBase.includes(lowerQuery))) {
-            score = Math.max(score, 0.88);
-            matchedIntent = `matched documentation file: ${docBase}`;
-            break;
-          }
-        }
       }
 
       // C. Category matching

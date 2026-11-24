@@ -29,6 +29,7 @@ import { managementRoutes } from "./routes/management.js";
 import { unityRoutes } from "./routes/unity.js";
 import { mcpRoutes, McpContext, McpRateLimiter } from "./mcp/index.js";
 import { IntelligenceRuntime } from "./intelligence/runtime.js";
+import { RelayHubService } from "./relay/relay-hub-service.js";
 
 export interface BuildAppOptions {
   config: AppConfig;
@@ -80,7 +81,22 @@ export async function buildApp(
 
   // CORS
   await app.register(cors, {
-    origin: config.server.corsOrigin,
+    origin: (origin, cb) => {
+      if (
+        !origin ||
+        origin.startsWith("http://127.0.0.1") ||
+        origin.startsWith("http://localhost") ||
+        origin.includes("tauri.localhost") ||
+        origin === "tauri://localhost" ||
+        origin === "https://claude.ai" ||
+        origin.endsWith(".claude.ai")
+      ) {
+        cb(null, true);
+        return;
+      }
+      cb(null, false);
+    },
+    credentials: true,
   });
 
   // Allow empty JSON body without throwing 400 FST_ERR_CTP_EMPTY_JSON_BODY
@@ -104,6 +120,17 @@ export async function buildApp(
 
   // Strict Anti-Proxy Defense for Management and Control Plane Routes
   app.addHook("onRequest", async (request, reply) => {
+    // Transparently rewrite root extension and management routes to /api
+    if (request.raw.url) {
+      if (request.raw.url.startsWith("/extensions/")) {
+        request.raw.url = "/api" + request.raw.url;
+      } else if (request.raw.url.startsWith("/management/")) {
+        request.raw.url = "/api" + request.raw.url;
+      } else if (request.raw.url.startsWith("/conversations/")) {
+        request.raw.url = "/api" + request.raw.url;
+      }
+    }
+
     const rawUrl = request.raw.url || "";
     const pathname = rawUrl.split("?")[0] || "";
     const isProtectedManagementRoute =
@@ -356,6 +383,41 @@ export async function buildApp(
       "::1",
       config.server.host,
     ],
+  });
+
+  // Register Extension Bridge Pro WebSocket & REST routes
+  app.get("/extension-relay", { websocket: true }, (connection: any) => {
+    const relayService = RelayHubService.getInstance();
+    relayService.registerClient(connection.socket || connection);
+    app.log.info("Nexus Extension Bridge Pro client connected to /extension-relay");
+  });
+
+  app.get("/api/relay/status", async (_req, reply) => {
+    const relayService = RelayHubService.getInstance();
+    return reply.send(relayService.getStatus());
+  });
+
+  app.get("/api/relay/config", async (_req, reply) => {
+    const relayService = RelayHubService.getInstance();
+    return reply.send(relayService.getConfig());
+  });
+
+  app.post("/api/relay/config", async (req, reply) => {
+    const relayService = RelayHubService.getInstance();
+    const newConfig = req.body as any;
+    if (newConfig && typeof newConfig === "object") {
+      relayService.updateConfig(newConfig);
+    }
+    return reply.send(relayService.getConfig());
+  });
+
+  app.post("/api/relay/toggle", async (req, reply) => {
+    const relayService = RelayHubService.getInstance();
+    const { enabled } = (req.body as any) || {};
+    if (typeof enabled === "boolean") {
+      relayService.setEnabled(enabled);
+    }
+    return reply.send(relayService.getStatus());
   });
 
   // On close hook

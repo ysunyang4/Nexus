@@ -28,4 +28,14 @@ for (const tool of CANONICAL_TOOL_DEFINITIONS) {
   }
 }
 
+// Built-in annotations for directives and session-cache tools
+derivedAnnotations["nexus_get_active_directives"] = { readOnlyHint: true };
+derivedAnnotations["nexus_session_cache_save"] = { readOnlyHint: false, idempotentHint: false };
+derivedAnnotations["nexus_session_cache_load"] = { readOnlyHint: false };
+derivedAnnotations["nexus_session_cache_list"] = { readOnlyHint: true };
+derivedAnnotations["nexus_session_cache_clear"] = { readOnlyHint: false };
+derivedAnnotations["nexus_session_handoff"] = { readOnlyHint: false, idempotentHint: false };
+derivedAnnotations["localbridge_relay_discover_nodes"] = { readOnlyHint: true };
+derivedAnnotations["localbridge_relay_dispatch_task"] = { readOnlyHint: false, idempotentHint: false, openWorldHint: true };
+
 export const TOOL_ANNOTATIONS: Record<string, ToolAnnotations> = derivedAnnotations;

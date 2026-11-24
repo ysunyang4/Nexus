@@ -1,9 +1,13 @@
 import type { FastifyPluginAsync, FastifyRequest } from "fastify";
+import fs from "node:fs";
+import path from "node:path";
 import { exec } from "node:child_process";
+import { RunnerRpcMethods } from "@localbridge/protocol";
 import type { McpContext } from "../mcp/context.js";
 import type { TokenService } from "../db/token-service.js";
 import { checkLoopbackAndSecurity } from "./management.js";
 import { LocalStorageEngine } from "../intelligence/storage/index.js";
+import { SessionHandoffManager } from "../session/handoff.js";
 
 export interface IntelligenceRoutesOptions {
   mcpContext: McpContext;
@@ -703,4 +707,500 @@ export const intelligenceRoutes: FastifyPluginAsync<IntelligenceRoutesOptions> =
       return reply.status(500).send({ error: err.message });
     }
   });
+
+  // ==========================================================================
+  // Prompts Management
+  // ==========================================================================
+
+  fastify.get("/intelligence/prompts", async (request: FastifyRequest<{
+    Querystring: { category?: string; project_id?: string; projectId?: string };
+  }>, reply) => {
+    try {
+      const db = opts.mcpContext.db;
+      if (!db) {
+        return reply.status(500).send({ error: "Database not available" });
+      }
+
+      let query = "SELECT * FROM nexus_prompts WHERE 1=1";
+      const params: any[] = [];
+      const category = request.query.category;
+      const projectId = request.query.project_id || request.query.projectId;
+
+      if (category) {
+        query += " AND category = ?";
+        params.push(category);
+      }
+      if (projectId) {
+        query += " AND (project_id = ? OR project_id IS NULL)";
+        params.push(projectId);
+      }
+      query += " ORDER BY updated_at DESC";
+
+      const rows = db.prepare(query).all(...params) as any[];
+      const prompts = rows.map((r) => ({
+        id: r.id,
+        category: r.category,
+        name: r.name,
+        description: r.description || "",
+        content: r.content,
+        projectId: r.project_id,
+        enabled: Boolean(r.enabled),
+        createdAt: r.created_at,
+        updatedAt: r.updated_at,
+      }));
+
+      return reply.send({ count: prompts.length, prompts });
+    } catch (err: any) {
+      return reply.status(500).send({ error: err.message });
+    }
+  });
+
+  fastify.post("/intelligence/prompts", async (request: FastifyRequest<{
+    Body: {
+      id?: string;
+      category: string;
+      name: string;
+      description?: string;
+      content: string;
+      projectId?: string;
+      project_id?: string;
+      enabled?: boolean;
+    };
+  }>, reply) => {
+    try {
+      const db = opts.mcpContext.db;
+      if (!db) {
+        return reply.status(500).send({ error: "Database not available" });
+      }
+
+      const { id, category, name, description, content, projectId, project_id, enabled } = request.body || {};
+      const validCategories = ["system", "project", "user", "tool"];
+
+      if (!category || !validCategories.includes(category)) {
+        return reply.status(400).send({
+          error: `Invalid category. Must be one of: ${validCategories.join(", ")}`,
+        });
+      }
+      if (!name || typeof name !== "string" || name.trim().length === 0 || name.length > 100) {
+        return reply.status(400).send({
+          error: "Name must be between 1 and 100 characters",
+        });
+      }
+      if (!content || typeof content !== "string" || content.trim().length === 0 || content.length > 20000) {
+        return reply.status(400).send({
+          error: "Content must be between 1 and 20000 characters",
+        });
+      }
+
+      const promptId = id && id.trim().length > 0 ? id.trim() : `prompt-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      const now = Date.now();
+      const projId = projectId || project_id || null;
+      const isEnabled = enabled !== undefined ? (enabled ? 1 : 0) : 1;
+
+      db.prepare(`
+        INSERT INTO nexus_prompts (id, category, name, description, content, project_id, enabled, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(id) DO UPDATE SET
+          category = excluded.category,
+          name = excluded.name,
+          description = excluded.description,
+          content = excluded.content,
+          project_id = excluded.project_id,
+          enabled = excluded.enabled,
+          updated_at = excluded.updated_at
+      `).run(
+        promptId,
+        category,
+        name.trim(),
+        description ? description.trim() : null,
+        content,
+        projId,
+        isEnabled,
+        now,
+        now
+      );
+
+      return reply.status(201).send({
+        id: promptId,
+        category,
+        name: name.trim(),
+        description: description || "",
+        content,
+        projectId: projId,
+        enabled: Boolean(isEnabled),
+        createdAt: now,
+        updatedAt: now,
+      });
+    } catch (err: any) {
+      return reply.status(500).send({ error: err.message });
+    }
+  });
+
+  fastify.put("/intelligence/prompts/:id", async (request: FastifyRequest<{
+    Params: { id: string };
+    Body: {
+      category?: string;
+      name?: string;
+      description?: string;
+      content?: string;
+      projectId?: string;
+      project_id?: string;
+      enabled?: boolean;
+    };
+  }>, reply) => {
+    try {
+      const db = opts.mcpContext.db;
+      if (!db) {
+        return reply.status(500).send({ error: "Database not available" });
+      }
+
+      const { id } = request.params;
+      const existing = db.prepare("SELECT * FROM nexus_prompts WHERE id = ?").get(id) as any;
+      if (!existing) {
+        return reply.status(404).send({ error: `Prompt with ID '${id}' not found` });
+      }
+
+      const body = request.body || {};
+      const validCategories = ["system", "project", "user", "tool"];
+      const category = body.category || existing.category;
+      if (!validCategories.includes(category)) {
+        return reply.status(400).send({ error: `Invalid category. Must be one of: ${validCategories.join(", ")}` });
+      }
+
+      const name = body.name !== undefined ? body.name.trim() : existing.name;
+      if (name.length === 0 || name.length > 100) {
+        return reply.status(400).send({ error: "Name must be between 1 and 100 characters" });
+      }
+
+      const content = body.content !== undefined ? body.content : existing.content;
+      if (content.length === 0 || content.length > 20000) {
+        return reply.status(400).send({ error: "Content must be between 1 and 20000 characters" });
+      }
+
+      const description = body.description !== undefined ? body.description : existing.description;
+      const projectId = body.projectId !== undefined ? body.projectId : (body.project_id !== undefined ? body.project_id : existing.project_id);
+      const enabled = body.enabled !== undefined ? (body.enabled ? 1 : 0) : existing.enabled;
+      const now = Date.now();
+
+      db.prepare(`
+        UPDATE nexus_prompts
+        SET category = ?, name = ?, description = ?, content = ?, project_id = ?, enabled = ?, updated_at = ?
+        WHERE id = ?
+      `).run(category, name, description, content, projectId, enabled, now, id);
+
+      return reply.send({
+        id,
+        category,
+        name,
+        description: description || "",
+        content,
+        projectId,
+        enabled: Boolean(enabled),
+        createdAt: existing.created_at,
+        updatedAt: now,
+      });
+    } catch (err: any) {
+      return reply.status(500).send({ error: err.message });
+    }
+  });
+
+  fastify.delete("/intelligence/prompts/:id", async (request: FastifyRequest<{
+    Params: { id: string };
+  }>, reply) => {
+    try {
+      const db = opts.mcpContext.db;
+      if (!db) {
+        return reply.status(500).send({ error: "Database not available" });
+      }
+
+      const { id } = request.params;
+      const existing = db.prepare("SELECT * FROM nexus_prompts WHERE id = ?").get(id) as any;
+      if (!existing) {
+        return reply.status(404).send({ error: `Prompt with ID '${id}' not found` });
+      }
+
+      db.prepare("DELETE FROM nexus_prompts WHERE id = ?").run(id);
+      return reply.send({ success: true, id });
+    } catch (err: any) {
+      return reply.status(500).send({ error: err.message });
+    }
+  });
+
+  // ==========================================================================
+  // Environment Discovery
+  // ==========================================================================
+
+  let envCache: { data: any; expiresAt: number } | null = null;
+
+  fastify.get("/intelligence/environment", async (request: FastifyRequest<{
+    Querystring: { tools?: string; refresh?: string };
+  }>, reply) => {
+    try {
+      const query = (request.query || {}) as { tools?: string; refresh?: string };
+      const shouldRefresh = query.refresh === "true";
+      const now = Date.now();
+      if (!shouldRefresh && !query.tools && envCache && envCache.expiresAt > now) {
+        return reply.send(envCache.data);
+      }
+
+      const runnerId = opts.mcpContext.resolveAnyRunner();
+      const rawTools = query.tools;
+      const tools = rawTools
+        ? rawTools.split(",").map((s) => s.trim()).filter(Boolean)
+        : undefined;
+
+      const result = await opts.mcpContext.request(
+        runnerId,
+        RunnerRpcMethods.EnvironmentDetect,
+        { tools },
+        { timeoutMs: 30000 }
+      );
+
+      if (!tools) {
+        envCache = { data: result, expiresAt: now + 60000 };
+      }
+      return reply.send(result);
+    } catch (err: any) {
+      return reply.send({
+        platform: process.platform,
+        arch: process.arch,
+        tools: [],
+        offline: true,
+        error: err.message,
+      });
+    }
+  });
+
+  // ==========================================================================
+  // Build Environment Storage Monitoring & Safe Clean
+  // ==========================================================================
+
+  function getDirStats(dirPath: string): { bytes: number; files: number } {
+    let bytes = 0;
+    let files = 0;
+    try {
+      if (!fs.existsSync(dirPath)) return { bytes: 0, files: 0 };
+      const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry.name);
+        try {
+          if (entry.isDirectory()) {
+            const sub = getDirStats(fullPath);
+            bytes += sub.bytes;
+            files += sub.files;
+          } else if (entry.isFile()) {
+            const stat = fs.statSync(fullPath);
+            bytes += stat.size;
+            files += 1;
+          }
+        } catch {}
+      }
+    } catch {}
+    return { bytes, files };
+  }
+
+  function formatBytes(bytes: number): string {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
+    if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+  }
+
+  function cleanDirContents(dirPath: string): { cleanedBytes: number; cleanedFiles: number } {
+    let cleanedBytes = 0;
+    let cleanedFiles = 0;
+    try {
+      if (!fs.existsSync(dirPath)) return { cleanedBytes: 0, cleanedFiles: 0 };
+      const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry.name);
+        try {
+          if (entry.isDirectory()) {
+            const sub = cleanDirContents(fullPath);
+            cleanedBytes += sub.cleanedBytes;
+            cleanedFiles += sub.cleanedFiles;
+            fs.rmSync(fullPath, { recursive: true, force: true });
+          } else if (entry.isFile()) {
+            const stat = fs.statSync(fullPath);
+            cleanedBytes += stat.size;
+            cleanedFiles += 1;
+            fs.unlinkSync(fullPath);
+          }
+        } catch {}
+      }
+    } catch {}
+    return { cleanedBytes, cleanedFiles };
+  }
+
+  fastify.get("/intelligence/storage/build-env", async (_request, reply) => {
+    try {
+      const buildRoot = "E:\\Tools\\Env\\Build";
+      const dirsToScan = [
+        { name: "apk", path: path.join(buildRoot, "apk"), safeToClean: true, description: "APK outputs & build intermediates" },
+        { name: "tmp", path: path.join(buildRoot, "tmp"), safeToClean: true, description: "Build & compilation temp files" },
+        { name: "pip", path: path.join(buildRoot, "pip"), safeToClean: false, description: "Python pip package cache" },
+        { name: "npm", path: path.join(buildRoot, "npm"), safeToClean: false, description: "Node npm cache" },
+        { name: "cargo", path: path.join(buildRoot, "cargo"), safeToClean: false, description: "Rust cargo registry & target cache" },
+        { name: "gradle", path: "E:\\Tools\\Env\\Gradle\\.gradle", safeToClean: false, description: "Gradle user home & wrapper cache" },
+      ];
+
+      let totalBytes = 0;
+      let totalFiles = 0;
+
+      const directories = dirsToScan.map((d) => {
+        const stats = getDirStats(d.path);
+        totalBytes += stats.bytes;
+        totalFiles += stats.files;
+        return {
+          name: d.name,
+          path: d.path,
+          size: stats.bytes,
+          sizeFormatted: formatBytes(stats.bytes),
+          fileCount: stats.files,
+          safeToClean: d.safeToClean,
+          description: d.description,
+          exists: fs.existsSync(d.path),
+        };
+      });
+
+      return reply.send({
+        buildRoot,
+        totalBytes,
+        totalSizeFormatted: formatBytes(totalBytes),
+        totalFiles,
+        directories,
+      });
+    } catch (err: any) {
+      return reply.status(500).send({ error: err.message });
+    }
+  });
+
+  fastify.post("/intelligence/storage/build-env/clean", async (request: FastifyRequest<{
+    Body: { target: string; confirmed?: boolean };
+  }>, reply) => {
+    try {
+      const { target, confirmed } = request.body || {};
+      const buildRoot = "E:\\Tools\\Env\\Build";
+      const allowedTargets: Record<string, { path: string; safe: boolean }> = {
+        tmp: { path: path.join(buildRoot, "tmp"), safe: true },
+        apk: { path: path.join(buildRoot, "apk"), safe: true },
+        pip: { path: path.join(buildRoot, "pip"), safe: false },
+        npm: { path: path.join(buildRoot, "npm"), safe: false },
+        cargo: { path: path.join(buildRoot, "cargo"), safe: false },
+        gradle: { path: "E:\\Tools\\Env\\Gradle\\.gradle", safe: false },
+      };
+
+      if (target === "all_safe") {
+        const tmpRes = cleanDirContents(allowedTargets.tmp!.path);
+        const apkRes = cleanDirContents(allowedTargets.apk!.path);
+        const totalCleaned = tmpRes.cleanedBytes + apkRes.cleanedBytes;
+        const totalFiles = tmpRes.cleanedFiles + apkRes.cleanedFiles;
+        return reply.send({
+          success: true,
+          target: "all_safe",
+          cleanedBytes: totalCleaned,
+          cleanedSizeFormatted: formatBytes(totalCleaned),
+          cleanedFiles: totalFiles,
+          message: `安全清理完成：已清空 tmp 与 apk 目录，释放 ${formatBytes(totalCleaned)}。`,
+        });
+      }
+
+      const item = allowedTargets[target];
+      if (!item) {
+        return reply.status(400).send({ error: `Invalid cleanup target: '${target}'. Allowed targets: tmp, apk, all_safe, pip, npm, cargo, gradle.` });
+      }
+
+      if (!item.safe && !confirmed) {
+        return reply.status(400).send({
+          error: `Target '${target}' is a package/compiler cache. Clearing it requires explicit confirmation (confirmed: true).`,
+        });
+      }
+
+      const res = cleanDirContents(item.path);
+      return reply.send({
+        success: true,
+        target,
+        cleanedBytes: res.cleanedBytes,
+        cleanedSizeFormatted: formatBytes(res.cleanedBytes),
+        cleanedFiles: res.cleanedFiles,
+        message: `清理完成：已清空 ${target} 目录，释放 ${formatBytes(res.cleanedBytes)}。`,
+      });
+    } catch (err: any) {
+      return reply.status(500).send({ error: err.message });
+    }
+  });
+
+  // ==========================================================================
+  // Session Cache (Cross-Account Handoff)
+  // ==========================================================================
+
+  fastify.get("/intelligence/session-cache", async (request: FastifyRequest<{
+    Querystring: { include_expired?: string };
+  }>, reply) => {
+    try {
+      const db = opts.mcpContext.db;
+      if (!db) return reply.status(500).send({ error: "Database not available" });
+      const includeExpired = request.query.include_expired === "true";
+      const handles = SessionHandoffManager.list(db, includeExpired);
+      return reply.send({ count: handles.length, handles });
+    } catch (err: any) {
+      return reply.status(500).send({ error: err.message });
+    }
+  });
+
+  fastify.post("/intelligence/session-cache", async (request: FastifyRequest<{
+    Body: any;
+  }>, reply) => {
+    try {
+      const db = opts.mcpContext.db;
+      if (!db) return reply.status(500).send({ error: "Database not available" });
+      const entry = SessionHandoffManager.save(db, request.body as any);
+      return reply.status(201).send(entry);
+    } catch (err: any) {
+      return reply.status(400).send({ error: err.message });
+    }
+  });
+
+  fastify.get("/intelligence/session-cache/:handle", async (request: FastifyRequest<{
+    Params: { handle: string };
+    Querystring: { release_after_read?: string };
+  }>, reply) => {
+    try {
+      const db = opts.mcpContext.db;
+      if (!db) return reply.status(500).send({ error: "Database not available" });
+      const releaseAfterRead = request.query.release_after_read !== "false";
+      const result = SessionHandoffManager.load(db, request.params.handle, releaseAfterRead);
+      if (!result.found) {
+        return reply.status(404).send({ error: result.message });
+      }
+      return reply.send(result);
+    } catch (err: any) {
+      return reply.status(500).send({ error: err.message });
+    }
+  });
+
+  fastify.delete("/intelligence/session-cache/:handle", async (request: FastifyRequest<{
+    Params: { handle: string };
+  }>, reply) => {
+    try {
+      const db = opts.mcpContext.db;
+      if (!db) return reply.status(500).send({ error: "Database not available" });
+      const res = SessionHandoffManager.clear(db, request.params.handle);
+      return reply.send({ success: true, clearedCount: res.clearedCount });
+    } catch (err: any) {
+      return reply.status(500).send({ error: err.message });
+    }
+  });
+
+  fastify.delete("/intelligence/session-cache", async (_request, reply) => {
+    try {
+      const db = opts.mcpContext.db;
+      if (!db) return reply.status(500).send({ error: "Database not available" });
+      const res = SessionHandoffManager.clear(db);
+      return reply.send({ success: true, clearedCount: res.clearedCount });
+    } catch (err: any) {
+      return reply.status(500).send({ error: err.message });
+    }
+  });
+
 };

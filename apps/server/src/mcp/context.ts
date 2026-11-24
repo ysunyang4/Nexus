@@ -322,6 +322,68 @@ export class McpContext {
   }
 
   getAuditEvents(limit = 100): AuditRecord[] {
+    if (this.db) {
+      try {
+        const rows = this.db
+          .prepare(
+            `SELECT id, timestamp, client_id, project_id, tool, arguments_summary, result_summary, duration_ms, risk_level, decision_source, actor_display_name
+             FROM audit_logs
+             ORDER BY timestamp DESC
+             LIMIT ?`
+          )
+          .all(limit) as Array<{
+            id: string;
+            timestamp: number;
+            client_id?: string;
+            project_id?: string;
+            tool: string;
+            arguments_summary?: string;
+            result_summary?: string;
+            duration_ms?: number;
+            risk_level?: string;
+            decision_source?: string;
+            actor_display_name?: string;
+          }>;
+
+        if (rows && rows.length > 0) {
+          return rows.map((r) => {
+            let resObj: any = {};
+            try {
+              if (r.result_summary) resObj = JSON.parse(r.result_summary);
+            } catch {}
+            let argObj: any = {};
+            try {
+              if (r.arguments_summary) argObj = JSON.parse(r.arguments_summary);
+            } catch {}
+
+            return {
+              id: r.id,
+              timestamp: new Date(r.timestamp).toISOString(),
+              event: resObj.event || (r.tool === "claude_dialogue" ? "claude_dialogue" : "mcp_tool_completed"),
+              toolName: r.tool,
+              tool: r.tool,
+              arguments_summary: r.arguments_summary || undefined,
+              result_summary: r.result_summary || undefined,
+              projectId: r.project_id || undefined,
+              clientId: r.client_id || undefined,
+              durationMs: r.duration_ms ?? 0,
+              resultStatus: resObj.resultStatus || "success",
+              errorCode: resObj.errorCode || undefined,
+              policyLevel: r.risk_level || "SAFE",
+              decisionSource: r.decision_source || undefined,
+              actorDisplayName: r.actor_display_name || undefined,
+              relativePath: argObj.path || argObj.relativePath || undefined,
+              summary: argObj.text || argObj.summary || undefined,
+              content: argObj.content || argObj.dialogue || undefined,
+              role: argObj.role || undefined,
+              title: argObj.title || undefined,
+            };
+          });
+        }
+      } catch (err) {
+        this.logger?.warn?.({ err }, "Failed to load audit logs from database");
+      }
+    }
     return [...this.auditLogBuffer].reverse().slice(0, limit);
   }
 
@@ -334,11 +396,6 @@ export class McpContext {
   resolveProjectRunner(projectId: string): string {
     const project = this.projectService.getProject(projectId);
     if (!project) {
-      const isDrive = this.projectService.getSafetyLayerDisabled() && (projectId === "drive-c" || /^[a-zA-Z](?::|盘|_drive|-drive)?$/i.test(projectId));
-      if (isDrive) {
-        const firstOnline = Array.from(this.runnerRegistry.keys())[0];
-        if (firstOnline) return firstOnline;
-      }
       throw new LocalBridgeError(
         LocalBridgeErrorCode.PROJECT_NOT_FOUND,
         `Project "${projectId}" not found or not registered`
@@ -354,10 +411,6 @@ export class McpContext {
 
     const connection = this.runnerRegistry.get(project.runnerId);
     if (!connection) {
-      if (this.projectService.getSafetyLayerDisabled()) {
-        const firstOnline = Array.from(this.runnerRegistry.keys())[0];
-        if (firstOnline) return firstOnline;
-      }
       throw new LocalBridgeError(
         LocalBridgeErrorCode.RUNNER_OFFLINE,
         `Runner "${project.runnerId}" for project "${projectId}" is offline`
@@ -609,7 +662,7 @@ export class McpContext {
    * NEVER logs raw tokens, hashes, diffs, patches, file content, or stdout/stderr.
    */
   logAudit(
-    event: "mcp_tool_started" | "mcp_tool_completed" | "mcp_tool_failed",
+    event: "mcp_tool_started" | "mcp_tool_completed" | "mcp_tool_failed" | "mcp_tool_blocked" | "mcp_permission_denied",
     data: {
       principal?: McpPrincipal;
       toolName: string;
@@ -653,27 +706,30 @@ export class McpContext {
     if (this.auditLogBuffer.length > this.maxAuditLogSize) {
       this.auditLogBuffer.shift();
     }
+    if (this.db) {
+      try {
+        this.db
+          .prepare(
+            `INSERT INTO audit_logs (id, timestamp, client_id, project_id, tool, arguments_summary, result_summary, duration_ms, risk_level, actor_display_name)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          )
+          .run(
+            record.id,
+            Date.now(),
+            record.clientId ?? record.principalId ?? null,
+            record.projectId ?? null,
+            record.toolName,
+            record.relativePath ? JSON.stringify({ path: record.relativePath }) : null,
+            JSON.stringify({ event, errorCode: record.errorCode, resultStatus: record.resultStatus }),
+            record.durationMs ?? 0,
+            event === "mcp_permission_denied" ? "BLOCKED" : event === "mcp_tool_blocked" ? "BLOCKED" : "SAFE",
+            record.actorDisplayName ?? "Claude"
+          );
+      } catch {}
+    }
+  }
 
-    this.logger?.info(
-      {
-        event,
-        principalId: data.principal?.id,
-        authType: data.principal?.authType,
-        toolName: data.toolName,
-        projectId: data.projectId,
-        runnerId: data.runnerId,
-        relativePath: data.relativePath,
-        durationMs: data.durationMs,
-        resultStatus: data.resultStatus,
-        errorCode: data.errorCode,
-        decisionSource: data.decisionSource,
-        policyLevel: data.policyLevel,
-        actorDisplayName: data.actorDisplayName,
-        clientId: data.clientId,
-        clientType: data.clientType,
-        clientName: data.clientName,
-      },
-      `MCP tool [${data.toolName}]: ${event}`
-    );
+  getAuditLogs(): SafeAuditMetadata[] {
+    return [...this.auditLogBuffer];
   }
 }

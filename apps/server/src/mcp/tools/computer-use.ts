@@ -780,7 +780,7 @@ export function registerComputerUseTools(server: McpServer, context: McpContext)
     "localbridge_computer_state_get",
     {
       description: "Get Execution Memory and compressed operational context (SUMMARY, RECENT, RAW). Prevents prompt token explosion on long multi-step tasks.",
-      inputSchema: toMcpSchema(z.object({ tier: z.enum(["SUMMARY", "RECENT", "RAW", "CHECKPOINT", "IMPORTANT"]).default("SUMMARY").optional() })),
+      inputSchema: toMcpSchema(z.object({ tier: z.enum(["SUMMARY", "RECENT", "RAW", "CHECKPOINT", "IMPORTANT"]).default("SUMMARY").optional().describe("合法值：SUMMARY | RECENT | RAW | CHECKPOINT | IMPORTANT") })),
     },
     stateGetHandler
   );
@@ -788,7 +788,7 @@ export function registerComputerUseTools(server: McpServer, context: McpContext)
     "computer_state_get",
     {
       description: "Alias for localbridge_computer_state_get.",
-      inputSchema: toMcpSchema(z.object({ tier: z.enum(["SUMMARY", "RECENT", "RAW", "CHECKPOINT", "IMPORTANT"]).default("SUMMARY").optional() })),
+      inputSchema: toMcpSchema(z.object({ tier: z.enum(["SUMMARY", "RECENT", "RAW", "CHECKPOINT", "IMPORTANT"]).default("SUMMARY").optional().describe("合法值：SUMMARY | RECENT | RAW | CHECKPOINT | IMPORTANT") })),
     },
     stateGetHandler
   );
@@ -821,5 +821,6 @@ export function registerComputerUseTools(server: McpServer, context: McpContext)
     realtimeStreamHandler
   );
 }
+
 
 

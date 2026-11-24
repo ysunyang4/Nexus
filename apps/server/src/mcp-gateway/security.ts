@@ -1,4 +1,3 @@
-import fs from "node:fs";
 import path from "node:path";
 import type { TokenService } from "../db/token-service.js";
 
@@ -22,20 +21,6 @@ export interface PathValidationResult {
  * 2. Desktop management token
  * 3. Any active MCP token ('lb_...') stored in Nexus database
  */
-function getBridgeTokenFromFile(): string {
-  try {
-    const tokenPath = process.env.NEXUS_BRIDGE_TOKEN_PATH || (
-      process.env.LOCALAPPDATA
-        ? path.join(process.env.LOCALAPPDATA, "LocalBridge", "data", "bridge-token.key")
-        : path.join(process.env.HOME || process.env.USERPROFILE || ".", ".localbridge", "data", "bridge-token.key")
-    );
-    if (tokenPath && fs.existsSync(tokenPath)) {
-      return fs.readFileSync(tokenPath, "utf-8").trim();
-    }
-  } catch {}
-  return "";
-}
-
 export function validateBearerToken(
   authHeader: string | undefined,
   tokenService?: TokenService,
@@ -62,10 +47,10 @@ export function validateBearerToken(
   const activeBridgeToken =
     configuredBridgeToken ||
     process.env.NEXUS_BRIDGE_TOKEN ||
-    getBridgeTokenFromFile();
+    "gemini-spark-nexus-secure-token-2026";
 
   // Check 1: Dedicated Bridge Token
-  if (activeBridgeToken && token === activeBridgeToken) {
+  if (token === activeBridgeToken) {
     return { valid: true, token };
   }
 

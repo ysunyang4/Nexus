@@ -163,29 +163,6 @@ export class ServerProjectService {
       };
     });
 
-    if (this.getSafetyLayerDisabled()) {
-      const hasC = list.some(
-        (p) =>
-          p.name === "C盘" ||
-          p.name === "C" ||
-          p.id === "drive-c" ||
-          p.id === "c"
-      );
-      if (!hasC) {
-        const firstOnlineRunner =
-          Array.from(this.runnerRegistry.keys())[0] || "runner_default";
-        list.unshift({
-          id: "drive-c",
-          runnerId: firstOnlineRunner,
-          name: "C盘 (系统全盘访问)",
-          enabled: true,
-          available: true,
-          accessMode: "read-write",
-          executionMode: "project-code",
-        });
-      }
-    }
-
     return list;
   }
 
@@ -197,27 +174,6 @@ export class ServerProjectService {
     const row = this.stmtGetProject.get(projectId) as ProjectRow | undefined;
 
     if (!row) {
-      if (this.getSafetyLayerDisabled()) {
-        const firstOnlineRunner =
-          Array.from(this.runnerRegistry.keys())[0] || "runner_default";
-        let name = projectId;
-        if (
-          projectId === "drive-c" ||
-          projectId.toLowerCase() === "c" ||
-          projectId === "C盘"
-        ) {
-          name = "C盘 (系统全盘访问)";
-        }
-        return {
-          id: projectId,
-          runnerId: firstOnlineRunner,
-          name,
-          enabled: true,
-          available: true,
-          accessMode: "read-write",
-          executionMode: "project-code",
-        };
-      }
       return undefined;
     }
 

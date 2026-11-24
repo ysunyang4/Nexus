@@ -6,6 +6,7 @@ import { registerProjectTools } from "./tools/project.js";
 import { registerFilesystemTools } from "./tools/filesystem.js";
 import { registerGitTools } from "./tools/git.js";
 import { registerRuntimeTools } from "./tools/runtime.js";
+import { registerPromptTools } from "./tools/prompts.js";
 import { validateBearerToken } from "./security.js";
 import type { ServerProjectService } from "../runner/project-service.js";
 import type { TokenService } from "../db/token-service.js";
@@ -26,13 +27,14 @@ export interface McpGatewayOptions {
 export function createGatewayMcpServer(nexusClient: NexusClient): McpServer {
   const server = new McpServer({
     name: "nexus-mcp-gateway",
-    version: "1.3.1",
+    version: "1.0.0",
   });
 
   registerProjectTools(server, nexusClient);
   registerFilesystemTools(server, nexusClient);
   registerGitTools(server, nexusClient);
   registerRuntimeTools(server, nexusClient);
+  registerPromptTools(server, nexusClient);
 
   return server;
 }
@@ -134,7 +136,7 @@ export function createGatewayHttpServer(
             },
             protocol: {
               target: "Standard MCP (2024-11-05 Streamable HTTP)",
-              supportedClients: ["ChatGPT", "DeepSeek", "Cursor", "Nexus"],
+              supportedClients: ["Gemini Spark", "Claude", "Cursor", "Antigravity"],
             },
             uptime: process.uptime(),
           },

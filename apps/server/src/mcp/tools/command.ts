@@ -64,7 +64,7 @@ export function registerCommandTools(server: McpServer, context: McpContext): vo
     "localbridge_command_run",
     {
       description:
-        "Execute an authorized, classified command (tool version, node script, python script, or package script) within project bounds.",
+        "Execute an authorized, classified command (tool version, node script, python script, package script, or shell command) within project bounds.",
       inputSchema: toMcpSchema(CommandRunToolInputSchema),
       annotations: TOOL_ANNOTATIONS.localbridge_command_run,
     },

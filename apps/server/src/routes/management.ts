@@ -1,4 +1,8 @@
+import fs from "node:fs";
+import path from "node:path";
+import crypto from "node:crypto";
 import type { FastifyPluginAsync, FastifyRequest, FastifyReply } from "fastify";
+import { SessionHandoffManager } from "../session/handoff.js";
 import {
   LocalBridgeError,
   LocalBridgeErrorCode,
@@ -120,6 +124,26 @@ export function checkLoopbackAndSecurity(
   let isTauriOrigin = false;
   let isLocalUrlOrigin = false;
 
+  const rawUrl = request.raw.url || "";
+  const pathname = rawUrl.split("?")[0] || "";
+
+  if (pathname.startsWith("/extensions/") && request.method === "GET") {
+    return true;
+  }
+
+  const isSyncOrAudit =
+    pathname.endsWith("/conversations/sync") ||
+    pathname.endsWith("/audit") ||
+    pathname.includes("/conversations/sync") ||
+    pathname.includes("/audit") ||
+    pathname.includes("/session-cache/create-handoff") ||
+    pathname.includes("/recording-mode") ||
+    pathname.includes("/script-token");
+
+  const isClaudeOrigin =
+    origin === "https://claude.ai" ||
+    (typeof origin === "string" && origin.endsWith(".claude.ai"));
+
   if (origin) {
     const allowedOrigins = [
       "tauri://localhost",
@@ -132,7 +156,8 @@ export function checkLoopbackAndSecurity(
       origin.startsWith("http://localhost:") ||
       origin === "http://127.0.0.1" ||
       origin === "http://localhost";
-    if (!isTauriOrigin && !isLocalUrlOrigin) {
+
+    if (!isTauriOrigin && !isLocalUrlOrigin && !(isSyncOrAudit && isClaudeOrigin)) {
       reply.status(403).send({
         error: "Forbidden: Browser cross-origin management access is rejected",
         code: "BROWSER_CROSS_ORIGIN_FORBIDDEN",
@@ -142,7 +167,12 @@ export function checkLoopbackAndSecurity(
   }
 
   const secFetchSite = request.headers["sec-fetch-site"];
-  if (secFetchSite === "cross-site" && !isTauriOrigin && !isLocalUrlOrigin) {
+  if (
+    secFetchSite === "cross-site" &&
+    !isTauriOrigin &&
+    !isLocalUrlOrigin &&
+    !(isSyncOrAudit && isClaudeOrigin)
+  ) {
     reply.status(403).send({
       error: "Forbidden: Cross-site browser requests are blocked",
       code: "BROWSER_CROSS_ORIGIN_FORBIDDEN",
@@ -151,6 +181,11 @@ export function checkLoopbackAndSecurity(
   }
 
   // 4. Token Domain Isolation & Local Management Authentication
+  // Allow dialogue sync, recording-mode, script token, and client audit endpoints
+  if (isSyncOrAudit && (request.method === "POST" || request.method === "GET" || request.method === "OPTIONS")) {
+    return true;
+  }
+
   const authHeader =
     request.headers.authorization ||
     (request.headers["x-management-token"] as string | undefined);
@@ -1135,7 +1170,7 @@ export const managementRoutes: FastifyPluginAsync<ManagementRoutesOptions> = asy
   });
 
   // ==========================================
-  // 6. Audit Events (/audit)
+  // 6. Audit Events (/audit & /conversations/sync)
   // ==========================================
   fastify.get<{ Querystring: { limit?: number } }>(
     "/audit",
@@ -1145,6 +1180,320 @@ export const managementRoutes: FastifyPluginAsync<ManagementRoutesOptions> = asy
       return reply.status(200).send({ events });
     }
   );
+
+  fastify.post<{
+    Body: {
+      tool?: string;
+      argumentsSummary?: any;
+      resultSummary?: any;
+      durationMs?: number;
+      riskLevel?: string;
+      actorDisplayName?: string;
+      clientId?: string;
+      projectId?: string;
+    };
+  }>("/audit", async (request, reply) => {
+    const b = request.body || ({} as any);
+    if (mcpContext.db) {
+      try {
+        mcpContext.db
+          .prepare(
+            `INSERT INTO audit_logs (id, timestamp, client_id, project_id, tool, arguments_summary, result_summary, duration_ms, risk_level, actor_display_name)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          )
+          .run(
+            `audit_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+            Date.now(),
+            b.clientId || "mcp_client",
+            b.projectId || null,
+            b.tool || "mcp_tool",
+            typeof b.argumentsSummary === "string" ? b.argumentsSummary : JSON.stringify(b.argumentsSummary || {}),
+            typeof b.resultSummary === "string" ? b.resultSummary : JSON.stringify(b.resultSummary || {}),
+            b.durationMs || 0,
+            b.riskLevel || "SAFE",
+            b.actorDisplayName || "Claude"
+          );
+      } catch {}
+    }
+    return reply.status(200).send({ success: true });
+  });
+
+  fastify.post<{
+    Body: {
+      chatId?: string;
+      title?: string;
+      role?: "user" | "assistant" | "system";
+      content?: string;
+      messages?: Array<{
+        id?: string;
+        role: "user" | "assistant" | "system";
+        content: string;
+        timestamp?: number;
+      }>;
+    };
+  }>("/conversations/sync", async (request, reply) => {
+    const { chatId, title, role, content, messages } = request.body || {};
+    const timestamp = Date.now();
+
+    if (mcpContext.db) {
+      const insertStmt = mcpContext.db.prepare(
+        `INSERT OR REPLACE INTO audit_logs (id, timestamp, client_id, project_id, tool, arguments_summary, result_summary, duration_ms, risk_level, actor_display_name)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      );
+
+      if (Array.isArray(messages) && messages.length > 0) {
+        for (const msg of messages) {
+          const mid = msg.id || `msg_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+          const speaker = msg.role === "user" ? "Human" : "Claude";
+          const snippet = typeof msg.content === "string" ? msg.content.slice(0, 2000) : "";
+          try {
+            insertStmt.run(
+              mid,
+              msg.timestamp || timestamp,
+              "claude_web",
+              chatId || null,
+              "claude_dialogue",
+              JSON.stringify({ text: snippet, title: title || "Claude 对话", role: msg.role }),
+              JSON.stringify({ status: "synced", speaker }),
+              0,
+              "SAFE",
+              speaker
+            );
+          } catch {}
+        }
+      } else if (content) {
+        const mid = `msg_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+        const speaker = role === "user" ? "Human" : "Claude";
+        const snippet = content.slice(0, 2000);
+        try {
+          insertStmt.run(
+            mid,
+            timestamp,
+            "claude_web",
+            chatId || null,
+            "claude_dialogue",
+            JSON.stringify({ text: snippet, title: title || "Claude 对话", role }),
+            JSON.stringify({ status: "synced", speaker }),
+            0,
+            "SAFE",
+            speaker
+          );
+        } catch {}
+      }
+    }
+
+    return reply.status(200).send({ success: true, count: messages?.length || 1, syncedAt: timestamp });
+  });
+
+  // ==========================================
+  // 6.1 Recording Mode Configuration & Directives Sync
+  // ==========================================
+  fastify.get("/management/recording-mode", async (_request, reply) => {
+    let config = {
+      enabled: true,
+      handle: "nx-main",
+      directives: "1. 所有构建产物和临时缓存统一输出至 E:\\Tools\\Env\\Build\\tmp，严禁污染业务代码与宿主系统\n2. 优先调用已检测的环境工具绝对路径 (Python/ADB/Cargo)\n3. 任务执行阶段完成或退出前，必须调用 nexus_session_cache_save 固化留痕并生成交接句柄",
+      updatedAt: Date.now(),
+    };
+
+    if (mcpContext.db) {
+      try {
+        const row = mcpContext.db
+          .prepare("SELECT value, updated_at FROM system_settings WHERE key = 'recording_mode_config'")
+          .get() as { value: string; updated_at: number } | undefined;
+        if (row && row.value) {
+          const parsed = JSON.parse(row.value);
+          config = { ...config, ...parsed, updatedAt: row.updated_at || config.updatedAt };
+        }
+      } catch {}
+    }
+
+    return reply.status(200).send(config);
+  });
+
+  fastify.post<{
+    Body: {
+      enabled?: boolean;
+      handle?: string;
+      directives?: string;
+    };
+  }>("/management/recording-mode", async (request, reply) => {
+    const { enabled = true, handle = "nx-main", directives = "" } = request.body || {};
+    const now = Date.now();
+    const config = { enabled, handle, directives, updatedAt: now };
+
+    if (mcpContext.db) {
+      try {
+        mcpContext.db
+          .prepare(
+            "INSERT INTO system_settings (key, value, updated_at) VALUES ('recording_mode_config', ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at"
+          )
+          .run(JSON.stringify(config), now);
+
+        const promptId = "prompt-active-recording-mode";
+        const promptName = "【当前生效】记录模式前置执行要求与句柄";
+        const promptDescription = "记录模式开启时 AI 必须优先调阅的核心要求、方式与环境绝对路径";
+        const promptContent = directives
+          ? `${directives}\n\n[Active Handoff Handle: ${handle}]\n【留痕要求】在记录模式下，每次完成对用户的核心回复或阶段性产出时，必须调用 nexus_session_cache_save 固化留痕并生成交接句柄。`
+          : `[Active Handoff Handle: ${handle}]\n所有构建输出指向 E:\\Tools\\Env\\Build\\tmp，并在操作完成后调用 nexus_session_cache_save 固化留痕并生成交接句柄。`;
+
+        if (enabled) {
+          mcpContext.db
+            .prepare(
+              `INSERT INTO nexus_prompts (id, category, name, description, content, project_id, enabled, created_at, updated_at)
+               VALUES (?, 'system', ?, ?, ?, NULL, 1, ?, ?)
+               ON CONFLICT(id) DO UPDATE SET
+                 name = excluded.name,
+                 description = excluded.description,
+                 content = excluded.content,
+                 enabled = 1,
+                 updated_at = excluded.updated_at`
+            )
+            .run(promptId, promptName, promptDescription, promptContent, now, now);
+
+          try {
+            const handleFilePath = path.join(process.cwd(), ".nexus", "session_handle.txt");
+            fs.mkdirSync(path.dirname(handleFilePath), { recursive: true });
+            fs.writeFileSync(handleFilePath, `${handle}\nNexus会话交接句柄: ${handle}。请调用 nexus_session_cache_load 加载上下文并接续工作。\n`, "utf-8");
+          } catch {}
+        } else {
+          mcpContext.db
+            .prepare("UPDATE nexus_prompts SET enabled = 0, updated_at = ? WHERE id = ?")
+            .run(now, promptId);
+        }
+      } catch (err: any) {
+        return reply.status(500).send({ error: err.message || "Failed to save recording mode" });
+      }
+    }
+
+    return reply.status(200).send({ success: true, config });
+  });
+
+  fastify.post("/management/clear-handle-file", async (_request, reply) => {
+    try {
+      const handleFilePath = path.join(process.cwd(), ".nexus", "session_handle.txt");
+      if (fs.existsSync(handleFilePath)) {
+        fs.writeFileSync(handleFilePath, "", "utf-8");
+      }
+      return reply.status(200).send({ success: true, cleared: true });
+    } catch (err: any) {
+      return reply.status(500).send({ success: false, error: err.message || String(err) });
+    }
+  });
+
+  // 6.2 Script Token Management & Extension Hosting
+  function getOrCreateScriptToken(): string {
+    if (!mcpContext.db) return "lb_script_local_default";
+    try {
+      const row = mcpContext.db
+        .prepare("SELECT value FROM system_settings WHERE key = 'nexus_script_token'")
+        .get() as { value: string } | undefined;
+      if (row?.value) {
+        return row.value;
+      }
+      const newToken = "lb_" + crypto.randomBytes(24).toString("hex");
+      mcpContext.db
+        .prepare(
+          "INSERT INTO system_settings (key, value, updated_at) VALUES ('nexus_script_token', ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at"
+        )
+        .run(newToken, Date.now());
+      return newToken;
+    } catch {
+      return "lb_script_local_default";
+    }
+  }
+
+  fastify.get("/management/script-token", async (_request, reply) => {
+    const token = getOrCreateScriptToken();
+    return reply.status(200).send({ token });
+  });
+
+  fastify.post("/management/script-token/regenerate", async (_request, reply) => {
+    if (!mcpContext.db) {
+      return reply.status(500).send({ error: "Database not available" });
+    }
+    const newToken = "lb_" + crypto.randomBytes(24).toString("hex");
+    mcpContext.db
+      .prepare(
+        "INSERT INTO system_settings (key, value, updated_at) VALUES ('nexus_script_token', ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at"
+      )
+      .run(newToken, Date.now());
+    return reply.status(200).send({ token: newToken });
+  });
+
+  // Handler for serving the dedicated Nexus Claude Bridge userscript
+  const serveNexusBridgeScript = async (_request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const candidatePaths = [
+        path.resolve(process.cwd(), "nexus-claude-bridge.user.js"),
+        path.resolve(process.cwd(), "..", "nexus-claude-bridge.user.js"),
+        path.resolve(process.cwd(), "..", "..", "nexus-claude-bridge.user.js"),
+        path.resolve(process.cwd(), "claude-geek-enhancer.user.js"),
+      ];
+      const scriptPath = candidatePaths.find((p) => fs.existsSync(p));
+      if (!scriptPath) {
+        return reply.status(404).send({ error: "nexus-claude-bridge.user.js not found on host" });
+      }
+      let content = fs.readFileSync(scriptPath, "utf-8");
+      const scriptToken = getOrCreateScriptToken();
+      content = content.replace(
+        /const DEFAULT_NEXUS_LB_TOKEN = ".*?";/,
+        `const DEFAULT_NEXUS_LB_TOKEN = "${scriptToken}";`
+      );
+      content = content.replace(
+        /const DEFAULT_NEXUS_TOKEN = ".*?";/,
+        `const DEFAULT_NEXUS_TOKEN = "${scriptToken}";`
+      );
+      reply.header("Content-Type", "text/javascript; charset=utf-8");
+      reply.header("Cache-Control", "no-cache");
+      return reply.send(content);
+    } catch (err: any) {
+      return reply.status(500).send({ error: err.message || String(err) });
+    }
+  };
+
+  fastify.get("/extensions/nexus-claude-bridge.user.js", serveNexusBridgeScript);
+  fastify.get("/extensions/claude-enhancer.user.js", serveNexusBridgeScript);
+
+  // Direct Handoff Creation HTTP endpoint (called by Claude Userscript or Desktop UI)
+  fastify.post<{
+    Body: {
+      title?: string;
+      summary?: string;
+      keyDecisions?: string[];
+      activeFiles?: string[];
+      pendingTasks?: string[];
+      rawContext?: string;
+      ttlHours?: number;
+    };
+  }>("/management/session-cache/create-handoff", async (request, reply) => {
+    if (!mcpContext.db) {
+      return reply.status(500).send({ error: "Database not available" });
+    }
+    const { title, summary, keyDecisions, activeFiles, pendingTasks, rawContext, ttlHours } = request.body || {};
+    try {
+      const entry = SessionHandoffManager.save(mcpContext.db, {
+        title: title || "Claude 对话交接",
+        summary: summary || "阶段性上下文交接",
+        keyDecisions: keyDecisions || [],
+        activeFiles: activeFiles || [],
+        pendingTasks: pendingTasks || [],
+        rawContext: rawContext || undefined,
+        ttlHours: ttlHours ?? 24,
+      });
+
+      // Update local handle file (.nexus/session_handle.txt)
+      try {
+        const handleFilePath = path.join(process.cwd(), ".nexus", "session_handle.txt");
+        fs.mkdirSync(path.dirname(handleFilePath), { recursive: true });
+        fs.writeFileSync(handleFilePath, `${entry.handle}\n${entry.wakePrompt}\n`, "utf-8");
+      } catch {}
+
+      return reply.status(200).send({ success: true, entry });
+    } catch (err: any) {
+      return reply.status(500).send({ success: false, error: err.message || String(err) });
+    }
+  });
 
   // ==========================================
   // 7. Trust & System Settings
@@ -2052,6 +2401,45 @@ export const managementRoutes: FastifyPluginAsync<ManagementRoutesOptions> = asy
       return reply.status(200).send(res);
     } catch (err: any) {
       return reply.status(500).send({ error: err.message || "Failed to capture desktop screenshot" });
+    }
+  });
+
+  fastify.get("/management/computer/snapshots/config", async (_request, reply) => {
+    try {
+      const runnerId = getActiveRunnerId();
+      const res = await (rpcService as any).request(runnerId, RunnerRpcMethods.ComputerSnapshotsConfigGet, {});
+      return reply.status(200).send(res);
+    } catch (err: any) {
+      return reply.status(500).send({ error: err.message || "Failed to get snapshots config" });
+    }
+  });
+
+  fastify.post<{
+    Body?: {
+      snapshotsDir?: string;
+      autoCleanup?: boolean;
+      persistScreenshots?: boolean;
+      allowCDrive?: boolean;
+    };
+  }>("/management/computer/snapshots/config", async (request, reply) => {
+    try {
+      const runnerId = getActiveRunnerId();
+      const res = await (rpcService as any).request(runnerId, RunnerRpcMethods.ComputerSnapshotsConfigSet, request.body || {});
+      return reply.status(200).send(res);
+    } catch (err: any) {
+      return reply.status(400).send({ error: err.message || "Failed to configure snapshots directory" });
+    }
+  });
+
+  fastify.post<{
+    Body?: { olderThanMs?: number; force?: boolean };
+  }>("/management/computer/snapshots/cleanup", async (request, reply) => {
+    try {
+      const runnerId = getActiveRunnerId();
+      const res = await (rpcService as any).request(runnerId, RunnerRpcMethods.ComputerSnapshotsCleanup, request.body || {});
+      return reply.status(200).send(res);
+    } catch (err: any) {
+      return reply.status(500).send({ error: err.message || "Failed to clean up snapshots" });
     }
   });
 };

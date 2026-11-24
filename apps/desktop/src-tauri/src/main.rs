@@ -3554,6 +3554,14 @@ pub fn apply_crisp_windows_icons(hwnd_val: isize) {
 }
 
 fn main() {
+    #[cfg(target_os = "linux")]
+    {
+        // Workaround for WebKitWebProcess EGL crash on Linux (Fedora/Mesa/Wayland)
+        if std::env::var("WEBKIT_DISABLE_DMABUF_RENDERER").is_err() {
+            std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1");
+        }
+    }
+
     let supervisor = Arc::new(Mutex::new(SupervisorState::default()));
     let supervisor_exit_clone = supervisor.clone();
     let supervisor_tray = supervisor.clone();

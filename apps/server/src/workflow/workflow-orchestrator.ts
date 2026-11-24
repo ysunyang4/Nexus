@@ -47,8 +47,21 @@ export class WorkflowOrchestrator {
     // 1. Analyze Project
     recordStep("Analyze Project", "completed", `Validated project ${params.projectId}`);
 
-    // 2. Resolve runner
-    const runnerId = this.context.resolveProjectRunner(params.projectId);
+    // 2. Resolve runner & Preflight health check
+    let runnerId: string;
+    try {
+      runnerId = this.context.resolveProjectRunner(params.projectId);
+    } catch (err: any) {
+      recordStep("Resolve Runner", "failed", err.message || "Failed to resolve runner");
+      return {
+        workflowId,
+        taskId: `blocked_${Date.now()}`,
+        sessionId: `sess_blocked`,
+        status: "failed",
+        steps,
+        message: `Workflow blocked for project '${params.projectId}': ${err.message}`,
+      };
+    }
 
     // 3. Check Git Status
     let gitClean = true;
@@ -140,7 +153,7 @@ export class WorkflowOrchestrator {
 
   async finishCodingTask(params: WorkflowFinishCodingTaskParams): Promise<WorkflowFinishCodingTaskResult> {
     const runnerId = this.context.resolveProjectRunner(params.projectId);
-    let validationPassed = true;
+    let validationPassed = false;
 
     // 1. Run Validation
     if (params.runValidation) {
@@ -149,10 +162,16 @@ export class WorkflowOrchestrator {
           projectId: params.projectId,
           checkType: "all",
         });
-        validationPassed = valRes?.overallPassed ?? true;
-      } catch {
-        validationPassed = true;
+        validationPassed = Boolean(valRes?.overallPassed);
+      } catch (err: any) {
+        validationPassed = false;
+        this.logger?.warn?.(
+          { event: "workflow_validation_failed", projectId: params.projectId, error: err?.message },
+          `Validation run failed or threw exception: ${err?.message}`
+        );
       }
+    } else {
+      validationPassed = true;
     }
 
     // 2. Check Git Dirty Files
@@ -199,6 +218,11 @@ export class WorkflowOrchestrator {
       summary: `Task finished with validation: ${validationPassed ? "PASSED" : "FAILED"}, git dirty files: ${gitDirtyFilesCount}`,
       validationPassed,
     });
+
+    // 6. Automatically clean up transient snapshots & screenshots
+    try {
+      await (this.context as any).request(runnerId, RunnerRpcMethods.ComputerSnapshotsCleanup, { force: true });
+    } catch {}
 
     return {
       taskId: params.taskId,

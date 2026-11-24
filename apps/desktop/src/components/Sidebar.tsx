@@ -11,8 +11,8 @@ import {
     Settings,
   AppWindow,
   LayoutGrid,
-  MessageCircle,
-  Users,
+  HelpCircle,
+  Heart,
 } from "lucide-react";
 import nexusLogo from "../assets/nexus.png";
 import type { ServerStatus, UserExperienceMode } from "../types.js";
@@ -77,8 +77,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   runnersCount,
   uxMode: _uxMode = "standard",
   onOpenSponsorModal,
-  onOpenCommunityModal,
-  onOpenContactModal,
+  onOpenCommunityModal: _onOpenCommunityModal,
+  onOpenContactModal: _onOpenContactModal,
 }) => {
   const { tText } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
@@ -354,65 +354,65 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      {/* Footer: Settings, Community, Contacts & Status Strip */}
+      {/* Footer: Settings, Help & Support */}
       <div className="p-2 border-t border-theme-subtle space-y-1 shrink-0 bg-theme-sidebar">
-        {/* 1. Official Community Groups Button */}
-        {(onOpenCommunityModal || onOpenSponsorModal) && (
+        {/* Support Nexus Button */}
+        {onOpenSponsorModal && (
           <button
             type="button"
-            onClick={onOpenCommunityModal || onOpenSponsorModal}
+            onClick={onOpenSponsorModal}
             title={tText(
-              "官方交流群 (QQ / Telegram)",
-              "Official Communities (QQ / Telegram)",
-              "公式コミュニティ (QQ / Telegram)",
-              "Offizielle Community-Gruppen (QQ / Telegram)"
+              "赞助支持 Nexus (USDT / Binance)",
+              "Support Nexus (USDT / Binance)",
+              "Nexusを支援 (USDT / Binance)",
+              "Nexus unterstützen (USDT / Binance)"
             )}
             className={`w-full flex items-center rounded-md text-xs transition cursor-pointer ${
               collapsed ? "justify-center p-2" : "gap-2.5 px-3 py-1.5"
-            } text-blue-600 dark:text-blue-400 hover:text-blue-700 hover:bg-blue-500/10 border border-transparent`}
+            } text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 hover:bg-emerald-500/10 border border-transparent`}
           >
-            <Users className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+            <Heart className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
             {!collapsed && (
               <span className="font-medium">
                 {tText(
-                  "官方交流群",
-                  "Community Groups",
-                  "公式コミュニティ",
-                  "Community-Gruppen"
+                  "赞助支持",
+                  "Support Project",
+                  "プロジェクト支援",
+                  "Projekt unterstützen"
                 )}
               </span>
             )}
           </button>
         )}
 
-        {/* 2. Personal Contact Developer Button */}
-        {(onOpenContactModal || onOpenSponsorModal) && (
-          <button
-            type="button"
-            onClick={onOpenContactModal || onOpenSponsorModal}
-            title={tText(
-              "联系作者 (微信 / Telegram / WhatsApp / LINE)",
-              "Contact Developer",
-              "開発者へ連絡",
-              "Entwickler kontaktieren"
-            )}
-            className={`w-full flex items-center rounded-md text-xs transition cursor-pointer ${
-              collapsed ? "justify-center p-2" : "gap-2.5 px-3 py-1.5"
-            } text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 hover:bg-emerald-500/10 border border-transparent`}
-          >
-            <MessageCircle className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            {!collapsed && (
-              <span className="font-medium">
-                {tText(
-                  "联系作者",
-                  "Contact Developer",
-                  "開発者へ連絡",
-                  "Entwickler kontaktieren"
-                )}
-              </span>
-            )}
-          </button>
-        )}
+        {/* Help & Documentation (GitHub) */}
+        <button
+          type="button"
+          onClick={() => {
+            window.open("https://github.com/ysunyang4/Nexus", "_blank");
+          }}
+          title={tText(
+            "帮助与开源文档 (GitHub)",
+            "Help & Documentation (GitHub)",
+            "ヘルプとドキュメント (GitHub)",
+            "Hilfe & Dokumentation (GitHub)"
+          )}
+          className={`w-full flex items-center rounded-md text-xs transition cursor-pointer ${
+            collapsed ? "justify-center p-2" : "gap-2.5 px-3 py-1.5"
+          } text-sky-600 dark:text-sky-400 hover:text-sky-700 hover:bg-sky-500/10 border border-transparent`}
+        >
+          <HelpCircle className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+          {!collapsed && (
+            <span className="font-medium">
+              {tText(
+                "帮助与文档",
+                "Help & Docs",
+                "ヘルプ & ドキュメント",
+                "Hilfe & Doku"
+              )}
+            </span>
+          )}
+        </button>
 
         <button
           type="button"

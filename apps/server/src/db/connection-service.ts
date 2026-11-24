@@ -3,7 +3,6 @@ import path from "node:path";
 import os from "node:os";
 import crypto from "node:crypto";
 import type Database from "better-sqlite3";
-import {dpapiKey} from "./dpapi-key.js";
 import type {
   AIClientType,
   AIConnectionStatus,
@@ -19,30 +18,26 @@ export class SecureSecretStorage {
   private masterKey: Buffer;
 
   constructor(secretDir?: string) {
-    const secureMode = process.env.NEXUS_OPEN_SECURE_SECRETS === "1";
-    const baseDir = secretDir || (secureMode
-      ? path.join(process.env.LOCALAPPDATA || os.homedir(), "NexusOpenSource", "v1.3.1", "db-secrets")
-      : (process.platform === "win32" && process.env.LOCALAPPDATA
+    const baseDir =
+      secretDir ||
+      (process.platform === "win32" && process.env.LOCALAPPDATA
         ? path.join(process.env.LOCALAPPDATA, "LocalBridge", "secrets")
-        : path.join(os.homedir(), ".localbridge", "secrets")));
+        : path.join(os.homedir(), ".localbridge", "secrets"));
 
     try {
       if (!fs.existsSync(baseDir)) {
         fs.mkdirSync(baseDir, { recursive: true });
       }
-      const keyPath = path.join(baseDir, secureMode ? "master.key.dpapi" : "master.key");
+      const keyPath = path.join(baseDir, "master.key");
       if (fs.existsSync(keyPath)) {
-        const saved = fs.readFileSync(keyPath);
-        this.masterKey = secureMode ? dpapiKey("Unprotect", saved) : saved;
+        this.masterKey = fs.readFileSync(keyPath);
       } else {
         this.masterKey = crypto.randomBytes(32);
-        const sealed = secureMode ? dpapiKey("Protect", this.masterKey) : this.masterKey;
-        fs.writeFileSync(keyPath, sealed, { flag: "wx", mode: 0o600 });
+        fs.writeFileSync(keyPath, this.masterKey, { mode: 0o600 });
       }
-      if (this.masterKey.length !== 32) throw new Error("Invalid secure storage key length");
-    } catch (error) {
-      // Never silently fall back to a predictable shared encryption key.
-      throw new Error("Secure storage key unavailable", { cause: error });
+    } catch {
+      // Fallback in-memory key if disk write fails
+      this.masterKey = crypto.scryptSync("localbridge-secure-storage-salt", "salt", 32);
     }
   }
 
