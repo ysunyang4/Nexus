@@ -16,9 +16,9 @@
 </p>
 
 <p align="center">
-  <a href="https://m8ven.ai/mcp/ysunyang4/nexus?s=readme"><img src="https://m8ven.ai/badge/mcp/ysunyang4/nexus" alt="M8ven Score"></a>
-  <img src="https://img.shields.io/badge/MCP_Tools-332_Canonical-2563EB?labelColor=1E40AF&amp;style=flat-square" alt="332 MCP Tools">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-2563EB?labelColor=1E40AF&amp;style=flat-square" alt="License AGPL-3.0"></a>
+  <a href="https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme"><img src="https://img.shields.io/badge/M8ven-Verified-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="M8ven Verified"></a>
+  <img src="https://img.shields.io/badge/MCP_Tools-332_Canonical-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="332 MCP Tools">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="License AGPL-3.0"></a>
 </p>
 <!-- M8ven Publisher Verification: [![M8ven Verified](https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652)](https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme) -->
 
@@ -368,3 +368,7 @@ cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
 - **Security & Unrestricted Mode Disclaimer ([SECURITY.md](SECURITY.md))**:
   - By default, Nexus enforces strict path sandboxing (`read-only`) and AST command risk filtering (`safe-only`).
   - If you explicitly enable `read-write`, `project-code`, Computer Use UI automation, or **Unrestricted / Full-Control Mode**, you assume full responsibility for all commands executed and files modified by connected AI models. Always back up critical work or use Git version control.
+
+<p align="center">
+  <a href="https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme"><img src="https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652" alt="M8ven Verified" height="20"></a>
+</p>
