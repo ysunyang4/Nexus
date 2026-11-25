@@ -16,6 +16,7 @@ import {
   Layers,
   ChevronRight,
   ExternalLink,
+  BookOpen,
 } from "lucide-react";
 import { useTranslation } from "../../i18n/useTranslation.js";
 import { managedMcpApi, type ManagedMcpStateDto } from "../../api/managed-mcp-api.js";
@@ -543,6 +544,14 @@ export const ApplicationsPage: React.FC = () => {
 
         {/* Right Info Pill */}
         <div className="hidden sm:flex items-center gap-3 text-xs font-mono text-theme-muted">
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("nexus:navigate-mcp-guide"))}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 font-sans font-medium transition-colors cursor-pointer"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>{tText("安装指南", "Setup Guide", "導入ガイド", "Installationshilfe")}</span>
+          </button>
           <span>{isZh ? "运行中:" : "Running:"} <strong className="text-theme-primary">{runningCount}/{services.length}</strong></span>
           <span>&bull;</span>
           <span>{isZh ? "能力池:" : "Tool Pool:"} <strong className="text-sky-500">{totalTools}</strong></span>

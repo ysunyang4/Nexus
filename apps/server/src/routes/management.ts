@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import net from "node:net";
 import crypto from "node:crypto";
 import child_process from "node:child_process";
 import type { FastifyPluginAsync, FastifyRequest, FastifyReply } from "fastify";
@@ -2475,6 +2476,227 @@ export const managementRoutes: FastifyPluginAsync<ManagementRoutesOptions> = asy
     } catch (err: any) {
       return reply.status(500).send({ error: err.message || "Failed to clean up snapshots" });
     }
+  });
+
+  fastify.get("/mcp/env-check", async (_request, reply) => {
+    const isWin = process.platform === "win32";
+
+    const runExec = (file: string, args: string[], timeoutMs = 4000): Promise<{ ok: boolean; stdout: string; stderr: string }> =>
+      new Promise((resolve) => {
+        child_process.execFile(
+          file,
+          args,
+          { timeout: timeoutMs, windowsHide: true },
+          (error, stdout, stderr) => {
+            resolve({
+              ok: !error,
+              stdout: String(stdout ?? "").trim(),
+              stderr: String(stderr ?? "").trim(),
+            });
+          },
+        );
+      });
+
+    const whichTool = async (name: string): Promise<string | null> => {
+      const res = await runExec(isWin ? "where.exe" : "which", [name], 3000);
+      if (!res.ok || !res.stdout) return null;
+      const firstLine = res.stdout.split(/\r?\n/)[0]?.trim();
+      return firstLine || null;
+    };
+
+    const probeNode = async () => {
+      const version = process.version.replace(/^v/, "");
+      const major = Number.parseInt(version.split(".")[0] || "0", 10);
+      const binPath = (await whichTool("node")) || process.execPath;
+      return {
+        installed: true,
+        ok: major >= 18,
+        version: `v${version}`,
+        path: binPath,
+        requirement: ">= 18.0.0",
+      };
+    };
+
+    const probeNpm = async () => {
+      const res = isWin
+        ? await runExec("cmd.exe", ["/d", "/s", "/c", "npm.cmd", "-v"])
+        : await runExec("npm", ["-v"]);
+      const binPath = await whichTool(isWin ? "npm.cmd" : "npm");
+      return {
+        installed: res.ok && Boolean(res.stdout),
+        ok: res.ok && Boolean(res.stdout),
+        version: res.ok ? res.stdout.split(/\r?\n/)[0]?.trim() || null : null,
+        path: binPath,
+      };
+    };
+
+    const probeUv = async () => {
+      const sysPath = await whichTool("uv");
+      let version: string | null = null;
+      let resolvedPath: string | null = sysPath;
+      let bundled = false;
+
+      if (sysPath) {
+        const res = await runExec("uv", ["--version"]);
+        if (res.ok && res.stdout) version = res.stdout.split(/\r?\n/)[0]?.trim() || null;
+      }
+
+      if (!version) {
+        const candidates = [
+          path.resolve(process.cwd(), "resources", "runtime", isWin ? "uv.exe" : "uv"),
+          path.resolve(process.cwd(), "..", "..", "resources", "runtime", isWin ? "uv.exe" : "uv"),
+          path.join(path.dirname(process.execPath), "resources", "runtime", isWin ? "uv.exe" : "uv"),
+          ...(isWin
+            ? [path.join(process.env.LOCALAPPDATA || "", "Nexus", "runtime", "uv.exe")]
+            : []),
+        ];
+        for (const candidate of candidates) {
+          if (candidate && fs.existsSync(candidate)) {
+            const res = await runExec(candidate, ["--version"]);
+            if (res.ok && res.stdout) {
+              version = res.stdout.split(/\r?\n/)[0]?.trim() || null;
+              resolvedPath = candidate;
+              bundled = true;
+              break;
+            }
+          }
+        }
+      }
+
+      return {
+        installed: Boolean(version || resolvedPath),
+        ok: Boolean(version || resolvedPath),
+        version,
+        path: resolvedPath,
+        bundled,
+      };
+    };
+
+    const probePython = async () => {
+      let res = await runExec("python", ["--version"]);
+      let binPath = await whichTool("python");
+      if (!res.ok && !isWin) {
+        res = await runExec("python3", ["--version"]);
+        binPath = await whichTool("python3");
+      }
+      const raw = res.stdout || res.stderr;
+      const version = res.ok && raw ? raw.split(/\r?\n/)[0]?.trim() : null;
+      return {
+        installed: Boolean(version),
+        ok: Boolean(version),
+        version,
+        path: binPath,
+      };
+    };
+
+    const probePhotoshopMcp = async () => {
+      let binPath = await whichTool(isWin ? "photoshop-mcp.cmd" : "photoshop-mcp");
+      if (!binPath && isWin && process.env.APPDATA) {
+        const appDataCmd = path.join(process.env.APPDATA, "npm", "photoshop-mcp.cmd");
+        if (fs.existsSync(appDataCmd)) binPath = appDataCmd;
+      }
+      return {
+        installed: Boolean(binPath),
+        ok: Boolean(binPath),
+        version: binPath ? "@alisaitteke/photoshop-mcp" : null,
+        path: binPath,
+      };
+    };
+
+    const checkTcpPort = (port: number): Promise<boolean> =>
+      new Promise((resolve) => {
+        const socket = net.createConnection({ host: "127.0.0.1", port });
+        let settled = false;
+        const done = (open: boolean) => {
+          if (settled) return;
+          settled = true;
+          socket.destroy();
+          resolve(open);
+        };
+        socket.setTimeout(350);
+        socket.on("connect", () => done(true));
+        socket.on("timeout", () => done(false));
+        socket.on("error", () => done(false));
+      });
+
+    const getPortPidMap = async (): Promise<Map<number, { pid: number; processName?: string }>> => {
+      const map = new Map<number, { pid: number; processName?: string }>();
+      if (!isWin) return map;
+      const netstat = await runExec("netstat", ["-ano", "-p", "tcp"], 4000);
+      if (!netstat.ok || !netstat.stdout) return map;
+      const pidsNeeded = new Set<number>();
+      for (const line of netstat.stdout.split(/\r?\n/)) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith("TCP")) continue;
+        const parts = trimmed.split(/\s+/);
+        if (parts.length < 5) continue;
+        const localAddr = parts[1] || "";
+        const state = parts[3] || "";
+        const pid = Number.parseInt(parts[4] || "", 10);
+        if (state.toUpperCase() !== "LISTENING" || !Number.isFinite(pid)) continue;
+        const portMatch = localAddr.match(/:(\d+)$/);
+        if (!portMatch || !portMatch[1]) continue;
+        const port = Number.parseInt(portMatch[1], 10);
+        if (!map.has(port)) {
+          map.set(port, { pid });
+          pidsNeeded.add(pid);
+        }
+      }
+      if (pidsNeeded.size > 0) {
+        const tasklist = await runExec("tasklist", ["/FO", "CSV", "/NH"], 4000);
+        if (tasklist.ok && tasklist.stdout) {
+          const pidToName = new Map<number, string>();
+          for (const line of tasklist.stdout.split(/\r?\n/)) {
+            const m = line.match(/^"([^"]+)","(\d+)"/);
+            if (m && m[1] && m[2]) pidToName.set(Number.parseInt(m[2], 10), m[1]);
+          }
+          for (const entry of map.values()) {
+            entry.processName = pidToName.get(entry.pid);
+          }
+        }
+      }
+      return map;
+    };
+
+    const mcpPorts: Array<{ port: number; service: string; category: "core" | "plugin" }> = [
+      { port: 18080, service: "Nexus Core MCP", category: "core" },
+      { port: 8787, service: "Public MCP Gateway", category: "core" },
+      { port: 20705, service: "Unity GameDev MCP", category: "plugin" },
+      { port: 9095, service: "Photoshop MCP", category: "plugin" },
+      { port: 9099, service: "Blender MCP", category: "plugin" },
+      { port: 9100, service: "Playwright MCP", category: "plugin" },
+      { port: 9107, service: "AutoCAD MCP", category: "plugin" },
+    ];
+
+    const [node, npm, uv, python, photoshopMcp, pidMap, tcpStates] = await Promise.all([
+      probeNode(),
+      probeNpm(),
+      probeUv(),
+      probePython(),
+      probePhotoshopMcp(),
+      getPortPidMap(),
+      Promise.all(mcpPorts.map((item) => checkTcpPort(item.port))),
+    ]);
+
+    const ports = mcpPorts.map((item, idx) => {
+      const pidInfo = pidMap.get(item.port);
+      const inUse = tcpStates[idx] || Boolean(pidInfo);
+      return {
+        port: item.port,
+        service: item.service,
+        category: item.category,
+        inUse,
+        pid: pidInfo?.pid ?? null,
+        processName: pidInfo?.processName ?? null,
+      };
+    });
+
+    return reply.status(200).send({
+      checkedAt: new Date().toISOString(),
+      platform: process.platform,
+      tools: { node, npm, uv, python, photoshopMcp },
+      ports,
+    });
   });
 };
 

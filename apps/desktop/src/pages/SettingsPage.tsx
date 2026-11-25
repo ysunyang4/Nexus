@@ -58,6 +58,8 @@ import { McpServersPage } from "./mcp/McpServersPage.js";
 import { McpToolsPage } from "./mcp/McpToolsPage.js";
 import { ToolRegistryPage } from "./mcp/ToolRegistryPage.js";
 import { ManagedMcpPage } from "./mcp/ManagedMcpPage.js";
+import { McpSetupGuide } from "../components/mcp/McpSetupGuide.js";
+import { managedMcpApi, type ManagedMcpStateDto } from "../api/managed-mcp-api.js";
 import {
   Monitor,
   FolderTree,
@@ -67,6 +69,7 @@ import {
   Cpu,
   Wrench,
   Layers,
+  BookOpen,
 } from "lucide-react";
 import type {
   Project,
@@ -97,6 +100,7 @@ interface SettingsPageProps {
   onOpenSponsorModal?: () => void;
   initialTab?: SettingsTab;
   aboutNavTrigger?: number;
+  mcpGuideTrigger?: number;
 }
 
 export type SettingsRoute =
@@ -135,6 +139,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   onOpenSponsorModal: _onOpenSponsorModal,
   initialTab,
   aboutNavTrigger,
+  mcpGuideTrigger,
 }) => {
   const { t, language, setLanguage, tText } = useTranslation();
   const isZh = language === "zh-CN";
@@ -155,19 +160,51 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   }, [aboutNavTrigger]);
 
   useEffect(() => {
+    if (mcpGuideTrigger) {
+      setRoute({ page: "mcp" });
+      setMcpSubPage("guide");
+    }
+  }, [mcpGuideTrigger]);
+
+  useEffect(() => {
     const handleJumpToAbout = () => {
       setRoute({ page: "about" });
     };
+    const handleJumpToMcpGuide = () => {
+      setRoute({ page: "mcp" });
+      setMcpSubPage("guide");
+    };
     window.addEventListener("nexus:navigate-about", handleJumpToAbout);
+    window.addEventListener("nexus:navigate-mcp-guide", handleJumpToMcpGuide);
     return () => {
       window.removeEventListener("nexus:navigate-about", handleJumpToAbout);
+      window.removeEventListener("nexus:navigate-mcp-guide", handleJumpToMcpGuide);
     };
   }, []);
 
   const [computerSubPage, setComputerSubPage] = useState<"desktop" | "files" | "applications" | "browser">("desktop");
   const [executionSubPage, setExecutionSubPage] = useState<"pipeline" | "ledger" | "runtime">("pipeline");
-  const [mcpSubPage, setMcpSubPage] = useState<"servers" | "tools" | "registry" | "managed">("servers");
+  const [mcpSubPage, setMcpSubPage] = useState<"servers" | "tools" | "registry" | "managed" | "guide">(
+    mcpGuideTrigger ? "guide" : "servers"
+  );
+  const [managedMcpServices, setManagedMcpServices] = useState<ManagedMcpStateDto[]>([]);
   const [connectionsSubTab, setConnectionsSubTab] = useState<"chatgpt" | "webagent">("chatgpt");
+
+  useEffect(() => {
+    if (activeTab !== "mcp") return;
+    let cancelled = false;
+    managedMcpApi
+      .listServices()
+      .then((list) => {
+        if (!cancelled && Array.isArray(list)) setManagedMcpServices(list);
+      })
+      .catch(() => {
+        // ignore
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [activeTab, mcpSubPage]);
 
   // Server URL State
   const [serverUrl, setServerUrl] = useState(bridge.getBaseUrl());
@@ -904,6 +941,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 { id: "tools", label: tText("工具库 (332)", "Tools (332)", "ツール (332)", "Werkzeuge (332)"), icon: Wrench },
                 { id: "registry", label: tText("注册表契约", "Registry", "レジストリ", "Registry"), icon: Layers },
                 { id: "managed", label: tText("进程托管与 API 配置", "Managed & API", "プロセス管理とAPI設定", "Verwaltete Prozesse & API"), icon: Terminal },
+                { id: "guide", label: tText("安装指南", "Setup Guide", "導入ガイド", "Installationshilfe"), icon: BookOpen },
                               ].map((tab) => {
                 const Icon = tab.icon;
                 const active = mcpSubPage === tab.id;
@@ -930,6 +968,21 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               {mcpSubPage === "tools" && <McpToolsPage />}
               {mcpSubPage === "registry" && <ToolRegistryPage />}
               {mcpSubPage === "managed" && <ManagedMcpPage />}
+              {mcpSubPage === "guide" && (
+                <div className="p-4 sm:p-6 h-full overflow-y-auto bg-slate-50/50">
+                  <McpSetupGuide
+                    totalToolsCount={managedMcpServices.reduce(
+                      (acc, s) => acc + (s.toolCount || 0),
+                      0,
+                    )}
+                    runningCount={
+                      managedMcpServices.filter((s) => s.status === "RUNNING").length
+                    }
+                    totalServicesCount={managedMcpServices.length}
+                    externalProvidersCount={managedMcpServices.length}
+                  />
+                </div>
+              )}
                           </div>
           </div>
         )}

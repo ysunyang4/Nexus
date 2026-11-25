@@ -249,6 +249,10 @@ class ApiBridge {
     return this.fetchJson<McpStatus>("/api/mcp/status");
   }
 
+  async getMcpEnvCheck(): Promise<McpEnvCheckResult> {
+    return this.fetchJson<McpEnvCheckResult>("/api/mcp/env-check");
+  }
+
   // Global Pause & Emergency Stop
   async getPauseState(): Promise<{ paused: boolean }> {
     if (isTauri()) {
@@ -2256,6 +2260,37 @@ export interface TunnelTestConnectionResult {
   resolvedProxyUrl?: string | null;
   message: string;
   errorCode?: string;
+}
+
+export interface McpEnvToolStatus {
+  installed: boolean;
+  ok: boolean;
+  version: string | null;
+  path: string | null;
+  requirement?: string;
+  bundled?: boolean;
+}
+
+export interface McpEnvPortStatus {
+  port: number;
+  service: string;
+  category: "core" | "plugin";
+  inUse: boolean;
+  pid: number | null;
+  processName: string | null;
+}
+
+export interface McpEnvCheckResult {
+  checkedAt: string;
+  platform: string;
+  tools: {
+    node: McpEnvToolStatus;
+    npm: McpEnvToolStatus;
+    uv: McpEnvToolStatus;
+    python: McpEnvToolStatus;
+    photoshopMcp: McpEnvToolStatus;
+  };
+  ports: McpEnvPortStatus[];
 }
 
 export interface DesktopTunnelApi {

@@ -104,12 +104,25 @@ export const App: React.FC = () => {
   const [connections, setConnections] = useState<AIConnectionDto[]>([]);
   const [settingsInitialTab, setSettingsInitialTab] = useState<any>("general");
   const [aboutNavTrigger, setAboutNavTrigger] = useState(0);
+  const [mcpGuideTrigger, setMcpGuideTrigger] = useState(0);
 
   const handleOpenAbout = useCallback(() => {
     setSettingsInitialTab("about");
     setCurrentPage("settings");
     setAboutNavTrigger(Date.now());
     window.dispatchEvent(new CustomEvent("nexus:navigate-about"));
+  }, []);
+
+  useEffect(() => {
+    const handleNavigateMcpGuide = () => {
+      setSettingsInitialTab("mcp");
+      setCurrentPage("settings");
+      setMcpGuideTrigger(Date.now());
+    };
+    window.addEventListener("nexus:navigate-mcp-guide", handleNavigateMcpGuide);
+    return () => {
+      window.removeEventListener("nexus:navigate-mcp-guide", handleNavigateMcpGuide);
+    };
   }, []);
 
   // Startup Readiness State
@@ -633,6 +646,7 @@ export const App: React.FC = () => {
                 onOpenSponsorModal={handleOpenAbout}
                 initialTab={settingsInitialTab}
                 aboutNavTrigger={aboutNavTrigger}
+                mcpGuideTrigger={mcpGuideTrigger}
               />
             )}
 
