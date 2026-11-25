@@ -445,7 +445,34 @@ fn resolve_production_resources(app: &tauri::AppHandle) -> Result<ResourceDiagno
         String::new()
     };
 
-    let tunnel_str = String::new();
+    let tunnel_bin_candidates: &[&str] = if cfg!(target_os = "windows") {
+        &[
+            "tunnel-client-runtime-cloudflared.exe",
+            "cloudflared.exe",
+            "tunnel-client-runtime-cloudflared",
+            "cloudflared",
+        ]
+    } else {
+        &[
+            "tunnel-client-runtime-cloudflared",
+            "cloudflared",
+            "tunnel-client-runtime-cloudflared.exe",
+            "cloudflared.exe",
+        ]
+    };
+    let mut tunnel_str = String::new();
+    for name in tunnel_bin_candidates {
+        let p = resource_root.join("tunnel").join(name);
+        if p.exists() {
+            tunnel_str = p.to_string_lossy().to_string();
+            break;
+        }
+    }
+    if tunnel_str.is_empty() {
+        if let Some(p) = resolve_tunnel_runtime(app) {
+            tunnel_str = p.to_string_lossy().to_string();
+        }
+    }
 
     Ok(ResourceDiagnostics {
         executable_path: exe_str,
@@ -514,7 +541,54 @@ fn resolve_resource_file(app: &tauri::AppHandle, relative_path: &str) -> Option<
     None
 }
 
-fn resolve_tunnel_runtime(_app: &tauri::AppHandle) -> Option<PathBuf> {
+fn resolve_tunnel_runtime(app: &tauri::AppHandle) -> Option<PathBuf> {
+    let candidate_names: &[&str] = if cfg!(target_os = "windows") {
+        &[
+            "tunnel-client-runtime-cloudflared.exe",
+            "cloudflared.exe",
+            "tunnel-client-runtime-cloudflared",
+            "cloudflared",
+        ]
+    } else {
+        &[
+            "tunnel-client-runtime-cloudflared",
+            "cloudflared",
+            "tunnel-client-runtime-cloudflared.exe",
+            "cloudflared.exe",
+        ]
+    };
+
+    // 1. Check bundled resource file
+    for name in candidate_names {
+        let rel = format!("tunnel/{}", name);
+        if let Some(p) = resolve_resource_file(app, &rel) {
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                if let Ok(metadata) = std::fs::metadata(&p) {
+                    let mut perms = metadata.permissions();
+                    if perms.mode() & 0o111 == 0 {
+                        perms.set_mode(0o755);
+                        let _ = std::fs::set_permissions(&p, perms);
+                    }
+                }
+            }
+            return Some(p);
+        }
+    }
+
+    // 2. Fall back to system PATH (e.g. brew / apt / scoop installed cloudflared)
+    for name in candidate_names {
+        if let Ok(path_var) = std::env::var("PATH") {
+            for p in std::env::split_paths(&path_var) {
+                let full = p.join(name);
+                if full.is_file() {
+                    return Some(full);
+                }
+            }
+        }
+    }
+
     None
 }
 
