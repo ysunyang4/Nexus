@@ -1,18 +1,29 @@
 import child_process from "node:child_process";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import http from "node:http";
 import https from "node:https";
 import { ensureEgoNovaRunning, callEgoNovaRpc } from "./meta-tools/advanced-meta-tools.js";
 
+function resolveNexusDataDir(): string {
+  if (process.platform === "win32") {
+    const localAppData =
+      process.env.LOCALAPPDATA ||
+      (process.env.USERPROFILE ? path.join(process.env.USERPROFILE, "AppData", "Local") : path.join(os.homedir(), "AppData", "Local"));
+    return path.join(localAppData, "Nexus");
+  }
+  if (process.platform === "darwin") {
+    return path.join(os.homedir(), "Library", "Application Support", "Nexus");
+  }
+  return path.join(process.env.XDG_DATA_HOME || path.join(os.homedir(), ".local", "share"), "Nexus");
+}
+
 let dedicatedBrowserProcess: child_process.ChildProcess | null = null;
 let dedicatedBrowserPid: number | null = null;
 
 export function getDedicatedProfileDir(): string {
-  const localAppData =
-    process.env.LOCALAPPDATA ||
-    (process.env.USERPROFILE ? path.join(process.env.USERPROFILE, "AppData", "Local") : "C:\\AppData\\Local");
-  const profileDir = path.join(localAppData, "Nexus", "browser_profile");
+  const profileDir = path.join(resolveNexusDataDir(), "browser_profile");
   if (!fs.existsSync(profileDir)) {
     fs.mkdirSync(profileDir, { recursive: true });
   }
@@ -28,10 +39,7 @@ export function findBrowserExecutable(): string {
 }
 
 export function getNexusIconBuffer(): Buffer | null {
-  const localAppData =
-    process.env.LOCALAPPDATA ||
-    (process.env.USERPROFILE ? path.join(process.env.USERPROFILE, "AppData", "Local") : "C:\\AppData\\Local");
-  const cachedIcon = path.join(localAppData, "Nexus", "browser_icon.png");
+  const cachedIcon = path.join(resolveNexusDataDir(), "browser_icon.png");
   if (fs.existsSync(cachedIcon)) {
     try {
       return fs.readFileSync(cachedIcon);
@@ -59,10 +67,7 @@ export function getNexusIconBuffer(): Buffer | null {
 }
 
 export function ensureBrowserExtension(): string {
-  const localAppData =
-    process.env.LOCALAPPDATA ||
-    (process.env.USERPROFILE ? path.join(process.env.USERPROFILE, "AppData", "Local") : "C:\\AppData\\Local");
-  const extDir = path.join(localAppData, "Nexus", "browser_extension");
+  const extDir = path.join(resolveNexusDataDir(), "browser_extension");
   if (!fs.existsSync(extDir)) {
     fs.mkdirSync(extDir, { recursive: true });
   }

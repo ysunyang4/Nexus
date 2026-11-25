@@ -84,9 +84,7 @@ jobs:
           name: Nexus-macOS-${{ matrix.arch }}
           path: |
             apps/desktop/src-tauri/target/release/bundle/dmg/*.dmg
-            apps/desktop/src-tauri/target/release/bundle/macos/*.app
             apps/desktop/src-tauri/target/*/release/bundle/dmg/*.dmg
-            apps/desktop/src-tauri/target/*/release/bundle/macos/*.app
           retention-days: 30
 
       - name: Upload macOS DMG to GitHub Release

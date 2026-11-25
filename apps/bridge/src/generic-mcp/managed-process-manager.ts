@@ -12,6 +12,7 @@
 
 import child_process from "node:child_process";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import net from "node:net";
 import { fileURLToPath } from "node:url";
@@ -148,11 +149,21 @@ export class ManagedProcessManager {
   private configFilePath: string;
   private nexusDataDir: string;
 
+  private static resolveNexusDataDir(): string {
+    if (process.platform === "win32") {
+      const localAppData =
+        process.env.LOCALAPPDATA ||
+        (process.env.USERPROFILE ? path.join(process.env.USERPROFILE, "AppData", "Local") : path.join(os.homedir(), "AppData", "Local"));
+      return path.join(localAppData, "Nexus");
+    }
+    if (process.platform === "darwin") {
+      return path.join(os.homedir(), "Library", "Application Support", "Nexus");
+    }
+    return path.join(process.env.XDG_DATA_HOME || path.join(os.homedir(), ".local", "share"), "Nexus");
+  }
+
   private constructor() {
-    const localAppData =
-      process.env.LOCALAPPDATA ||
-      (process.env.USERPROFILE ? path.join(process.env.USERPROFILE, "AppData", "Local") : "C:\\AppData\\Local");
-    const nexusDataDir = path.join(localAppData, "Nexus");
+    const nexusDataDir = ManagedProcessManager.resolveNexusDataDir();
     if (!fs.existsSync(nexusDataDir)) {
       try { fs.mkdirSync(nexusDataDir, { recursive: true }); } catch {}
     }
