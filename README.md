@@ -12,11 +12,11 @@
 </p>
 
 <p align="center">
-  <a href="#7-quick-start">Quick Start</a> · <a href="#1-overview">Overview</a> · <a href="#5-core-capabilities--architectural-highlights">Capabilities</a> · <a href="PRIVACY.md">Privacy Policy</a> · <a href="https://github.com/ysunyang4/Nexus/issues">Issues</a> · <a href="LICENSE">License</a>
+  <a href="#7-quick-start">Quick Start</a> · <a href="#1-overview">Overview</a> · <a href="#5-core-capabilities--architectural-highlights">Capabilities</a> · <a href="https://github.com/ysunyang4/webagent">WebAgent Extension</a> · <a href="https://blog.ycu.de5.net/">Blog & Docs</a> · <a href="PRIVACY.md">Privacy Policy</a> · <a href="https://github.com/ysunyang4/Nexus/issues">Issues</a> · <a href="LICENSE">License</a>
 </p>
 
 <p align="center">
-  <a href="https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme"><img src="https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652" alt="M8ven Verified"></a>
+  <a href="https://m8ven.ai/mcp/ysunyang4/nexus?s=readme"><img src="https://m8ven.ai/badge/mcp/ysunyang4/nexus" alt="M8ven Score"></a>
   <img src="https://img.shields.io/badge/MCP_Tools-332_Canonical-2563EB?labelColor=1E40AF&amp;style=flat-square" alt="332 MCP Tools">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-2563EB?labelColor=1E40AF&amp;style=flat-square" alt="License AGPL-3.0"></a>
 </p>
@@ -243,23 +243,32 @@ pnpm --filter @localbridge/desktop dev
 
 ## 8. Connecting AI Clients
 
+### Option A: WebAgent 2.0 Browser Extension (Recommended for ChatGPT / DeepSeek / Kimi / Qwen)
+1. Install **[WebAgent v2.0.1](https://github.com/ysunyang4/webagent/releases/latest)** in Chrome / Edge (see the [Blog Setup Guide](https://blog.ycu.de5.net/)).
+2. Open the WebAgent drawer → **Advanced Settings**, and confirm the server URL is:
+   ```text
+   http://127.0.0.1:8787
+   ```
+   *(Zero-token local loopback — no token configuration required.)*
+3. Open ChatGPT, DeepSeek, Kimi, or Qwen in your browser and start invoking local Nexus tools directly.
+
+> **Skills Hub Note:** Skills Hub starts clean by default (zero pre-bundled bloat). Mount any local skill directory (`SKILL.md` / `skill.yaml`) in **Skills Hub → Sources Management** with zero-copy hot-reloading.
+
+### Option B: Remote Tunnel / Standard MCP Clients (ChatGPT Connectors / Cursor / Windsurf)
+
 #### Step 1: Authorize a Local Project
 1. Open Nexus Desktop Control Center.
 2. Under **Workspace -> Projects**, click **Authorize Project** and select your directory (e.g., `D:\projects\my-app`).
 3. Set **Access Mode** (`read-only` or `read-write`) and **Execution Mode** (`disabled`, `safe-only`, or `project-code`)—both can be dynamically switched at any time without restarting.
 
 #### Step 2: Generate an MCP Client Token
-1. Go to **Settings -> Tokens**.
+1. Go to **Settings -> AI Connections** (or **Tokens**).
 2. Click **Generate Token**, choose `MCP Client Token` (`lb_...`), and copy the displayed token.
 
 #### Step 3: Configure Your AI Client
 
 **ChatGPT / Custom GPT Actions**:
-Add the Streamable HTTP endpoint:
-```text
-http://127.0.0.1:18080/mcp
-```
-Header: `Authorization: Bearer lb_your_token_here`
+Add the Streamable HTTP endpoint (`http://127.0.0.1:18080/mcp` or your Cloudflare Tunnel URL) with header `Authorization: Bearer lb_your_token_here` (or OAuth 2.0).
 
 **Standard MCP Client Configuration (`mcp_config.json` / Client Settings)**:
 ```json
@@ -285,7 +294,11 @@ Header: `Authorization: Bearer lb_your_token_here`
 
 ## 9. Community & Discussions
 
-Join the discussion, report issues, and collaborate with the community:
+Join the discussion, report issues, and follow updates across channels:
+- **Blog & Tutorials**: [https://blog.ycu.de5.net/](https://blog.ycu.de5.net/)
+- **X (Twitter)**: [@yngstein](https://x.com/yngstein)
+- **LINUX DO**: [yang_sunny](https://linux.do/u/yang_sunny/summary)
+- **Reddit**: [u/OutrageousRabbit3296](https://www.reddit.com/user/OutrageousRabbit3296)
 - **Issues & Bug Reports**: [GitHub Issues](https://github.com/ysunyang4/Nexus/issues)
 - **Q&A & Community Discussions**: [GitHub Discussions](https://github.com/ysunyang4/Nexus/discussions)
 - **Commercial Licensing & Enterprise Inquiries**: `ysunyang4@gmail.com`
@@ -295,6 +308,8 @@ Join the discussion, report issues, and collaborate with the community:
 ## 10. 💖 Support & Sponsorship
 
 If **Nexus** has accelerated your research, engineering workflow, or daily development, consider supporting the continuous open-source maintenance of this project. Donations are completely voluntary and help sustain infrastructure, active maintenance, and ecosystem development.
+
+- **Afdian (爱发电)**: [https://afdian.com/a/ysunyang4](https://afdian.com/a/ysunyang4)
 
 > 💼 **Enterprise Sponsorship & Commercial Licensing**  
 > For enterprise sponsorship, dedicated SLA support, or commercial closed-source licensing inquiries (dual-licensing exempt from AGPL-3.0 copyleft obligations), feel free to reach out via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) or email: `ysunyang4@gmail.com`.

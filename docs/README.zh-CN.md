@@ -12,13 +12,13 @@
 </p>
 
 <p align="center">
-  <a href="#7-快速开始">快速开始</a> · <a href="#1-项目概述">项目概述</a> · <a href="#5-核心功能与架构亮点">核心能力</a> · <a href="https://github.com/ysunyang4/Nexus/issues">问题反馈</a> · <a href="LICENSE">开源许可</a>
+  <a href="#7-快速开始">快速开始</a> · <a href="#1-项目概述">项目概述</a> · <a href="#5-核心功能与架构亮点">核心能力</a> · <a href="https://github.com/ysunyang4/webagent">WebAgent 扩展</a> · <a href="https://blog.ycu.de5.net/">博客与教程</a> · <a href="../PRIVACY.md">隐私政策</a> · <a href="https://github.com/ysunyang4/Nexus/issues">问题反馈</a> · <a href="../LICENSE">开源许可</a>
 </p>
 
 <p align="center">
-  <a href="https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme"><img src="https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652" alt="M8ven Verified"></a>
+  <a href="https://m8ven.ai/mcp/ysunyang4/nexus?s=readme"><img src="https://m8ven.ai/badge/mcp/ysunyang4/nexus" alt="M8ven Score"></a>
   <img src="https://img.shields.io/badge/MCP_Tools-332_规范工具-2563EB?labelColor=1E40AF&amp;style=flat-square" alt="332 MCP Tools">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-2563EB?labelColor=1E40AF&amp;style=flat-square" alt="License AGPL-3.0"></a>
+  <a href="../LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-2563EB?labelColor=1E40AF&amp;style=flat-square" alt="License AGPL-3.0"></a>
 </p>
 <!-- M8ven Publisher Verification: [![M8ven Verified](https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652)](https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme) -->
 
@@ -243,23 +243,32 @@ pnpm --filter @localbridge/desktop dev
 
 ## 8. 接入 AI 客户端
 
+### 方式 A：WebAgent 2.0 浏览器扩展（推荐用于 ChatGPT / DeepSeek / Kimi / 千问等网页端）
+1. 在 Chrome / Edge 中安装 **[WebAgent v2.0.1](https://github.com/ysunyang4/webagent/releases/latest)**（详见 [博客配置教程](https://blog.ycu.de5.net/)）。
+2. 打开网页右侧 WebAgent 抽屉 → **高级配置**，确认服务端地址为：
+   ```text
+   http://127.0.0.1:8787
+   ```
+   *（本地回环免密直连，无需配置任何 Token。）*
+3. 在浏览器打开 ChatGPT、DeepSeek、Kimi 或通义千问，即可直接调用本地 Nexus 工具。
+
+> **关于技能中心（Skills Hub）**：默认采用零冗余干净启动（无预置内置技能）。可在 **技能中心 -> 挂载管理** 中一键挂载任意本地 `SKILL.md` / `skill.yaml` 目录，零拷贝实时热加载。
+
+### 方式 B：公网隧道 / 标准 MCP 客户端（ChatGPT Connectors / Cursor / Windsurf）
+
 #### 步骤 1：授权本地工程项目
 1. 打开 Nexus 桌面端。
 2. 进入 **工作区 -> 项目管理**，点击 **授权项目** 并选择本地文件夹（如 `D:\projects\my-app`）。
 3. 配置 **访问模式**（只读 `read-only` 或 读写 `read-write`）与 **执行模式**（禁用 `disabled`、仅安全命令 `safe-only` 或 完整工程代码 `project-code`），支持在运行期随时二次切换，立即生效。
 
 #### 步骤 2：生成 MCP 访问令牌
-1. 进入 **设置 -> 访问令牌**。
+1. 进入 **应用设置 -> AI 客户端与连接**（或 **访问令牌**）。
 2. 点击 **生成令牌**，选择 `MCP 客户端令牌`（`lb_...`），复制显示的凭据。
 
 #### 步骤 3：在 AI 工具中配置
 
 **ChatGPT / 自定义 GPT Actions**：
-添加 Streamable HTTP 接口：
-```text
-http://127.0.0.1:18080/mcp
-```
-Header 添加：`Authorization: Bearer lb_your_token_here`
+添加 Streamable HTTP 接口（`http://127.0.0.1:18080/mcp` 或你的 Cloudflare 隧道地址），Header 添加 `Authorization: Bearer lb_your_token_here`（或使用 OAuth 2.0 授权）。
 
 **标准 MCP 客户端配置（`mcp_config.json` 或客户端设置）**：
 ```json
@@ -285,7 +294,11 @@ Header 添加：`Authorization: Bearer lb_your_token_here`
 
 ## 9. 社区交流与反馈渠道
 
-欢迎参与 Nexus 开发者社区交流、提交建议与反馈问题：
+欢迎关注与加入 Nexus 开发者社区交流、提交建议与反馈问题：
+- **个人博客与教程**：[https://blog.ycu.de5.net/](https://blog.ycu.de5.net/)
+- **X (Twitter)**：[@yngstein](https://x.com/yngstein)
+- **LINUX DO**：[yang_sunny](https://linux.do/u/yang_sunny/summary)
+- **Reddit**：[u/OutrageousRabbit3296](https://www.reddit.com/user/OutrageousRabbit3296)
 - **Issue 与缺陷反馈**：[GitHub Issues](https://github.com/ysunyang4/Nexus/issues)
 - **技术讨论与 Q&A**：[GitHub Discussions](https://github.com/ysunyang4/Nexus/discussions)
 - **商业授权与企业咨询**：`ysunyang4@gmail.com`
@@ -295,6 +308,8 @@ Header 添加：`Authorization: Bearer lb_your_token_here`
 ## 10. 💖 赞助与开源维护支持 (Sponsorship)
 
 如果 **Nexus** 对您的日常研发工作流、学术研究或开发效率有所帮助，欢迎自愿赞助支持本项目的持续开源维护。所有赞助均为自愿行为，将用于推动项目的长期活跃维护、新特性迭代与生态基础设施建设。
+
+- **爱发电 (Afdian)**：[https://afdian.com/a/ysunyang4](https://afdian.com/a/ysunyang4)
 
 > 💼 **企业赞助与商业授权 (Enterprise & Licensing)**  
 > 如需企业级深度技术支持、定制集成，或商业闭源授权（豁免 AGPL-3.0 开源传染义务的商业双重许可），欢迎通过 [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) 或邮件联系：`ysunyang4@gmail.com`。
