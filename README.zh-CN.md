@@ -16,9 +16,9 @@
 </p>
 
 <p align="center">
-  <a href="https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme"><img src="https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652" alt="M8ven Verified"></a>
-  <img src="https://img.shields.io/badge/MCP_Tools-332_规范工具-2563EB?labelColor=1E40AF&amp;style=flat-square" alt="332 MCP Tools">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-2563EB?labelColor=1E40AF&amp;style=flat-square" alt="License AGPL-3.0"></a>
+  <a href="https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme"><img src="https://img.shields.io/badge/M8ven-Verified-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="M8ven Verified"></a>
+  <img src="https://img.shields.io/badge/MCP_Tools-332_规范工具-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="332 MCP Tools">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="License AGPL-3.0"></a>
 </p>
 <!-- M8ven Publisher Verification: [![M8ven Verified](https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652)](https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme) -->
 
@@ -212,12 +212,12 @@ Nexus/
 ## 7. 快速上手
 
 #### 方式 A：使用桌面端安装包（推荐）
-1. 从 [GitHub Releases (v1.3.2)](https://github.com/ysunyang4/Nexus/releases/tag/v1.3.2) 下载对应平台的最新安装包：
-   - **Windows (x64 安装包)**：[`Nexus_1.3.2_x64-setup.exe`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.2_x64-setup.exe)
-   - **macOS (Universal 通用 DMG)**：[`Nexus_1.3.2_universal.dmg`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.2_universal.dmg)
-   - **macOS (Apple Silicon DMG)**：[`Nexus_1.3.2_aarch64.dmg`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.2_aarch64.dmg)
-   - **Linux (Debian/Ubuntu `.deb`)**：[`Nexus_1.3.2_amd64.deb`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.2_amd64.deb)
-   - **Linux (通用 `.AppImage`)**：[`Nexus_1.3.2_amd64.AppImage`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.2_amd64.AppImage)
+1. 从 [GitHub Releases (v1.3.4)](https://github.com/ysunyang4/Nexus/releases/tag/v1.3.4) 下载对应平台的最新安装包：
+   - **Windows (x64 安装包)**：[`Nexus_1.3.4_x64-setup.exe`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.4_x64-setup.exe)
+   - **macOS (Universal 通用 DMG)**：[`Nexus_1.3.4_universal.dmg`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.4_universal.dmg)
+   - **macOS (Apple Silicon DMG)**：[`Nexus_1.3.4_aarch64.dmg`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.4_aarch64.dmg)
+   - **Linux (Debian/Ubuntu `.deb`)**：[`Nexus_1.3.4_amd64.deb`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.4_amd64.deb)
+   - **Linux (通用 `.AppImage`)**：[`Nexus_1.3.4_amd64.AppImage`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.4_amd64.AppImage)
    - **油猴脚本 (Tampermonkey)**：[`nexus-web-agent.user.js`](https://github.com/ysunyang4/Nexus/releases/latest/download/nexus-web-agent.user.js)
 2. 双击安装。Nexus 随系统托盘启动，内置自包含 Node.js 运行时、语言服务器和后台执行守护进程，开箱即用。
 
@@ -283,66 +283,49 @@ Header 添加：`Authorization: Bearer lb_your_token_here`
 
 ---
 
-## 9. 官方技术社群与开发者联系方式
+## 9. 社区交流与反馈渠道
 
-### 官方技术交流群
-欢迎加入 Nexus 开发者技术交流群，获取最新功能体验、提 issue 与实时交流：
-
-<div align="center">
-  <table>
-    <tr>
-      <td align="center" width="280">
-        <img src="docs/assets/community/qq-group.jpg" width="220" alt="QQ 官方交流群" style="border-radius: 12px;" /><br>
-        <br>
-        <b>QQ 官方交流群</b><br>
-        <code>1131916140</code>
-      </td>
-      <td align="center" width="280">
-        <img src="docs/assets/community/tg-group.png" width="220" alt="Telegram 交流群" style="border-radius: 12px;" /><br>
-        <br>
-        <b>Telegram 交流群</b><br>
-        <a href="https://t.me/YSUN_WEBAI"><code>@YSUN_WEBAI</code></a>
-      </td>
-    </tr>
-  </table>
-</div>
-
-### 开发者直连联系方式
-如有商业合作、深度技术交流或定制需求，可直接联系作者：
-
-<div align="center">
-  <table>
-    <tr>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/wechat.jpg" width="180" alt="微信" style="border-radius: 12px;" /><br>
-        <br>
-        <b>微信 (WeChat)</b><br>
-        <code>sunny</code>
-      </td>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/telegram.jpg" width="180" alt="Telegram" style="border-radius: 12px;" /><br>
-        <br>
-        <b>Telegram</b><br>
-        <a href="https://t.me/SUNNY744"><code>@SUNNY744</code></a>
-      </td>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/whatsapp.png" width="180" alt="WhatsApp" style="border-radius: 12px;" /><br>
-        <br>
-        <b>WhatsApp</b><br>
-        <code>sunny</code>
-      </td>
-      <td align="center" width="220">
-        <img src="docs/assets/contact/line.jpg" width="180" alt="LINE" style="border-radius: 12px;" /><br>
-        <br>
-        <b>LINE</b>
-      </td>
-    </tr>
-  </table>
-</div>
+欢迎参与 Nexus 开发者社区交流、提交建议与反馈问题：
+- **Issue 与缺陷反馈**：[GitHub Issues](https://github.com/ysunyang4/Nexus/issues)
+- **技术讨论与 Q&A**：[GitHub Discussions](https://github.com/ysunyang4/Nexus/discussions)
+- **商业授权与企业咨询**：`ysunyang4@gmail.com`
 
 ---
 
-## 10. 质量保障与验证指令
+## 10. 💖 赞助与开源维护支持 (Sponsorship)
+
+如果 **Nexus** 对您的日常研发工作流、学术研究或开发效率有所帮助，欢迎自愿赞助支持本项目的持续开源维护。所有赞助均为自愿行为，将用于推动项目的长期活跃维护、新特性迭代与生态基础设施建设。
+
+> 💼 **企业赞助与商业授权 (Enterprise & Licensing)**  
+> 如需企业级深度技术支持、定制集成，或商业闭源授权（豁免 AGPL-3.0 开源传染义务的商业双重许可），欢迎通过 [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) 或邮件联系：`ysunyang4@gmail.com`。
+
+### 官方赞助渠道
+
+| 🟢 微信支付 (WeChat Pay) | 🔵 支付宝 (Alipay) | 🟡 币安支付 (Binance Pay) |
+| :---: | :---: | :---: |
+| <img src="docs/assets/wechat-pay.jpg" width="210" alt="WeChat Pay" /> | <img src="docs/assets/alipay.jpg" width="210" alt="Alipay" /> | <img src="docs/assets/binance-pay.jpg" width="210" alt="Binance Pay" /> |
+
+| 赞助方式 | 网络 / 平台 | 账户 / 地址 | 说明 |
+| :--- | :--- | :--- | :--- |
+| **加密货币 (USDT 链上直转)** | **TRON (TRC-20)** | `TPRrDW8DGsrDmcnWvanTbFz7XEJuywu21i` | 用任何钱包或交易所转出时，选 **TRON (TRC-20)** 网络即可 |
+| **币安支付 (Binance Pay)** | 站内转账 | **UID: `1292741809`** | 币安站内转账（免选手续费网络） |
+
+> 🌟 **衷心感谢您的支持与陪伴。** 每一份支持都将切实帮助本项目持续演进与打磨。
+
+### 官方安全声明
+
+- **唯一官方渠道**：上表列出的链上地址和币安 UID 是本项目**唯一**合法的官方赞助通道。
+- **绝无私信索要**：项目作者与维护团队**绝不会**通过私信、邮件、即时通讯工具等任何方式主动向您索要转账、汇款或账户信息。
+- **防伪与举报**：如在任何第三方网站、Fork 仓库或镜像中发现声称属于本项目但与上述 UID 或地址不一致的情况，请立即通过 [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) 提交举报。
+
+### 免责声明
+
+- **网络与地域限制**：加密资产赞助须遵循相关服务平台规则。在进行赞助前，请确认币安支付（Binance Pay）在您所在国家或地区完全合法合规且可用。
+- **法律与税务合规**：赞助者须自行承担并遵守所在司法管辖区关于赠予、赞助的一切税务与法律合规责任。
+
+---
+
+## 11. 质量保障与验证指令
 
 ```powershell
 # 全局 7 个工作区强类型校验（0 错误）
@@ -360,11 +343,15 @@ cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
 
 ---
 
-## 11. 开源许可证、署名与安全说明
+## 12. 开源许可证、署名与安全说明
 
-- **软件许可证**：Nexus v1.3.2 依据 [GNU AGPL-3.0](LICENSE) 发布，允许个人与商业使用、学习、修改和再分发，但须遵守许可证原文。
+- **软件许可证**：Nexus v1.3.4 依据 [GNU AGPL-3.0](LICENSE) 发布，允许个人与商业使用、学习、修改和再分发，但须遵守许可证原文。
   - **源码提供义务的适用范围**：分发受 AGPL 约束的程序或修改版，以及让用户通过网络与修改版交互等适用情形，可能触发相应源码和许可声明义务。仅在本地私下修改、不进行相应分发或网络交互服务，并不当然要求公开源码。具体以 AGPL 第 4–6、13 条等规定为准。
   - **署名与来源**：依许可证保留必须保留的版权、许可证和法律声明，标明适用的修改；不得冒充 Nexus 官方版本。许可终止及恢复遵循 AGPL 第 8 条，而非 README 单方面规定立即终止。
   - **品牌保护**：[BRAND_GUIDELINES.md](BRAND_GUIDELINES.md) 仅用于说明独立的商标、品牌标识及防混淆问题，不剥夺 AGPL 授予的软件权利。
   - **第三方归属**：[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 列明第三方组件，并将概念性架构参考与实际代码依赖分开说明。
 - **安全提醒**：请阅读 [SECURITY.md](SECURITY.md)。启用读写、命令执行、桌面接管或全盘访问会扩大远程 AI 可执行操作的范围，应采取备份、审批和最小权限措施。
+
+<p align="center">
+  <a href="https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme"><img src="https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652" alt="M8ven Verified" height="20"></a>
+</p>
