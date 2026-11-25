@@ -292,14 +292,14 @@ export class ManagedProcessManager {
         config.args = [
           "run",
           "--with",
-          "mcp>=1.26.0",
+          "mcp<2,>=1.26.0",
           "--with",
           "autocad-mcp",
           "python",
           "-c",
           "from autocad_mcp.server import mcp; mcp.settings.host='127.0.0.1'; mcp.settings.port=9107; mcp.run(transport='streamable-http')"
         ];
-        config.rawCommand = 'uv run --with mcp>=1.26.0 --with autocad-mcp python -c "from autocad_mcp.server import mcp; mcp.settings.host=\'127.0.0.1\'; mcp.settings.port=9107; mcp.run(transport=\'streamable-http\')"';
+        config.rawCommand = 'uv run --with "mcp<2,>=1.26.0" --with autocad-mcp python -c "from autocad_mcp.server import mcp; mcp.settings.host=\'127.0.0.1\'; mcp.settings.port=9107; mcp.run(transport=\'streamable-http\')"';
         config.port = 9107;
         config.endpoint = "http://127.0.0.1:9107/mcp";
         break;

@@ -15,8 +15,20 @@ export interface SkillLoaderOptions {
   projectDirs?: Array<{ projectId: string; rootPath: string }>;
 }
 
+export interface ExternalSkillSourceRecord {
+  id: string;
+  name: string;
+  path: string;
+  enabled: boolean;
+  isCustom?: boolean;
+  available?: boolean;
+  skillsCount?: number;
+  error?: string;
+}
+
 export class SkillLoader {
   private readonly builtinDir: string;
+  private readonly explicitBuiltinDir: boolean;
   private readonly userDir: string;
   private readonly defaultProjectDirs: Array<{ projectId: string; rootPath: string }>;
 
@@ -24,6 +36,7 @@ export class SkillLoader {
     private readonly validator: SkillValidator,
     options: SkillLoaderOptions = {}
   ) {
+    this.explicitBuiltinDir = Boolean(options.builtinDir);
     this.builtinDir =
       options.builtinDir ||
       this.resolveDefaultBuiltinDir();
@@ -75,16 +88,111 @@ export class SkillLoader {
     return this.userDir;
   }
 
+  private getExternalSourcesFile(): string {
+    return path.join(path.dirname(this.userDir), "external-skill-sources.json");
+  }
+
+  private readExternalSourcesRaw(): ExternalSkillSourceRecord[] {
+    const file = this.getExternalSourcesFile();
+    if (!fs.existsSync(file)) return [];
+    try {
+      const parsed = JSON.parse(fs.readFileSync(file, "utf-8"));
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  private writeExternalSourcesRaw(sources: ExternalSkillSourceRecord[]): void {
+    const file = this.getExternalSourcesFile();
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify(sources, null, 2), "utf-8");
+  }
+
+  private scanSourceSkills(dirPath: string): SkillDefinition[] {
+    if (!fs.existsSync(dirPath)) return [];
+    const results: SkillDefinition[] = [];
+    const directSkill = this.loadSkillFromPath(dirPath, "user");
+    if (directSkill) {
+      results.push(directSkill);
+    }
+    results.push(...this.loadFromDirectory(dirPath, "user"));
+    return results;
+  }
+
+  getExternalSources(): ExternalSkillSourceRecord[] {
+    const list = this.readExternalSourcesRaw();
+    return list.map((src) => {
+      const available = fs.existsSync(src.path);
+      const skillsCount = available ? this.scanSourceSkills(src.path).length : 0;
+      return {
+        ...src,
+        isCustom: true,
+        available,
+        skillsCount,
+        error: available ? undefined : "Directory not found",
+      };
+    });
+  }
+
+  addExternalSource(targetPath: string, name?: string): ExternalSkillSourceRecord[] {
+    const normalized = path.resolve(targetPath.trim());
+    if (!fs.existsSync(normalized) || !fs.statSync(normalized).isDirectory()) {
+      throw new Error(`Directory does not exist: ${targetPath}`);
+    }
+    const list = this.readExternalSourcesRaw();
+    const existing = list.find((s) => path.resolve(s.path).toLowerCase() === normalized.toLowerCase());
+    if (!existing) {
+      const id = `ext_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+      list.push({
+        id,
+        name: name?.trim() || path.basename(normalized) || normalized,
+        path: normalized,
+        enabled: true,
+        isCustom: true,
+      });
+      this.writeExternalSourcesRaw(list);
+    }
+    return this.getExternalSources();
+  }
+
+  removeExternalSource(id: string): ExternalSkillSourceRecord[] {
+    const list = this.readExternalSourcesRaw().filter((s) => s.id !== id);
+    this.writeExternalSourcesRaw(list);
+    return this.getExternalSources();
+  }
+
+  toggleExternalSource(id: string, enabled: boolean): ExternalSkillSourceRecord[] {
+    const list = this.readExternalSourcesRaw().map((s) =>
+      s.id === id ? { ...s, enabled } : s
+    );
+    this.writeExternalSourcesRaw(list);
+    return this.getExternalSources();
+  }
+
   loadAll(projectDirs: Array<{ projectId: string; rootPath: string }> = []): SkillDefinition[] {
     const skills: SkillDefinition[] = [];
 
-    // 1. Load Built-in skills
-    skills.push(...this.loadFromDirectory(this.builtinDir, "builtin"));
+    // 1. Built-in skills are excluded by default so users start with an empty hub and add their own
+    if (
+      this.explicitBuiltinDir ||
+      process.env.NEXUS_INCLUDE_BUILTIN_SKILLS === "true" ||
+      process.env.VITEST === "true"
+    ) {
+      skills.push(...this.loadFromDirectory(this.builtinDir, "builtin"));
+    }
 
     // 2. Load User skills
     skills.push(...this.loadFromDirectory(this.userDir, "user"));
 
-    // 3. Load Project skills
+    // 3. Load enabled External Mounted Skill Sources (Zero-Copy)
+    for (const src of this.readExternalSourcesRaw()) {
+      if (src.enabled !== false && fs.existsSync(src.path)) {
+        skills.push(...this.scanSourceSkills(src.path));
+      }
+    }
+
+    // 4. Load Project skills
     const activeProjectDirs = projectDirs.length > 0 ? projectDirs : this.defaultProjectDirs;
     for (const proj of activeProjectDirs) {
       const projSkillDir = path.join(proj.rootPath, ".nexus", "skills");

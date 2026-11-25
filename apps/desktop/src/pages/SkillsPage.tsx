@@ -226,6 +226,32 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
     }
   };
 
+  // Delete Individual User/Project Skill
+  const handleDeleteSkill = async (skill: SkillMetadata, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const res = await bridge.deleteSkill(
+        skill.id,
+        skill.source === "project" ? "project" : "user",
+        skill.projectId,
+        _projectRoot
+      );
+      if (!res.success) {
+        showToast(
+          isZh ? "无法直接删除" : "Cannot delete directly",
+          isZh ? "该技能来自外部挂载目录，请在「挂载管理」中移除对应目录。" : (res.error || "Please unmount its directory in Sources Management."),
+          "error"
+        );
+        return;
+      }
+      if (selectedSkill?.id === skill.id) setSelectedSkill(null);
+      await loadSkills();
+      showToast(isZh ? "已删除技能" : "Skill deleted");
+    } catch (err: any) {
+      showToast(isZh ? "删除失败" : "Failed to delete skill", err?.message, "error");
+    }
+  };
+
   // Filter skills based on Active Nav Filter and Search
   const filteredSkills = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -633,6 +659,17 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                             : "bg-emerald-500"
                         }`}
                       />
+
+                      {skill.source !== "builtin" && (
+                        <button
+                          type="button"
+                          onClick={(e) => handleDeleteSkill(skill, e)}
+                          title={tText("删除技能", "Delete Skill", "スキルを削除", "Skill löschen")}
+                          className="p-1 rounded-md text-theme-muted hover:text-rose-500 hover:bg-rose-500/10 transition cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
 
                       <ChevronRight className="w-3.5 h-3.5 text-theme-muted" />
                     </div>

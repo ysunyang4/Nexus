@@ -76,7 +76,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenCommunityModal: _onOpenCommunityModal,
   onOpenContactModal: _onOpenContactModal,
 }) => {
-  const { tText, isZh } = useTranslation();
+  const { tText } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
 
   const effectiveRunners =
@@ -377,10 +377,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <button
           type="button"
           onClick={() => {
-            const docsUrl = isZh
-              ? "https://github.com/ysunyang4/Nexus/blob/main/docs/README.zh-CN.md"
-              : "https://github.com/ysunyang4/Nexus/tree/main/docs";
-            void openExternalUrl(docsUrl);
+            void openExternalUrl("https://blog.ycu.de5.net/");
           }}
           title={tText(
             "使用指南与排错文档",

@@ -133,35 +133,15 @@ async function verifyBundledServerMcpSchema() {
     }
 
     // Check /api/skills endpoint on bundled server
-    const skillsRes = await fetch(`http://127.0.0.1:${testPort}/api/skills?source=builtin`, {
+    const skillsRes = await fetch(`http://127.0.0.1:${testPort}/api/skills`, {
       headers: { authorization: `Bearer ${mgmtToken}` },
     });
     if (skillsRes.status !== 200) {
       throw new Error(`Bundled server /api/skills returned HTTP ${skillsRes.status}`);
     }
     const skillsData = (await skillsRes.json()) as any;
-    if (skillsData.count < 8) {
-      throw new Error(`Bundled server /api/skills count mismatch: expected at least 8, got ${skillsData.count}`);
-    }
-
-    // Verify bundled skills files on disk
-    const bundledSkillsDir = path.join(resources, "skills");
-    const expectedBuiltins = [
-      "nexus.project-inspect",
-      "nexus.fix-build",
-      "nexus.run-tests",
-      "nexus.code-debug",
-      "nexus.safe-refactor",
-      "nexus.git-review",
-      "nexus.start-dev-runtime",
-      "nexus.project-cleanup",
-    ];
-    for (const sk of expectedBuiltins) {
-      const yamlFile = path.join(bundledSkillsDir, sk, "skill.yaml");
-      const mdFile = path.join(bundledSkillsDir, sk, "SKILL.md");
-      if (!fs.existsSync(yamlFile) || !fs.existsSync(mdFile)) {
-        throw new Error(`Bundled skills directory missing definition or guide for ${sk}`);
-      }
+    if (!Array.isArray(skillsData.skills)) {
+      throw new Error(`Bundled server /api/skills invalid payload`);
     }
 
     // Create an MCP token

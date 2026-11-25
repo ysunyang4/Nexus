@@ -8,6 +8,7 @@ import re
 import json
 import urllib.request
 from mcp.server.fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 
 mcp = FastMCP("Playwright-Browser")
 
@@ -17,7 +18,7 @@ _BROWSER_SESSION = {
     "cookies": {},
 }
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=True))
 def browser_navigate(url: str) -> str:
     """Navigate to a target URL, render page metadata and extract page title & body text."""
     if not url.startswith("http://") and not url.startswith("https://"):
@@ -47,7 +48,7 @@ def browser_navigate(url: str) -> str:
     except Exception as e:
         return json.dumps({"error": str(e), "url": url}, ensure_ascii=False)
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentHint=False, openWorldHint=True))
 def browser_screenshot(url: str = "", output_path: str = "") -> str:
     """Capture a snapshot of the current page or specified URL."""
     target_url = url or _BROWSER_SESSION.get("current_url", "https://www.google.com")
@@ -58,7 +59,7 @@ def browser_screenshot(url: str = "", output_path: str = "") -> str:
         "message": f"Captured rendering viewport for {target_url}"
     }, ensure_ascii=False, indent=2)
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentHint=False, openWorldHint=True))
 def browser_extract_text(selector: str = "body") -> str:
     """Extract inner text from DOM selector in currently loaded page."""
     html = _BROWSER_SESSION.get("last_html", "")
@@ -69,7 +70,7 @@ def browser_extract_text(selector: str = "body") -> str:
     clean = re.sub(r'<[^>]+>', ' ', clean)
     return ' '.join(clean.split())[:3000]
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=True))
 def browser_click(selector: str) -> str:
     """Simulate user click on target element selector."""
     return json.dumps({
@@ -79,7 +80,7 @@ def browser_click(selector: str) -> str:
         "message": f"Clicked on element '{selector}'"
     }, ensure_ascii=False)
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=True))
 def browser_fill(selector: str, value: str) -> str:
     """Fill input element selector with specified text value."""
     return json.dumps({
@@ -90,7 +91,7 @@ def browser_fill(selector: str, value: str) -> str:
         "message": f"Input '{selector}' populated."
     }, ensure_ascii=False)
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=True))
 def browser_evaluate(expression: str) -> str:
     """Evaluate JavaScript expression in browser context."""
     return json.dumps({

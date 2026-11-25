@@ -152,7 +152,7 @@ export const mcpRoutes: FastifyPluginAsync<McpRoutesOptions> = async (
       proxyHeaders["authorization"] = request.headers.authorization;
     } else {
       // Forward internal bridge authentication so Gateway (:8787) accepts the verified ingress request
-      const bridgeToken = process.env.NEXUS_BRIDGE_TOKEN || "gemini-spark-nexus-secure-token-2026";
+      const bridgeToken = process.env.NEXUS_BRIDGE_TOKEN || "nexus-bridge-secure-token-2026";
       proxyHeaders["authorization"] = `Bearer ${bridgeToken}`;
     }
 
@@ -264,7 +264,7 @@ export const mcpRoutes: FastifyPluginAsync<McpRoutesOptions> = async (
       // Ingress Token Authentication Gate for GET:
       const authHeader = request.headers.authorization;
       let passOriginalAuth = false;
-      const bridgeToken = process.env.NEXUS_BRIDGE_TOKEN || "gemini-spark-nexus-secure-token-2026";
+      const bridgeToken = process.env.NEXUS_BRIDGE_TOKEN || "nexus-bridge-secure-token-2026";
 
       if (authHeader) {
         const rawToken = authHeader.startsWith("Bearer ")
@@ -361,7 +361,7 @@ export const mcpRoutes: FastifyPluginAsync<McpRoutesOptions> = async (
         // Ingress Authentication Gate: Validate token via 18080's TokenService
         const authHeader = request.headers.authorization;
         let passOriginalAuth = false;
-        const bridgeToken = process.env.NEXUS_BRIDGE_TOKEN || "gemini-spark-nexus-secure-token-2026";
+        const bridgeToken = process.env.NEXUS_BRIDGE_TOKEN || "nexus-bridge-secure-token-2026";
 
         if (authHeader) {
           const rawToken = authHeader.startsWith("Bearer ")

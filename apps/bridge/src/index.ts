@@ -2627,7 +2627,7 @@ const server = http.createServer(async (req, res) => {
     //    ChatGPT "无身份验证" mode, public tool discovery, and loopback clients)
     if (req.headers.authorization) {
       const authCheck = validateRequestAuth(req.headers.authorization, BRIDGE_TOKEN, oauthStore);
-      if (!authCheck.valid) {
+      if (!authCheck.valid && !isLoopback) {
         const wwwAuth = buildWwwAuthenticateHeader(baseUrl, "invalid_token");
         res.setHeader("WWW-Authenticate", wwwAuth);
         res.setHeader("Link", `<${baseUrl}/.well-known/oauth-protected-resource>; rel="oauth-protected-resource"`);

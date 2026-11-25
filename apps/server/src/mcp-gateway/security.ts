@@ -47,7 +47,7 @@ export function validateBearerToken(
   const activeBridgeToken =
     configuredBridgeToken ||
     process.env.NEXUS_BRIDGE_TOKEN ||
-    "gemini-spark-nexus-secure-token-2026";
+    "nexus-bridge-secure-token-2026";
 
   // Check 1: Dedicated Bridge Token
   if (token === activeBridgeToken) {

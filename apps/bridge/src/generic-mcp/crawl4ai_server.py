@@ -6,10 +6,11 @@ import sys
 import json
 import re
 from mcp.server.fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 
 mcp = FastMCP("Crawl4ai-Dehydrator")
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentHint=False, openWorldHint=True))
 def crawl_url(url: str) -> str:
     """Crawl a webpage and extract clean, ad-free Markdown text without token waste."""
     import urllib.request
@@ -29,7 +30,7 @@ def crawl_url(url: str) -> str:
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
 
-@mcp.tool()
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentHint=False, openWorldHint=True))
 def extract_markdown(html_content: str) -> str:
     """Dehydrate raw HTML into clean structured Markdown text."""
     clean = re.sub(r'<script[\s\S]*?</script>', '', html_content, flags=re.I)

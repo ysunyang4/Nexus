@@ -66,6 +66,67 @@ export const skillsRoutes: FastifyPluginAsync<SkillsRouteOptions> = async (
     });
   });
 
+  // External Skill Sources (Zero-Copy Mounted Directories)
+  fastify.get("/skills/external-sources", async (_request, reply) => {
+    const sources = mcpContext.skillLoader.getExternalSources();
+    return reply.status(200).send({ sources });
+  });
+
+  fastify.post<{ Body: { path?: string; name?: string } }>(
+    "/skills/external-sources/add",
+    async (request, reply) => {
+      const targetPath = request.body?.path;
+      if (!targetPath || !targetPath.trim()) {
+        return reply.status(400).send({
+          code: "INVALID_ARGUMENT",
+          message: "Directory path is required",
+        });
+      }
+      try {
+        const sources = mcpContext.skillLoader.addExternalSource(targetPath, request.body?.name);
+        mcpContext.skillRegistry.reload();
+        return reply.status(200).send({ success: true, sources });
+      } catch (err: any) {
+        return reply.status(400).send({
+          code: "MOUNT_FAILED",
+          message: err?.message || "Failed to mount directory",
+        });
+      }
+    }
+  );
+
+  fastify.post<{ Body: { id?: string } }>(
+    "/skills/external-sources/remove",
+    async (request, reply) => {
+      const id = request.body?.id;
+      if (!id) {
+        return reply.status(400).send({ code: "INVALID_ARGUMENT", message: "Source id is required" });
+      }
+      const sources = mcpContext.skillLoader.removeExternalSource(id);
+      mcpContext.skillRegistry.reload();
+      return reply.status(200).send({ success: true, sources });
+    }
+  );
+
+  fastify.post<{ Body: { id?: string; enabled?: boolean } }>(
+    "/skills/external-sources/toggle",
+    async (request, reply) => {
+      const { id, enabled } = request.body || {};
+      if (!id || typeof enabled !== "boolean") {
+        return reply.status(400).send({ code: "INVALID_ARGUMENT", message: "id and enabled are required" });
+      }
+      const sources = mcpContext.skillLoader.toggleExternalSource(id, enabled);
+      mcpContext.skillRegistry.reload();
+      return reply.status(200).send({ success: true, sources });
+    }
+  );
+
+  fastify.post("/skills/external-sources/rescan", async (_request, reply) => {
+    mcpContext.skillRegistry.reload();
+    const sources = mcpContext.skillLoader.getExternalSources();
+    return reply.status(200).send({ success: true, sources });
+  });
+
   // GET /api/skills/:id - Get skill details
   fastify.get<{
     Params: { id: string };
