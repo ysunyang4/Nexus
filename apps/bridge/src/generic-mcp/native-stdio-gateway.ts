@@ -141,9 +141,13 @@ export class NativeStdioGateway {
     injectedEnv.PATH = curPath;
     injectedEnv.Path = curPath;
 
+    const isWinBatch = process.platform === "win32" && /\.(cmd|bat)$/i.test(execCmd);
+    const spawnCmd = isWinBatch ? process.env.ComSpec || "cmd.exe" : execCmd;
+    const spawnArgs = isWinBatch ? ["/d", "/s", "/c", execCmd, ...execArgs] : execArgs;
+
     this.options.onLog?.(`[Gateway] Spawning Stdio process: ${execCmd} ${execArgs.join(" ")}`);
 
-    this.child = child_process.spawn(execCmd, execArgs, {
+    this.child = child_process.spawn(spawnCmd, spawnArgs, {
       env: injectedEnv,
       windowsHide: true,
       stdio: ["pipe", "pipe", "pipe"],
