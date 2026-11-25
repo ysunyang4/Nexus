@@ -2288,7 +2288,6 @@ export interface McpEnvCheckResult {
     npm: McpEnvToolStatus;
     uv: McpEnvToolStatus;
     python: McpEnvToolStatus;
-    photoshopMcp: McpEnvToolStatus;
   };
   ports: McpEnvPortStatus[];
 }

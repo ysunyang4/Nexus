@@ -969,7 +969,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               {mcpSubPage === "registry" && <ToolRegistryPage />}
               {mcpSubPage === "managed" && <ManagedMcpPage />}
               {mcpSubPage === "guide" && (
-                <div className="p-4 sm:p-6 h-full overflow-y-auto bg-slate-50/50">
+                <div className="p-4 sm:p-6 h-full overflow-y-auto bg-theme-base">
                   <McpSetupGuide
                     totalToolsCount={managedMcpServices.reduce(
                       (acc, s) => acc + (s.toolCount || 0),

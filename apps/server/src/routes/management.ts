@@ -2589,20 +2589,6 @@ export const managementRoutes: FastifyPluginAsync<ManagementRoutesOptions> = asy
       };
     };
 
-    const probePhotoshopMcp = async () => {
-      let binPath = await whichTool(isWin ? "photoshop-mcp.cmd" : "photoshop-mcp");
-      if (!binPath && isWin && process.env.APPDATA) {
-        const appDataCmd = path.join(process.env.APPDATA, "npm", "photoshop-mcp.cmd");
-        if (fs.existsSync(appDataCmd)) binPath = appDataCmd;
-      }
-      return {
-        installed: Boolean(binPath),
-        ok: Boolean(binPath),
-        version: binPath ? "@alisaitteke/photoshop-mcp" : null,
-        path: binPath,
-      };
-    };
-
     const checkTcpPort = (port: number): Promise<boolean> =>
       new Promise((resolve) => {
         const socket = net.createConnection({ host: "127.0.0.1", port });
@@ -2668,12 +2654,11 @@ export const managementRoutes: FastifyPluginAsync<ManagementRoutesOptions> = asy
       { port: 9107, service: "AutoCAD MCP", category: "plugin" },
     ];
 
-    const [node, npm, uv, python, photoshopMcp, pidMap, tcpStates] = await Promise.all([
+    const [node, npm, uv, python, pidMap, tcpStates] = await Promise.all([
       probeNode(),
       probeNpm(),
       probeUv(),
       probePython(),
-      probePhotoshopMcp(),
       getPortPidMap(),
       Promise.all(mcpPorts.map((item) => checkTcpPort(item.port))),
     ]);
@@ -2694,7 +2679,7 @@ export const managementRoutes: FastifyPluginAsync<ManagementRoutesOptions> = asy
     return reply.status(200).send({
       checkedAt: new Date().toISOString(),
       platform: process.platform,
-      tools: { node, npm, uv, python, photoshopMcp },
+      tools: { node, npm, uv, python },
       ports,
     });
   });

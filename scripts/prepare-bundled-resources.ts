@@ -309,43 +309,7 @@ async function main() {
   );
   console.log(`-> Bundled runner to ${runnerOut}`);
 
-  // 4b. Prepare Tunnel Runtime (Cross-platform Windows / macOS / Linux)
-  const tunnelBinNames = isWin
-    ? ["tunnel-client-runtime-cloudflared.exe", "cloudflared.exe"]
-    : ["tunnel-client-runtime-cloudflared", "cloudflared", "tunnel-client-runtime-cloudflared.exe", "cloudflared.exe"];
-
-  const hasTunnelBin = tunnelBinNames.some((name) => fs.existsSync(path.join(tunnelDir, name)));
-  const externalTunnelSource = path.resolve(rootDir, "../tunnel-client-runtime-cloudflared-v0.0.14-windows-amd64");
-
-  if (!hasTunnelBin) {
-    if (fs.existsSync(externalTunnelSource)) {
-      console.log(`Copying tunnel runtime from ${externalTunnelSource} to ${tunnelDir}...`);
-      fs.cpSync(externalTunnelSource, tunnelDir, { recursive: true });
-    } else {
-      // Try to detect system cloudflared on Unix / PATH
-      try {
-        const whichCmd = isWin ? "where.exe cloudflared" : "which cloudflared";
-        const found = child_process.execSync(whichCmd, { encoding: "utf8" }).trim().split(/\r?\n/)[0];
-        if (found && fs.existsSync(found)) {
-          const targetName = isWin ? "cloudflared.exe" : "cloudflared";
-          const dest = path.join(tunnelDir, targetName);
-          fs.copyFileSync(found, dest);
-          if (!isWin) fs.chmodSync(dest, 0o755);
-          console.log(`-> Copied system cloudflared (${found}) to ${dest}`);
-        }
-      } catch {}
-    }
-  }
-
-  // Ensure any binaries inside tunnelDir have executable permissions on Unix
-  if (!isWin && fs.existsSync(tunnelDir)) {
-    for (const fName of fs.readdirSync(tunnelDir)) {
-      const full = path.join(tunnelDir, fName);
-      if (fs.statSync(full).isFile() && !fName.endsWith(".json") && !fName.endsWith(".txt") && !fName.endsWith(".md") && fName !== "LICENSE" && fName !== "NOTICE") {
-        try { fs.chmodSync(full, 0o755); } catch {}
-      }
-    }
-  }
+  // 4b. Built-in Cloudflare Tunnel runtime removed (local/custom proxy only)
 
   // 4c. Prepare Bundled Language Server (typescript-language-server + typescript)
   console.log("\nBundling production Language Server dependencies...");

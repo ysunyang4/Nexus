@@ -22,15 +22,6 @@ if (forbidden.length > 0) {
 }
 
 const isWin = process.platform === "win32";
-const tunnelBinNames = isWin
-  ? ["tunnel-client-runtime-cloudflared.exe", "cloudflared.exe"]
-  : ["tunnel-client-runtime-cloudflared", "cloudflared", "tunnel-client-runtime-cloudflared.exe", "cloudflared.exe"];
-
-const hasBundledTunnel = tunnelBinNames.some((name) => fs.existsSync(path.join(resources, "tunnel", name)));
-const license = path.join(resources, "tunnel/LICENSE");
-if (isWin && (!hasBundledTunnel || !fs.existsSync(license))) {
-  throw new Error("Tauri resource verification failed; bundled tunnel runtime or license missing.");
-}
 
 const lspCli = path.join(resources, "lsp/node_modules/typescript-language-server/lib/cli.mjs");
 const lspTsserver = path.join(resources, "lsp/node_modules/typescript/lib/tsserver.js");

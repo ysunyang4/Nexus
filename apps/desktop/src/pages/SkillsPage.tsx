@@ -13,6 +13,7 @@ import {
   Terminal,
   FolderOpen,
   Plus,
+  BookOpen,
 } from "lucide-react";
 import type {
   SkillMetadata,
@@ -21,6 +22,7 @@ import type {
 } from "../types.js";
 import { useTranslation } from "../i18n/useTranslation.js";
 import { bridge } from "../api/bridge.js";
+import { openExternalUrl } from "../api/browser-helper.js";
 
 interface SkillsPageProps {
   uxMode: UserExperienceMode;
@@ -389,6 +391,20 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
         </div>
 
         <div className="flex items-center gap-2 ml-auto">
+          {/* Skill Blog Tutorial Button */}
+          <button
+            type="button"
+            onClick={() => {
+              openExternalUrl("https://blog.ycu.de5.net/2026/11/25/skill-%E6%95%99%E7%A8%8B/").catch(() => {
+                window.open("https://blog.ycu.de5.net/2026/11/25/skill-%E6%95%99%E7%A8%8B/", "_blank");
+              });
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-500 border border-indigo-500/25 rounded-lg text-xs font-semibold transition cursor-pointer"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>{tText("Skill 教程", "Skill Guide", "Skill ガイド", "Skill-Anleitung")}</span>
+          </button>
+
           {/* Open Sources Drawer Button */}
           <button
             type="button"
