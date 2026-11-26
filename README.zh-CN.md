@@ -299,22 +299,25 @@ Header 添加：`Authorization: Bearer lb_your_token_here`
 > 💼 **企业赞助与商业授权 (Enterprise & Licensing)**  
 > 如需企业级深度技术支持、定制集成，或商业闭源授权（豁免 AGPL-3.0 开源传染义务的商业双重许可），欢迎通过 [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) 或邮件联系：`ysunyang4@gmail.com`。
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/ryansun)
+
 ### 官方赞助渠道
 
-| 🟢 微信支付 (WeChat Pay) | 🔵 支付宝 (Alipay) | 🟡 币安支付 (Binance Pay) |
-| :---: | :---: | :---: |
-| <img src="docs/assets/wechat-pay.jpg" width="210" alt="WeChat Pay" /> | <img src="docs/assets/alipay.jpg" width="210" alt="Alipay" /> | <img src="docs/assets/binance-pay.jpg" width="210" alt="Binance Pay" /> |
+| 🟢 微信支付 (WeChat Pay) | 🔵 支付宝 (Alipay) | 🟡 币安支付 (Binance Pay) | ☕ Ko-fi |
+| :---: | :---: | :---: | :---: |
+| <img src="docs/assets/wechat-pay.jpg" width="210" alt="WeChat Pay" /> | <img src="docs/assets/alipay.jpg" width="210" alt="Alipay" /> | <img src="docs/assets/binance-pay.jpg" width="210" alt="Binance Pay" /> | <img src="docs/assets/ko-fi-qr.png" width="210" alt="Ko-fi" /> |
 
 | 赞助方式 | 网络 / 平台 | 账户 / 地址 | 说明 |
 | :--- | :--- | :--- | :--- |
 | **加密货币 (USDT 链上直转)** | **TRON (TRC-20)** | `TPRrDW8DGsrDmcnWvanTbFz7XEJuywu21i` | 用任何钱包或交易所转出时，选 **TRON (TRC-20)** 网络即可 |
 | **币安支付 (Binance Pay)** | 站内转账 | **UID: `1292741809`** | 币安站内转账（免选手续费网络） |
+| **Ko-fi** | 网页 (PayPal) | [https://ko-fi.com/ryansun](https://ko-fi.com/ryansun) | 通过 Ko-fi 请作者喝杯咖啡 |
 
 > 🌟 **衷心感谢您的支持与陪伴。** 每一份支持都将切实帮助本项目持续演进与打磨。
 
 ### 官方安全声明
 
-- **唯一官方渠道**：上表列出的链上地址和币安 UID 是本项目**唯一**合法的官方赞助通道。
+- **唯一官方渠道**：上表列出的渠道是本项目**唯一**合法的官方赞助通道。
 - **绝无私信索要**：项目作者与维护团队**绝不会**通过私信、邮件、即时通讯工具等任何方式主动向您索要转账、汇款或账户信息。
 - **防伪与举报**：如在任何第三方网站、Fork 仓库或镜像中发现声称属于本项目但与上述 UID 或地址不一致的情况，请立即通过 [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) 提交举报。
 

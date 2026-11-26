@@ -310,26 +310,30 @@ Join the discussion, report issues, and follow updates across channels:
 If **Nexus** has accelerated your research, engineering workflow, or daily development, consider supporting the continuous open-source maintenance of this project. Donations are completely voluntary and help sustain infrastructure, active maintenance, and ecosystem development.
 
 - **Afdian (爱发电)**: [https://afdian.com/a/ysunyang4](https://afdian.com/a/ysunyang4)
+- **Ko-fi**: [https://ko-fi.com/ryansun](https://ko-fi.com/ryansun)
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/ryansun)
 
 > 💼 **Enterprise Sponsorship & Commercial Licensing**  
 > For enterprise sponsorship, dedicated SLA support, or commercial closed-source licensing inquiries (dual-licensing exempt from AGPL-3.0 copyleft obligations), feel free to reach out via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues) or email: `ysunyang4@gmail.com`.
 
 ### Supported Contribution Channels
 
-| 🟢 WeChat Pay | 🔵 Alipay | 🟡 Binance Pay |
-| :---: | :---: | :---: |
-| <img src="docs/assets/wechat-pay.jpg" width="210" alt="WeChat Pay" /> | <img src="docs/assets/alipay.jpg" width="210" alt="Alipay" /> | <img src="docs/assets/binance-pay.jpg" width="210" alt="Binance Pay" /> |
+| 🟢 WeChat Pay | 🔵 Alipay | 🟡 Binance Pay | ☕ Ko-fi |
+| :---: | :---: | :---: | :---: |
+| <img src="docs/assets/wechat-pay.jpg" width="210" alt="WeChat Pay" /> | <img src="docs/assets/alipay.jpg" width="210" alt="Alipay" /> | <img src="docs/assets/binance-pay.jpg" width="210" alt="Binance Pay" /> | <img src="docs/assets/ko-fi-qr.png" width="210" alt="Ko-fi" /> |
 
 | Method | Network / Platform | Address / Account | Notes |
 | :--- | :--- | :--- | :--- |
 | **USDT (on-chain)** | **TRON (TRC-20)** | `TPRrDW8DGsrDmcnWvanTbFz7XEJuywu21i` | Transfer from any wallet or exchange via **TRON (TRC-20)** |
 | **Binance Pay** | Internal Transfer | **UID: `1292741809`** | Direct zero-fee internal transfer via Binance Pay |
+| **Ko-fi** | Web (PayPal) | [https://ko-fi.com/ryansun](https://ko-fi.com/ryansun) | Buy me a coffee via Ko-fi |
 
 > 🌟 **Thank you for your support.** Every contribution helps sustain active development, performance optimizations, and open-source toolkits.
 
 ### Official Security Notice
 
-- **Unique Official Channels**: The on-chain address and Binance UID listed above are the **only** official donation channels for this project.
+- **Unique Official Channels**: The channels listed above are the **only** official donation channels for this project.
 - **No Private Solicitation**: The maintainers of this project will **never** contact you privately via email, messaging apps, or social media to solicit funds, donations, or account credentials.
 - **Anti-Impersonation**: If you encounter any fork, mirror, or distribution claiming to be this project with inconsistent donation details, please report it immediately via [GitHub Issues](https://github.com/ysunyang4/Nexus/issues).
 
