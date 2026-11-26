@@ -578,7 +578,6 @@ const server = http.createServer(async (req, res) => {
           issuer: baseUrl,
           authorization_endpoint: `${baseUrl}/oauth/authorize`,
           token_endpoint: `${baseUrl}/oauth/token`,
-          registration_endpoint: `${baseUrl}/oauth/register`,
           jwks_uri: `${baseUrl}/oauth/jwks.json`,
           response_types_supported: ["code"],
           grant_types_supported: ["authorization_code", "refresh_token"],
@@ -601,8 +600,21 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // 6. Dynamic Client Registration (RFC 7591)
+  // 6. Dynamic Client Registration (Disabled in Nexus 1.3.4)
   if (req.method === "POST" && pathname === "/oauth/register") {
+    res.writeHead(403, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        error: "registration_disabled",
+        error_description:
+          "Public OAuth dynamic client registration is disabled in Nexus 1.3.4. Use Local MCP Access Token or WebAgent loopback.",
+      })
+    );
+    return;
+  }
+
+  // 6.0 Disabled block removed from public exposure
+  if (false && req.method === "POST" && pathname === "/oauth/register") {
     try {
       const regIp = getTrustedClientIp(req);
       if (!registrationRateLimits.check(regIp)) {
@@ -2015,8 +2027,20 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // 7. OAuth 2.0 Authorization Endpoint (RFC 6749)
+  // 7. OAuth 2.0 Authorization Endpoint (Disabled in Nexus 1.3.4 — no pairing code page)
   if (pathname === "/oauth/authorize") {
+    res.writeHead(403, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        error: "oauth_disabled",
+        error_description:
+          "Public OAuth authorization and pairing approval are disabled in Nexus 1.3.4. Use Local MCP Access Token or WebAgent loopback.",
+      })
+    );
+    return;
+  }
+
+  if (false && pathname === "/oauth/authorize") {
     if (req.method === "GET") {
       const clientId = url.searchParams.get("client_id")?.trim() || "";
       const redirectUri = url.searchParams.get("redirect_uri")?.trim() || "";
