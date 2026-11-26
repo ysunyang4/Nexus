@@ -71,7 +71,7 @@ export const NexusPulseLoading: React.FC<NexusPulseLoadingProps> = ({
       }`}
     >
       <div className="flex items-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
+        <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-primary)] animate-pulse" />
         <span className="font-mono text-theme-muted tracking-wider uppercase text-[10px]">
           Nexus Pulse Initialization
         </span>
@@ -83,16 +83,16 @@ export const NexusPulseLoading: React.FC<NexusPulseLoadingProps> = ({
           return (
             <div key={step.id} className="flex items-center gap-1.5 font-mono">
               {step.done ? (
-                <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="w-3 h-3 text-[var(--success)] shrink-0" />
               ) : (
-                <Loader2 className="w-3 h-3 text-sky-400 animate-spin shrink-0" />
+                <Loader2 className="w-3 h-3 text-theme-primary animate-spin shrink-0" />
               )}
               <Icon className="w-3 h-3 text-theme-muted shrink-0" />
               <span
                 className={
                   step.done
                     ? "text-theme-secondary"
-                    : "text-sky-300 font-medium"
+                    : "text-theme-primary font-medium"
                 }
               >
                 {step.label}

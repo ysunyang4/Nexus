@@ -179,7 +179,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <img
                 src={nexusLogo}
                 alt="Nexus"
-                className="w-6 h-6 rounded-md shadow-sm object-cover border border-theme-subtle shrink-0"
+                className="w-6 h-6 rounded-md  object-cover border border-theme-subtle shrink-0"
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).src = "/nexus.png";
                 }}
@@ -187,15 +187,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <span className="font-semibold text-xs tracking-wider text-theme-primary">
                 NEXUS
               </span>
-              <span className="text-[10px] font-mono px-1 py-0.2 rounded bg-sky-500/10 text-sky-500 dark:text-sky-400 border border-sky-500/20">
-                1.3.4
+              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-theme-card-muted text-theme-secondary border border-theme-subtle">
+                1.4.0
               </span>
             </div>
           ) : (
             <img
               src={nexusLogo}
               alt="Nexus"
-              className="w-6 h-6 rounded-md shadow-sm object-cover border border-theme-subtle"
+              className="w-6 h-6 rounded-md  object-cover border border-theme-subtle"
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).src = "/nexus.png";
               }}
@@ -239,8 +239,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         title={item.label}
                         className={`w-full flex items-center justify-center p-2 rounded-lg transition ${
                           isActive
-                            ? "bg-sky-500/10 text-sky-500 font-semibold shadow-xs border border-sky-500/20"
-                            : "text-theme-secondary hover:text-theme-primary hover:bg-theme-card-hover/60 border border-transparent"
+                            ? "bg-theme-card-hover text-theme-primary font-semibold border-l-2 border-[var(--text-primary)]"
+                            : "text-theme-secondary hover:text-theme-primary hover:bg-theme-card-hover/60"
                         }`}
                       >
                         <Icon className="w-4 h-4 shrink-0" />
@@ -257,7 +257,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <button
                   type="button"
                   onClick={() => toggleGroup(group.id)}
-                  className="w-full flex items-center justify-between px-2 py-1 rounded-md text-[10px] font-mono uppercase tracking-wider text-theme-muted hover:text-theme-primary hover:bg-theme-card-hover/40 transition"
+                  className="w-full flex items-center justify-between px-2 py-1 rounded-md text-[10px] font-mono uppercase tracking-wider text-theme-secondary hover:text-theme-primary hover:bg-theme-card-hover/40 transition"
                 >
                   <span className="font-semibold">{group.label}</span>
                   {isExpanded ? (
@@ -278,40 +278,45 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           key={item.id}
                           type="button"
                           onClick={() => onSelectPage(item.id)}
-                          className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs transition ${
+                          className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-r-md text-xs transition border-l-2 ${
                             isActive
-                              ? "bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium border border-sky-500/20 shadow-xs"
-                              : "text-theme-secondary hover:text-theme-primary hover:bg-theme-card-hover/50 border border-transparent"
+                              ? "border-[var(--text-primary)] bg-theme-card-hover text-theme-primary font-medium"
+                              : "border-transparent text-theme-secondary hover:text-theme-primary hover:bg-theme-card-hover/50"
                           }`}
                         >
                           <Icon
                             className={`w-3.5 h-3.5 shrink-0 ${
-                              isActive ? "text-sky-500" : "text-theme-muted"
+                              isActive ? "text-theme-primary" : "text-theme-secondary"
                             }`}
                           />
                           <span className="truncate">{item.label}</span>
                           {item.badgeStatus && !collapsed && (
-                            <span className="ml-auto flex items-center gap-1.5 text-[10px] font-mono">
-                              <span
-                                className={`w-1.5 h-1.5 rounded-full ${
-                                  item.badgeStatus === "CONNECTED"
-                                    ? "bg-emerald-500"
-                                    : item.badgeStatus === "UNKNOWN"
-                                    ? "bg-amber-500"
-                                    : item.badgeStatus === "FAILED"
-                                    ? "bg-rose-500"
-                                    : "bg-zinc-500"
-                                }`}
-                              />
+                            <span className="ml-auto flex items-center gap-1 text-[10px] font-mono">
                               <span
                                 className={
                                   item.badgeStatus === "CONNECTED"
-                                    ? "text-emerald-500"
-                                    : item.badgeStatus === "UNKNOWN"
-                                    ? "text-amber-500"
-                                    : item.badgeStatus === "FAILED"
-                                    ? "text-rose-500"
-                                    : "text-zinc-500"
+                                    ? "text-[var(--success)]"
+                                    : item.badgeStatus === "UNKNOWN" ||
+                                        item.badgeStatus === "FAILED"
+                                      ? "text-[var(--warning)]"
+                                      : "text-theme-muted"
+                                }
+                              >
+                                {item.badgeStatus === "CONNECTED"
+                                  ? "✓"
+                                  : item.badgeStatus === "UNKNOWN" ||
+                                      item.badgeStatus === "FAILED"
+                                    ? "△"
+                                    : "○"}
+                              </span>
+                              <span
+                                className={
+                                  item.badgeStatus === "CONNECTED"
+                                    ? "text-[var(--success)]"
+                                    : item.badgeStatus === "UNKNOWN" ||
+                                        item.badgeStatus === "FAILED"
+                                      ? "text-[var(--warning)]"
+                                      : "text-theme-muted"
                                 }
                               >
                                 {item.badgeStatus === "CONNECTED"
@@ -357,9 +362,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             )}
             className={`w-full flex items-center rounded-md text-xs transition cursor-pointer ${
               collapsed ? "justify-center p-2" : "gap-2.5 px-3 py-1.5"
-            } text-sky-600 dark:text-sky-400 hover:text-sky-700 hover:bg-sky-500/10 border border-transparent`}
+            } text-theme-secondary hover:text-theme-primary hover:bg-theme-card-hover/50 border border-transparent`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+            <Sparkles className="w-3.5 h-3.5 text-theme-muted shrink-0" />
             {!collapsed && (
               <span className="font-medium">
                 {tText(
@@ -387,9 +392,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
           className={`w-full flex items-center rounded-md text-xs transition cursor-pointer ${
             collapsed ? "justify-center p-2" : "gap-2.5 px-3 py-1.5"
-          } text-sky-600 dark:text-sky-400 hover:text-sky-700 hover:bg-sky-500/10 border border-transparent`}
+          } text-theme-secondary hover:text-theme-primary hover:bg-theme-card-hover/50 border border-transparent`}
         >
-          <HelpCircle className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+          <HelpCircle className="w-3.5 h-3.5 text-theme-muted shrink-0" />
           {!collapsed && (
             <span className="font-medium">
               {tText(
@@ -406,41 +411,48 @@ export const Sidebar: React.FC<SidebarProps> = ({
           type="button"
           onClick={() => onSelectPage("settings")}
           title={tText("应用设置", "Settings", "設定", "Einstellungen")}
-          className={`w-full flex items-center rounded-md text-xs transition ${
+          className={`w-full flex items-center rounded-r-md text-xs transition border-l-2 ${
             collapsed ? "justify-center p-2" : "gap-2.5 px-3 py-1.5"
           } ${
             currentPage === "settings"
-              ? "bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium border border-sky-500/20 shadow-xs"
-              : "text-theme-secondary hover:text-theme-primary hover:bg-theme-card-hover/50 border border-transparent"
+              ? "border-[var(--text-primary)] bg-theme-card-hover text-theme-primary font-medium"
+              : "border-transparent text-theme-secondary hover:text-theme-primary hover:bg-theme-card-hover/50"
           }`}
         >
           <Settings
             className={`w-3.5 h-3.5 ${
-              currentPage === "settings" ? "text-sky-500" : "text-theme-muted"
+              currentPage === "settings" ? "text-theme-primary" : "text-theme-secondary"
             }`}
           />
           {!collapsed && <span>{tText("应用设置", "Settings", "設定", "Einstellungen")}</span>}
         </button>
 
         {!collapsed ? (
-          <div className="px-3 py-1.5 flex items-center justify-between text-[11px] font-mono text-theme-muted">
+          <div className="px-3 py-1.5 flex items-center justify-between text-[11px] font-mono text-theme-secondary">
             <span className="flex items-center gap-1.5">
               <span
-                className={`w-1.5 h-1.5 rounded-full ${
-                  isHealthy ? "bg-emerald-500" : "bg-amber-500"
-                }`}
-              />
-              <span>
+                className={
+                  isHealthy ? "text-[var(--success)]" : "text-[var(--warning)]"
+                }
+                aria-hidden="true"
+              >
+                {isHealthy ? "✓" : "△"}
+              </span>
+              <span
+                className={
+                  isHealthy ? "text-[var(--success)]" : "text-[var(--warning)]"
+                }
+              >
                 {isHealthy
                   ? tText("系统正常运行", "Engine Ready", "システム正常稼働中", "System bereit")
                   : tText("服务异常", "Standby", "サービス待機中", "Standby")}
               </span>
             </span>
-            <span className="text-[10px]">v1.3.4</span>
+            <span className="text-[10px]">v1.4.0</span>
           </div>
         ) : (
           <div
-            className="py-1 flex justify-center"
+            className="py-1 flex justify-center text-[11px] font-mono"
             title={
               isHealthy
                 ? tText("系统正常运行", "Engine Ready", "システム正常稼働中", "System bereit")
@@ -448,10 +460,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             }
           >
             <span
-              className={`w-2 h-2 rounded-full ${
-                isHealthy ? "bg-emerald-500" : "bg-amber-500"
-              }`}
-            />
+              className={
+                isHealthy ? "text-[var(--success)]" : "text-[var(--warning)]"
+              }
+            >
+              {isHealthy ? "✓" : "△"}
+            </span>
           </div>
         )}
       </div>

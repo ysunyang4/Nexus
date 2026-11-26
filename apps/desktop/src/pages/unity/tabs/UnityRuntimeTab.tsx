@@ -33,7 +33,7 @@ export const UnityRuntimeTab: React.FC<UnityRuntimeTabProps> = ({
               title="Play"
               className={`p-1.5 rounded transition flex items-center gap-1.5 ${
                 isPlaying
-                  ? "bg-emerald-500/20 text-emerald-400"
+                  ? "bg-[var(--btn-primary-bg)]/20 text-[var(--success)]"
                   : "text-theme-secondary hover:text-theme-primary hover:bg-theme-card/60 disabled:opacity-40"
               }`}
             >
@@ -48,7 +48,7 @@ export const UnityRuntimeTab: React.FC<UnityRuntimeTabProps> = ({
               title="Pause"
               className={`p-1.5 rounded transition flex items-center gap-1.5 ${
                 isPaused
-                  ? "bg-amber-500/20 text-amber-400"
+                  ? "bg-[var(--btn-primary-bg)]/20 text-[var(--warning)]"
                   : "text-theme-secondary hover:text-theme-primary hover:bg-theme-card/60 disabled:opacity-40"
               }`}
             >
@@ -64,7 +64,7 @@ export const UnityRuntimeTab: React.FC<UnityRuntimeTabProps> = ({
               className={`p-1.5 rounded transition flex items-center gap-1.5 ${
                 isStopped
                   ? "text-theme-muted opacity-40 cursor-not-allowed"
-                  : "text-rose-400 hover:bg-rose-500/10 hover:text-rose-300"
+                  : "text-[var(--warning)] hover:bg-[var(--btn-primary-bg)]/10 hover:text-[var(--warning)]"
               }`}
             >
               <Square className="w-3.5 h-3.5 fill-current" />
@@ -80,7 +80,7 @@ export const UnityRuntimeTab: React.FC<UnityRuntimeTabProps> = ({
               <span className="text-theme-muted mr-1.5">Runtime:</span>
               <span
                 className={`font-semibold ${
-                  isPlaying ? "text-emerald-500" : isPaused ? "text-amber-500" : "text-theme-secondary"
+                  isPlaying ? "text-[var(--success)]" : isPaused ? "text-[var(--warning)]" : "text-theme-secondary"
                 }`}
               >
                 {runtimeState.lifecycleState}
@@ -118,7 +118,7 @@ export const UnityRuntimeTab: React.FC<UnityRuntimeTabProps> = ({
             onClick={onCaptureScreenshot}
             className="px-2.5 py-1 bg-theme-card/60 hover:bg-theme-card text-theme-primary border border-theme-subtle rounded text-xs flex items-center gap-1.5 transition disabled:opacity-40"
           >
-            <Camera className="w-3.5 h-3.5 text-sky-400" />
+            <Camera className="w-3.5 h-3.5 text-theme-primary" />
             <span>捕获画面</span>
           </button>
         </div>
@@ -131,7 +131,7 @@ export const UnityRuntimeTab: React.FC<UnityRuntimeTabProps> = ({
           {/* Card: Runtime State Details */}
           <div className="p-3 bg-theme-card/40 border border-theme-subtle rounded-lg space-y-3 font-mono text-xs">
             <div className="flex items-center gap-2 font-semibold text-theme-primary text-xs">
-              <Activity className="w-3.5 h-3.5 text-sky-400" />
+              <Activity className="w-3.5 h-3.5 text-theme-primary" />
               <span>Runtime Telemetry</span>
             </div>
 
@@ -154,7 +154,7 @@ export const UnityRuntimeTab: React.FC<UnityRuntimeTabProps> = ({
                 <span className="text-theme-muted">Play Mode:</span>
                 <span
                   className={`font-semibold ${
-                    isPlaying ? "text-emerald-400" : isPaused ? "text-amber-400" : "text-theme-muted"
+                    isPlaying ? "text-[var(--success)]" : isPaused ? "text-[var(--warning)]" : "text-theme-muted"
                   }`}
                 >
                   {isPlaying ? "ACTIVE" : isPaused ? "PAUSED" : "STOPPED"}
@@ -167,7 +167,7 @@ export const UnityRuntimeTab: React.FC<UnityRuntimeTabProps> = ({
           <div className="flex-1 p-3 bg-theme-card/40 border border-theme-subtle rounded-lg flex flex-col min-h-48 font-mono text-xs">
             <div className="flex items-center justify-between font-semibold text-theme-primary text-xs pb-2 border-b border-theme-subtle">
               <div className="flex items-center gap-2">
-                <Monitor className="w-3.5 h-3.5 text-sky-400" />
+                <Monitor className="w-3.5 h-3.5 text-theme-primary" />
                 <span>Runtime Objects</span>
               </div>
               <span className="text-[10px] text-theme-muted">
@@ -202,12 +202,12 @@ export const UnityRuntimeTab: React.FC<UnityRuntimeTabProps> = ({
             <span className="text-[10px] text-theme-muted">1920x1080 Standalone</span>
           </div>
 
-          <div className="flex-1 bg-black/60 flex items-center justify-center p-4 overflow-hidden">
+          <div className="flex-1 bg-[var(--bg-app)] flex items-center justify-center p-4 overflow-hidden">
             {runtimeState.screenshotUrl ? (
               <img
                 src={runtimeState.screenshotUrl}
                 alt="Runtime Viewport"
-                className="max-h-full max-w-full object-contain rounded border border-theme-subtle shadow-md"
+                className="max-h-full max-w-full object-contain rounded border border-theme-subtle "
               />
             ) : (
               <div className="text-center space-y-2 text-theme-muted font-mono text-xs">

@@ -185,7 +185,7 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
       <div className="flex items-center justify-between gap-4 border-b border-theme-subtle pb-4">
         <div>
           <h1 className="text-base font-semibold text-theme-primary flex items-center gap-2">
-            <Server className="w-4 h-4 text-sky-500" />
+            <Server className="w-4 h-4 text-theme-primary" />
             <span>{isZh ? "MCP Provider 管理器 (MCP Provider Manager)" : "MCP Provider Manager"}</span>
           </h1>
           <p className="text-xs text-theme-muted mt-0.5">
@@ -215,26 +215,26 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
             {isZh ? "全局 MCP 安全策略 (Global MCP Safety)" : "Global MCP Safety"}
           </h2>
           {securityPolicy.unrestricted_execution_mode ? (
-            <span className="px-2 py-0.5 rounded text-[10px] bg-amber-500/15 text-amber-400 border border-amber-500/30 font-semibold flex items-center gap-1">
-              <AlertTriangle className="w-3 h-3 text-amber-400" />
+            <span className="px-2 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/15 text-[var(--warning)] border border-theme-subtle font-semibold flex items-center gap-1">
+              <AlertTriangle className="w-3 h-3 text-[var(--warning)]" />
               <span>{isZh ? "无限制模式 (Unrestricted)" : "UNRESTRICTED"}</span>
             </span>
           ) : (
-            <span className="px-2 py-0.5 rounded text-[10px] bg-sky-500/15 text-sky-400 border border-sky-500/30 font-semibold flex items-center gap-1">
-              <ShieldCheck className="w-3 h-3 text-sky-400" />
+            <span className="px-2 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/15 text-theme-primary border border-theme-subtle font-semibold flex items-center gap-1">
+              <ShieldCheck className="w-3 h-3 text-theme-primary" />
               <span>{isZh ? "受保护模式 (Protected)" : "PROTECTED"}</span>
             </span>
           )}
         </div>
 
-        <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card/30 space-y-4 shadow-sm">
+        <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card/30 space-y-4 ">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {/* Protected Option */}
             <div
               onClick={() => handleSetUnrestricted(false)}
               className={`p-3.5 rounded-lg border cursor-pointer transition flex items-start gap-3 ${
                 !securityPolicy.unrestricted_execution_mode
-                  ? "bg-sky-500/10 border-sky-500/40 text-theme-primary shadow-xs"
+                  ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle text-theme-primary "
                   : "bg-theme-card/20 border-theme-subtle text-theme-muted hover:border-theme-subtle hover:text-theme-secondary"
               }`}
             >
@@ -244,12 +244,12 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
                   name="global_mcp_safety"
                   checked={!securityPolicy.unrestricted_execution_mode}
                   onChange={() => handleSetUnrestricted(false)}
-                  className="text-sky-500 focus:ring-sky-500 cursor-pointer"
+                  className="text-theme-primary ring-[var(--border)] cursor-pointer"
                 />
               </div>
               <div className="space-y-1">
                 <div className="text-xs font-bold flex items-center gap-1.5 text-theme-primary">
-                  <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-theme-primary" />
                   <span>● Protected</span>
                 </div>
                 <p className="text-[11px] text-theme-muted leading-relaxed">
@@ -265,7 +265,7 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
               onClick={() => handleSetUnrestricted(true)}
               className={`p-3.5 rounded-lg border cursor-pointer transition flex items-start gap-3 ${
                 securityPolicy.unrestricted_execution_mode
-                  ? "bg-amber-500/10 border-amber-500/50 text-amber-300 shadow-xs"
+                  ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle text-[var(--warning)] "
                   : "bg-theme-card/20 border-theme-subtle text-theme-muted hover:border-theme-subtle hover:text-theme-secondary"
               }`}
             >
@@ -275,12 +275,12 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
                   name="global_mcp_safety"
                   checked={securityPolicy.unrestricted_execution_mode}
                   onChange={() => handleSetUnrestricted(true)}
-                  className="text-amber-500 focus:ring-amber-500 cursor-pointer"
+                  className="text-[var(--warning)] ring-[var(--border)] cursor-pointer"
                 />
               </div>
               <div className="space-y-1">
-                <div className="text-xs font-bold flex items-center gap-1.5 text-amber-400">
-                  <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                <div className="text-xs font-bold flex items-center gap-1.5 text-[var(--warning)]">
+                  <AlertTriangle className="w-3.5 h-3.5 text-[var(--warning)]" />
                   <span>○ Unrestricted</span>
                 </div>
                 <p className="text-[11px] text-theme-muted leading-relaxed">
@@ -294,12 +294,12 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
 
           {/* Prominent Warning Banner when Unrestricted is Active */}
           {securityPolicy.unrestricted_execution_mode && (
-            <div className="p-4 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 space-y-1">
+            <div className="p-4 rounded-lg bg-[var(--btn-primary-bg)]/10 border border-theme-subtle text-[var(--warning)] space-y-1">
               <div className="flex items-center gap-2 font-bold text-xs tracking-wide">
-                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                <AlertTriangle className="w-4 h-4 text-[var(--warning)] shrink-0" />
                 <span>⚠ Unrestricted Execution Mode</span>
               </div>
-              <p className="text-xs text-amber-300/90 pl-6">
+              <p className="text-xs text-[var(--warning)]/90 pl-6">
                 Nexus will execute MCP requests without Safety / Approval interception.
               </p>
             </div>
@@ -316,18 +316,18 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
           {builtinServers.map((srv) => (
             <div
               key={srv.id}
-              className="p-5 rounded-xl border border-theme-subtle bg-theme-card/30 space-y-3 shadow-sm"
+              className="p-5 rounded-xl border border-theme-subtle bg-theme-card/30 space-y-3 "
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-theme-primary">{srv.name}</span>
-                <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
+                <span className="px-2 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle font-semibold">
                   ● {srv.status}
                 </span>
               </div>
               <p className="text-xs text-theme-muted">{srv.description}</p>
               <div className="pt-2 border-t border-theme-subtle/40 flex items-center justify-between text-xs text-theme-secondary">
                 <span className="truncate max-w-[200px]">{srv.endpoint}</span>
-                <strong className="text-sky-400">{srv.toolsCount} Tools</strong>
+                <strong className="text-theme-primary">{srv.toolsCount} Tools</strong>
               </div>
             </div>
           ))}
@@ -353,12 +353,12 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
               return (
                 <div
                   key={prov.id}
-                  className="p-5 rounded-xl border border-theme-subtle bg-theme-card/30 space-y-3 shadow-sm"
+                  className="p-5 rounded-xl border border-theme-subtle bg-theme-card/30 space-y-3 "
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold text-theme-primary">{prov.name}</span>
-                      <span className="px-1.5 py-0.5 rounded text-[9px] bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                      <span className="px-1.5 py-0.5 rounded text-[9px] bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle">
                         {prov.id}
                       </span>
                     </div>
@@ -366,8 +366,8 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
                           prov.connected
-                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                            : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                            ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle"
+                            : "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle"
                         }`}
                       >
                         ● {prov.connected ? "Connected" : "Disconnected"}
@@ -386,7 +386,7 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
                           type="button"
                           onClick={() => handleStopManagedService(prov.id)}
                           disabled={actionBusy[prov.id]}
-                          className="flex items-center gap-1 px-2 py-0.5 bg-rose-600 hover:bg-rose-500 text-white rounded text-[10px] font-semibold shadow-xs transition cursor-pointer"
+                          className="flex items-center gap-1 px-2 py-0.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded text-[10px] font-semibold  transition cursor-pointer"
                           title={isZh ? "停止服务进程" : "Stop Process"}
                         >
                           <Square className="w-2.5 h-2.5" />
@@ -397,7 +397,7 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
                           type="button"
                           onClick={() => handleStartManagedService(prov.id)}
                           disabled={actionBusy[prov.id]}
-                          className="flex items-center gap-1 px-2 py-0.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[10px] font-semibold shadow-xs transition cursor-pointer"
+                          className="flex items-center gap-1 px-2 py-0.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded text-[10px] font-semibold  transition cursor-pointer"
                           title={isZh ? "启动服务进程" : "Start Process"}
                         >
                           <Play className="w-2.5 h-2.5" />
@@ -408,7 +408,7 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
                         type="button"
                         onClick={() => handleDeleteProvider(prov.id, prov.name)}
                         disabled={actionBusy[prov.id]}
-                        className="p-1 rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition cursor-pointer"
+                        className="p-1 rounded bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border border-theme-subtle transition cursor-pointer"
                         title={isZh ? "删除/解绑此外部接入 Provider" : "Delete / Remove Provider"}
                       >
                         <Trash2 className="w-3 h-3" />
@@ -417,7 +417,7 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
                   </div>
 
                   {!prov.connected && (
-                    <div className="p-2 rounded bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[11px] flex items-center justify-between">
+                    <div className="p-2 rounded bg-[var(--btn-primary-bg)]/10 border border-theme-subtle text-[var(--warning)] text-[11px] flex items-center justify-between">
                       <span>{isZh ? "服务处于未连接状态。若为本地工具，请点击右上角【启动】。" : "Service disconnected. Click Start above to launch."}</span>
                     </div>
                   )}
@@ -429,7 +429,7 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
                     </div>
                     <div className="flex justify-between">
                       <span>{isZh ? "动态能力数:" : "Capabilities / Tools:"}</span>
-                      <strong className="text-sky-400">
+                      <strong className="text-theme-primary">
                         {prov.toolCount} Tools {prov.metrics?.cachedToolCount ? `(${prov.metrics.cachedToolCount} cached)` : ""}
                       </strong>
                     </div>
@@ -449,7 +449,7 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
                         </div>
                         <div className="flex justify-between text-theme-secondary">
                           <span>{isZh ? "最近调用 / 平均:" : "Latest / Avg Latency:"}</span>
-                          <span className="text-emerald-400">
+                          <span className="text-[var(--success)]">
                             {prov.metrics.lastCallLatencyMs}ms / {prov.metrics.avgCallLatencyMs}ms ({prov.metrics.totalCalls} calls)
                           </span>
                         </div>
@@ -468,9 +468,9 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
                     <div>
                       <div className="text-xs font-semibold text-theme-primary flex items-center gap-1.5">
                         {isTrusted ? (
-                          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                          <ShieldCheck className="w-3.5 h-3.5 text-[var(--success)]" />
                         ) : (
-                          <Shield className="w-3.5 h-3.5 text-amber-400" />
+                          <Shield className="w-3.5 h-3.5 text-[var(--warning)]" />
                         )}
                         <span>Trusted External MCP</span>
                       </div>
@@ -488,13 +488,13 @@ export const McpServersPage: React.FC<McpServersPageProps> = ({
                       type="button"
                       disabled={isUpdatingPolicy}
                       onClick={() => handleToggleTrust(cleanEndpoint || prov.endpoint || prov.id)}
-                      className={`px-3 py-1 rounded-md text-[11px] font-bold transition flex items-center gap-1.5 border shadow-xs ${
+                      className={`px-3 py-1 rounded-md text-[11px] font-bold transition flex items-center gap-1.5 border  ${
                         isTrusted
-                          ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/25"
+                          ? "bg-[var(--btn-primary-bg)]/15 text-[var(--success)] border-theme-subtle hover:bg-[var(--btn-primary-bg)]/25"
                           : "bg-theme-card text-theme-muted border-theme-subtle hover:text-theme-primary hover:border-theme-primary"
                       }`}
                     >
-                      <span className={`w-2 h-2 rounded-full ${isTrusted ? "bg-emerald-400 animate-pulse" : "bg-zinc-500"}`} />
+                      <span className={`w-2 h-2 rounded-full ${isTrusted ? "bg-[var(--success)] animate-pulse" : "bg-zinc-500"}`} />
                       <span>{isTrusted ? "TRUSTED [ON]" : "UNTRUSTED [OFF]"}</span>
                     </button>
                   </div>

@@ -18,7 +18,7 @@ export const RuntimePage: React.FC<RuntimePageProps> = ({ serverStatus }) => {
       <div className="flex items-center justify-between gap-4 border-b border-theme-subtle pb-4">
         <div>
           <h1 className="text-base font-semibold text-theme-primary flex items-center gap-2">
-            <Cpu className="w-4 h-4 text-sky-500" />
+            <Cpu className="w-4 h-4 text-theme-primary" />
             <span>{isZh ? "运行时基础设施" : "Runtime & Infrastructure"}</span>
           </h1>
           <p className="text-xs text-theme-muted mt-0.5">
@@ -31,12 +31,12 @@ export const RuntimePage: React.FC<RuntimePageProps> = ({ serverStatus }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl">
         {/* Core Server Node */}
-        <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-4 shadow-sm">
+        <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-4 ">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono uppercase tracking-wider text-theme-muted font-semibold">
               Nexus Core Server
             </span>
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle">
               {serverStatus ? "ONLINE" : "STANDBY"}
             </span>
           </div>
@@ -53,19 +53,19 @@ export const RuntimePage: React.FC<RuntimePageProps> = ({ serverStatus }) => {
             <div className="flex justify-between py-1">
               <span className="text-theme-muted">Server Version</span>
               <span className="font-mono text-theme-secondary">
-                {serverStatus?.version || "1.3.4"}
+                {serverStatus?.version || "1.4.0"}
               </span>
             </div>
           </div>
         </div>
 
         {/* Local Runner Worker */}
-        <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-4 shadow-sm">
+        <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-4 ">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono uppercase tracking-wider text-theme-muted font-semibold">
               Execution Runner
             </span>
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle">
               CONNECTED
             </span>
           </div>
@@ -81,7 +81,7 @@ export const RuntimePage: React.FC<RuntimePageProps> = ({ serverStatus }) => {
             </div>
             <div className="flex justify-between py-1">
               <span className="text-theme-muted">Active Runners</span>
-              <span className="font-mono text-emerald-500">
+              <span className="font-mono text-[var(--success)]">
                 {serverStatus?.runners_connected || 1} Registered
               </span>
             </div>
@@ -89,12 +89,12 @@ export const RuntimePage: React.FC<RuntimePageProps> = ({ serverStatus }) => {
         </div>
 
         {/* LSP Language Server */}
-        <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-4 shadow-sm">
+        <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-4 ">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono uppercase tracking-wider text-theme-muted font-semibold">
               Language Server (LSP)
             </span>
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-sky-500/10 text-sky-500 border border-sky-500/20">
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle">
               READY
             </span>
           </div>

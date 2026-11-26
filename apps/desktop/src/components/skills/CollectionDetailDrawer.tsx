@@ -161,19 +161,19 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
   return (
     <>
       <div
-        className={`fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-xs transition-opacity duration-200 ${
+        className={`fixed inset-0 z-50 flex justify-end bg-[var(--bg-app)] backdrop-blur-xs transition-opacity duration-200 ${
           isChildDrawerOpen ? "hidden" : ""
         }`}
         onClick={onClose}
       >
         <div
-          className="w-full sm:w-[46vw] sm:min-w-[720px] sm:max-w-[920px] h-full bg-white dark:bg-[#0d1320] border-l border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col min-w-0 animate-in slide-in-from-right duration-200"
+          className="w-full sm:w-[46vw] sm:min-w-[720px] sm:max-w-[920px] h-full bg-white dark:bg-[#0d1320] border-l border-theme-subtle border-theme-subtle  flex flex-col min-w-0 animate-in slide-in-from-right duration-200"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Top Header */}
-          <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between gap-4 bg-slate-50/50 dark:bg-slate-900/30">
+          <div className="p-6 border-b border-theme-subtle border-theme-subtle flex items-start justify-between gap-4 bg-theme-card bg-theme-base">
             <div className="flex items-start gap-3.5 min-w-0">
-              <div className="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800/60 text-purple-600 dark:text-purple-400 shrink-0 shadow-2xs">
+              <div className="p-2.5 rounded-xl bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-theme-primary text-theme-primary shrink-0 ">
                 <Layers className="w-6 h-6" />
               </div>
               <div className="min-w-0">
@@ -181,11 +181,11 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                   <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 truncate">
                     {resolvedCollectionName}
                   </h2>
-                  <span className="text-[11px] font-semibold text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/50 px-2 py-0.5 rounded-full border border-purple-200 dark:border-purple-800">
+                  <span className="text-[11px] font-semibold text-theme-primary text-theme-primary bg-theme-card bg-theme-card px-2 py-0.5 rounded-full border border-theme-subtle border-theme-subtle">
                     Skill 集合
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono truncate">
+                <p className="text-xs text-theme-secondary text-theme-secondary mt-1 font-mono truncate">
                   {collectionId} · 共 {totalCount} 个子技能
                 </p>
               </div>
@@ -197,7 +197,7 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowDeleteModal(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 hover:bg-rose-100 dark:hover:bg-rose-900/50 transition shadow-2xs"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--warning)] text-[var(--warning)] bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle hover:bg-theme-card dark:hover:bg-theme-card transition "
                   title="删除整个集合及其所有子技能"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -206,7 +206,7 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
               )}
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                className="p-1.5 rounded-lg text-theme-secondary hover:text-slate-700 dark:hover:text-slate-200 hover:bg-theme-card dark:hover:bg-theme-card transition"
                 title="关闭"
               >
                 <X className="w-5 h-5" />
@@ -215,7 +215,7 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
           </div>
 
           {/* Master Switch & Bulk Action Bar */}
-          <div className="p-4 px-6 bg-gradient-to-r from-purple-50/70 via-indigo-50/50 to-sky-50/70 dark:from-purple-950/20 dark:via-indigo-950/15 dark:to-sky-950/20 border-b border-purple-100 dark:border-purple-900/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="p-4 px-6 bg-theme-card    border-b border-theme-subtle border-theme-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             {/* Master Checkbox & Label */}
             <div
               className="flex items-center gap-3 cursor-pointer select-none"
@@ -228,7 +228,7 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                   checked={isAllEnabled}
                   disabled={togglingAll}
                   onChange={handleMasterToggle}
-                  className="w-4 h-4 rounded text-purple-600 focus:ring-purple-500 border-slate-300 dark:border-slate-700 cursor-pointer"
+                  className="w-4 h-4 rounded text-theme-primary ring-[var(--border)] border-theme-subtle border-theme-subtle cursor-pointer"
                 />
               </div>
               <div>
@@ -237,10 +237,10 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                   <span
                     className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-semibold ${
                       isAllEnabled
-                        ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
+                        ? "bg-theme-card text-[var(--success)] bg-theme-card text-[var(--success)]"
                         : isAllDisabled
-                        ? "bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-400"
-                        : "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300"
+                        ? "bg-slate-200 text-slate-700 bg-theme-card text-theme-secondary"
+                        : "bg-theme-card text-[var(--warning)] bg-theme-card text-[var(--warning)]"
                     }`}
                   >
                     {isAllEnabled
@@ -250,7 +250,7 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                       : `部分启用 (${enabledCount}/${totalCount})`}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                <p className="text-[11px] text-theme-secondary text-theme-secondary mt-0.5">
                   ChatGPT 仅能调度已启用的子技能 ({enabledCount} / {totalCount})
                 </p>
               </div>
@@ -262,7 +262,7 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                 type="button"
                 disabled={togglingAll || isAllEnabled}
                 onClick={() => onToggleAll(true)}
-                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-purple-700 dark:text-purple-300 shadow-2xs transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white bg-theme-card border border-theme-subtle border-theme-subtle hover:bg-theme-card dark:hover:bg-slate-700 text-theme-primary text-theme-primary  transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 全部启用
               </button>
@@ -270,7 +270,7 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                 type="button"
                 disabled={togglingAll || isAllDisabled}
                 onClick={() => onToggleAll(false)}
-                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 shadow-2xs transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white bg-theme-card border border-theme-subtle border-theme-subtle hover:bg-theme-card dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300  transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 全部关闭
               </button>
@@ -278,27 +278,27 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
           </div>
 
           {/* Filter and Search Bar */}
-          <div className="p-4 px-6 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div className="p-4 px-6 border-b border-theme-subtle border-theme-subtle flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             {/* Search Input */}
             <div className="relative flex-1">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Search className="w-3.5 h-3.5 text-theme-secondary absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="搜索子技能名称、ID 或关键词..."
-                className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-purple-500 shadow-2xs"
+                className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-theme-subtle border-theme-subtle bg-white bg-theme-base text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none border-theme-subtle "
               />
             </div>
 
             {/* Status Filter Tabs */}
-            <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-2xs self-start sm:self-auto">
+            <div className="flex items-center gap-1 p-0.5 rounded-lg bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle  self-start sm:self-auto">
               <button
                 onClick={() => setStatusFilter("all")}
                 className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${
                   statusFilter === "all"
-                    ? "bg-white dark:bg-slate-800 text-purple-600 dark:text-purple-400 font-semibold shadow-2xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                    ? "bg-white bg-theme-card text-theme-primary text-theme-primary font-semibold "
+                    : "text-theme-secondary text-theme-secondary hover:text-slate-900 dark:hover:text-slate-200"
                 }`}
               >
                 全部 ({totalCount})
@@ -307,8 +307,8 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                 onClick={() => setStatusFilter("enabled")}
                 className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${
                   statusFilter === "enabled"
-                    ? "bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 font-semibold shadow-2xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                    ? "bg-white bg-theme-card text-[var(--success)] text-[var(--success)] font-semibold "
+                    : "text-theme-secondary text-theme-secondary hover:text-slate-900 dark:hover:text-slate-200"
                 }`}
               >
                 已启用 ({enabledCount})
@@ -317,8 +317,8 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                 onClick={() => setStatusFilter("disabled")}
                 className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${
                   statusFilter === "disabled"
-                    ? "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold shadow-2xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                    ? "bg-white bg-theme-card text-slate-700 dark:text-slate-300 font-semibold "
+                    : "text-theme-secondary text-theme-secondary hover:text-slate-900 dark:hover:text-slate-200"
                 }`}
               >
                 已关闭 ({disabledCount})
@@ -347,27 +347,27 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                   onClick={() => onSelectSkill?.(skill.id)}
                   className={`group p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-3 ${
                     skill.enabled
-                      ? "bg-white dark:bg-[#111827] border-slate-200 dark:border-slate-800 hover:border-purple-300 dark:hover:border-purple-800/80 shadow-2xs hover:shadow-xs"
-                      : "bg-slate-50/60 dark:bg-slate-900/30 border-slate-200/60 dark:border-slate-800/40 opacity-70"
+                      ? "bg-white dark:bg-[#111827] border-theme-subtle border-theme-subtle border-theme-subtle border-theme-subtle  "
+                      : "bg-theme-card bg-theme-base border-theme-subtle border-theme-subtle opacity-70"
                   }`}
                 >
                   {/* Header row: Name, doc badges, individual toggle switch */}
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition truncate">
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-theme-primary dark:group-hover:text-theme-primary transition truncate">
                           {displayName}
                         </h4>
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-theme-card bg-theme-card text-[var(--success)] text-[var(--success)] border border-theme-subtle border-theme-subtle">
                           SKILL.md
                         </span>
                         {skill.type !== "raw" && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-theme-card bg-theme-card text-theme-primary text-theme-primary border border-theme-subtle border-theme-subtle">
                             skill.yaml
                           </span>
                         )}
                       </div>
-                      <div className="text-[11px] font-mono text-slate-400 dark:text-slate-500 mt-0.5 truncate">
+                      <div className="text-[11px] font-mono text-theme-secondary text-theme-secondary mt-0.5 truncate">
                         {skill.id}
                       </div>
                     </div>
@@ -385,20 +385,20 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                           onChange={(e) => handleSingleToggle(skill, e as any)}
                           className="sr-only peer"
                         />
-                        <div className="w-8 h-4.5 bg-slate-300 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-purple-600"></div>
+                        <div className="w-8 h-4.5 bg-slate-300 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-theme-subtle after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-[var(--btn-primary-bg)]"></div>
                       </label>
                     </div>
                   </div>
 
                   {/* Description */}
                   {displayDesc && (
-                    <p className="text-[11px] text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                    <p className="text-[11px] text-theme-secondary text-theme-secondary line-clamp-2 leading-relaxed">
                       {displayDesc}
                     </p>
                   )}
 
                   {/* Footer meta row */}
-                  <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/80 text-[10px] text-slate-400 dark:text-slate-500">
+                  <div className="flex items-center justify-between pt-2 border-t border-theme-subtle border-theme-subtle text-[10px] text-theme-secondary text-theme-secondary">
                     <div className="flex items-center gap-3">
                       {skill.triggers && skill.triggers.length > 0 && (
                         <span className="truncate max-w-[280px]">
@@ -414,13 +414,13 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                             e.stopPropagation();
                             setSkillToDelete(skill);
                           }}
-                          className="p-1 rounded text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition"
+                          className="p-1 rounded text-theme-secondary hover:text-[var(--warning)] dark:hover:text-[var(--warning)] hover:bg-theme-card dark:hover:bg-theme-card transition"
                           title="删除该子技能"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       )}
-                      <div className="flex items-center gap-1 text-purple-600 dark:text-purple-400 font-medium group-hover:translate-x-0.5 transition-transform">
+                      <div className="flex items-center gap-1 text-theme-primary text-theme-primary font-medium group-hover:translate-x-0.5 transition-transform">
                         <span>查看详情</span>
                         <ChevronRight className="w-3 h-3" />
                       </div>
@@ -431,8 +431,8 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
             })}
 
             {filteredChildSkills.length === 0 && (
-              <div className="py-16 text-center text-slate-400 dark:text-slate-500 text-xs flex flex-col items-center justify-center gap-2">
-                <Search className="w-6 h-6 text-slate-300 dark:text-slate-600" />
+              <div className="py-16 text-center text-theme-secondary text-theme-secondary text-xs flex flex-col items-center justify-center gap-2">
+                <Search className="w-6 h-6 text-slate-300 text-theme-secondary" />
                 <span>没有找到匹配的子技能</span>
               </div>
             )}
@@ -443,36 +443,36 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
       {/* Delete Collection Confirmation Modal */}
       {showDeleteModal && (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-150"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-xs p-4 animate-in fade-in duration-150"
           onClick={() => !deletingCollection && setShowDeleteModal(false)}
         >
           <div
-            className="bg-white dark:bg-[#0f172a] border border-rose-200 dark:border-rose-900/60 rounded-2xl max-w-md w-full p-6 shadow-2xl animate-in zoom-in-95 duration-150"
+            className="bg-white dark:bg-[#0f172a] border border-theme-subtle border-theme-subtle rounded-2xl max-w-md w-full p-6  animate-in zoom-in-95 duration-150"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start gap-4">
-              <div className="w-11 h-11 rounded-xl bg-rose-100 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+              <div className="w-11 h-11 rounded-xl bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-[var(--warning)] text-[var(--warning)] flex items-center justify-center shrink-0">
                 <AlertTriangle className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
                   删除技能集合
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+                <p className="text-xs text-theme-secondary dark:text-slate-300 mt-2 leading-relaxed">
                   确定要删除集合「<span className="font-semibold text-slate-900 dark:text-slate-100">{resolvedCollectionName}</span>」吗？
                 </p>
-                <div className="mt-3 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200/80 dark:border-rose-800/40 text-xs text-rose-800 dark:text-rose-300 leading-relaxed">
+                <div className="mt-3 p-3 rounded-xl bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-xs text-[var(--warning)] text-[var(--warning)] leading-relaxed">
                   此操作将永久删除该集合下的全部 <strong>{totalCount}</strong> 个子技能目录及配置。此操作无法撤销。
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2.5 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-end gap-2.5 mt-6 pt-4 border-t border-theme-subtle border-theme-subtle">
               <button
                 type="button"
                 disabled={deletingCollection}
                 onClick={() => setShowDeleteModal(false)}
-                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition disabled:opacity-50"
+                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-theme-secondary text-theme-secondary hover:bg-theme-card dark:hover:bg-theme-card border border-theme-subtle border-theme-subtle transition disabled:opacity-50"
               >
                 取消
               </button>
@@ -480,7 +480,7 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                 type="button"
                 disabled={deletingCollection}
                 onClick={handleConfirmDeleteCollection}
-                className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white transition flex items-center gap-1.5 shadow-sm disabled:opacity-50"
+                className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] transition flex items-center gap-1.5  disabled:opacity-50"
               >
                 {deletingCollection ? (
                   <>
@@ -502,20 +502,20 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
       {/* Delete Single Child Skill Confirmation Modal */}
       {skillToDelete && (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-150"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-xs p-4 animate-in fade-in duration-150"
           onClick={() => !deletingSkill && setSkillToDelete(null)}
         >
           <div
-            className="bg-white dark:bg-[#0f172a] border border-rose-200 dark:border-rose-900/60 rounded-2xl max-w-sm w-full p-6 shadow-2xl animate-in zoom-in-95 duration-150"
+            className="bg-white dark:bg-[#0f172a] border border-theme-subtle border-theme-subtle rounded-2xl max-w-sm w-full p-6  animate-in zoom-in-95 duration-150"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="w-10 h-10 rounded-xl bg-rose-100 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-4">
+            <div className="w-10 h-10 rounded-xl bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-[var(--warning)] text-[var(--warning)] flex items-center justify-center mb-4">
               <Trash2 className="w-5 h-5" />
             </div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
               删除子技能
             </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+            <p className="text-xs text-theme-secondary dark:text-slate-300 mt-2 leading-relaxed">
               确定要从集合中删除「
               <span className="font-semibold text-slate-900 dark:text-slate-100">
                 {skillToDelete.name[language] || skillToDelete.name["zh-CN"] || skillToDelete.id}
@@ -527,7 +527,7 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                 type="button"
                 disabled={deletingSkill}
                 onClick={() => setSkillToDelete(null)}
-                className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition"
+                className="px-3 py-1.5 rounded-lg text-xs font-semibold text-theme-secondary text-theme-secondary hover:bg-theme-card dark:hover:bg-theme-card border border-theme-subtle border-theme-subtle transition"
               >
                 取消
               </button>
@@ -535,7 +535,7 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
                 type="button"
                 disabled={deletingSkill}
                 onClick={handleConfirmDeleteSkill}
-                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 text-white hover:bg-rose-700 disabled:opacity-50 transition flex items-center gap-1.5 shadow-sm"
+                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] hover:bg-[var(--btn-primary-bg)] disabled:opacity-50 transition flex items-center gap-1.5 "
               >
                 {deletingSkill ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                 <span>确认删除</span>

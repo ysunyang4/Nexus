@@ -175,7 +175,7 @@ export const ContextPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-theme-subtle pb-5">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 shadow-sm">
+          <div className="p-2.5 rounded-xl bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle ">
             <Layers className="w-6 h-6" />
           </div>
           <div>
@@ -189,7 +189,7 @@ export const ContextPage: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsAiModalOpen(true)}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-600 hover:bg-amber-500 text-white flex items-center gap-1.5 transition shadow-sm"
+            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] flex items-center gap-1.5 transition "
             title="让 GPT 自动按需分析并构建上下文快照"
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -213,7 +213,7 @@ export const ContextPage: React.FC = () => {
           <button
             onClick={handleCompact}
             disabled={compacting || !snapshot}
-            className="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-indigo-600 hover:bg-indigo-500 text-white flex items-center gap-1.5 transition shadow-sm"
+            className="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] flex items-center gap-1.5 transition "
           >
             <Minimize2 className={`w-3.5 h-3.5 ${compacting ? "animate-spin" : ""}`} />
             <span>{t.context?.deterministicCompact || "确定性压缩"}</span>
@@ -223,10 +223,10 @@ export const ContextPage: React.FC = () => {
 
       {message && (
         <div
-          className={`p-3.5 rounded-xl text-xs flex items-center justify-between shadow-sm ${
+          className={`p-3.5 rounded-xl text-xs flex items-center justify-between  ${
             message.type === "success"
-              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-              : "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
+              ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] text-[var(--success)] border border-theme-subtle"
+              : "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle"
           }`}
         >
           <span>{message.text}</span>
@@ -237,10 +237,10 @@ export const ContextPage: React.FC = () => {
       )}
 
       {/* Token Meter Banner */}
-      <div className="bg-theme-card border border-theme-subtle rounded-xl p-4 space-y-3 shadow-sm">
+      <div className="bg-theme-card border border-theme-subtle rounded-xl p-4 space-y-3 ">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs font-semibold text-theme-primary">
-            <Cpu className="w-4 h-4 text-indigo-500" />
+            <Cpu className="w-4 h-4 text-theme-primary" />
             <span>{t.context?.tokenBudget || "Token 预算与上下文大小"}</span>
           </div>
           <span className="text-xs font-mono font-medium text-theme-secondary">
@@ -251,7 +251,7 @@ export const ContextPage: React.FC = () => {
         <div className="w-full bg-theme-sidebar h-2 rounded-full overflow-hidden border border-theme-subtle">
           <div
             className={`h-full transition-all duration-300 ${
-              tokenPercent > 80 ? "bg-red-500" : tokenPercent > 50 ? "bg-amber-500" : "bg-indigo-500"
+              tokenPercent > 80 ? "bg-[var(--btn-primary-bg)]" : tokenPercent > 50 ? "bg-[var(--btn-primary-bg)]" : "bg-[var(--btn-primary-bg)]"
             }`}
             style={{ width: `${tokenPercent}%` }}
           />
@@ -260,11 +260,11 @@ export const ContextPage: React.FC = () => {
         <div className="flex flex-wrap items-center justify-between text-[11px] text-theme-muted pt-1 gap-2">
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1 font-mono">
-              <Hash className="w-3 h-3 text-indigo-500" />
+              <Hash className="w-3 h-3 text-theme-primary" />
               ID: <span className="text-theme-secondary">{snapshot?.contextId || "live_feed"}</span>
             </span>
             {snapshot?.compactionState && (
-              <span className="text-emerald-500 font-medium">
+              <span className="text-[var(--success)] font-medium">
                 已压缩 (截断边界: 步骤 {snapshot.compactionState.compactionBoundaryStep})
               </span>
             )}
@@ -292,7 +292,7 @@ export const ContextPage: React.FC = () => {
               onClick={() => setActiveTab(tab.id as any)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition whitespace-nowrap ${
                 active
-                  ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 font-semibold"
+                  ? "bg-[var(--btn-primary-bg)]/10 text-theme-primary text-theme-primary border border-theme-subtle font-semibold"
                   : "text-theme-muted hover:text-theme-primary hover:bg-theme-card-hover"
               }`}
             >
@@ -310,10 +310,10 @@ export const ContextPage: React.FC = () => {
 
       {/* Raw JSON Inspection Drawer */}
       {inspectSourceJson && (
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-4 space-y-2 shadow-sm">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-4 space-y-2 ">
           <div className="flex items-center justify-between border-b border-theme-subtle pb-2">
             <span className="text-xs font-bold font-mono text-theme-primary flex items-center gap-1.5">
-              <Code className="w-3.5 h-3.5 text-indigo-500" />
+              <Code className="w-3.5 h-3.5 text-theme-primary" />
               权威上下文快照原始数据 (Raw Payload)
             </span>
             <button
@@ -336,7 +336,7 @@ export const ContextPage: React.FC = () => {
           <div className="bg-theme-card border border-theme-subtle rounded-xl p-4 space-y-3">
             <div className="flex items-center justify-between border-b border-theme-subtle pb-2">
               <span className="text-xs font-bold text-theme-primary flex items-center gap-2">
-                <Shield className="w-4 h-4 text-purple-500" />
+                <Shield className="w-4 h-4 text-theme-primary" />
                 生效全局规则 ({snapshot?.rules?.length || 0})
               </span>
             </div>
@@ -345,7 +345,7 @@ export const ContextPage: React.FC = () => {
                 <div key={r.ruleId} className="p-2.5 rounded-lg bg-theme-sidebar border border-theme-subtle text-xs space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-theme-primary">{r.name}</span>
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-500 border border-purple-500/20 font-mono">
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle font-mono">
                       {r.priority}
                     </span>
                   </div>
@@ -359,7 +359,7 @@ export const ContextPage: React.FC = () => {
           <div className="bg-theme-card border border-theme-subtle rounded-xl p-4 space-y-3">
             <div className="flex items-center justify-between border-b border-theme-subtle pb-2">
               <span className="text-xs font-bold text-theme-primary flex items-center gap-2">
-                <Brain className="w-4 h-4 text-sky-500" />
+                <Brain className="w-4 h-4 text-theme-primary" />
                 已召回记忆 ({snapshot?.memories?.length || 0})
               </span>
             </div>
@@ -368,7 +368,7 @@ export const ContextPage: React.FC = () => {
                 <div key={m.id} className="p-2.5 rounded-lg bg-theme-sidebar border border-theme-subtle text-xs space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="font-semibold font-mono text-theme-primary">{m.key}</span>
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500 border border-sky-500/20 font-mono">
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle font-mono">
                       {m.scope}
                     </span>
                   </div>
@@ -382,7 +382,7 @@ export const ContextPage: React.FC = () => {
           <div className="bg-theme-card border border-theme-subtle rounded-xl p-4 space-y-3">
             <div className="flex items-center justify-between border-b border-theme-subtle pb-2">
               <span className="text-xs font-bold text-theme-primary flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-500" />
+                <Sparkles className="w-4 h-4 text-[var(--warning)]" />
                 生效技能 ({snapshot?.skills?.length || 0})
               </span>
             </div>
@@ -391,7 +391,7 @@ export const ContextPage: React.FC = () => {
                 <div key={s.skillId} className="p-2.5 rounded-lg bg-theme-sidebar border border-theme-subtle text-xs space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-theme-primary">{s.name}</span>
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20 font-mono">
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle font-mono">
                       v{s.version}
                     </span>
                   </div>
@@ -405,7 +405,7 @@ export const ContextPage: React.FC = () => {
           <div className="bg-theme-card border border-theme-subtle rounded-xl p-4 space-y-3">
             <div className="flex items-center justify-between border-b border-theme-subtle pb-2">
               <span className="text-xs font-bold text-theme-primary flex items-center gap-2">
-                <Activity className="w-4 h-4 text-emerald-500" />
+                <Activity className="w-4 h-4 text-[var(--success)]" />
                 近期操作 ({snapshot?.recentActions?.length || 0})
               </span>
             </div>
@@ -413,7 +413,7 @@ export const ContextPage: React.FC = () => {
               {(snapshot?.recentActions || []).map((a: any) => (
                 <div key={a.actionId} className="p-2 rounded bg-theme-sidebar border border-theme-subtle text-xs flex items-center justify-between">
                   <span className="font-mono text-theme-primary text-[11px]">{a.toolName}</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500 font-mono">
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-[var(--success)] font-mono">
                     {a.status}
                   </span>
                 </div>
@@ -424,9 +424,9 @@ export const ContextPage: React.FC = () => {
       )}
 
       {activeTab === "task" && (
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-3 shadow-sm">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-3 ">
           <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-indigo-500" />
+            <Terminal className="w-4 h-4 text-theme-primary" />
             当前任务目标与生命周期
           </h3>
           <div className="bg-theme-sidebar border border-theme-subtle rounded-lg p-3 space-y-2 text-xs">
@@ -445,9 +445,9 @@ export const ContextPage: React.FC = () => {
       )}
 
       {activeTab === "session" && (
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-3 shadow-sm">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-3 ">
           <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">
-            <Clock className="w-4 h-4 text-indigo-500" />
+            <Clock className="w-4 h-4 text-theme-primary" />
             当前会话上下文
           </h3>
           <div className="bg-theme-sidebar border border-theme-subtle rounded-lg p-3 space-y-2 text-xs">
@@ -466,9 +466,9 @@ export const ContextPage: React.FC = () => {
       )}
 
       {activeTab === "project" && (
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-3 shadow-sm">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-3 ">
           <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">
-            <Folder className="w-4 h-4 text-indigo-500" />
+            <Folder className="w-4 h-4 text-theme-primary" />
             项目边界上下文
           </h3>
           <div className="bg-theme-sidebar border border-theme-subtle rounded-lg p-3 space-y-2 text-xs">
@@ -478,16 +478,16 @@ export const ContextPage: React.FC = () => {
             </div>
             <div>
               <span className="text-theme-muted font-medium">强制安全模式：</span>{" "}
-              <span className="text-emerald-500 font-mono">DURABLE_FULL_ACCESS</span>
+              <span className="text-[var(--success)] font-mono">DURABLE_FULL_ACCESS</span>
             </div>
           </div>
         </div>
       )}
 
       {activeTab === "actions" && (
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-3 shadow-sm">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-3 ">
           <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">
-            <Activity className="w-4 h-4 text-emerald-500" />
+            <Activity className="w-4 h-4 text-[var(--success)]" />
             上下文中的近期操作执行
           </h3>
           <div className="space-y-2">
@@ -497,7 +497,7 @@ export const ContextPage: React.FC = () => {
                   <span className="font-mono font-bold text-theme-primary">{a.toolName}</span>
                   {a.actionId && <span className="text-theme-muted font-mono ml-2">({a.actionId})</span>}
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 font-mono">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-[var(--success)] font-mono">
                   {a.status}
                 </span>
               </div>
@@ -507,9 +507,9 @@ export const ContextPage: React.FC = () => {
       )}
 
       {activeTab === "rules" && (
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-3 shadow-sm">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-3 ">
           <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">
-            <Shield className="w-4 h-4 text-purple-500" />
+            <Shield className="w-4 h-4 text-theme-primary" />
             上下文中的全局规则
           </h3>
           <div className="space-y-2">
@@ -517,7 +517,7 @@ export const ContextPage: React.FC = () => {
               <div key={r.ruleId} className="p-3 rounded-lg bg-theme-sidebar border border-theme-subtle text-xs space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-theme-primary">{r.name}</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-500 font-mono">
+                  <span className="text-[10px] px-2 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-theme-primary font-mono">
                     {r.priority}
                   </span>
                 </div>
@@ -529,7 +529,7 @@ export const ContextPage: React.FC = () => {
       )}
 
       {activeTab === "files" && (
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-3 shadow-sm">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-3 ">
           <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">
             <FileText className="w-4 h-4 text-teal-500" />
             上下文中附加的关联文件
@@ -546,9 +546,9 @@ export const ContextPage: React.FC = () => {
       )}
 
       {activeTab === "skills" && (
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-3 shadow-sm">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-3 ">
           <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-amber-500" />
+            <Sparkles className="w-4 h-4 text-[var(--warning)]" />
             上下文中加载的生效技能
           </h3>
           <div className="space-y-2">
@@ -558,7 +558,7 @@ export const ContextPage: React.FC = () => {
                   <span className="font-bold text-theme-primary">{s.name}</span>
                   <span className="text-theme-muted ml-2 font-mono text-[11px]">v{s.version}</span>
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 font-mono">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] font-mono">
                   {s.stepsCount || 0} 项配置步骤
                 </span>
               </div>
@@ -568,10 +568,10 @@ export const ContextPage: React.FC = () => {
       )}
 
       {activeTab === "snapshots" && (
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-4 shadow-sm">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-4 ">
           <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
             <div className="flex items-center gap-2">
-              <Archive className="w-4 h-4 text-indigo-500" />
+              <Archive className="w-4 h-4 text-theme-primary" />
               <h3 className="text-sm font-bold text-theme-primary">已持久化上下文快照 ({savedSnapshots.length})</h3>
             </div>
             <span className="text-[11px] text-theme-muted font-mono">
@@ -596,11 +596,11 @@ export const ContextPage: React.FC = () => {
                     <div className="space-y-1 max-w-2xl">
                       <div className="flex items-center gap-2">
                         <span className="font-bold font-mono text-xs text-theme-primary">{snapId}</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-500 font-mono">
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-theme-primary font-mono">
                           {tokenCount} tokens
                         </span>
                         {snap.compactionState && (
-                          <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 font-mono">
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-[var(--success)] font-mono">
                             已压缩
                           </span>
                         )}
@@ -617,7 +617,7 @@ export const ContextPage: React.FC = () => {
                         className="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-theme-subtle hover:bg-theme-card text-theme-primary flex items-center gap-1 transition"
                         title="载入当前视图"
                       >
-                        <Eye className="w-3.5 h-3.5 text-blue-500" />
+                        <Eye className="w-3.5 h-3.5 text-theme-primary" />
                         <span>查看</span>
                       </button>
                       <button
@@ -625,12 +625,12 @@ export const ContextPage: React.FC = () => {
                         className="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-theme-subtle hover:bg-theme-card text-theme-secondary flex items-center gap-1 transition"
                         title="查看 JSON 源码"
                       >
-                        <Code className="w-3.5 h-3.5 text-purple-500" />
+                        <Code className="w-3.5 h-3.5 text-theme-primary" />
                         <span>源码</span>
                       </button>
                       <button
                         onClick={() => handleDeleteSnapshot(snapId)}
-                        className="p-1.5 rounded-lg text-theme-muted hover:text-red-500 hover:bg-theme-card transition"
+                        className="p-1.5 rounded-lg text-theme-muted hover:text-[var(--warning)] hover:bg-theme-card transition"
                         title="永久删除"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -646,11 +646,11 @@ export const ContextPage: React.FC = () => {
 
       {/* GPT Auto-generate Context Modal */}
       {isAiModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-theme-card border border-theme-subtle rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-theme-card border border-theme-subtle rounded-2xl w-full max-w-lg p-6  space-y-5">
             <div className="flex items-center justify-between border-b border-theme-subtle pb-4">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                <div className="p-2 rounded-lg bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle">
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
@@ -678,7 +678,7 @@ export const ContextPage: React.FC = () => {
                   onChange={(e) => setAiGoal(e.target.value)}
                   placeholder="例如：分析当前 Nexus 项目代码结构，排查 MCP 客户端连接与执行超时问题并制定修复方案..."
                   rows={4}
-                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-xl p-3 text-xs text-theme-primary focus:outline-none focus:border-amber-500 transition resize-none font-sans"
+                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-xl p-3 text-xs text-theme-primary focus:outline-none border-theme-subtle transition resize-none font-sans"
                   required
                 />
               </div>
@@ -695,7 +695,7 @@ export const ContextPage: React.FC = () => {
                       key={preset}
                       type="button"
                       onClick={() => setAiGoal(preset)}
-                      className="text-[10px] px-2.5 py-1 rounded-full bg-theme-sidebar border border-theme-subtle hover:border-amber-500/50 text-theme-secondary transition"
+                      className="text-[10px] px-2.5 py-1 rounded-full bg-theme-sidebar border border-theme-subtle border-theme-subtle text-theme-secondary transition"
                     >
                       + {preset}
                     </button>
@@ -715,7 +715,7 @@ export const ContextPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={generatingContext || !aiGoal.trim()}
-                  className="px-4 py-2 rounded-xl text-xs font-medium bg-amber-600 hover:bg-amber-500 text-white flex items-center gap-1.5 transition shadow-sm disabled:opacity-50"
+                  className="px-4 py-2 rounded-xl text-xs font-medium bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] flex items-center gap-1.5 transition  disabled:opacity-50"
                 >
                   <Sparkles className={`w-3.5 h-3.5 ${generatingContext ? "animate-spin" : ""}`} />
                   <span>{generatingContext ? "GPT 正在组装上下文..." : "生成并持久化快照"}</span>

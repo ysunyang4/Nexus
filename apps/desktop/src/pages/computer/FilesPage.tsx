@@ -73,7 +73,7 @@ export const FilesPage: React.FC<FilesPageProps> = ({ projects }) => {
           style={{ paddingLeft: `${depth * 16 + 8}px` }}
           className={`flex items-center gap-1.5 py-1.5 px-2 rounded-md cursor-pointer transition ${
             isSelected
-              ? "bg-theme-card-hover text-theme-primary font-medium border-l-2 border-l-sky-500"
+              ? "bg-theme-card-hover text-theme-primary font-medium border-l-2 border-l-[var(--text-primary)]"
               : "text-theme-secondary hover:text-theme-primary hover:bg-theme-card/50"
           }`}
         >
@@ -96,12 +96,12 @@ export const FilesPage: React.FC<FilesPageProps> = ({ projects }) => {
           )}
 
           {node.name.endsWith(":\\") ? (
-            <HardDrive className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+            <HardDrive className="w-3.5 h-3.5 text-theme-primary shrink-0" />
           ) : node.isDir ? (
             node.expanded ? (
-              <FolderOpen className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+              <FolderOpen className="w-3.5 h-3.5 text-[var(--warning)] shrink-0" />
             ) : (
-              <Folder className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+              <Folder className="w-3.5 h-3.5 text-[var(--warning)] shrink-0" />
             )
           ) : (
             <FileCode className="w-3.5 h-3.5 text-theme-muted shrink-0" />
@@ -149,7 +149,7 @@ export const FilesPage: React.FC<FilesPageProps> = ({ projects }) => {
         <div className="flex-1 p-6 bg-theme-card/10 overflow-y-auto space-y-6">
           <div className="max-w-3xl space-y-4">
             <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-3">
-              <div className="text-xs font-mono text-sky-500 uppercase tracking-wider font-semibold">
+              <div className="text-xs font-mono text-theme-primary uppercase tracking-wider font-semibold">
                 Resource Details
               </div>
               <div className="font-mono text-sm text-theme-primary break-all">
@@ -171,7 +171,7 @@ export const FilesPage: React.FC<FilesPageProps> = ({ projects }) => {
                       <div className="font-medium text-theme-primary">{proj.name}</div>
                       <div className="font-mono text-[11px] text-theme-muted">{proj.root}</div>
                     </div>
-                    <span className="px-2 py-0.5 rounded font-mono text-[10px] bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                    <span className="px-2 py-0.5 rounded font-mono text-[10px] bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle">
                       AUTHORIZED
                     </span>
                   </div>

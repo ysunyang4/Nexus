@@ -35,13 +35,13 @@ export const UnityBuildTab: React.FC<UnityBuildTabProps> = ({
       case "VERIFIED":
       case "RELEASED":
       case "HEALTHY":
-        return <CheckCircle2 className="w-4 h-4 text-emerald-500" />;
+        return <CheckCircle2 className="w-4 h-4 text-[var(--success)]" />;
       case "BUILDING":
-        return <Clock className="w-4 h-4 text-sky-500 animate-spin" />;
+        return <Clock className="w-4 h-4 text-theme-primary animate-spin" />;
       case "FAILED":
-        return <AlertCircle className="w-4 h-4 text-rose-500" />;
+        return <AlertCircle className="w-4 h-4 text-[var(--warning)]" />;
       case "AVAILABLE":
-        return <RotateCcw className="w-4 h-4 text-sky-400" />;
+        return <RotateCcw className="w-4 h-4 text-theme-primary" />;
       case "IDLE":
       default:
         return <span className="w-2.5 h-2.5 rounded-full border border-theme-muted bg-theme-base" />;
@@ -54,13 +54,13 @@ export const UnityBuildTab: React.FC<UnityBuildTabProps> = ({
       case "VERIFIED":
       case "RELEASED":
       case "HEALTHY":
-        return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
+        return "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border-theme-subtle";
       case "BUILDING":
-        return "bg-sky-500/10 text-sky-400 border-sky-500/20 animate-pulse";
+        return "bg-[var(--btn-primary-bg)]/10 text-theme-primary border-theme-subtle animate-pulse";
       case "FAILED":
-        return "bg-rose-500/10 text-rose-500 border-rose-500/20";
+        return "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border-theme-subtle";
       case "AVAILABLE":
-        return "bg-sky-500/10 text-sky-400 border-sky-500/20";
+        return "bg-[var(--btn-primary-bg)]/10 text-theme-primary border-theme-subtle";
       case "IDLE":
       default:
         return "bg-theme-card text-theme-muted border-theme-subtle";
@@ -72,7 +72,7 @@ export const UnityBuildTab: React.FC<UnityBuildTabProps> = ({
       {/* 1. Header Toolbar */}
       <div className="h-12 px-6 border-b border-theme-subtle bg-theme-sidebar/40 flex items-center justify-between select-none shrink-0">
         <div className="flex items-center gap-2 font-semibold text-theme-primary">
-          <PackageCheck className="w-4 h-4 text-sky-400" />
+          <PackageCheck className="w-4 h-4 text-theme-primary" />
           <span>P5 Production Lifecycle Timeline</span>
         </div>
 
@@ -81,7 +81,7 @@ export const UnityBuildTab: React.FC<UnityBuildTabProps> = ({
             type="button"
             disabled={!isConnected}
             onClick={onTriggerBuild}
-            className="px-3 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded text-xs font-medium flex items-center gap-1.5 transition disabled:opacity-40"
+            className="px-3 py-1 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded text-xs font-medium flex items-center gap-1.5 transition disabled:opacity-40"
           >
             <Play className="w-3.5 h-3.5 fill-current" />
             <span>执行构建</span>
@@ -93,7 +93,7 @@ export const UnityBuildTab: React.FC<UnityBuildTabProps> = ({
             onClick={onTriggerRelease}
             className="px-3 py-1 bg-theme-card hover:bg-theme-card-hover text-theme-primary border border-theme-subtle rounded text-xs font-medium flex items-center gap-1.5 transition disabled:opacity-40"
           >
-            <Send className="w-3.5 h-3.5 text-sky-400" />
+            <Send className="w-3.5 h-3.5 text-theme-primary" />
             <span>创建发布</span>
           </button>
 
@@ -101,7 +101,7 @@ export const UnityBuildTab: React.FC<UnityBuildTabProps> = ({
             type="button"
             disabled={!isConnected}
             onClick={onTriggerRollback}
-            className="px-3 py-1 bg-theme-card hover:bg-theme-card-hover text-amber-400 border border-theme-subtle rounded text-xs font-medium flex items-center gap-1.5 transition disabled:opacity-40"
+            className="px-3 py-1 bg-theme-card hover:bg-theme-card-hover text-[var(--warning)] border border-theme-subtle rounded text-xs font-medium flex items-center gap-1.5 transition disabled:opacity-40"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>受控回滚</span>
@@ -129,7 +129,7 @@ export const UnityBuildTab: React.FC<UnityBuildTabProps> = ({
                   onClick={() => setSelectedNodeId(node.id)}
                   className={`relative flex items-start gap-3.5 cursor-pointer p-2 rounded-lg transition ${
                     isSelected
-                      ? "bg-theme-card border border-sky-500/30 shadow-xs"
+                      ? "bg-theme-card border border-theme-subtle "
                       : "hover:bg-theme-card/40 border border-transparent"
                   }`}
                 >
@@ -140,7 +140,7 @@ export const UnityBuildTab: React.FC<UnityBuildTabProps> = ({
 
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
-                      <span className={`font-semibold text-xs truncate ${isSelected ? "text-sky-400" : "text-theme-primary"}`}>
+                      <span className={`font-semibold text-xs truncate ${isSelected ? "text-theme-primary" : "text-theme-primary"}`}>
                         {node.label}
                       </span>
                       <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded border ${getNodeStatusBadge(node.status)}`}>
@@ -202,8 +202,8 @@ export const UnityBuildTab: React.FC<UnityBuildTabProps> = ({
               </div>
 
               {/* Architectural Safety Notice */}
-              <div className="p-3 bg-sky-500/5 border border-sky-500/20 rounded-lg text-[11px] text-theme-secondary space-y-1">
-                <div className="font-semibold text-sky-400">P5 Lifecycle Controlled Invariant</div>
+              <div className="p-3 bg-[var(--btn-primary-bg)]/5 border border-theme-subtle rounded-lg text-[11px] text-theme-secondary space-y-1">
+                <div className="font-semibold text-theme-primary">P5 Lifecycle Controlled Invariant</div>
                 <div>
                   所有构建与发布操作严格经过 Action Ledger，产物必须具有独立 64 位 SHA-256 校验和。出现异常时通过受控恢复与回滚链路保障工程状态一致性。
                 </div>

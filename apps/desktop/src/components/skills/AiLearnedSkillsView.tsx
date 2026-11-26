@@ -184,9 +184,9 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
   return (
     <div className="space-y-6">
       {/* Top Banner & Control Strip */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-theme-card border border-theme-subtle rounded-xl p-4 shadow-sm">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-theme-card border border-theme-subtle rounded-xl p-4 ">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 shadow-sm">
+          <div className="p-2.5 rounded-xl bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle ">
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
@@ -194,7 +194,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
               <h2 className="text-sm font-bold text-theme-primary">
                 {t.skills?.aiLearningPipeline || "AI 动态技能自主学习管道"}
               </h2>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-mono font-semibold">
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle font-mono font-semibold">
                 {t.skills?.pipelineActive || "已激活管道"}
               </span>
             </div>
@@ -207,7 +207,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
         <div className="flex items-center gap-2 self-end sm:self-auto">
           <button
             onClick={() => setIsAiModalOpen(true)}
-            className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white flex items-center gap-1.5 transition shadow-sm"
+            className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] flex items-center gap-1.5 transition "
             title="输入自然语言需求，由 GPT 自动分析并生成完整技能工作流"
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -216,7 +216,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
           <button
             onClick={handleSimulateLearning}
             disabled={learning}
-            className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-600 hover:bg-amber-500 text-white flex items-center gap-1.5 transition shadow-sm"
+            className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] flex items-center gap-1.5 transition "
             title="从底层 ActionLedger 和 WAL 执行轨迹中自动识别并提取可复用技能"
           >
             <Play className={`w-3 h-3 ${learning ? "animate-spin" : ""}`} />
@@ -234,12 +234,12 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
       </div>
 
       {/* Explanation Banner */}
-      <div className="bg-sky-500/5 border border-sky-500/20 rounded-xl p-3.5 text-xs flex items-start gap-3">
-        <HelpCircle className="w-4 h-4 text-sky-500 shrink-0 mt-0.5" />
+      <div className="bg-[var(--btn-primary-bg)]/5 border border-theme-subtle rounded-xl p-3.5 text-xs flex items-start gap-3">
+        <HelpCircle className="w-4 h-4 text-theme-primary shrink-0 mt-0.5" />
         <div className="space-y-1">
           <div className="font-semibold text-theme-primary flex items-center gap-2">
             <span>什么是「从执行账本聚合技能」？</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500 font-mono">ActionLedger & WAL</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-theme-primary font-mono">ActionLedger & WAL</span>
           </div>
           <p className="text-[11px] text-theme-muted leading-relaxed">
             Nexus 会把 AI 与底层系统工具执行的所有成功动作、调用参数与独立证据写入 ActionLedger 账本。聚合引擎会自动发现其中高频、可复用的稳定操作链，将其提取并参数化为官方/自定义 Skill 规范。您也可以点击上方「GPT 自动生成技能」根据任意自然语言需求直接生成新技能。
@@ -249,10 +249,10 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
 
       {message && (
         <div
-          className={`p-3.5 rounded-xl text-xs flex items-center justify-between shadow-sm ${
+          className={`p-3.5 rounded-xl text-xs flex items-center justify-between  ${
             message.type === "success"
-              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-              : "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
+              ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] text-[var(--success)] border border-theme-subtle"
+              : "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle"
           }`}
         >
           <span>{message.text}</span>
@@ -268,7 +268,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
           onClick={() => setActiveTab("active")}
           className={`px-3.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2 transition ${
             activeTab === "active"
-              ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-bold"
+              ? "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle font-bold"
               : "text-theme-muted hover:text-theme-primary hover:bg-theme-card-hover"
           }`}
         >
@@ -283,7 +283,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
           onClick={() => setActiveTab("candidates")}
           className={`px-3.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2 transition ${
             activeTab === "candidates"
-              ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-bold"
+              ? "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle font-bold"
               : "text-theme-muted hover:text-theme-primary hover:bg-theme-card-hover"
           }`}
         >
@@ -300,7 +300,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
         <div className="space-y-4">
           {skills.length === 0 ? (
             <div className="text-center py-14 bg-theme-card rounded-xl border border-theme-subtle text-theme-muted space-y-2">
-              <Sparkles className="w-8 h-8 mx-auto opacity-30 text-amber-500" />
+              <Sparkles className="w-8 h-8 mx-auto opacity-30 text-[var(--warning)]" />
               <p className="text-sm font-medium">{t.skills?.noLearnedSkills || "暂无已注册的 AI 学习技能"}</p>
               <p className="text-xs max-w-md mx-auto">
                 {t.skills?.noLearnedSkillsDesc || "执行跨工具的多步任务或点击“从执行账本聚合技能”即可触发自动化管道生成。"}
@@ -313,17 +313,17 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
               return (
                 <div
                   key={skill.skillId}
-                  className="bg-theme-card border border-theme-subtle rounded-xl p-5 shadow-sm space-y-4 hover:border-theme-muted transition"
+                  className="bg-theme-card border border-theme-subtle rounded-xl p-5  space-y-4 hover:border-theme-muted transition"
                 >
                   {/* Skill Card Header */}
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2.5 flex-wrap">
                         <span className="font-bold text-sm text-theme-primary">{skill.name}</span>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20 font-bold">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle font-bold">
                           v{skill.activeVersion}
                         </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-semibold font-mono">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/10 text-[var(--success)] font-semibold font-mono">
                           {skill.status}
                         </span>
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-theme-sidebar text-theme-muted font-mono">
@@ -345,7 +345,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
                       </button>
                       <button
                         onClick={() => handleDeleteSkill(skill.skillId)}
-                        className="p-1.5 rounded-lg text-theme-muted hover:text-red-500 hover:bg-theme-card-hover transition"
+                        className="p-1.5 rounded-lg text-theme-muted hover:text-[var(--warning)] hover:bg-theme-card-hover transition"
                         title={t.skills?.deleteSkill || "删除技能"}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -375,7 +375,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
                       <div className="bg-theme-sidebar border border-theme-subtle rounded-xl p-4 space-y-3">
                         <div className="flex items-center justify-between border-b border-theme-subtle pb-2">
                           <span className="text-xs font-bold text-theme-primary flex items-center gap-1.5">
-                            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                            <ShieldCheck className="w-4 h-4 text-[var(--success)]" />
                             {t.skills?.authoritativeEvidence || "权威执行与物理落盘凭证"}
                           </span>
                           <span className="text-[10px] font-mono text-theme-muted">
@@ -391,11 +391,11 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
                           </div>
                           <div className="bg-theme-card p-2.5 rounded-lg border border-theme-subtle">
                             <span className="text-theme-muted block text-[10px]">{t.skills?.successRate || "成功率"}</span>
-                            <span className="font-mono font-bold text-sm text-emerald-500">100%</span>
+                            <span className="font-mono font-bold text-sm text-[var(--success)]">100%</span>
                           </div>
                           <div className="bg-theme-card p-2.5 rounded-lg border border-theme-subtle">
                             <span className="text-theme-muted block text-[10px]">{t.skills?.atomicRenames || "原子写入"}</span>
-                            <span className="font-mono font-bold text-sm text-blue-500">已验证 (VERIFIED)</span>
+                            <span className="font-mono font-bold text-sm text-theme-primary">已验证 (VERIFIED)</span>
                           </div>
                           <div className="bg-theme-card p-2.5 rounded-lg border border-theme-subtle">
                             <span className="text-theme-muted block text-[10px]">{t.skills?.diskHash || "磁盘校验哈希"}</span>
@@ -409,7 +409,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
                       {/* Workflow Steps Visualizer */}
                       <div className="space-y-2">
                         <span className="text-xs font-bold text-theme-primary flex items-center gap-1.5">
-                          <Activity className="w-3.5 h-3.5 text-blue-500" />
+                          <Activity className="w-3.5 h-3.5 text-theme-primary" />
                           {t.skills?.sequentialSteps || "规范化顺序工作流执行步骤"} ({activeVer.steps?.length || 0})
                         </span>
                         <div className="space-y-2">
@@ -420,7 +420,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
                             >
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                  <span className="w-5 h-5 rounded-full bg-blue-500/10 text-blue-500 font-bold font-mono text-[10px] flex items-center justify-center border border-blue-500/20">
+                                  <span className="w-5 h-5 rounded-full bg-[var(--btn-primary-bg)]/10 text-theme-primary font-bold font-mono text-[10px] flex items-center justify-center border border-theme-subtle">
                                     {step.stepIndex ?? idx + 1}
                                   </span>
                                   <span className="font-mono font-bold text-theme-primary">{step.toolName}</span>
@@ -428,7 +428,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
                                     <span className="text-theme-muted font-mono text-[11px]">→ {step.actionName}</span>
                                   )}
                                 </div>
-                                <span className="text-[10px] font-mono text-emerald-500">可复现 (REPRODUCIBLE)</span>
+                                <span className="text-[10px] font-mono text-[var(--success)]">可复现 (REPRODUCIBLE)</span>
                               </div>
                               {step.paramsTemplate && Object.keys(step.paramsTemplate).length > 0 && (
                                 <pre className="text-[11px] font-mono text-theme-secondary bg-theme-card p-2 rounded border border-theme-subtle overflow-x-auto">
@@ -452,7 +452,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
                                 disabled={ver.version === skill.activeVersion}
                                 className={`px-2.5 py-1 rounded text-xs font-mono font-medium border transition ${
                                   ver.version === skill.activeVersion
-                                    ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
+                                    ? "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border-theme-subtle"
                                     : "border-theme-subtle hover:bg-theme-sidebar text-theme-secondary"
                                 }`}
                               >
@@ -476,7 +476,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
         <div className="space-y-4">
           {candidates.length === 0 ? (
             <div className="text-center py-14 bg-theme-card rounded-xl border border-theme-subtle text-theme-muted space-y-2">
-              <CheckCircle className="w-8 h-8 mx-auto opacity-30 text-emerald-500" />
+              <CheckCircle className="w-8 h-8 mx-auto opacity-30 text-[var(--success)]" />
               <p className="text-sm font-medium">{t.skills?.noPendingCandidates || "暂无待审核的候选技能提案"}</p>
               <p className="text-xs max-w-md mx-auto">
                 {t.skills?.noPendingCandidatesDesc || "任务执行完成后会自动生成候选提案，并通过 6 点验证器进行确定性校验。"}
@@ -486,13 +486,13 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
             candidates.map((cand) => (
               <div
                 key={cand.candidateId}
-                className="bg-theme-card border border-theme-subtle rounded-xl p-5 shadow-sm space-y-4"
+                className="bg-theme-card border border-theme-subtle rounded-xl p-5  space-y-4"
               >
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-sm text-theme-primary">{cand.name || cand.proposedName || "候选技能提案"}</span>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20 font-bold">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle font-bold">
                         {cand.status}
                       </span>
                       <span className="text-[10px] font-mono text-theme-muted">
@@ -505,7 +505,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleAcceptCandidate(cand.candidateId)}
-                      className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 transition shadow-sm"
+                      className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] flex items-center gap-1.5 transition "
                     >
                       <Check className="w-3.5 h-3.5" />
                       <span>{t.skills?.acceptAndRegister || "通过审核并注册 (v1.0.0)"}</span>
@@ -519,7 +519,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
                     </button>
                     <button
                       onClick={() => handleDeleteCandidate(cand.candidateId)}
-                      className="p-1.5 rounded-lg text-theme-muted hover:text-red-500 hover:bg-theme-card-hover transition"
+                      className="p-1.5 rounded-lg text-theme-muted hover:text-[var(--warning)] hover:bg-theme-card-hover transition"
                       title={t.skills?.deleteSkill || "删除提案"}
                     >
                       <Trash2 className="w-4 h-4" />
@@ -547,10 +547,10 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
 
       {/* GPT Auto-Generate Skill Modal */}
       {isAiModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-theme-card border border-sky-500/30 rounded-xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+          <div className="bg-theme-card border border-theme-subtle rounded-xl max-w-lg w-full p-6 space-y-4 ">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-sky-500" />
+              <Sparkles className="w-5 h-5 text-theme-primary" />
               <h2 className="text-base font-bold text-theme-primary">GPT 自动生成工作流技能</h2>
             </div>
             <p className="text-xs text-theme-muted leading-relaxed">
@@ -565,7 +565,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
                   value={aiSkillGoal}
                   onChange={(e) => setAiSkillGoal(e.target.value)}
                   placeholder="例如：自动化查找大文件并进行清理"
-                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-sky-500"
+                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -576,7 +576,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
                   value={aiSkillApp}
                   onChange={(e) => setAiSkillApp(e.target.value)}
                   placeholder="例如：Blender, Maya, VS Code, Git, Universal"
-                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-sky-500"
+                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -587,7 +587,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
                   value={aiSkillPrompt}
                   onChange={(e) => setAiSkillPrompt(e.target.value)}
                   placeholder="例如：先检测进程是否存活，若存活则发送退出指令；若未存活则清理临时缓存..."
-                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-sky-500"
+                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -597,7 +597,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
                   id="aiAutoRegister"
                   checked={aiAutoRegister}
                   onChange={(e) => setAiAutoRegister(e.target.checked)}
-                  className="rounded border-theme-subtle text-sky-600 focus:ring-sky-500"
+                  className="rounded border-theme-subtle text-theme-primary ring-[var(--border)]"
                 />
                 <label htmlFor="aiAutoRegister" className="text-xs text-theme-secondary cursor-pointer select-none">
                   通过 6 点校验后直接激活生效（否则保留为待审候选提案）
@@ -615,7 +615,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
                 <button
                   type="submit"
                   disabled={learning}
-                  className="px-4 py-2 rounded-lg text-xs font-medium bg-sky-600 hover:bg-sky-500 text-white flex items-center gap-1.5 transition"
+                  className="px-4 py-2 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] flex items-center gap-1.5 transition"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>{learning ? "正在生成与校验..." : "立即自动生成"}</span>

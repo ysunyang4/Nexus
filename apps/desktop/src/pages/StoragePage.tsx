@@ -165,9 +165,9 @@ export const StoragePage: React.FC = () => {
       path: "memory/YYYY/MM/*.jsonl",
       desc: t.storage?.memoryStoreDesc || "时间分片事实、用户偏好与观察记录，配有本地领域 SQLite 索引。",
       icon: Brain,
-      color: "text-sky-500",
-      bg: "bg-sky-500/10",
-      border: "border-sky-500/20",
+      color: "text-theme-primary",
+      bg: "bg-[var(--btn-primary-bg)]/10",
+      border: "border-theme-subtle",
     },
     {
       title: t.storage?.knowledgeDocsTitle || "知识文档库",
@@ -185,9 +185,9 @@ export const StoragePage: React.FC = () => {
       path: "skills/versions/{skillId}/*.json",
       desc: t.storage?.skillsWorkflowsDesc || "版本隔离不可变 JSON 定义，包含哈希校验与原子重命名保护。",
       icon: Sparkles,
-      color: "text-amber-500",
-      bg: "bg-amber-500/10",
-      border: "border-amber-500/20",
+      color: "text-[var(--warning)]",
+      bg: "bg-[var(--btn-primary-bg)]/10",
+      border: "border-theme-subtle",
     },
     {
       title: t.storage?.contextSnapshotsTitle || "上下文快照",
@@ -195,9 +195,9 @@ export const StoragePage: React.FC = () => {
       path: "context/snapshots/YYYY/MM/*.jsonl",
       desc: t.storage?.contextSnapshotsDesc || "确定性 Token 预算、任务会话与紧凑轨迹状态。",
       icon: Layers,
-      color: "text-indigo-500",
-      bg: "bg-indigo-500/10",
-      border: "border-indigo-500/20",
+      color: "text-theme-primary",
+      bg: "bg-[var(--btn-primary-bg)]/10",
+      border: "border-theme-subtle",
     },
     {
       title: t.storage?.globalRulesTitle || "全局规则库",
@@ -205,9 +205,9 @@ export const StoragePage: React.FC = () => {
       path: "system/rules.jsonl",
       desc: t.storage?.globalRulesDesc || "确定性安全规则、系统规范与边界执行规则。",
       icon: Shield,
-      color: "text-purple-500",
-      bg: "bg-purple-500/10",
-      border: "border-purple-500/20",
+      color: "text-theme-primary",
+      bg: "bg-[var(--btn-primary-bg)]/10",
+      border: "border-theme-subtle",
     },
     {
       title: t.storage?.actionCandidatesTitle || "候选提案库",
@@ -215,9 +215,9 @@ export const StoragePage: React.FC = () => {
       path: "memory/candidates/ & skills/candidates/",
       desc: t.storage?.actionCandidatesDesc || "AI 学习工作流与记忆候选提案，等待用户人工审核确认。",
       icon: Clock,
-      color: "text-emerald-500",
-      bg: "bg-emerald-500/10",
-      border: "border-emerald-500/20",
+      color: "text-[var(--success)]",
+      bg: "bg-[var(--btn-primary-bg)]/10",
+      border: "border-theme-subtle",
     },
   ];
 
@@ -226,7 +226,7 @@ export const StoragePage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-theme-subtle pb-5">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-500 border border-blue-500/20 shadow-sm">
+          <div className="p-2.5 rounded-xl bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle ">
             <HardDrive className="w-6 h-6" />
           </div>
           <div>
@@ -248,7 +248,7 @@ export const StoragePage: React.FC = () => {
           </button>
           <button
             onClick={handleOpenFolder}
-            className="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white flex items-center gap-1.5 transition shadow-sm"
+            className="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] flex items-center gap-1.5 transition "
           >
             <FolderOpen className="w-3.5 h-3.5" />
             <span>{t.storage?.openFolder || "打开存储目录"}</span>
@@ -259,10 +259,10 @@ export const StoragePage: React.FC = () => {
       {/* Alerts */}
       {message && (
         <div
-          className={`p-3.5 rounded-xl text-xs flex items-center justify-between shadow-sm ${
+          className={`p-3.5 rounded-xl text-xs flex items-center justify-between  ${
             message.type === "success"
-              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-              : "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
+              ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] text-[var(--success)] border border-theme-subtle"
+              : "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle"
           }`}
         >
           <span>{message.text}</span>
@@ -275,13 +275,13 @@ export const StoragePage: React.FC = () => {
       {/* Primary Storage Metrics Banner */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Path Card */}
-        <div className="md:col-span-2 bg-theme-card border border-theme-subtle rounded-xl p-4 flex flex-col justify-between shadow-sm space-y-3">
+        <div className="md:col-span-2 bg-theme-card border border-theme-subtle rounded-xl p-4 flex flex-col justify-between  space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-theme-muted flex items-center gap-1.5">
-              <Folder className="w-3.5 h-3.5 text-blue-500" />
+              <Folder className="w-3.5 h-3.5 text-theme-primary" />
               {t.storage?.rootDir || "根目录"}
             </span>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 flex items-center gap-1">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle flex items-center gap-1">
               <CheckCircle className="w-3 h-3" />
               {stats?.status === "HEALTHY" ? (t.storage?.statusHealthy || "正常运行") : (stats?.status || "HEALTHY")}
             </span>
@@ -296,7 +296,7 @@ export const StoragePage: React.FC = () => {
               className="p-1 text-theme-muted hover:text-theme-primary transition flex-shrink-0"
               title="复制路径"
             >
-              {copied ? <CheckCircle className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? <CheckCircle className="w-3.5 h-3.5 text-[var(--success)]" /> : <Copy className="w-3.5 h-3.5" />}
             </button>
           </div>
 
@@ -307,9 +307,9 @@ export const StoragePage: React.FC = () => {
         </div>
 
         {/* Disk Usage Card */}
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-4 flex flex-col justify-between shadow-sm space-y-2">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-4 flex flex-col justify-between  space-y-2">
           <span className="text-xs font-semibold text-theme-muted flex items-center gap-1.5">
-            <Database className="w-3.5 h-3.5 text-indigo-500" />
+            <Database className="w-3.5 h-3.5 text-theme-primary" />
             {t.storage?.storageFootprint || "物理磁盘占用"}
           </span>
           <div>
@@ -324,7 +324,7 @@ export const StoragePage: React.FC = () => {
         </div>
 
         {/* Items Count Card */}
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-4 flex flex-col justify-between shadow-sm space-y-2">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-4 flex flex-col justify-between  space-y-2">
           <span className="text-xs font-semibold text-theme-muted flex items-center gap-1.5">
             <FileCheck className="w-3.5 h-3.5 text-teal-500" />
             {t.storage?.indexedEntities || "已索引数据实体"}
@@ -344,7 +344,7 @@ export const StoragePage: React.FC = () => {
       {/* Domain Breakdown Grid */}
       <div className="space-y-3">
         <h2 className="text-sm font-bold text-theme-primary flex items-center gap-2">
-          <Layers className="w-4 h-4 text-blue-500" />
+          <Layers className="w-4 h-4 text-theme-primary" />
           {t.storage?.domainArchitecture || "标准领域目录架构"}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -353,7 +353,7 @@ export const StoragePage: React.FC = () => {
             return (
               <div
                 key={dom.title}
-                className="bg-theme-card border border-theme-subtle rounded-xl p-4 flex flex-col justify-between hover:border-theme-muted transition shadow-sm space-y-3"
+                className="bg-theme-card border border-theme-subtle rounded-xl p-4 flex flex-col justify-between hover:border-theme-muted transition  space-y-3"
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
@@ -384,9 +384,9 @@ export const StoragePage: React.FC = () => {
       {/* Storage Operations & Actions Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Switch Root Directory */}
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-4 shadow-sm">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-4 ">
           <div className="flex items-center gap-2 border-b border-theme-subtle pb-3">
-            <Folder className="w-4 h-4 text-blue-500" />
+            <Folder className="w-4 h-4 text-theme-primary" />
             <h3 className="text-xs font-bold text-theme-primary">{t.storage?.customRootTitle || "选择自定义存储根目录"}</h3>
           </div>
           <p className="text-xs text-theme-muted leading-relaxed">
@@ -398,13 +398,13 @@ export const StoragePage: React.FC = () => {
               value={newRootDir}
               onChange={(e) => setNewRootDir(e.target.value)}
               placeholder="例如 E:\NexusData 或 D:\AI\NexusData"
-              className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary font-mono placeholder:text-theme-muted focus:outline-none focus:border-blue-500"
+              className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary font-mono placeholder:text-theme-muted focus:outline-none border-theme-subtle"
             />
             <div className="flex justify-end">
               <button
                 type="submit"
                 disabled={loading || !newRootDir.trim() || newRootDir.trim() === stats?.rootDir}
-                className="px-4 py-1.5 rounded-lg text-xs font-medium bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white flex items-center gap-1.5 transition"
+                className="px-4 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] disabled:opacity-50 text-[var(--btn-primary-text)] flex items-center gap-1.5 transition"
               >
                 <span>{t.storage?.saveRootBtn || "保存并初始化根目录"}</span>
               </button>
@@ -413,10 +413,10 @@ export const StoragePage: React.FC = () => {
         </div>
 
         {/* Verification & Integrity Scan */}
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-4 shadow-sm">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-4 ">
           <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-500" />
+              <ShieldCheck className="w-4 h-4 text-[var(--success)]" />
               <h3 className="text-xs font-bold text-theme-primary">{t.storage?.integrityTitle || "完整性扫描与数据一致性检查"}</h3>
             </div>
             <button
@@ -436,7 +436,7 @@ export const StoragePage: React.FC = () => {
             <div className="bg-theme-sidebar border border-theme-subtle rounded-lg p-3 space-y-2 text-xs">
               <div className="flex items-center justify-between">
                 <span className="text-theme-muted">{t.storage?.validItems || "已验证有效项："}</span>
-                <span className="font-mono font-bold text-emerald-500">{scanResult.validItems}</span>
+                <span className="font-mono font-bold text-[var(--success)]">{scanResult.validItems}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-theme-muted">{t.storage?.tombstones || "归档墓碑记录："}</span>
@@ -444,12 +444,12 @@ export const StoragePage: React.FC = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-theme-muted">{t.storage?.anomalies || "检测到异常项："}</span>
-                <span className={`font-mono font-bold ${scanResult.corruptedFiles?.length > 0 ? "text-red-500" : "text-emerald-500"}`}>
+                <span className={`font-mono font-bold ${scanResult.corruptedFiles?.length > 0 ? "text-[var(--warning)]" : "text-[var(--success)]"}`}>
                   {scanResult.corruptedFiles?.length || 0}
                 </span>
               </div>
               {scanResult.corruptedFiles?.length > 0 && (
-                <div className="pt-2 border-t border-theme-subtle text-[11px] text-red-400 font-mono">
+                <div className="pt-2 border-t border-theme-subtle text-[11px] text-[var(--warning)] font-mono">
                   {scanResult.corruptedFiles.join(", ")}
                 </div>
               )}
@@ -462,9 +462,9 @@ export const StoragePage: React.FC = () => {
         </div>
 
         {/* Live Storage Migration */}
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-4 shadow-sm">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-4 ">
           <div className="flex items-center gap-2 border-b border-theme-subtle pb-3">
-            <ArrowRight className="w-4 h-4 text-purple-500" />
+            <ArrowRight className="w-4 h-4 text-theme-primary" />
             <h3 className="text-xs font-bold text-theme-primary">{t.storage?.migrateTitle || "迁移数据至新目录"}</h3>
           </div>
           <p className="text-xs text-theme-muted leading-relaxed">
@@ -476,13 +476,13 @@ export const StoragePage: React.FC = () => {
               value={migrateTargetDir}
               onChange={(e) => setMigrateTargetDir(e.target.value)}
               placeholder="例如 F:\NexusIntelligenceData"
-              className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary font-mono placeholder:text-theme-muted focus:outline-none focus:border-purple-500"
+              className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary font-mono placeholder:text-theme-muted focus:outline-none border-theme-subtle"
             />
             <div className="flex justify-end">
               <button
                 type="submit"
                 disabled={migrating || !migrateTargetDir.trim()}
-                className="px-4 py-1.5 rounded-lg text-xs font-medium bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white flex items-center gap-1.5 transition"
+                className="px-4 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] disabled:opacity-50 text-[var(--btn-primary-text)] flex items-center gap-1.5 transition"
               >
                 <span>{migrating ? (t.storage?.migratingBtn || "正在迁移数据...") : (t.storage?.migrateBtn || "执行数据迁移")}</span>
               </button>
@@ -491,9 +491,9 @@ export const StoragePage: React.FC = () => {
         </div>
 
         {/* Backup & Disaster Recovery */}
-        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-4 shadow-sm">
+        <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 space-y-4 ">
           <div className="flex items-center gap-2 border-b border-theme-subtle pb-3">
-            <Archive className="w-4 h-4 text-amber-500" />
+            <Archive className="w-4 h-4 text-[var(--warning)]" />
             <h3 className="text-xs font-bold text-theme-primary">{t.storage?.backupTitle || "备份与灾难恢复"}</h3>
           </div>
           <p className="text-xs text-theme-muted leading-relaxed">
@@ -505,7 +505,7 @@ export const StoragePage: React.FC = () => {
               disabled={backingUp}
               className="w-full py-2 px-3 rounded-lg text-xs font-medium border border-theme-subtle hover:bg-theme-card-hover text-theme-primary flex items-center justify-center gap-2 transition"
             >
-              <DownloadCloud className="w-3.5 h-3.5 text-amber-500" />
+              <DownloadCloud className="w-3.5 h-3.5 text-[var(--warning)]" />
               <span>{backingUp ? (t.storage?.creatingBackupBtn || "正在创建快照...") : (t.storage?.backupBtn || "创建全量存储备份")}</span>
             </button>
 
@@ -517,12 +517,12 @@ export const StoragePage: React.FC = () => {
                   value={restoreArchivePath}
                   onChange={(e) => setRestoreArchivePath(e.target.value)}
                   placeholder="备份包路径，如 backup.json"
-                  className="flex-1 bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-1.5 text-xs text-theme-primary font-mono placeholder:text-theme-muted focus:outline-none focus:border-amber-500"
+                  className="flex-1 bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-1.5 text-xs text-theme-primary font-mono placeholder:text-theme-muted focus:outline-none border-theme-subtle"
                 />
                 <button
                   type="submit"
                   disabled={restoring || !restoreArchivePath.trim()}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white transition"
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] disabled:opacity-50 text-[var(--btn-primary-text)] transition"
                 >
                   <span>{restoring ? (t.storage?.restoringBtn || "正在恢复...") : (t.storage?.restoreBtn || "恢复数据")}</span>
                 </button>

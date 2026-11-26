@@ -422,7 +422,7 @@ const server = http.createServer(async (req, res) => {
   res.setHeader("X-Nexus-Engine-Signature", "nexus-kernel-sig-8829f4a");
   res.setHeader("X-Nexus-Release-Channel", "stable-canary-8829f");
 
-  // Hard Ingress Barrier: Nexus 1.3.4 strictly supports ChatGPT only.
+  // Hard Ingress Barrier: Nexus 1.4.0 strictly supports ChatGPT only.
   // Immediately reject Claude, Anthropic, Gemini, Google-AI clients.
   const userAgentLower = userAgent.toLowerCase();
   const originLower = String(req.headers["origin"] || "").toLowerCase();
@@ -440,7 +440,7 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(403, { "Content-Type": "application/json" });
     res.end(
       JSON.stringify({
-        error: "Forbidden: Client not supported in Nexus 1.3.4 (ChatGPT only)",
+        error: "Forbidden: Client not supported in Nexus 1.4.0 (ChatGPT only)",
         code: "CLIENT_NOT_SUPPORTED",
       })
     );
@@ -470,7 +470,7 @@ const server = http.createServer(async (req, res) => {
       JSON.stringify({
         ok: true,
         service: "nexus-distribution-channel",
-        latest: "1.3.4",
+        latest: "1.4.0",
         channel: "stable",
         canary: NX_CANARY_SIG,
       })
@@ -495,7 +495,7 @@ const server = http.createServer(async (req, res) => {
         {
           ok: true,
           service: "nexus-mcp-bridge",
-          version: "1.3.4",
+          version: "1.4.0",
           baseUrl,
           nexus: {
             connected: nexusHealth.ok,
@@ -600,14 +600,14 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // 6. Dynamic Client Registration (Disabled in Nexus 1.3.4)
+  // 6. Dynamic Client Registration (Disabled in Nexus 1.4.0)
   if (req.method === "POST" && pathname === "/oauth/register") {
     res.writeHead(403, { "Content-Type": "application/json" });
     res.end(
       JSON.stringify({
         error: "registration_disabled",
         error_description:
-          "Public OAuth dynamic client registration is disabled in Nexus 1.3.4. Use Local MCP Access Token or WebAgent loopback.",
+          "Public OAuth dynamic client registration is disabled in Nexus 1.4.0. Use Local MCP Access Token or WebAgent loopback.",
       })
     );
     return;
@@ -2027,14 +2027,14 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // 7. OAuth 2.0 Authorization Endpoint (Disabled in Nexus 1.3.4 — no pairing code page)
+  // 7. OAuth 2.0 Authorization Endpoint (Disabled in Nexus 1.4.0 — no pairing code page)
   if (pathname === "/oauth/authorize") {
     res.writeHead(403, { "Content-Type": "application/json" });
     res.end(
       JSON.stringify({
         error: "oauth_disabled",
         error_description:
-          "Public OAuth authorization and pairing approval are disabled in Nexus 1.3.4. Use Local MCP Access Token or WebAgent loopback.",
+          "Public OAuth authorization and pairing approval are disabled in Nexus 1.4.0. Use Local MCP Access Token or WebAgent loopback.",
       })
     );
     return;
@@ -2597,16 +2597,16 @@ const server = http.createServer(async (req, res) => {
             },
             serverInfo: {
               name: "nexus-mcp-bridge",
-              version: "1.3.4",
+              version: "1.4.0",
             },
             instructions:
               "# Nexus Universal MCP Execution Gateway\n- Native desktop and execution tools are provided directly by Canonical Nexus Tools.\n- External environments (including Unity GameDev tools on 127.0.0.1:20705) are aggregated seamlessly.\n- All actions are safely verified and logged.",
             server: "nexus-mcp-bridge",
-            version: "1.3.4",
+            version: "1.4.0",
             _meta: {
               "io.modelcontextprotocol/serverInfo": {
                 name: "nexus-mcp-bridge",
-                version: "1.3.4",
+                version: "1.4.0",
               },
             },
           },

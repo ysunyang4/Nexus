@@ -80,12 +80,12 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
               <span className="flex items-center gap-2 text-theme-primary">
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${
-                    serverStatus ? "bg-emerald-500" : "bg-red-500"
+                    serverStatus ? "bg-[var(--btn-primary-bg)]" : "bg-[var(--btn-primary-bg)]"
                   }`}
                 />
                 {isZh ? "Nexus 核心服务" : "Nexus Engine"}
               </span>
-              <span className={serverStatus ? "text-emerald-500 font-medium" : "text-red-500"}>
+              <span className={serverStatus ? "text-[var(--success)] font-medium" : "text-[var(--warning)]"}>
                 {serverStatus ? (isZh ? "已连接" : "Connected") : (isZh ? "未连接" : "Disconnected")}
               </span>
             </div>
@@ -94,12 +94,12 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
               <span className="flex items-center gap-2 text-theme-primary">
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${
-                    isMcpReady ? "bg-emerald-500" : "bg-amber-500"
+                    isMcpReady ? "bg-[var(--btn-primary-bg)]" : "bg-[var(--btn-primary-bg)]"
                   }`}
                 />
                 {isZh ? "MCP 协议访问" : "MCP"}
               </span>
-              <span className={isMcpReady ? "text-emerald-500 font-medium" : "text-amber-500"}>
+              <span className={isMcpReady ? "text-[var(--success)] font-medium" : "text-[var(--warning)]"}>
                 {isMcpReady ? (isZh ? "就绪" : "Ready") : (isZh ? "待命" : "Standby")}
               </span>
             </div>
@@ -108,12 +108,12 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
               <span className="flex items-center gap-2 text-theme-primary">
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${
-                    runnersCount > 0 ? "bg-emerald-500" : "bg-amber-500"
+                    runnersCount > 0 ? "bg-[var(--btn-primary-bg)]" : "bg-[var(--btn-primary-bg)]"
                   }`}
                 />
                 {isZh ? "Runner 节点" : "Runner"}
               </span>
-              <span className={runnersCount > 0 ? "text-emerald-500 font-medium" : "text-amber-500"}>
+              <span className={runnersCount > 0 ? "text-[var(--success)] font-medium" : "text-[var(--warning)]"}>
                 {runnersCount > 0 ? (isZh ? "在线" : "Online") : (isZh ? "待命" : "Standby")}
               </span>
             </div>
@@ -122,12 +122,12 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
               <span className="flex items-center gap-2 text-theme-primary">
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${
-                    serverStatus ? "bg-emerald-500" : "bg-red-500"
+                    serverStatus ? "bg-[var(--btn-primary-bg)]" : "bg-[var(--btn-primary-bg)]"
                   }`}
                 />
                 {isZh ? "电脑与桌面控制" : "Computer"}
               </span>
-              <span className={serverStatus ? "text-emerald-500 font-medium" : "text-red-500"}>
+              <span className={serverStatus ? "text-[var(--success)] font-medium" : "text-[var(--warning)]"}>
                 {serverStatus ? (isZh ? "可用" : "Available") : (isZh ? "离线" : "Offline")}
               </span>
             </div>
@@ -142,7 +142,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
             </span>
             <button
               onClick={onOpenAuthorizeModal}
-              className="text-xs text-sky-500 hover:text-sky-400 font-mono flex items-center gap-1 transition"
+              className="text-xs text-theme-primary hover:text-theme-primary font-mono flex items-center gap-1 transition"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>{isZh ? "授权新项目" : "Authorize Project"}</span>
@@ -164,7 +164,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
                   className="p-3.5 rounded-lg border border-theme-subtle hover:border-theme-strong bg-theme-card/40 hover:bg-theme-card transition cursor-pointer flex items-center justify-between gap-4 group"
                 >
                   <div className="min-w-0 space-y-0.5">
-                    <div className="font-medium text-xs text-theme-primary group-hover:text-sky-500 transition-colors">
+                    <div className="font-medium text-xs text-theme-primary group-hover:text-theme-primary transition-colors">
                       {p.name}
                     </div>
                     <div className="font-mono text-[11px] text-theme-muted truncate max-w-xl">

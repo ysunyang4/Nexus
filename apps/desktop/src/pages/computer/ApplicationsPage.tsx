@@ -4,7 +4,6 @@ import {
   Play,
   Square,
   Trash2,
-  Zap,
   RotateCw,
   Copy,
   Check,
@@ -296,9 +295,6 @@ export const ApplicationsPage: React.FC = () => {
   // Start Service
   const handleStart = async (id: string) => {
     setActionBusy((prev) => ({ ...prev, [id]: true }));
-    setServices((prev) =>
-      prev.map((s) => (s.config?.id === id ? { ...s, status: "RUNNING" } : s))
-    );
     try {
       if (id === "unity-gamedev") {
         await unityApi.startService().catch(() => {});
@@ -433,19 +429,19 @@ export const ApplicationsPage: React.FC = () => {
       <div className="p-5 border-b border-theme-subtle bg-theme-base/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
         <div className="space-y-1 min-w-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-500 border border-sky-500/20 flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-theme-card text-theme-secondary border border-theme-subtle flex items-center justify-center shrink-0">
               <AppWindow className="w-4 h-4" />
             </div>
             <div className="flex items-center gap-2">
               <h1 className="text-base font-bold text-theme-primary tracking-tight">
                 {tText("MCP 插件中心", "MCP Plugin Center", "MCP プラグインセンター", "MCP-Plugin-Zentrum")}
               </h1>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full font-medium bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
-                v1.3.4
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full font-medium bg-theme-base text-theme-secondary border border-theme-subtle">
+                v1.4.0
               </span>
             </div>
           </div>
-          <div className="text-xs text-theme-muted pl-10 leading-relaxed flex items-center gap-1.5 flex-wrap">
+          <div className="text-xs text-theme-secondary pl-10 leading-relaxed flex items-center gap-1.5 flex-wrap">
             <span>
               {tText(
                 "发现、安装、配置与管理标准 MCP 扩展服务 ·",
@@ -457,7 +453,7 @@ export const ApplicationsPage: React.FC = () => {
             <button
               type="button"
               onClick={() => void openExternalUrl("https://blog.ycu.de5.net/")}
-              className="text-sky-500 hover:text-sky-400 hover:underline cursor-pointer inline-flex items-center gap-0.5"
+              className="text-theme-primary underline decoration-[var(--border)] hover:decoration-[var(--text-primary)] cursor-pointer inline-flex items-center gap-0.5"
             >
               <span>{tText("点击访问博客获取详细教程", "Click Help & Docs for tutorials", "チュートリアルブログを見る", "Blog-Tutorial ansehen")}</span>
               <ExternalLink className="w-3 h-3 ml-0.5" />
@@ -470,12 +466,12 @@ export const ApplicationsPage: React.FC = () => {
           <button
             type="button"
             onClick={() => handleCopyMcpConfig()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-theme-subtle bg-theme-card hover:bg-theme-card-hover text-theme-primary transition shadow-2xs cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-theme-subtle bg-theme-card hover:bg-theme-card-hover text-theme-primary transition  cursor-pointer"
           >
             {copiedId === "global" ? (
-              <Check className="w-3.5 h-3.5 text-sky-500" />
+              <Check className="w-3.5 h-3.5 text-[var(--success)]" />
             ) : (
-              <Copy className="w-3.5 h-3.5 text-theme-muted" />
+              <Copy className="w-3.5 h-3.5 text-theme-secondary" />
             )}
             <span>{copiedId === "global" ? tText("已复制", "Copied", "コピー完了", "Kopiert") : tText("复制全局 MCP 配置", "Copy Global MCP Config", "MCP設定をコピー", "MCP-Konfiguration kopieren")}</span>
           </button>
@@ -484,10 +480,10 @@ export const ApplicationsPage: React.FC = () => {
             type="button"
             onClick={loadData}
             disabled={isLoading}
-            className="p-2 rounded-lg border border-theme-subtle bg-theme-card hover:bg-theme-card-hover text-theme-muted hover:text-theme-primary transition shadow-2xs cursor-pointer"
+            className="p-2 rounded-lg border border-theme-subtle bg-theme-card hover:bg-theme-card-hover text-theme-secondary hover:text-theme-primary transition  cursor-pointer"
             title={isZh ? "刷新状态" : "Refresh"}
           >
-            <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-sky-500" : ""}`} />
+            <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-theme-primary" : ""}`} />
           </button>
         </div>
       </div>
@@ -500,13 +496,13 @@ export const ApplicationsPage: React.FC = () => {
             onClick={() => setActiveTab("market")}
             className={`py-3 text-xs font-semibold border-b-2 transition flex items-center gap-1.5 cursor-pointer ${
               activeTab === "market"
-                ? "border-sky-500 text-sky-600 dark:text-sky-400"
+                ? "border-[var(--text-primary)] text-theme-primary"
                 : "border-transparent text-theme-secondary hover:text-theme-primary"
             }`}
           >
             <Layers className="w-4 h-4" />
             <span>{tText("插件市场", "Marketplace", "プラグイン市場", "Marktplatz")}</span>
-            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-theme-surface-muted text-theme-secondary border border-theme-subtle">
               {MARKETPLACE_CATALOG.length}
             </span>
           </button>
@@ -516,13 +512,13 @@ export const ApplicationsPage: React.FC = () => {
             onClick={() => setActiveTab("installed")}
             className={`py-3 text-xs font-semibold border-b-2 transition flex items-center gap-1.5 cursor-pointer ${
               activeTab === "installed"
-                ? "border-sky-500 text-sky-600 dark:text-sky-400"
+                ? "border-[var(--text-primary)] text-theme-primary"
                 : "border-transparent text-theme-secondary hover:text-theme-primary"
             }`}
           >
             <Package className="w-4 h-4" />
             <span>{tText("已安装", "Installed", "インストール済み", "Installiert")}</span>
-            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-theme-surface-muted text-theme-secondary border border-theme-subtle">
               {services.length}
             </span>
           </button>
@@ -532,29 +528,29 @@ export const ApplicationsPage: React.FC = () => {
             onClick={() => setActiveTab("monitor")}
             className={`py-3 text-xs font-semibold border-b-2 transition flex items-center gap-1.5 cursor-pointer ${
               activeTab === "monitor"
-                ? "border-sky-500 text-sky-600 dark:text-sky-400"
+                ? "border-[var(--text-primary)] text-theme-primary"
                 : "border-transparent text-theme-secondary hover:text-theme-primary"
             }`}
           >
             <Activity className="w-4 h-4" />
             <span>{tText("运行监控", "Runtime Monitor", "実行監視", "Betriebsüberwachung")}</span>
-            <span className={`w-2 h-2 rounded-full ${runningCount > 0 ? "bg-emerald-500 animate-pulse" : "bg-zinc-500"}`} />
+            <span className={`w-2 h-2 rounded-full ${runningCount > 0 ? "bg-[var(--success)]" : "bg-[var(--text-muted)]"}`} />
           </button>
         </div>
 
         {/* Right Info Pill */}
-        <div className="hidden sm:flex items-center gap-3 text-xs font-mono text-theme-muted">
+        <div className="hidden sm:flex items-center gap-3 text-xs font-mono text-theme-secondary">
           <button
             type="button"
             onClick={() => window.dispatchEvent(new CustomEvent("nexus:navigate-mcp-guide"))}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 font-sans font-medium transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-transparent hover:bg-theme-card-hover text-theme-primary border border-[var(--border-strong)] font-sans font-medium transition-colors cursor-pointer"
           >
             <BookOpen className="w-3.5 h-3.5" />
             <span>{tText("安装指南", "Setup Guide", "導入ガイド", "Installationshilfe")}</span>
           </button>
           <span>{isZh ? "运行中:" : "Running:"} <strong className="text-theme-primary">{runningCount}/{services.length}</strong></span>
           <span>&bull;</span>
-          <span>{isZh ? "能力池:" : "Tool Pool:"} <strong className="text-sky-500">{totalTools}</strong></span>
+          <span>{isZh ? "能力池:" : "Tool Pool:"} <strong className="text-theme-primary">{totalTools}</strong></span>
         </div>
       </div>
 
@@ -564,14 +560,14 @@ export const ApplicationsPage: React.FC = () => {
         {activeTab === "installed" && (
           <div className="space-y-4 max-w-5xl mx-auto">
             {/* Filter Pills & Master Token Optimization Switch */}
-            <div className="p-3.5 rounded-xl border border-theme-subtle bg-theme-card flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+            <div className="p-3.5 rounded-xl border border-theme-subtle bg-theme-card flex flex-col sm:flex-row sm:items-center justify-between gap-3 ">
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => setStatusFilter("all")}
                   className={`px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer ${
                     statusFilter === "all"
-                      ? "bg-sky-500/10 text-sky-600 dark:text-sky-400 font-semibold border border-sky-500/20"
+                      ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] font-semibold"
                       : "text-theme-secondary hover:text-theme-primary"
                   }`}
                 >
@@ -582,7 +578,7 @@ export const ApplicationsPage: React.FC = () => {
                   onClick={() => setStatusFilter("running")}
                   className={`px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer ${
                     statusFilter === "running"
-                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20"
+                      ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] font-semibold"
                       : "text-theme-secondary hover:text-theme-primary"
                   }`}
                 >
@@ -593,7 +589,7 @@ export const ApplicationsPage: React.FC = () => {
                   onClick={() => setStatusFilter("stopped")}
                   className={`px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer ${
                     statusFilter === "stopped"
-                      ? "bg-zinc-500/10 text-zinc-400 font-semibold border border-zinc-500/20"
+                      ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] font-semibold"
                       : "text-theme-secondary hover:text-theme-primary"
                   }`}
                 >
@@ -605,20 +601,21 @@ export const ApplicationsPage: React.FC = () => {
               <div className="flex items-center gap-2.5">
                 <div
                   onClick={handleToggleMasterToken}
-                  className={`w-9 h-5 flex items-center rounded-full p-0.5 cursor-pointer transition-colors duration-200 ${
-                    isMasterTokenMode ? "bg-sky-500" : "bg-zinc-600"
+                  className={`w-9 h-5 flex items-center rounded-full p-0.5 cursor-pointer transition-colors duration-200 border border-theme-subtle ${
+                    isMasterTokenMode ? "bg-[var(--btn-primary-bg)]" : "bg-theme-surface-muted"
                   }`}
                 >
                   <div
-                    className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
-                      isMasterTokenMode ? "translate-x-4" : "translate-x-0"
+                    className={`w-4 h-4 rounded-full  transform transition-transform duration-200 ease-in-out ${
+                      isMasterTokenMode
+                        ? "translate-x-4 bg-[var(--btn-primary-text)]"
+                        : "translate-x-0 bg-theme-secondary"
                     }`}
                   />
                 </div>
                 <div className="flex items-center gap-1.5 text-xs">
-                  <Zap className={`w-3.5 h-3.5 ${isMasterTokenMode ? "text-amber-400 fill-amber-400" : "text-zinc-400"}`} />
                   <span className="font-semibold text-theme-primary">{isZh ? "极致 Token 优化总控" : "Master Token Optimization"}</span>
-                  <span className="text-[10px] font-mono text-theme-muted">
+                  <span className="text-[10px] font-mono text-theme-secondary">
                     {isMasterTokenMode ? (isZh ? "已开启" : "Active") : (isZh ? "全量模式" : "Disabled")}
                   </span>
                 </div>
@@ -637,36 +634,35 @@ export const ApplicationsPage: React.FC = () => {
                 return (
                   <div
                     key={s.config.id}
-                    className={`rounded-xl border bg-theme-card transition shadow-2xs hover:border-theme-subtle/90 ${
-                      isRunning
-                        ? "border-emerald-500/40"
-                        : "border-theme-subtle"
-                    }`}
+                    className="rounded-xl border border-theme-subtle bg-theme-card transition  hover:border-theme-strong"
                   >
                     <div className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      {/* Left Block: Dot + Name + Port & Tools + Command */}
+                      {/* Left Block: Status + Name + Port & Tools + Command */}
                       <div className="flex items-center gap-3 min-w-0">
                         <span
-                          className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                          className={`text-xs font-mono shrink-0 ${
                             isRunning
-                              ? "bg-emerald-500 shadow-sm shadow-emerald-500/50 animate-pulse"
-                              : "bg-zinc-500/40"
+                              ? "text-[var(--success)]"
+                              : "text-theme-muted"
                           }`}
-                        />
+                          aria-hidden="true"
+                        >
+                          {isRunning ? "✓" : "○"}
+                        </span>
                         <div className="min-w-0 space-y-0.5">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-xs font-bold text-theme-primary">
                               {s.config.name}
                             </span>
-                            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-theme-base border border-theme-subtle text-theme-muted">
+                            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-theme-base border border-theme-subtle text-theme-secondary">
                               :{s.config.port}
                             </span>
-                            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-theme-surface-muted text-theme-secondary border border-theme-subtle">
                               {s.toolCount || 0} {isZh ? "项工具" : "Tools"}
                             </span>
                           </div>
-                          <div className="text-[11px] font-mono text-theme-muted truncate">
-                            {s.config.command} {s.config.args?.join(" ")}
+                          <div className="text-[11px] font-mono text-theme-secondary truncate">
+                            {`${s.config.command} ${s.config.args?.join(" ") || ""}`.replace(/[A-Za-z]:\\Users\\[^\\/\s]+/g, "~")}
                           </div>
                         </div>
                       </div>
@@ -678,14 +674,16 @@ export const ApplicationsPage: React.FC = () => {
                           type="button"
                           disabled={!isMasterTokenMode}
                           onClick={() => handleToggleProviderToken(s.config.id)}
-                          className={`px-2 py-1 text-[11px] font-mono rounded-md border transition flex items-center gap-1 ${
+                          className={`px-2.5 py-1 text-[11px] font-mono rounded-md border transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 ${
                             isSaving
-                              ? "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30"
-                              : "bg-zinc-500/10 text-zinc-400 border-zinc-500/20"
+                              ? "bg-[var(--surface-hover)] text-theme-primary border-[var(--text-primary)] font-semibold"
+                              : "bg-transparent text-theme-muted border-theme-subtle"
                           }`}
                           title={isZh ? "独立 Token 节约开关" : "Token Optimization Toggle"}
                         >
-                          <Zap className={`w-3 h-3 ${isSaving ? "text-amber-400 fill-amber-400" : "text-zinc-400"}`} />
+                          <span className={isSaving ? "text-[var(--success)]" : "text-theme-muted"}>
+                            {isSaving ? "✓" : "○"}
+                          </span>
                           <span>Token</span>
                         </button>
 
@@ -695,7 +693,7 @@ export const ApplicationsPage: React.FC = () => {
                             type="button"
                             disabled={isBusy}
                             onClick={() => handleStop(s.config.id)}
-                            className="px-3 py-1 rounded-lg text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white transition flex items-center gap-1 shadow-2xs cursor-pointer"
+                            className="px-3 py-1 rounded-lg text-xs font-semibold bg-transparent hover:bg-theme-card-hover text-theme-primary border border-theme-subtle transition flex items-center gap-1 cursor-pointer"
                           >
                             <Square className="w-3 h-3 fill-current" />
                             <span>{isZh ? "停止" : "Stop"}</span>
@@ -705,10 +703,18 @@ export const ApplicationsPage: React.FC = () => {
                             type="button"
                             disabled={isBusy}
                             onClick={() => handleStart(s.config.id)}
-                            className="px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1 shadow-2xs cursor-pointer"
+                            className="px-3 py-1 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] hover:opacity-90 disabled:opacity-60 transition flex items-center gap-1 cursor-pointer"
                           >
                             <Play className="w-3 h-3 fill-current" />
-                            <span>{isZh ? "启动" : "Start"}</span>
+                            <span>
+                              {isBusy
+                                ? isZh
+                                  ? "启动/安装中..."
+                                  : "Starting..."
+                                : isZh
+                                ? "启动"
+                                : "Start"}
+                            </span>
                           </button>
                         )}
 
@@ -716,11 +722,11 @@ export const ApplicationsPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleCopyMcpConfig(s)}
-                          className="p-1.5 rounded-lg border border-theme-subtle bg-theme-base hover:bg-theme-card-hover text-theme-muted hover:text-theme-primary transition shadow-2xs cursor-pointer"
+                          className="p-1.5 rounded-lg border border-theme-subtle bg-transparent hover:bg-theme-card-hover text-theme-secondary hover:text-theme-primary transition cursor-pointer"
                           title={isZh ? "复制该 MCP 配置" : "Copy Config"}
                         >
                           {copiedId === s.config.id ? (
-                            <Check className="w-3.5 h-3.5 text-sky-500" />
+                            <Check className="w-3.5 h-3.5 text-[var(--success)]" />
                           ) : (
                             <Copy className="w-3.5 h-3.5" />
                           )}
@@ -730,8 +736,8 @@ export const ApplicationsPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setExpandedLogs((prev) => ({ ...prev, [s.config.id]: !prev[s.config.id] }))}
-                          className={`p-1.5 rounded-lg border border-theme-subtle bg-theme-base hover:bg-theme-card-hover transition shadow-2xs cursor-pointer ${
-                            isLogOpen ? "text-sky-500 border-sky-500/40" : "text-theme-muted hover:text-theme-primary"
+                          className={`p-1.5 rounded-lg border border-theme-subtle bg-theme-base hover:bg-theme-card-hover transition  cursor-pointer ${
+                            isLogOpen ? "text-theme-primary border-[var(--text-primary)]" : "text-theme-secondary hover:text-theme-primary"
                           }`}
                           title={isZh ? "查看实时日志" : "Logs"}
                         >
@@ -742,7 +748,7 @@ export const ApplicationsPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleDeleteService(s.config.id)}
-                          className="p-1.5 rounded-lg border border-theme-subtle bg-theme-base hover:bg-rose-500/10 text-theme-muted hover:text-rose-500 hover:border-rose-500/30 transition shadow-2xs cursor-pointer"
+                          className="p-1.5 rounded-lg border border-theme-subtle bg-transparent hover:bg-theme-card-hover text-theme-secondary hover:text-theme-primary transition cursor-pointer"
                           title={isZh ? "从工作台移除" : "Delete"}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -750,17 +756,55 @@ export const ApplicationsPage: React.FC = () => {
                       </div>
                     </div>
 
+                    {/* Starting / Error Guidance Banner */}
+                    {isBusy && !isRunning && (
+                      <div className="px-4 py-2 border-t border-theme-subtle bg-[var(--bg-surface-raised)] text-xs text-theme-secondary flex items-center justify-between gap-2">
+                        <span>
+                          {isZh
+                            ? "正在安装依赖并启动服务（首次拉取环境可能需要 1–3 分钟），请稍候..."
+                            : "Installing dependencies and starting service (first run may take 1–3 min)..."}
+                        </span>
+                      </div>
+                    )}
+                    {!isBusy &&
+                      !isRunning &&
+                      (s.status === "ERROR" ||
+                        (s.logs &&
+                          s.logs.some(
+                            (l) =>
+                              l.includes("exit code") ||
+                              l.includes("Errno") ||
+                              l.includes("ENOENT") ||
+                              l.toLowerCase().includes("error")
+                          ))) && (
+                        <div className="px-4 py-2 border-t border-theme-subtle bg-[var(--bg-surface-raised)] text-xs flex flex-wrap items-center justify-between gap-2">
+                          <span className="text-[var(--warning)] font-medium">
+                            △{" "}
+                            {isZh
+                              ? "服务未能正常启动，请点击右侧 `>_` 查看日志或查阅安装指南"
+                              : "Service failed to start. Inspect `>_` logs or check Setup Guide."}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => window.dispatchEvent(new CustomEvent("nexus:navigate-mcp-guide"))}
+                            className="px-2.5 py-1 rounded-md border border-[var(--border-strong)] text-theme-primary hover:bg-theme-card-hover text-[11px] font-medium transition cursor-pointer"
+                          >
+                            {isZh ? "查看安装指南" : "Setup Guide"}
+                          </button>
+                        </div>
+                      )}
+
                     {/* Expandable Logs Terminal Drawer */}
                     {isLogOpen && (
-                      <div className="p-3 bg-black/90 border-t border-theme-subtle text-[11px] font-mono text-slate-300 max-h-40 overflow-y-auto space-y-1">
-                        <div className="text-[10px] text-slate-500 mb-1 flex items-center justify-between">
+                      <div className="p-3 bg-theme-base border-t border-theme-subtle text-[11px] font-mono text-theme-primary max-h-40 overflow-y-auto space-y-1">
+                        <div className="text-[10px] text-theme-secondary mb-1 flex items-center justify-between">
                           <span>[{s.config.id}] Live Process Output</span>
                           <span>Port: {s.config.port}</span>
                         </div>
                         {s.logs && s.logs.length > 0 ? (
                           s.logs.map((log, i) => <div key={i}>{log}</div>)
                         ) : (
-                          <div className="text-slate-600 italic">No output logged yet. Ready to start.</div>
+                          <div className="text-theme-secondary italic">No output logged yet. Ready to start.</div>
                         )}
                       </div>
                     )}
@@ -769,13 +813,13 @@ export const ApplicationsPage: React.FC = () => {
               })}
 
               {filteredServices.length === 0 && (
-                <div className="p-12 text-center rounded-xl border border-dashed border-theme-subtle bg-theme-card-muted/30 text-theme-muted space-y-2">
-                  <Package className="w-8 h-8 mx-auto text-theme-muted/50" />
+                <div className="p-12 text-center rounded-xl border border-dashed border-theme-subtle bg-theme-card text-theme-secondary space-y-2">
+                  <Package className="w-8 h-8 mx-auto text-theme-secondary" />
                   <p className="text-xs">{isZh ? "当前分类下暂无已安装的 MCP 插件" : "No installed MCP plugins in this view"}</p>
                   <button
                     type="button"
                     onClick={() => setActiveTab("market")}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] hover:opacity-90 transition cursor-pointer"
                   >
                     <span>{isZh ? "前往插件市场挑选安装" : "Browse Marketplace"}</span>
                     <ChevronRight className="w-3.5 h-3.5" />
@@ -789,10 +833,10 @@ export const ApplicationsPage: React.FC = () => {
         {/* ================= TAB 2: MARKETPLACE CATALOG ================= */}
         {activeTab === "market" && (
           <div className="space-y-4 max-w-5xl mx-auto">
-            <div className="p-4 rounded-xl border border-sky-500/20 bg-gradient-to-r from-sky-500/10 via-indigo-500/5 to-transparent flex items-center justify-between">
+            <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card flex items-center justify-between">
               <div className="space-y-0.5">
                 <div className="text-xs font-bold text-theme-primary flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-sky-500" />
+                  <Layers className="w-4 h-4 text-theme-secondary" />
                   <span>{isZh ? "MCP 扩展生态市场" : "MCP Extensions Marketplace"}</span>
                 </div>
                 <p className="text-[11px] text-theme-secondary">
@@ -810,18 +854,18 @@ export const ApplicationsPage: React.FC = () => {
                 return (
                   <div
                     key={m.id}
-                    className="p-4 rounded-xl border border-theme-subtle bg-theme-card hover:border-sky-500/30 transition shadow-2xs flex flex-col justify-between space-y-3"
+                    className="p-4 rounded-xl border border-theme-subtle bg-theme-card hover:border-theme-strong transition  flex flex-col justify-between space-y-3"
                   >
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-xs font-bold text-theme-primary truncate">
                           {m.name}
                         </span>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 shrink-0">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-theme-base text-theme-secondary border border-theme-subtle shrink-0">
                           {m.toolCount} {isZh ? "项工具" : "Tools"}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-[10px] font-mono text-theme-muted">
+                      <div className="flex items-center gap-2 text-[10px] font-mono text-theme-secondary">
                         <span className="px-1.5 py-0.2 rounded bg-theme-base border border-theme-subtle">
                           :{m.port}
                         </span>
@@ -833,14 +877,14 @@ export const ApplicationsPage: React.FC = () => {
                     </div>
 
                     <div className="pt-2 border-t border-theme-subtle/50 flex items-center justify-between">
-                      <span className="text-[10px] font-mono text-theme-muted truncate max-w-[200px]">
+                      <span className="text-[10px] font-mono text-theme-secondary truncate max-w-[200px]">
                         {m.command}
                       </span>
                       {isInstalled ? (
                         <button
                           type="button"
                           onClick={() => setActiveTab("installed")}
-                          className="px-3 py-1 rounded-lg text-xs font-medium bg-theme-base border border-theme-subtle text-theme-primary hover:bg-theme-card-hover transition cursor-pointer"
+                          className="px-3 py-1 rounded-lg text-xs font-medium bg-transparent border border-theme-subtle text-theme-primary hover:bg-theme-card-hover transition cursor-pointer"
                         >
                           {isZh ? "已安装 · 去管理" : "Installed"}
                         </button>
@@ -848,7 +892,7 @@ export const ApplicationsPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleInstallFromMarket(m)}
-                          className="px-3 py-1 rounded-lg text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white transition flex items-center gap-1 shadow-2xs cursor-pointer"
+                          className="px-3 py-1 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] hover:opacity-90 transition flex items-center gap-1 cursor-pointer"
                         >
                           <Download className="w-3 h-3" />
                           <span>{isZh ? "一键安装" : "Install"}</span>
@@ -867,67 +911,66 @@ export const ApplicationsPage: React.FC = () => {
           <div className="space-y-6 max-w-5xl mx-auto">
             {/* 4 Metric Cards (Matching Image 3) */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card space-y-1 shadow-2xs">
-                <div className="text-[11px] text-theme-muted">{isZh ? "运行中进程" : "Active Processes"}</div>
+              <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card space-y-1 ">
+                <div className="text-[11px] text-theme-secondary">{isZh ? "运行中进程" : "Active Processes"}</div>
                 <div className="text-xl font-bold font-mono text-theme-primary">
                   {runningCount} / {services.length}
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card space-y-1 shadow-2xs">
-                <div className="text-[11px] text-theme-muted">{isZh ? "活跃工具总数" : "Total Tools"}</div>
-                <div className="text-xl font-bold font-mono text-sky-500">
-                  {totalTools} <span className="text-xs font-normal text-theme-muted">{isZh ? "项可用" : "Ready"}</span>
+              <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card space-y-1 ">
+                <div className="text-[11px] text-theme-secondary">{isZh ? "活跃工具总数" : "Total Tools"}</div>
+                <div className="text-xl font-bold font-mono text-theme-primary">
+                  {totalTools} <span className="text-xs font-normal text-theme-secondary">{isZh ? "项可用" : "Ready"}</span>
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card space-y-1 shadow-2xs">
-                <div className="text-[11px] text-theme-muted">{isZh ? "探活健康延时" : "Health Latency"}</div>
-                <div className="text-xl font-bold font-mono text-emerald-500">
-                  12 <span className="text-xs font-normal text-theme-muted">ms</span>
+              <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card space-y-1 ">
+                <div className="text-[11px] text-theme-secondary">{isZh ? "探活健康延时" : "Health Latency"}</div>
+                <div className="text-xl font-bold font-mono text-theme-primary">
+                  12 <span className="text-xs font-normal text-theme-secondary">ms</span>
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card space-y-1 shadow-2xs">
-                <div className="text-[11px] text-theme-muted">{isZh ? "Token 优化状态" : "Token Optimization"}</div>
-                <div className="text-xl font-bold font-mono text-amber-500">
-                  95%+ <span className="text-xs font-normal text-theme-muted">{isZh ? "节约" : "Saved"}</span>
+              <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card space-y-1 ">
+                <div className="text-[11px] text-theme-secondary">{isZh ? "Token 优化状态" : "Token Optimization"}</div>
+                <div className="text-xl font-bold font-mono text-theme-primary">
+                  95%+ <span className="text-xs font-normal text-theme-secondary">{isZh ? "节约" : "Saved"}</span>
                 </div>
               </div>
             </div>
 
             {/* Middle Card: Multi-Model Relay Gateway */}
-            <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-4 shadow-2xs">
+            <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-4 ">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   <span className="text-xs font-bold text-theme-primary">
                     {isZh ? "多模型中继网关 (Multi-Model Relay Gateway)" : "Multi-Model Relay Gateway"}
                   </span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                    {isZh ? "已启用" : "Enabled"}
+                  <span className="text-[10px] font-mono text-[var(--success)]">
+                    ✓ {isZh ? "已启用" : "Enabled"}
                   </span>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-3 rounded-lg border border-theme-subtle/60 bg-theme-base/60 space-y-1">
-                  <div className="text-[10px] text-theme-muted uppercase font-mono">{isZh ? "节点连接状态" : "Node State"}</div>
+                <div className="p-3 rounded-lg border border-theme-subtle bg-theme-base space-y-1">
+                  <div className="text-[10px] text-theme-secondary uppercase font-mono">{isZh ? "节点连接状态" : "Node State"}</div>
                   <div className="text-xs font-semibold text-theme-primary">{isZh ? "就绪 / 等待调用" : "Ready / Idle"}</div>
                 </div>
 
-                <div className="p-3 rounded-lg border border-theme-subtle/60 bg-theme-base/60 space-y-1">
-                  <div className="text-[10px] text-theme-muted uppercase font-mono">{isZh ? "注册中继节点" : "Relay Endpoints"}</div>
+                <div className="p-3 rounded-lg border border-theme-subtle bg-theme-base space-y-1">
+                  <div className="text-[10px] text-theme-secondary uppercase font-mono">{isZh ? "注册中继节点" : "Relay Endpoints"}</div>
                   <div className="text-xs font-semibold text-theme-primary">http://127.0.0.1:18080/mcp</div>
                 </div>
               </div>
             </div>
 
             {/* Bottom Card: In-App Kernel Script Tester (nexus_run_script) */}
-            <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-4 shadow-2xs">
+            <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-4 ">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Code2 className="w-4 h-4 text-sky-500" />
+                  <Code2 className="w-4 h-4 text-theme-primary" />
                   <span className="text-xs font-bold text-theme-primary">
                     {isZh ? "跨应用内核测试器 (nexus_run_script)" : "In-App Kernel Script Tester (nexus_run_script)"}
                   </span>
@@ -947,7 +990,7 @@ export const ApplicationsPage: React.FC = () => {
                     type="button"
                     onClick={handleRunTestScript}
                     disabled={isTesting}
-                    className="px-3.5 py-1 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                    className="px-3.5 py-1 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] transition flex items-center gap-1.5  cursor-pointer"
                   >
                     <Play className="w-3 h-3 fill-current" />
                     <span>{isTesting ? (isZh ? "执行中..." : "Running...") : (isZh ? "执行" : "Run")}</span>
@@ -956,20 +999,20 @@ export const ApplicationsPage: React.FC = () => {
               </div>
 
               {/* Code Editor Mock */}
-              <div className="rounded-xl border border-theme-subtle bg-black/90 p-3.5 font-mono text-xs">
+              <div className="rounded-xl border border-theme-subtle bg-[var(--bg-app)] p-3.5 font-mono text-xs">
                 <textarea
                   value={testScript}
                   onChange={(e) => setTestScript(e.target.value)}
                   rows={4}
-                  className="w-full bg-transparent text-emerald-400 outline-none resize-none"
+                  className="w-full bg-transparent text-[var(--success)] outline-none resize-none"
                   spellCheck={false}
                 />
               </div>
 
               {/* Output Result */}
               {testOutput && (
-                <div className="rounded-xl border border-sky-500/20 bg-sky-950/20 p-3 font-mono text-xs text-sky-300">
-                  <div className="text-[10px] text-sky-400/80 mb-1 font-semibold uppercase">{isZh ? "执行返回" : "Output"}</div>
+                <div className="rounded-xl border border-theme-subtle bg-theme-card p-3 font-mono text-xs text-theme-primary">
+                  <div className="text-[10px] text-theme-primary/80 mb-1 font-semibold uppercase">{isZh ? "执行返回" : "Output"}</div>
                   <div>{testOutput}</div>
                 </div>
               )}

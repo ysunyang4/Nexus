@@ -30,18 +30,18 @@ export const UnityExecutionTab: React.FC<UnityExecutionTabProps> = ({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "COMMITTED":
-        return "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
+        return "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border-theme-subtle";
       case "VERIFIED":
-        return "bg-sky-500/10 text-sky-400 border-sky-500/30";
+        return "bg-[var(--btn-primary-bg)]/10 text-theme-primary border-theme-subtle";
       case "EXECUTED":
       case "STARTED":
       case "PREPARED":
-        return "bg-blue-500/10 text-blue-400 border-blue-500/30";
+        return "bg-[var(--btn-primary-bg)]/10 text-theme-primary border-theme-subtle";
       case "UNKNOWN":
-        return "bg-amber-500/15 text-amber-400 border-amber-500/30 font-bold";
+        return "bg-[var(--btn-primary-bg)]/15 text-[var(--warning)] border-theme-subtle font-bold";
       case "FAILED":
       default:
-        return "bg-rose-500/10 text-rose-400 border-rose-500/30";
+        return "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border-theme-subtle";
     }
   };
 
@@ -71,21 +71,21 @@ export const UnityExecutionTab: React.FC<UnityExecutionTabProps> = ({
       {/* 1. Execution Header */}
       <div className="h-12 px-6 border-b border-theme-subtle bg-theme-sidebar/40 flex items-center justify-between select-none shrink-0">
         <div className="flex items-center gap-2 font-semibold text-theme-primary">
-          <History className="w-4 h-4 text-sky-400" />
+          <History className="w-4 h-4 text-theme-primary" />
           <span>Ledger & Blueprint Execution Audit</span>
         </div>
 
         <div className="flex items-center gap-4 text-theme-muted text-[11px]">
           <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span className="w-2 h-2 rounded-full bg-[var(--btn-primary-bg)]" />
             <span>COMMITTED</span>
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-amber-500" />
+            <span className="w-2 h-2 rounded-full bg-[var(--btn-primary-bg)]" />
             <span>UNKNOWN</span>
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-rose-500" />
+            <span className="w-2 h-2 rounded-full bg-[var(--btn-primary-bg)]" />
             <span>FAILED</span>
           </span>
           <span className="text-theme-subtle">|</span>
@@ -105,7 +105,7 @@ export const UnityExecutionTab: React.FC<UnityExecutionTabProps> = ({
                 key={act.actionId}
                 className={`border rounded-xl transition ${
                   isUnknown
-                    ? "bg-amber-500/5 border-amber-500/40"
+                    ? "bg-[var(--btn-primary-bg)]/5 border-theme-subtle"
                     : "bg-theme-card/30 border-theme-subtle hover:border-theme-subtle/80"
                 }`}
               >
@@ -134,7 +134,7 @@ export const UnityExecutionTab: React.FC<UnityExecutionTabProps> = ({
                       <span className="font-semibold text-theme-primary truncate">
                         {act.operationId}
                       </span>
-                      <span className="text-[10px] text-sky-400 bg-sky-500/10 px-1.5 py-0.2 rounded border border-sky-500/20">
+                      <span className="text-[10px] text-theme-primary bg-[var(--btn-primary-bg)]/10 px-1.5 py-0.2 rounded border border-theme-subtle">
                         {act.capability}
                       </span>
                       {act.blueprintStage && (
@@ -160,7 +160,7 @@ export const UnityExecutionTab: React.FC<UnityExecutionTabProps> = ({
                         e.stopPropagation();
                         handleOpenEvidence(act);
                       }}
-                      className="px-2 py-1 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/30 rounded text-[11px] flex items-center gap-1 transition"
+                      className="px-2 py-1 bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-theme-primary border border-theme-subtle rounded text-[11px] flex items-center gap-1 transition"
                     >
                       <ShieldCheck className="w-3 h-3" />
                       <span>Evidence</span>
@@ -181,7 +181,7 @@ export const UnityExecutionTab: React.FC<UnityExecutionTabProps> = ({
                       <ArrowRight className="w-3 h-3" />
                       <span>VERIFIED</span>
                       <ArrowRight className="w-3 h-3" />
-                      <span className="text-emerald-400 font-bold">COMMITTED</span>
+                      <span className="text-[var(--success)] font-bold">COMMITTED</span>
                     </div>
 
                     {/* Hashes and Identifiers */}
@@ -209,7 +209,7 @@ export const UnityExecutionTab: React.FC<UnityExecutionTabProps> = ({
 
                       <div className="space-y-1">
                         <div className="text-theme-muted text-[10px]">Post-State Hash:</div>
-                        <div className="text-emerald-400 font-mono bg-theme-base p-1.5 rounded border border-theme-subtle">
+                        <div className="text-[var(--success)] font-mono bg-theme-base p-1.5 rounded border border-theme-subtle">
                           {act.postStateHash}
                         </div>
                       </div>
@@ -217,13 +217,13 @@ export const UnityExecutionTab: React.FC<UnityExecutionTabProps> = ({
 
                     {/* UNKNOWN & Reconciliation Section */}
                     {isUnknown && act.reconciliation && (
-                      <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg space-y-2">
-                        <div className="flex items-center justify-between text-amber-400 font-semibold text-xs">
+                      <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg space-y-2">
+                        <div className="flex items-center justify-between text-[var(--warning)] font-semibold text-xs">
                           <span className="flex items-center gap-1.5">
                             <AlertTriangle className="w-3.5 h-3.5" />
                             <span>Action Reconciler State</span>
                           </span>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/30">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--btn-primary-bg)]/20 border border-theme-subtle">
                             {act.reconciliation.result}
                           </span>
                         </div>
@@ -241,7 +241,7 @@ export const UnityExecutionTab: React.FC<UnityExecutionTabProps> = ({
                         </div>
 
                         {act.reconciliation.result === "UNRESOLVED_DRIFT" && (
-                          <div className="p-2 bg-rose-500/20 border border-rose-500/40 rounded text-rose-300 font-bold text-center text-xs">
+                          <div className="p-2 bg-[var(--btn-primary-bg)]/20 border border-theme-subtle rounded text-[var(--warning)] font-bold text-center text-xs">
                             UNRESOLVED DRIFT. Further mutation blocked.
                           </div>
                         )}

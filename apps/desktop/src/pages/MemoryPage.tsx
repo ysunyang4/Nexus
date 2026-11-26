@@ -140,7 +140,7 @@ export const MemoryPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-theme-subtle pb-5">
         <div>
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-sky-500/10 text-sky-500 border border-sky-500/20">
+            <div className="p-2 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle">
               <Brain className="w-6 h-6" />
             </div>
             <div>
@@ -155,7 +155,7 @@ export const MemoryPage: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white flex items-center gap-1.5 transition shadow-sm"
+            className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] flex items-center gap-1.5 transition "
           >
             <Plus className="w-3.5 h-3.5" />
             <span>{t.memory?.addMemory || "添加记忆"}</span>
@@ -167,8 +167,8 @@ export const MemoryPage: React.FC = () => {
         <div
           className={`p-3 rounded-lg text-xs flex items-center justify-between ${
             message.type === "success"
-              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-              : "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
+              ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] text-[var(--success)] border border-theme-subtle"
+              : "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle"
           }`}
         >
           <span>{message.text}</span>
@@ -185,7 +185,7 @@ export const MemoryPage: React.FC = () => {
             onClick={() => setActiveTab("memories")}
             className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
               activeTab === "memories"
-                ? "bg-theme-card text-theme-primary shadow-sm"
+                ? "bg-theme-card text-theme-primary "
                 : "text-theme-muted hover:text-theme-primary"
             }`}
           >
@@ -195,7 +195,7 @@ export const MemoryPage: React.FC = () => {
             onClick={() => setActiveTab("candidates")}
             className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
               activeTab === "candidates"
-                ? "bg-theme-card text-theme-primary shadow-sm"
+                ? "bg-theme-card text-theme-primary "
                 : "text-theme-muted hover:text-theme-primary"
             }`}
           >
@@ -212,13 +212,13 @@ export const MemoryPage: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t.memory?.searchPlaceholder || "Search memories..."}
-                className="w-full bg-theme-card border border-theme-subtle rounded-lg pl-8 pr-3 py-1.5 text-xs text-theme-primary placeholder-theme-muted focus:outline-none focus:border-sky-500"
+                className="w-full bg-theme-card border border-theme-subtle rounded-lg pl-8 pr-3 py-1.5 text-xs text-theme-primary placeholder-theme-muted focus:outline-none border-theme-subtle"
               />
             </div>
             <select
               value={selectedScope}
               onChange={(e) => setSelectedScope(e.target.value)}
-              className="bg-theme-card border border-theme-subtle rounded-lg px-2.5 py-1.5 text-xs text-theme-primary focus:outline-none focus:border-sky-500"
+              className="bg-theme-card border border-theme-subtle rounded-lg px-2.5 py-1.5 text-xs text-theme-primary focus:outline-none border-theme-subtle"
             >
               <option value="ALL">{t.memory?.allScopes || "All Scopes"}</option>
               <option value="GLOBAL">GLOBAL</option>
@@ -251,12 +251,12 @@ export const MemoryPage: React.FC = () => {
             memories.map((m) => (
               <div
                 key={m.id}
-                className="bg-theme-card border border-theme-subtle rounded-xl p-4 flex flex-col justify-between hover:border-theme-muted transition shadow-sm space-y-3"
+                className="bg-theme-card border border-theme-subtle rounded-xl p-4 flex flex-col justify-between hover:border-theme-muted transition  space-y-3"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
                     <span className="font-semibold text-xs text-theme-primary truncate font-mono">{m.key}</span>
-                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-500 border border-sky-500/20">
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle">
                       {m.scope}
                     </span>
                   </div>
@@ -291,14 +291,14 @@ export const MemoryPage: React.FC = () => {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => handleArchiveMemory(m.id, false)}
-                        className="p-1 rounded text-theme-muted hover:text-amber-500 transition"
+                        className="p-1 rounded text-theme-muted hover:text-[var(--warning)] transition"
                         title={t.memory?.archiveMemory || "Archive"}
                       >
                         <Archive className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDeleteMemory(m.id)}
-                        className="p-1 rounded text-theme-muted hover:text-red-500 transition"
+                        className="p-1 rounded text-theme-muted hover:text-[var(--warning)] transition"
                         title="Delete Permanently"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -314,7 +314,7 @@ export const MemoryPage: React.FC = () => {
         <div className="space-y-4">
           {candidates.length === 0 ? (
             <div className="text-center py-12 bg-theme-card rounded-xl border border-theme-subtle text-theme-muted">
-              <CheckCircle className="w-8 h-8 mx-auto mb-2 opacity-40 text-emerald-500" />
+              <CheckCircle className="w-8 h-8 mx-auto mb-2 opacity-40 text-[var(--success)]" />
               <p className="text-sm">{t.memory?.noCandidatesFound || "No pending memory candidates"}</p>
               <p className="text-xs text-theme-muted mt-1">
                 {t.memory?.noCandidatesDesc || "Completed action executions automatically generate candidate proposals for review"}
@@ -329,7 +329,7 @@ export const MemoryPage: React.FC = () => {
                 <div className="space-y-1.5 max-w-3xl">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-xs text-theme-primary font-mono">{cand.key}</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle">
                       {cand.status}
                     </span>
                     <span className="text-[10px] text-theme-muted">{cand.type}</span>
@@ -347,7 +347,7 @@ export const MemoryPage: React.FC = () => {
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => handleAcceptCandidate(cand.candidateId)}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 transition"
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] flex items-center gap-1.5 transition"
                   >
                     <CheckCircle className="w-3.5 h-3.5" />
                     <span>{t.memory?.acceptCandidate || "接受"}</span>
@@ -360,7 +360,7 @@ export const MemoryPage: React.FC = () => {
                   </button>
                   <button
                     onClick={() => handleDeleteCandidate(cand.candidateId)}
-                    className="p-1.5 rounded-lg text-theme-muted hover:text-red-500 hover:bg-theme-card-hover transition"
+                    className="p-1.5 rounded-lg text-theme-muted hover:text-[var(--warning)] hover:bg-theme-card-hover transition"
                     title={t.common?.delete || "删除提案"}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -374,8 +374,8 @@ export const MemoryPage: React.FC = () => {
 
       {/* Add Memory Modal */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-theme-card border border-theme-subtle rounded-xl max-w-lg w-full p-6 space-y-4 shadow-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+          <div className="bg-theme-card border border-theme-subtle rounded-xl max-w-lg w-full p-6 space-y-4 ">
             <h2 className="text-base font-bold text-theme-primary">{t.memory?.modalTitle || "将记忆持久化至存储库"}</h2>
             <form onSubmit={handleCreateMemory} className="space-y-3">
               <div>
@@ -386,7 +386,7 @@ export const MemoryPage: React.FC = () => {
                   value={newKey}
                   onChange={(e) => setNewKey(e.target.value)}
                   placeholder="例如：project_tech_stack"
-                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-sky-500"
+                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -396,7 +396,7 @@ export const MemoryPage: React.FC = () => {
                   <select
                     value={newScope}
                     onChange={(e) => setNewScope(e.target.value)}
-                    className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-sky-500"
+                    className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                   >
                     <option value="GLOBAL">全局 (GLOBAL)</option>
                     <option value="USER">用户级 (USER)</option>
@@ -410,7 +410,7 @@ export const MemoryPage: React.FC = () => {
                   <select
                     value={newType}
                     onChange={(e) => setNewType(e.target.value)}
-                    className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-sky-500"
+                    className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                   >
                     <option value="FACT">客观事实 (FACT)</option>
                     <option value="DECISION">架构决策 (DECISION)</option>
@@ -429,7 +429,7 @@ export const MemoryPage: React.FC = () => {
                   value={newContent}
                   onChange={(e) => setNewContent(e.target.value)}
                   placeholder="请输入记忆具体内容、事实事实或特定工作流指令..."
-                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-sky-500"
+                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -440,7 +440,7 @@ export const MemoryPage: React.FC = () => {
                   value={newTags}
                   onChange={(e) => setNewTags(e.target.value)}
                   placeholder="architecture, react, typescript"
-                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-sky-500"
+                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -454,7 +454,7 @@ export const MemoryPage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg text-xs font-medium bg-sky-600 hover:bg-sky-500 text-white"
+                  className="px-4 py-2 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]"
                 >
                   {t.memory?.saveMemory || "保存记忆"}
                 </button>

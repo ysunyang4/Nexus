@@ -52,17 +52,17 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex items-center gap-2.5 min-w-0">
         {breadcrumb && (
           <>
-            <span className="text-xs font-mono uppercase tracking-wider text-theme-muted">
+            <span className="text-xs font-mono uppercase tracking-wider text-theme-secondary">
               {breadcrumb}
             </span>
-            <span className="text-theme-muted/40 text-xs">/</span>
+            <span className="text-theme-secondary/50 text-xs">/</span>
           </>
         )}
         <h1 className="text-sm font-semibold text-theme-primary truncate">
           {title}
         </h1>
         {subtitle && (
-          <span className="hidden xl:inline text-xs text-theme-muted truncate pl-2 border-l border-theme-subtle">
+          <span className="hidden xl:inline text-xs text-theme-secondary truncate pl-2 border-l border-theme-subtle">
             {subtitle}
           </span>
         )}
@@ -72,7 +72,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex items-center gap-3 shrink-0">
         {/* Full Control Active Notice */}
         {fullControlStatus?.enabled && fullControlStatus.activeSession && (
-          <div className="flex items-center gap-2 px-2.5 py-1 rounded-md text-xs font-mono bg-amber-500/10 border border-amber-500/30 text-amber-500">
+          <div className="flex items-center gap-2 px-2.5 py-1 rounded-md text-xs font-mono bg-[var(--btn-primary-bg)]/10 border border-theme-subtle text-[var(--warning)]">
             <ShieldAlert className="w-3.5 h-3.5" />
             <span>
               {tText(
@@ -85,7 +85,7 @@ export const Header: React.FC<HeaderProps> = ({
             {onStopFullControl && (
               <button
                 onClick={onStopFullControl}
-                className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/30 transition"
+                className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[var(--btn-primary-bg)]/20 hover:bg-[var(--btn-primary-bg)]/30 text-[var(--warning)] border border-theme-subtle transition"
               >
                 {tText("停止", "Stop", "停止", "Stopp")}
               </button>
@@ -93,18 +93,25 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         )}
 
-        {/* Global Connection Status Dot */}
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono border border-theme-subtle bg-theme-card/60">
+        {/* Global Connection Status */}
+        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono border border-[var(--border-default)] bg-transparent">
           <span
-            className={`w-1.5 h-1.5 rounded-full ${
-              !serverAvailable
-                ? "bg-red-500"
-                : isPaused
-                ? "bg-amber-500"
-                : "bg-emerald-500"
-            }`}
-          />
-          <span className="text-theme-secondary">
+            className={
+              !serverAvailable || isPaused
+                ? "text-[var(--warning)]"
+                : "text-[var(--success)]"
+            }
+            aria-hidden="true"
+          >
+            {!serverAvailable || isPaused ? "△" : "✓"}
+          </span>
+          <span
+            className={
+              !serverAvailable || isPaused
+                ? "text-[var(--warning)]"
+                : "text-[var(--success)]"
+            }
+          >
             {!serverAvailable
               ? tText("服务离线", "Offline", "オフライン", "Offline")
               : isPaused
@@ -128,7 +135,7 @@ export const Header: React.FC<HeaderProps> = ({
             "システム状態を更新",
             "Status aktualisieren"
           )}
-          className="p-1.5 rounded-md text-theme-muted hover:text-theme-primary hover:bg-theme-card border border-theme-subtle transition disabled:opacity-40 cursor-pointer"
+          className="p-1.5 rounded-md text-theme-secondary hover:text-theme-primary hover:bg-theme-card border border-theme-subtle transition disabled:opacity-40 cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
         </button>
@@ -142,7 +149,7 @@ export const Header: React.FC<HeaderProps> = ({
             "緊急停止",
             "Not-Halt Ausführung abbrechen"
           )}
-          className="flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 transition cursor-pointer"
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-[#DC2626] hover:bg-[#B91C1C] text-white transition cursor-pointer"
         >
           <OctagonAlert className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">

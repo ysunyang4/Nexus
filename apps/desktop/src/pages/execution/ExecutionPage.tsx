@@ -35,7 +35,7 @@ export const ExecutionPage: React.FC = () => {
       <div className="flex items-center justify-between gap-4 border-b border-theme-subtle pb-4">
         <div>
           <h1 className="text-base font-semibold text-theme-primary flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-sky-500" />
+            <Terminal className="w-4 h-4 text-theme-primary" />
             <span>{isZh ? "执行工作台" : "Execution Workspace"}</span>
           </h1>
           <p className="text-xs text-theme-muted mt-0.5">
@@ -55,7 +55,7 @@ export const ExecutionPage: React.FC = () => {
               <span className="text-xs font-mono uppercase tracking-wider text-theme-muted font-semibold">
                 Current Execution
               </span>
-              <span className="px-2.5 py-0.5 rounded font-mono text-xs bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-semibold">
+              <span className="px-2.5 py-0.5 rounded font-mono text-xs bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle font-semibold">
                 {status}
               </span>
             </div>
@@ -89,13 +89,13 @@ export const ExecutionPage: React.FC = () => {
                   className="flex items-center justify-between p-3 rounded-lg bg-theme-base/40 border border-theme-subtle/50 text-xs font-mono"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-sky-500 font-bold">{step.step}</span>
+                    <span className="text-theme-primary font-bold">{step.step}</span>
                     <span className="text-theme-primary font-medium">{step.name}</span>
                   </div>
                   <span className="text-theme-muted text-[11px] hidden sm:inline">
                     {step.desc}
                   </span>
-                  <span className="text-emerald-500 text-[11px]">✓ Done</span>
+                  <span className="text-[var(--success)] text-[11px]">✓ Done</span>
                 </div>
               ))}
             </div>
@@ -117,7 +117,7 @@ export const ExecutionPage: React.FC = () => {
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-theme-primary font-medium">{item.name}</span>
-                    <span className="text-emerald-500">✓ Verified</span>
+                    <span className="text-[var(--success)]">✓ Verified</span>
                   </div>
                   <div className="text-[10px] text-theme-muted font-sans">{item.desc}</div>
                 </div>

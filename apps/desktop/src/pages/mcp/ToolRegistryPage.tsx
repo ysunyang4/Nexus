@@ -54,7 +54,7 @@ export const ToolRegistryPage: React.FC = () => {
       <div className="flex items-center justify-between gap-4 border-b border-theme-subtle pb-4">
         <div>
           <h1 className="text-base font-semibold text-theme-primary flex items-center gap-2">
-            <Layers className="w-4 h-4 text-sky-500" />
+            <Layers className="w-4 h-4 text-theme-primary" />
             <span>{isZh ? "能力注册表矩阵" : "Capability Registry Matrix"}</span>
           </h1>
           <p className="text-xs text-theme-muted mt-0.5">
@@ -65,7 +65,7 @@ export const ToolRegistryPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="rounded-xl border border-theme-subtle bg-theme-card overflow-hidden shadow-sm max-w-5xl">
+      <div className="rounded-xl border border-theme-subtle bg-theme-card overflow-hidden  max-w-5xl">
         <table className="w-full text-left border-collapse text-xs font-mono">
           <thead className="bg-theme-card-muted border-b border-theme-subtle text-theme-muted text-[11px] uppercase tracking-wider">
             <tr>
@@ -81,10 +81,10 @@ export const ToolRegistryPage: React.FC = () => {
             {capabilities.map((c) => (
               <tr key={c.provider} className="hover:bg-theme-card-hover/40 transition">
                 <td className="py-3 px-4 font-semibold text-theme-primary">{c.provider}</td>
-                <td className="py-3 px-4 text-sky-500">{c.toolsRange}</td>
+                <td className="py-3 px-4 text-theme-primary">{c.toolsRange}</td>
                 <td className="py-3 px-4 text-theme-muted">{c.target}</td>
                 <td className="py-3 px-4 text-theme-secondary">{c.scope}</td>
-                <td className="py-3 px-4 text-emerald-500">{c.ledger}</td>
+                <td className="py-3 px-4 text-[var(--success)]">{c.ledger}</td>
                 <td className="py-3 px-4 text-theme-muted text-[11px]">{c.evidence}</td>
               </tr>
             ))}

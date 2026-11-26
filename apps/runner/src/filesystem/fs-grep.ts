@@ -78,7 +78,7 @@ export async function grepProjectFiles(
     }
 
     for (const ent of entries) {
-      if (ent.name === ".git" || ent.name === "node_modules" || ent.name === ".nexus") continue;
+      if (ent.name === ".git" || ent.name === "node_modules" || ent.name === ".nexus" || ent.name === ".dockra") continue;
       const full = path.join(current, ent.name);
       if (ent.isDirectory()) {
         dirQueue.push(full);

@@ -59,12 +59,12 @@ export const ResolveApprovalModal: React.FC<ResolveApprovalModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="bg-theme-card border border-theme-card rounded-xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+      <div className="bg-theme-card border border-theme-card rounded-xl w-full max-w-lg  overflow-hidden flex flex-col">
         {/* Header */}
         <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">
           <div className="flex items-center gap-2 font-semibold text-theme-primary">
-            <ShieldAlert className="w-5 h-5 text-amber-500" />
+            <ShieldAlert className="w-5 h-5 text-[var(--warning)]" />
             <span>{t.approvals.requestDetails}</span>
           </div>
           <button
@@ -78,8 +78,8 @@ export const ResolveApprovalModal: React.FC<ResolveApprovalModalProps> = ({
         {/* Content */}
         <div className="p-6 space-y-4">
           {error && (
-            <div className="p-3 bg-red-500/15 border border-red-500/30 rounded-lg text-xs text-red-500 flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+            <div className="p-3 bg-[var(--btn-primary-bg)]/15 border border-theme-subtle rounded-lg text-xs text-[var(--warning)] flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 text-[var(--warning)] shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
@@ -102,7 +102,7 @@ export const ResolveApprovalModal: React.FC<ResolveApprovalModalProps> = ({
             <div className="flex items-center gap-1.5 text-xs">
               <Clock className="w-4 h-4 text-theme-muted" />
               {isExpired ? (
-                <span className="text-red-500 font-semibold">{t.approvals.expired}</span>
+                <span className="text-[var(--warning)] font-semibold">{t.approvals.expired}</span>
               ) : (
                 <span className="text-theme-primary font-mono">
                   {formatSeconds(timeLeft)}
@@ -133,7 +133,7 @@ export const ResolveApprovalModal: React.FC<ResolveApprovalModalProps> = ({
             </div>
             <div className="flex justify-between py-1 border-b border-theme-subtle">
               <span className="text-theme-muted">{t.approvals.payloadHash}</span>
-              <span className="font-mono text-indigo-500 text-[11px] truncate max-w-[280px]" title={approval.payloadHash}>
+              <span className="font-mono text-theme-primary text-[11px] truncate max-w-[280px]" title={approval.payloadHash}>
                 {approval.payloadHash}
               </span>
             </div>
@@ -149,16 +149,16 @@ export const ResolveApprovalModal: React.FC<ResolveApprovalModalProps> = ({
               type="button"
               disabled={loading || isExpired}
               onClick={() => handleResolve("deny")}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-theme-card-muted hover:bg-theme-card-hover text-red-500 border border-theme-subtle disabled:opacity-40 transition"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-theme-card-muted hover:bg-theme-card-hover text-[var(--warning)] border border-theme-subtle disabled:opacity-40 transition"
             >
-              <XCircle className="w-4 h-4 text-red-500" />
+              <XCircle className="w-4 h-4 text-[var(--warning)]" />
               <span>{t.approvals.denyBtn}</span>
             </button>
             <button
               type="button"
               disabled={loading || isExpired}
               onClick={() => handleResolve("approve")}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm disabled:opacity-40 transition"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]  disabled:opacity-40 transition"
             >
               <CheckCircle2 className="w-4 h-4" />
               <span>{t.approvals.approveBtn}</span>

@@ -43,7 +43,7 @@ export function searchProjectFiles(
     }
 
     for (const ent of entries) {
-      if (ent.name === ".git" || ent.name === "node_modules" || ent.name === ".nexus") {
+      if (ent.name === ".git" || ent.name === "node_modules" || ent.name === ".nexus" || ent.name === ".dockra") {
         continue;
       }
 

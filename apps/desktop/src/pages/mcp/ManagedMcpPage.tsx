@@ -379,7 +379,7 @@ export const ManagedMcpPage: React.FC = () => {
       <div className="flex items-center justify-between gap-4 border-b border-theme-subtle pb-4">
         <div>
           <h1 className="text-base font-semibold text-theme-primary flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-emerald-500" />
+            <Terminal className="w-4 h-4 text-[var(--success)]" />
             <span>{isZh ? "MCP 进程托管与 API 配置" : "Managed MCP Processes & API Config"}</span>
           </h1>
           <p className="text-xs text-theme-muted mt-0.5">
@@ -407,15 +407,15 @@ export const ManagedMcpPage: React.FC = () => {
               setAutoInstallResult(null);
               setAutoInstallStep(0);
             }}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-sky-600 hover:from-emerald-500 hover:to-sky-500 text-white rounded text-xs font-semibold shadow-md hover:shadow-lg transition transform active:scale-95"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded text-xs font-semibold   transition transform active:scale-95"
           >
-            <Sparkles className="w-3.5 h-3.5 text-yellow-300 animate-pulse" />
+            <Sparkles className="w-3.5 h-3.5 text-[var(--warning)] animate-pulse" />
             <span>{isZh ? "🚀 智能全自动安装 (GitHub / 包名)" : "🚀 Smart Auto-Install"}</span>
           </button>
           <button
             type="button"
             onClick={() => setShowJsonModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-sky-600/20 hover:bg-sky-600/30 text-sky-400 border border-sky-500/30 rounded text-xs font-semibold shadow-sm transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--btn-primary-bg)]/20 hover:bg-[var(--btn-primary-bg)]/30 text-theme-primary border border-theme-subtle rounded text-xs font-semibold  transition"
           >
             <FileCode className="w-3.5 h-3.5" />
             <span>{isZh ? "+ 导入 JSON 配置" : "+ Import JSON"}</span>
@@ -423,7 +423,7 @@ export const ManagedMcpPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setShowCreateModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold shadow-sm transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded text-xs font-semibold  transition"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>{isZh ? "+ 运行新命令服务" : "+ Run Command Service"}</span>
@@ -432,8 +432,8 @@ export const ManagedMcpPage: React.FC = () => {
       </div>
 
       {/* AI Client Hint Banner */}
-      <div className="p-3.5 rounded-xl border border-sky-500/30 bg-sky-500/5 text-xs text-theme-secondary flex items-start gap-2.5">
-        <span className="text-sky-400 font-bold text-sm shrink-0">💡</span>
+      <div className="p-3.5 rounded-xl border border-theme-subtle bg-[var(--btn-primary-bg)]/5 text-xs text-theme-secondary flex items-start gap-2.5">
+        <span className="text-theme-primary font-bold text-sm shrink-0">💡</span>
         <div className="space-y-1">
           <div className="font-semibold text-theme-primary">
             {isZh ? "为什么在外部 AI 客户端（ChatGPT / DeepSeek）要使用 8787 桥接端点？" : "Why use 8787 Bridge endpoint in external AI clients (ChatGPT / DeepSeek)?"}
@@ -461,29 +461,29 @@ export const ManagedMcpPage: React.FC = () => {
           return (
             <div
               key={svc.config.id}
-              className="p-5 rounded-xl border border-theme-subtle bg-theme-card/30 space-y-4 shadow-sm"
+              className="p-5 rounded-xl border border-theme-subtle bg-theme-card/30 space-y-4 "
             >
               {/* Card Top: Title, Status Badge, Quick Controls */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-theme-subtle/50 pb-3">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <div className="p-2 rounded-lg bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle">
                     <Terminal className="w-5 h-5" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-bold text-theme-primary">{svc.config.name}</span>
-                      <span className="px-1.5 py-0.5 rounded text-[10px] bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                      <span className="px-1.5 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle">
                         {svc.config.id}
                       </span>
                     </div>
                     <div className="text-xs text-theme-muted mt-0.5 flex flex-wrap items-center gap-3">
                       <span>端口: <strong className="text-theme-secondary">{svc.config.port}</strong></span>
                       <span>进程端点: <strong className="text-theme-secondary truncate max-w-[160px]">{svc.config.endpoint}</strong></span>
-                      <span>桥接端点: <strong className="text-sky-400 truncate max-w-[220px]">http://127.0.0.1:8787/mcp/{svc.config.id}</strong></span>
+                      <span>桥接端点: <strong className="text-theme-primary truncate max-w-[220px]">http://127.0.0.1:8787/mcp/{svc.config.id}</strong></span>
                       {svc.pid && (
-                        <span>PID: <strong className="text-emerald-400">{svc.pid}</strong></span>
+                        <span>PID: <strong className="text-[var(--success)]">{svc.pid}</strong></span>
                       )}
-                      <span>工具数: <strong className="text-sky-400">{svc.toolCount} Tools</strong></span>
+                      <span>工具数: <strong className="text-theme-primary">{svc.toolCount} Tools</strong></span>
                     </div>
                   </div>
                 </div>
@@ -504,27 +504,27 @@ export const ManagedMcpPage: React.FC = () => {
                       setCopiedId(`mcp-${svc.config.id}`);
                       setTimeout(() => setCopiedId(null), 2500);
                     }}
-                    className="flex items-center gap-1 px-2.5 py-1 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/30 rounded-lg text-xs font-semibold transition"
+                    className="flex items-center gap-1 px-2.5 py-1 bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-theme-primary border border-theme-subtle rounded-lg text-xs font-semibold transition"
                     title={isZh ? "复制用于 ChatGPT / DeepSeek 的配置 JSON" : "Copy configuration for ChatGPT / DeepSeek"}
                   >
-                    {copiedId === `mcp-${svc.config.id}` ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedId === `mcp-${svc.config.id}` ? <Check className="w-3.5 h-3.5 text-[var(--success)]" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copiedId === `mcp-${svc.config.id}` ? (isZh ? "已复制配置" : "Copied!") : (isZh ? "复制 MCP 配置" : "Copy Config")}</span>
                   </button>
 
                   <span
                     className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1.5 border ${
                       isRunning
-                        ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/15 text-[var(--success)] border-theme-subtle"
                         : isStarting
-                        ? "bg-sky-500/15 text-sky-400 border-sky-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/15 text-theme-primary border-theme-subtle"
                         : isError
-                        ? "bg-rose-500/15 text-rose-400 border-rose-500/30"
-                        : "bg-zinc-500/15 text-zinc-400 border-zinc-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/15 text-[var(--warning)] border-theme-subtle"
+                        : "bg-zinc-500/15 text-theme-secondary border-zinc-500/30"
                     }`}
                   >
                     <span
                       className={`w-2 h-2 rounded-full ${
-                        isRunning ? "bg-emerald-400 animate-pulse" : isStarting ? "bg-sky-400 animate-ping" : isError ? "bg-rose-400" : "bg-zinc-500"
+                        isRunning ? "bg-[var(--success)] animate-pulse" : isStarting ? "bg-[var(--text-primary)] animate-ping" : isError ? "bg-[var(--warning)]" : "bg-zinc-500"
                       }`}
                     />
                     <span>
@@ -544,7 +544,7 @@ export const ManagedMcpPage: React.FC = () => {
                       type="button"
                       disabled={isBusy}
                       onClick={() => handleStop(svc.config.id)}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-500/40 rounded-lg text-xs font-semibold transition"
+                      className="flex items-center gap-1 px-3 py-1.5 bg-[var(--btn-primary-bg)]/20 hover:bg-[var(--btn-primary-bg)]/30 text-[var(--warning)] border border-theme-subtle rounded-lg text-xs font-semibold transition"
                     >
                       {isBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Square className="w-3.5 h-3.5" />}
                       <span>{isZh ? "停止服务" : "Stop"}</span>
@@ -554,7 +554,7 @@ export const ManagedMcpPage: React.FC = () => {
                       type="button"
                       disabled={isBusy}
                       onClick={() => handleStart(svc.config.id)}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-sm transition"
+                      className="flex items-center gap-1 px-3 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded-lg text-xs font-semibold  transition"
                     >
                       {isBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
                       <span>{isZh ? "启动服务" : "Start"}</span>
@@ -576,7 +576,7 @@ export const ManagedMcpPage: React.FC = () => {
                     onClick={() => setExpandedConfig((prev) => ({ ...prev, [svc.config.id]: !prev[svc.config.id] }))}
                     className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition ${
                       isConfigOpen
-                        ? "bg-sky-500/10 text-sky-400 border-sky-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/10 text-theme-primary border-theme-subtle"
                         : "bg-theme-card text-theme-muted hover:text-theme-primary border-theme-subtle"
                     }`}
                   >
@@ -590,7 +590,7 @@ export const ManagedMcpPage: React.FC = () => {
                     onClick={() => setExpandedLogs((prev) => ({ ...prev, [svc.config.id]: !prev[svc.config.id] }))}
                     className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition ${
                       isLogsOpen
-                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border-theme-subtle"
                         : "bg-theme-card text-theme-muted hover:text-theme-primary border-theme-subtle"
                     }`}
                   >
@@ -603,7 +603,7 @@ export const ManagedMcpPage: React.FC = () => {
                     type="button"
                     disabled={isBusy}
                     onClick={() => handleDelete(svc.config.id, svc.config.name)}
-                    className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition cursor-pointer"
+                    className="p-1.5 rounded-lg bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border border-theme-subtle transition cursor-pointer"
                     title={isZh ? "删除服务" : "Delete Service"}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -616,7 +616,7 @@ export const ManagedMcpPage: React.FC = () => {
                 <div className="p-4 rounded-xl bg-theme-base/60 border border-theme-subtle space-y-4">
                   <div className="flex items-center justify-between border-b border-theme-subtle/50 pb-2">
                     <h3 className="text-xs font-bold text-theme-primary flex items-center gap-1.5">
-                      <Key className="w-3.5 h-3.5 text-sky-400" />
+                      <Key className="w-3.5 h-3.5 text-theme-primary" />
                       <span>{isZh ? "进程参数与环境配置 (Process & Environment Config)" : "Process & Environment Config"}</span>
                     </h3>
                     <span className="text-[11px] text-theme-muted">
@@ -625,7 +625,7 @@ export const ManagedMcpPage: React.FC = () => {
                   </div>
 
                   {successMsg && (
-                    <div className="p-2.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
+                    <div className="p-2.5 rounded bg-[var(--btn-primary-bg)]/10 border border-theme-subtle text-[var(--success)] text-xs flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4" />
                       <span>{successMsg}</span>
                     </div>
@@ -642,7 +642,7 @@ export const ManagedMcpPage: React.FC = () => {
                           ...prev,
                           [svc.config.id]: { ...prev[svc.config.id], rawCommand: e.target.value }
                         }))}
-                        className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500 font-mono text-[11px]"
+                        className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle font-mono text-[11px]"
                         placeholder="例如: npx.cmd -y supergateway --port 9095 --outputTransport streamableHttp --streamableHttpPath /mcp --stdio &quot;photoshop-mcp.cmd&quot;"
                       />
                     </div>
@@ -657,7 +657,7 @@ export const ManagedMcpPage: React.FC = () => {
                           ...prev,
                           [svc.config.id]: { ...prev[svc.config.id], port: e.target.value }
                         }))}
-                        className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                        className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                         placeholder="9099"
                       />
                     </div>
@@ -674,7 +674,7 @@ export const ManagedMcpPage: React.FC = () => {
                               ...prev,
                               [svc.config.id]: { ...prev[svc.config.id], blenderPort: e.target.value }
                             }))}
-                            className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                            className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                             placeholder="9876"
                           />
                         </div>
@@ -689,7 +689,7 @@ export const ManagedMcpPage: React.FC = () => {
                               ...prev,
                               [svc.config.id]: { ...prev[svc.config.id], hunyuanSecretId: e.target.value }
                             }))}
-                            className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                            className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                             placeholder="腾讯云 API 密钥 SecretId (选填)"
                           />
                         </div>
@@ -704,7 +704,7 @@ export const ManagedMcpPage: React.FC = () => {
                               ...prev,
                               [svc.config.id]: { ...prev[svc.config.id], hunyuanSecretKey: e.target.value }
                             }))}
-                            className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                            className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                             placeholder="腾讯云 API 密钥 SecretKey (选填)"
                           />
                         </div>
@@ -719,7 +719,7 @@ export const ManagedMcpPage: React.FC = () => {
                               ...prev,
                               [svc.config.id]: { ...prev[svc.config.id], hyper3dApiKey: e.target.value }
                             }))}
-                            className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                            className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                             placeholder="Hyper3D.ai 生成密钥 (选填)"
                           />
                         </div>
@@ -734,7 +734,7 @@ export const ManagedMcpPage: React.FC = () => {
                               ...prev,
                               [svc.config.id]: { ...prev[svc.config.id], sketchfabApiKey: e.target.value }
                             }))}
-                            className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                            className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                             placeholder="Sketchfab 资产检索密钥 (选填)"
                           />
                         </div>
@@ -747,7 +747,7 @@ export const ManagedMcpPage: React.FC = () => {
                       type="button"
                       disabled={isBusy}
                       onClick={() => handleSaveConfig(svc.config.id)}
-                      className="px-4 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold shadow-sm transition disabled:opacity-50"
+                      className="px-4 py-1.5 rounded-lg bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] text-xs font-semibold  transition disabled:opacity-50"
                     >
                       {isBusy ? (isZh ? "正在保存..." : "Saving...") : (isZh ? "保存配置参数" : "Save Configuration")}
                     </button>
@@ -757,10 +757,10 @@ export const ManagedMcpPage: React.FC = () => {
 
               {/* Collapsible Section 2: Real-time Embedded Console Logs */}
               {isLogsOpen && (
-                <div className="p-3 rounded-xl bg-black/80 border border-theme-subtle/80 space-y-2">
-                  <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-zinc-800 pb-1.5">
+                <div className="p-3 rounded-xl bg-[var(--bg-app)] border border-theme-subtle/80 space-y-2">
+                  <div className="flex items-center justify-between text-[11px] text-theme-secondary border-b border-theme-subtle pb-1.5">
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="w-2 h-2 rounded-full bg-[var(--btn-primary-bg)] animate-pulse" />
                       <span>{isZh ? "实时进程控制台 (Embedded Console Log Stream)" : "Console Log Stream"}</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -770,24 +770,24 @@ export const ManagedMcpPage: React.FC = () => {
                         className="flex items-center gap-1 hover:text-white transition"
                         title={isZh ? "复制全部日志" : "Copy logs"}
                       >
-                        {copiedId === svc.config.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                        {copiedId === svc.config.id ? <Check className="w-3 h-3 text-[var(--success)]" /> : <Copy className="w-3 h-3" />}
                         <span>{copiedId === svc.config.id ? (isZh ? "已复制" : "Copied") : (isZh ? "复制" : "Copy")}</span>
                       </button>
                     </div>
                   </div>
 
-                  <div className="max-h-56 overflow-y-auto font-mono text-[11px] leading-relaxed text-zinc-300 space-y-0.5 selection:bg-sky-500 selection:text-white">
+                  <div className="max-h-56 overflow-y-auto font-mono text-[11px] leading-relaxed text-zinc-300 space-y-0.5 selection:bg-[var(--btn-primary-bg)] selection:text-[var(--btn-primary-text)]">
                     {svc.logs && svc.logs.length > 0 ? (
                       svc.logs.map((logLine, idx) => (
                         <div
                           key={idx}
                           className={`${
                             logLine.includes("ERROR") || logLine.includes("Failed") || logLine.includes("error")
-                              ? "text-rose-400"
+                              ? "text-[var(--warning)]"
                               : logLine.includes("READY") || logLine.includes("successfully") || logLine.includes("Connected")
-                              ? "text-emerald-400"
+                              ? "text-[var(--success)]"
                               : logLine.includes("[Nexus]")
-                              ? "text-sky-400"
+                              ? "text-theme-primary"
                               : "text-zinc-300"
                           }`}
                         >
@@ -795,7 +795,7 @@ export const ManagedMcpPage: React.FC = () => {
                         </div>
                       ))
                     ) : (
-                      <div className="text-zinc-500 italic py-2">
+                      <div className="text-theme-secondary italic py-2">
                         {isZh ? "暂无日志输出，点击上方【启动服务】即可在后台静默运行" : "No logs yet. Click [Start] to run."}
                       </div>
                     )}
@@ -815,11 +815,11 @@ export const ManagedMcpPage: React.FC = () => {
 
       {/* Create Custom Service Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 font-mono">
-          <div className="w-full max-w-lg bg-theme-base border border-theme-subtle rounded-xl p-5 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] p-4 font-mono">
+          <div className="w-full max-w-lg bg-theme-base border border-theme-subtle rounded-xl p-5 space-y-4 ">
             <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
               <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">
-                <Plus className="w-4 h-4 text-emerald-400" />
+                <Plus className="w-4 h-4 text-[var(--success)]" />
                 <span>{isZh ? "运行新受管 MCP 命令服务" : "Run New Managed MCP Command"}</span>
               </h3>
               <button onClick={() => setShowCreateModal(false)} className="text-theme-muted hover:text-theme-primary text-xs">
@@ -828,7 +828,7 @@ export const ManagedMcpPage: React.FC = () => {
             </div>
 
             {createError && (
-              <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded text-rose-400 text-xs">
+              <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded text-[var(--warning)] text-xs">
                 {createError}
               </div>
             )}
@@ -842,7 +842,7 @@ export const ManagedMcpPage: React.FC = () => {
                   placeholder="例如: custom-mcp 或 my-tool"
                   value={newId}
                   onChange={(e) => setNewId(e.target.value)}
-                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-emerald-500"
+                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -853,7 +853,7 @@ export const ManagedMcpPage: React.FC = () => {
                   placeholder="例如: My Custom MCP Server"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-emerald-500"
+                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -865,7 +865,7 @@ export const ManagedMcpPage: React.FC = () => {
                   placeholder="例如: python -m my_mcp_server --port 9099 或 uv run ..."
                   value={newCommand}
                   onChange={(e) => setNewCommand(e.target.value)}
-                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-emerald-500 font-mono text-[11px]"
+                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle font-mono text-[11px]"
                 />
               </div>
 
@@ -876,7 +876,7 @@ export const ManagedMcpPage: React.FC = () => {
                   required
                   value={newPort}
                   onChange={(e) => setNewPort(Number(e.target.value))}
-                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-emerald-500"
+                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -891,7 +891,7 @@ export const ManagedMcpPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isCreating}
-                  className="px-4 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-medium shadow-sm transition disabled:opacity-50"
+                  className="px-4 py-1.5 rounded bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-medium  transition disabled:opacity-50"
                 >
                   {isCreating ? (isZh ? "正在创建..." : "Creating...") : (isZh ? "创建服务面板" : "Create Service Panel")}
                 </button>
@@ -903,11 +903,11 @@ export const ManagedMcpPage: React.FC = () => {
 
       {/* Import JSON Modal */}
       {showJsonModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 font-mono">
-          <div className="w-full max-w-xl bg-theme-base border border-theme-subtle rounded-xl p-5 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] p-4 font-mono">
+          <div className="w-full max-w-xl bg-theme-base border border-theme-subtle rounded-xl p-5 space-y-4 ">
             <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
               <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">
-                <FileCode className="w-4 h-4 text-sky-400" />
+                <FileCode className="w-4 h-4 text-theme-primary" />
                 <span>{isZh ? "导入标准 MCP JSON 配置" : "Import MCP JSON Configuration"}</span>
               </h3>
               <button onClick={() => setShowJsonModal(false)} className="text-theme-muted hover:text-theme-primary text-xs">
@@ -922,7 +922,7 @@ export const ManagedMcpPage: React.FC = () => {
             </p>
 
             {jsonError && (
-              <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded text-rose-400 text-xs">
+              <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded text-[var(--warning)] text-xs">
                 {jsonError}
               </div>
             )}
@@ -936,17 +936,17 @@ export const ManagedMcpPage: React.FC = () => {
                   placeholder={`{\n  "mcpServers": {\n    "playwright": {\n      "command": "npx",\n      "args": [\n        "@playwright/mcp@latest"\n      ]\n    }\n  }\n}`}
                   value={jsonInput}
                   onChange={(e) => setJsonInput(e.target.value)}
-                  className="w-full p-2.5 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500 font-mono text-[11px] leading-relaxed"
+                  className="w-full p-2.5 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle font-mono text-[11px] leading-relaxed"
                 />
               </div>
 
-              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-300">
+              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-[var(--btn-primary-bg)]/10 border border-theme-subtle text-theme-primary">
                 <input
                   type="checkbox"
                   id="wrapSupergateway"
                   checked={jsonWrapSupergateway}
                   onChange={(e) => setJsonWrapSupergateway(e.target.checked)}
-                  className="rounded text-sky-600 focus:ring-0"
+                  className="rounded text-theme-primary focus:ring-0"
                 />
                 <label htmlFor="wrapSupergateway" className="text-[11px] cursor-pointer">
                   {isZh
@@ -966,7 +966,7 @@ export const ManagedMcpPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isImporting}
-                  className="px-4 py-1.5 rounded bg-sky-600 hover:bg-sky-500 text-white font-medium shadow-sm transition disabled:opacity-50"
+                  className="px-4 py-1.5 rounded bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-medium  transition disabled:opacity-50"
                 >
                   {isImporting ? (isZh ? "正在解析导入..." : "Importing...") : (isZh ? "一键导入配置" : "Import Config")}
                 </button>
@@ -978,11 +978,11 @@ export const ManagedMcpPage: React.FC = () => {
 
       {/* Smart Auto-Installer Modal */}
       {showAutoInstallModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 font-mono backdrop-blur-sm">
-          <div className="w-full max-w-xl bg-theme-base border border-theme-subtle rounded-xl p-6 space-y-5 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] p-4 font-mono backdrop-blur-sm">
+          <div className="w-full max-w-xl bg-theme-base border border-theme-subtle rounded-xl p-6 space-y-5 ">
             <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
               <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
+                <Sparkles className="w-4 h-4 text-[var(--success)] animate-pulse" />
                 <span>{isZh ? "智能全自动安装 MCP 服务 (Zero-Command Installer)" : "Smart Auto-Installer (Zero Command)"}</span>
               </h3>
               <button
@@ -1004,7 +1004,7 @@ export const ManagedMcpPage: React.FC = () => {
             {/* Quick Presets */}
             <div className="space-y-1.5">
               <div className="text-[11px] font-semibold text-theme-secondary flex items-center gap-1.5">
-                <Zap className="w-3.5 h-3.5 text-yellow-400" />
+                <Zap className="w-3.5 h-3.5 text-[var(--warning)]" />
                 <span>{isZh ? "一键快捷预设：" : "Quick Presets:"}</span>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -1019,7 +1019,7 @@ export const ManagedMcpPage: React.FC = () => {
                       setAutoInstallError(null);
                       setAutoInstallResult(null);
                     }}
-                    className="px-2.5 py-1 text-[11px] bg-theme-card hover:bg-theme-subtle border border-theme-subtle hover:border-emerald-500/40 rounded-lg text-theme-secondary hover:text-emerald-400 transition"
+                    className="px-2.5 py-1 text-[11px] bg-theme-card hover:bg-theme-subtle border border-theme-subtle border-theme-subtle rounded-lg text-theme-secondary hover:text-[var(--success)] transition"
                   >
                     {preset.label}
                   </button>
@@ -1029,7 +1029,7 @@ export const ManagedMcpPage: React.FC = () => {
 
             {/* Error Message */}
             {autoInstallError && (
-              <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-lg text-rose-400 text-xs space-y-1">
+              <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg text-[var(--warning)] text-xs space-y-1">
                 <div className="font-semibold flex items-center gap-1.5">
                   <span>❌</span>
                   <span>{isZh ? "安装未完成" : "Installation Error"}</span>
@@ -1040,21 +1040,21 @@ export const ManagedMcpPage: React.FC = () => {
 
             {/* Success Result Card */}
             {autoInstallResult && (
-              <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-xs space-y-3">
+              <div className="p-4 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-xl text-[var(--success)] text-xs space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="font-bold text-sm flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <CheckCircle2 className="w-4 h-4 text-[var(--success)]" />
                     <span>{isZh ? `安装成功！已加载 ${autoInstallResult.toolCount} 个有效工具` : `Installed! Discovered ${autoInstallResult.toolCount} tools`}</span>
                   </div>
-                  <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-mono">
+                  <span className="px-2 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/20 text-[var(--success)] font-mono">
                     PORT {autoInstallResult.port}
                   </span>
                 </div>
 
-                <div className="space-y-1 font-mono text-[11px] text-theme-secondary bg-black/30 p-2.5 rounded-lg border border-emerald-500/20">
+                <div className="space-y-1 font-mono text-[11px] text-theme-secondary bg-[var(--bg-app)] p-2.5 rounded-lg border border-theme-subtle">
                   <div>服务 ID: <strong className="text-white">{autoInstallResult.serviceId}</strong></div>
-                  <div>桥接端点: <strong className="text-sky-300">http://127.0.0.1:8787/mcp/{autoInstallResult.serviceId}</strong></div>
-                  <div>工具数量: <strong className="text-emerald-300">{autoInstallResult.toolCount} Tools Loaded</strong></div>
+                  <div>桥接端点: <strong className="text-theme-primary">http://127.0.0.1:8787/mcp/{autoInstallResult.serviceId}</strong></div>
+                  <div>工具数量: <strong className="text-[var(--success)]">{autoInstallResult.toolCount} Tools Loaded</strong></div>
                 </div>
 
                 <div className="flex items-center justify-between pt-1">
@@ -1072,7 +1072,7 @@ export const ManagedMcpPage: React.FC = () => {
                       setCopiedId(`auto-${autoInstallResult.serviceId}`);
                       setTimeout(() => setCopiedId(null), 2500);
                     }}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 rounded-lg text-xs font-semibold text-emerald-300 transition"
+                    className="flex items-center gap-1 px-3 py-1.5 bg-[var(--btn-primary-bg)]/20 hover:bg-[var(--btn-primary-bg)]/30 border border-theme-subtle rounded-lg text-xs font-semibold text-[var(--success)] transition"
                   >
                     {copiedId === `auto-${autoInstallResult.serviceId}` ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copiedId === `auto-${autoInstallResult.serviceId}` ? (isZh ? "已复制配置" : "Copied!") : (isZh ? "复制 MCP 配置" : "Copy Config")}</span>
@@ -1081,7 +1081,7 @@ export const ManagedMcpPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowAutoInstallModal(false)}
-                    className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition shadow-sm"
+                    className="px-4 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded-lg text-xs font-bold transition "
                   >
                     {isZh ? "完成并返回" : "Done"}
                   </button>
@@ -1091,22 +1091,22 @@ export const ManagedMcpPage: React.FC = () => {
 
             {/* Stepper progress during install */}
             {isAutoInstalling && (
-              <div className="p-4 bg-sky-500/10 border border-sky-500/30 rounded-xl space-y-2.5 text-xs">
-                <div className="flex items-center gap-2 text-sky-400 font-bold">
+              <div className="p-4 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-xl space-y-2.5 text-xs">
+                <div className="flex items-center gap-2 text-theme-primary font-bold">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   <span>{isZh ? "正在全自动沙箱部署与验证中..." : "Deploying in Sandbox..."}</span>
                 </div>
                 <div className="space-y-1.5 text-[11px] text-theme-muted pl-6">
-                  <div className={autoInstallStep >= 1 ? "text-sky-300 font-medium" : "opacity-40"}>
+                  <div className={autoInstallStep >= 1 ? "text-theme-primary font-medium" : "opacity-40"}>
                     {autoInstallStep >= 1 ? "✓ " : "• "} {isZh ? "1. 识别源类型 (GitHub / Python / npm)" : "1. Resolving source & package type"}
                   </div>
-                  <div className={autoInstallStep >= 2 ? "text-sky-300 font-medium" : "opacity-40"}>
+                  <div className={autoInstallStep >= 2 ? "text-theme-primary font-medium" : "opacity-40"}>
                     {autoInstallStep >= 2 ? "✓ " : "• "} {isZh ? "2. 动态分配独占网关端口" : "2. Allocating loopback gateway port"}
                   </div>
-                  <div className={autoInstallStep >= 3 ? "text-sky-300 font-medium" : "opacity-40"}>
+                  <div className={autoInstallStep >= 3 ? "text-theme-primary font-medium" : "opacity-40"}>
                     {autoInstallStep >= 3 ? "✓ " : "• "} {isZh ? "3. 启动 Native Pure-Stream Gateway 并过滤警告横幅" : "3. Starting Native Pure-Stream Gateway"}
                   </div>
-                  <div className={autoInstallStep >= 4 ? "text-emerald-400 font-bold" : "opacity-40"}>
+                  <div className={autoInstallStep >= 4 ? "text-[var(--success)] font-bold" : "opacity-40"}>
                     {autoInstallStep >= 4 ? "✓ " : "• "} {isZh ? "4. MCP 握手完成，发现并注册工具列表" : "4. Handshake complete, tools registered"}
                   </div>
                 </div>
@@ -1126,7 +1126,7 @@ export const ManagedMcpPage: React.FC = () => {
                     placeholder="例如: https://github.com/cyanheads/maya-mcp-server 或 maya-mcp-server"
                     value={autoInstallSource}
                     onChange={(e) => setAutoInstallSource(e.target.value)}
-                    className="w-full p-2.5 bg-theme-card border border-theme-subtle rounded-lg text-theme-primary focus:outline-none focus:border-emerald-500 font-mono text-[11px]"
+                    className="w-full p-2.5 bg-theme-card border border-theme-subtle rounded-lg text-theme-primary focus:outline-none border-theme-subtle font-mono text-[11px]"
                   />
                   <div className="text-[10px] text-theme-muted">
                     {isZh
@@ -1143,7 +1143,7 @@ export const ManagedMcpPage: React.FC = () => {
                     placeholder="例如: Autodesk Maya MCP"
                     value={autoInstallName}
                     onChange={(e) => setAutoInstallName(e.target.value)}
-                    className="w-full p-2.5 bg-theme-card border border-theme-subtle rounded-lg text-theme-primary focus:outline-none focus:border-emerald-500 font-mono text-[11px]"
+                    className="w-full p-2.5 bg-theme-card border border-theme-subtle rounded-lg text-theme-primary focus:outline-none border-theme-subtle font-mono text-[11px]"
                   />
                 </div>
 
@@ -1159,7 +1159,7 @@ export const ManagedMcpPage: React.FC = () => {
                   <button
                     type="submit"
                     disabled={isAutoInstalling || !autoInstallSource.trim()}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-sky-600 hover:from-emerald-500 hover:to-sky-500 text-white font-bold shadow-md transition disabled:opacity-50 active:scale-95"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-bold  transition disabled:opacity-50 active:scale-95"
                   >
                     {isAutoInstalling ? (
                       <>
@@ -1168,7 +1168,7 @@ export const ManagedMcpPage: React.FC = () => {
                       </>
                     ) : (
                       <>
-                        <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+                        <Sparkles className="w-3.5 h-3.5 text-[var(--warning)]" />
                         <span>{isZh ? "🚀 一键智能安装并启动" : "🚀 Install & Start Now"}</span>
                       </>
                     )}

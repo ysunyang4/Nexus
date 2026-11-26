@@ -223,18 +223,18 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
       {/* Top Header & Authorize Button */}
       <div className="flex items-center justify-between border-b border-theme-subtle pb-4 flex-wrap gap-4">
         <div className="flex items-center gap-2">
-          <FolderLock className="w-5 h-5 text-sky-500" />
+          <FolderLock className="w-5 h-5 text-theme-primary" />
           <h2 className="text-base font-bold text-theme-primary">
             {t.projects?.title || "受控本地目录 (Workspace Folders)"}
           </h2>
-          <span className="px-2 py-0.5 rounded-full text-xs bg-sky-500/10 text-sky-400 font-mono font-semibold">
+          <span className="px-2 py-0.5 rounded-full text-xs bg-[var(--btn-primary-bg)]/10 text-theme-primary font-mono font-semibold">
             {localProjects.length}
           </span>
         </div>
 
         <button
           onClick={onOpenAuthorizeModal}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-sky-600 hover:bg-sky-500 text-white font-medium rounded-lg text-xs shadow-sm transition cursor-pointer"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-medium rounded-lg text-xs  transition cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>{t.projects?.authorizeBtn || "Authorize Directory"}</span>
@@ -242,8 +242,8 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
       </div>
 
       {error && (
-        <div className="p-3 bg-red-500/10 border border-red-500/25 rounded-lg text-xs text-red-400 flex items-start gap-2">
-          <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+        <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg text-xs text-[var(--warning)] flex items-start gap-2">
+          <AlertTriangle className="w-4 h-4 text-[var(--warning)] shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
       )}
@@ -257,7 +257,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t.projects?.searchPlaceholder || "Search projects by name, root path, or ID..."}
-            className="w-full bg-theme-input border border-theme-input rounded-lg pl-9 pr-3 py-1.5 text-xs text-theme-primary focus:outline-none focus:border-sky-500 transition font-mono"
+            className="w-full bg-theme-input border border-theme-input rounded-lg pl-9 pr-3 py-1.5 text-xs text-theme-primary focus:outline-none border-theme-subtle transition font-mono"
           />
         </div>
 
@@ -266,7 +266,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
             onClick={() => setFilterMode("all")}
             className={`px-2.5 py-1 rounded font-medium transition ${
               filterMode === "all"
-                ? "bg-theme-card text-theme-primary shadow-sm border border-theme-subtle"
+                ? "bg-theme-card text-theme-primary  border border-theme-subtle"
                 : "text-theme-muted hover:text-theme-secondary"
             }`}
           >
@@ -276,7 +276,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
             onClick={() => setFilterMode("enabled")}
             className={`px-2.5 py-1 rounded font-medium transition ${
               filterMode === "enabled"
-                ? "bg-theme-card text-theme-primary shadow-sm border border-theme-subtle"
+                ? "bg-theme-card text-theme-primary  border border-theme-subtle"
                 : "text-theme-muted hover:text-theme-secondary"
             }`}
           >
@@ -286,7 +286,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
             onClick={() => setFilterMode("disabled")}
             className={`px-2.5 py-1 rounded font-medium transition ${
               filterMode === "disabled"
-                ? "bg-theme-card text-theme-primary shadow-sm border border-theme-subtle"
+                ? "bg-theme-card text-theme-primary  border border-theme-subtle"
                 : "text-theme-muted hover:text-theme-secondary"
             }`}
           >
@@ -297,7 +297,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
 
       {/* Projects List */}
       {filteredProjects.length === 0 ? (
-        <div className="p-12 text-center bg-theme-card border border-theme-subtle rounded-xl space-y-3 shadow-sm">
+        <div className="p-12 text-center bg-theme-card border border-theme-subtle rounded-xl space-y-3 ">
           <FolderLock className="w-10 h-10 text-theme-muted mx-auto" />
           <div className="text-theme-primary font-semibold text-sm">
             {projects.length === 0
@@ -312,7 +312,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
           {projects.length === 0 && (
             <button
               onClick={onOpenAuthorizeModal}
-              className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white font-semibold rounded-lg text-xs transition shadow-sm"
+              className="px-4 py-2 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-semibold rounded-lg text-xs transition "
             >
               {t.projects?.authorizeBtn || "Authorize Directory"}
             </button>
@@ -328,7 +328,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
               <div
                 key={project.id}
                 onClick={() => handleSelect(project.id)}
-                className={`p-5 bg-theme-card border rounded-xl space-y-3 transition-all duration-150 cursor-pointer group shadow-sm hover:border-theme-strong ${
+                className={`p-5 bg-theme-card border rounded-xl space-y-3 transition-all duration-150 cursor-pointer group  hover:border-theme-strong ${
                   project.enabled
                     ? "border-theme-subtle"
                     : "border-theme-subtle opacity-60"
@@ -338,7 +338,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-1 min-w-0">
                     <div className="flex items-center gap-3">
-                      <span className="font-semibold text-theme-primary text-base group-hover:text-sky-500 dark:group-hover:text-sky-300 transition-colors truncate">
+                      <span className="font-semibold text-theme-primary text-base group-hover:text-theme-primary dark:group-hover:text-theme-primary transition-colors truncate">
                         {project.name}
                       </span>
                       <span className="font-mono text-xs text-theme-muted">
@@ -347,8 +347,8 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                       <span
                         className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
                           project.enabled
-                            ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
-                            : "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30"
+                            ? "bg-[var(--btn-primary-bg)]/15 text-[var(--success)] text-[var(--success)] border border-theme-subtle"
+                            : "bg-[var(--btn-primary-bg)]/15 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle"
                         }`}
                       >
                         {project.enabled
@@ -371,7 +371,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                       className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition ${
                         project.enabled
                           ? "bg-theme-card-muted hover:bg-theme-card-hover text-theme-secondary border-theme-subtle"
-                          : "bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-600"
+                          : "bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] border-theme-subtle"
                       }`}
                     >
                       {project.enabled ? (t.projectDetail?.disable || "Disable") : (t.projectDetail?.enable || "Enable")}
@@ -382,7 +382,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                         <button
                           onClick={(e) => handleRemove(project.id, e)}
                           disabled={isLoading}
-                          className="px-2.5 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-bold transition shadow-sm"
+                          className="px-2.5 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded-lg text-xs font-bold transition "
                         >
                           {t.projectDetail?.confirmRemove || "Confirm"}
                         </button>
@@ -403,14 +403,14 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                           setDeleteConfirmId(project.id);
                         }}
                         disabled={isLoading}
-                        className="p-1.5 text-theme-muted hover:text-red-500 hover:bg-theme-card-hover rounded-lg transition"
+                        className="p-1.5 text-theme-muted hover:text-[var(--warning)] hover:bg-theme-card-hover rounded-lg transition"
                         title={t.projectDetail?.removeProject || "Remove authorization"}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     )}
 
-                    <div className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium text-sky-600 dark:text-sky-400 bg-sky-500/10 border border-sky-500/20 group-hover:bg-sky-500/20 transition">
+                    <div className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium text-theme-primary text-theme-primary bg-[var(--btn-primary-bg)]/10 border border-theme-subtle group-hover:bg-[var(--btn-primary-bg)]/20 transition">
                       <span>{t.common?.details || "Detail"}</span>
                       <ChevronRight className="w-3.5 h-3.5" />
                     </div>
@@ -436,8 +436,8 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                       disabled={isLoading}
                       className={`text-[11px] font-mono px-2.5 py-1 rounded cursor-pointer transition ${
                         project.accessMode === "read-only"
-                          ? "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
-                          : "bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30"
+                          ? "bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--success)] text-[var(--success)] border border-theme-subtle"
+                          : "bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle"
                       }`}
                     >
                       {project.accessMode === "read-only"
@@ -470,7 +470,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                       }
                       disabled={isLoading}
                       onClick={(e) => e.stopPropagation()}
-                      className="text-[11px] font-mono text-sky-600 dark:text-sky-400 px-2 py-1 rounded bg-sky-500/10 border border-sky-500/20 focus:outline-none focus:border-sky-500 cursor-pointer"
+                      className="text-[11px] font-mono text-theme-primary text-theme-primary px-2 py-1 rounded bg-[var(--btn-primary-bg)]/10 border border-theme-subtle focus:outline-none border-theme-subtle cursor-pointer"
                     >
                       <option value="safe-only">{t.projectDetail?.execSafeOnly || "safe-only"}</option>
                       <option value="project-code">{t.projectDetail?.execProjectCode || "project-code"}</option>

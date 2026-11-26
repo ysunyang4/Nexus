@@ -92,26 +92,26 @@ export const ArtifactsExplorerPanel: React.FC<ArtifactsExplorerPanelProps> = ({
   const getIcon = (type: string) => {
     switch (type) {
       case "docx":
-        return <FileText className="w-4 h-4 text-blue-500" />;
+        return <FileText className="w-4 h-4 text-theme-primary" />;
       case "pdf":
-        return <FileCheck className="w-4 h-4 text-red-500" />;
+        return <FileCheck className="w-4 h-4 text-[var(--warning)]" />;
       case "xlsx":
-        return <FileSpreadsheet className="w-4 h-4 text-emerald-500" />;
+        return <FileSpreadsheet className="w-4 h-4 text-[var(--success)]" />;
       case "pptx":
-        return <Presentation className="w-4 h-4 text-amber-500" />;
+        return <Presentation className="w-4 h-4 text-[var(--warning)]" />;
       case "vision":
       case "image":
-        return <Eye className="w-4 h-4 text-purple-500" />;
+        return <Eye className="w-4 h-4 text-theme-primary" />;
       default:
-        return <FileText className="w-4 h-4 text-slate-400" />;
+        return <FileText className="w-4 h-4 text-theme-secondary" />;
     }
   };
 
   return (
-    <div className="p-5 rounded-xl bg-theme-card border border-theme-subtle shadow-sm space-y-4">
+    <div className="p-5 rounded-xl bg-theme-card border border-theme-subtle  space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
-          <FolderOpen className="w-4 h-4 text-sky-500" />
+          <FolderOpen className="w-4 h-4 text-theme-primary" />
           <h2 className="text-xs font-mono uppercase tracking-wider text-theme-primary font-semibold">
             {isZh ? "通用制品与文档注册表" : "Universal Artifacts & Documents Registry"}
           </h2>
@@ -122,7 +122,7 @@ export const ArtifactsExplorerPanel: React.FC<ArtifactsExplorerPanelProps> = ({
           <button
             onClick={() => setFilter("all")}
             className={`px-2.5 py-1 rounded-md font-medium transition ${
-              filter === "all" ? "bg-theme-card text-theme-primary shadow-sm" : "text-theme-muted"
+              filter === "all" ? "bg-theme-card text-theme-primary " : "text-theme-muted"
             }`}
           >
             {isZh ? "全部" : "All"} ({artifacts.length})
@@ -130,7 +130,7 @@ export const ArtifactsExplorerPanel: React.FC<ArtifactsExplorerPanelProps> = ({
           <button
             onClick={() => setFilter("docs")}
             className={`px-2.5 py-1 rounded-md font-medium transition ${
-              filter === "docs" ? "bg-theme-card text-theme-primary shadow-sm" : "text-theme-muted"
+              filter === "docs" ? "bg-theme-card text-theme-primary " : "text-theme-muted"
             }`}
           >
             {isZh ? "Office 与 PDF" : "Office & PDF"}
@@ -138,7 +138,7 @@ export const ArtifactsExplorerPanel: React.FC<ArtifactsExplorerPanelProps> = ({
           <button
             onClick={() => setFilter("vision")}
             className={`px-2.5 py-1 rounded-md font-medium transition ${
-              filter === "vision" ? "bg-theme-card text-theme-primary shadow-sm" : "text-theme-muted"
+              filter === "vision" ? "bg-theme-card text-theme-primary " : "text-theme-muted"
             }`}
           >
             {isZh ? "视觉快照" : "Visual Snapshots"}
@@ -160,7 +160,7 @@ export const ArtifactsExplorerPanel: React.FC<ArtifactsExplorerPanelProps> = ({
               <div className="space-y-0.5 min-w-0">
                 <div className="font-semibold text-theme-primary truncate flex items-center gap-2">
                   <span>{art.name}</span>
-                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 uppercase">
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-[var(--btn-primary-bg)]/10 text-theme-primary text-theme-primary uppercase">
                     {art.type}
                   </span>
                 </div>
@@ -174,7 +174,7 @@ export const ArtifactsExplorerPanel: React.FC<ArtifactsExplorerPanelProps> = ({
                   {(art.size / 1024).toFixed(1)} KB
                 </span>
               )}
-              <span className="flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+              <span className="flex items-center gap-1 text-[11px] text-[var(--success)] text-[var(--success)] font-medium">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 {isZh ? "已通过完整性校验" : "Integrity Verified"}
               </span>

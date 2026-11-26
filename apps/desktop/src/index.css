@@ -1,106 +1,54 @@
+@import "./theme.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root,
 [data-theme="dark"] {
-  color-scheme: dark;
+  --bg: var(--bg-app);
+  --surface: var(--bg-surface);
+  --surface-muted: var(--bg-surface-raised);
+  --surface-hover: var(--bg-hover);
+  --surface-elevated: var(--bg-surface-raised);
+  --surface-inverse: var(--btn-primary-bg);
 
-  /* Semantic Core Tokens */
-  --bg: #080c14;
-  --surface: #0d1320;
-  --surface-muted: #090e18;
-  --surface-elevated: #121a2c;
-  --surface-inverse: #f8fafc;
+  --border: var(--border-subtle);
+  --text-muted: var(--text-tertiary);
+  --text-inverse: var(--btn-primary-text);
 
-  --border: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.14);
+  --input-bg: var(--bg-surface-raised);
+  --input-text: var(--text-primary);
+  --input-placeholder: var(--text-tertiary);
+  --input-border: var(--border-default);
 
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-inverse: #0f172a;
-
-  --input-bg: #050810;
-  --input-text: #f1f5f9;
-  --input-placeholder: #64748b;
-  --input-border: rgba(255, 255, 255, 0.12);
-
-  --accent: #38bdf8;
-  --accent-hover: #0ea5e9;
-  --accent-soft: rgba(56, 189, 248, 0.15);
-  --accent-border: rgba(56, 189, 248, 0.3);
-
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  --accent: var(--btn-primary-bg);
+  --accent-hover: var(--border-strong);
+  --accent-soft: rgba(255, 255, 255, 0.08);
+  --accent-border: var(--border-strong);
+  --danger: var(--warning);
 
   /* Legacy & Helper Aliases */
-  --bg-app: var(--bg);
-  --bg-sidebar: #060810;
-  --bg-card: var(--surface);
-  --bg-card-hover: var(--surface-elevated);
-  --bg-card-muted: var(--surface-muted);
-  --bg-header: rgba(8, 12, 20, 0.85);
-  --bg-modal-overlay: rgba(3, 6, 12, 0.8);
-  --bg-tag: var(--surface-elevated);
-  --border-subtle: var(--border);
-  --border-card: var(--border);
-  --border-focus: var(--accent);
-  --accent-primary: var(--accent);
-  --scrollbar-thumb: rgba(255, 255, 255, 0.12);
-  --scrollbar-hover: rgba(255, 255, 255, 0.22);
+  --bg-card: var(--bg-surface);
+  --bg-card-hover: var(--bg-hover);
+  --bg-card-muted: var(--bg-surface-raised);
+  --bg-header: var(--bg-app);
+  --bg-modal-overlay: rgba(0, 0, 0, 0.80);
+  --bg-tag: var(--bg-hover);
+  --border-card: var(--border-subtle);
+  --border-focus: var(--border-strong);
+  --accent-primary: var(--btn-primary-bg);
+  --scrollbar-thumb: var(--border-subtle);
+  --scrollbar-hover: var(--border-strong);
 }
 
+:root[data-theme="light"],
 [data-theme="light"] {
-  color-scheme: light;
-
-  /* Semantic Core Tokens */
-  --bg: #F4F7FB;
-  --surface: #FFFFFF;
-  --surface-muted: #F8FAFC;
-  --surface-hover: #F1F5F9;
-  --surface-elevated: #FFFFFF;
-  --surface-inverse: #0F172A;
-
-  --border: #D7DFEA;
-  --border-strong: #C2CCD9;
-
-  --text-primary: #0F172A;
-  --text-secondary: #334155;
-  --text-muted: #64748B;
-  --text-subtle: #7C8A9D;
-  --text-inverse: #F8FAFC;
-
-  --input-bg: #FFFFFF;
-  --input-text: #111827;
-  --input-placeholder: #94A3B8;
-  --input-border: #D7DFEA;
-
-  --accent: #0284C7;
-  --accent-hover: #0369A1;
-  --accent-soft: rgba(2, 132, 199, 0.12);
-  --accent-border: rgba(2, 132, 199, 0.3);
-
-  --success: #16A34A;
-  --warning: #D97706;
-  --danger: #DC2626;
-
-  /* Legacy & Helper Aliases */
-  --bg-app: var(--bg);
-  --bg-sidebar: #EAEFF6;
-  --bg-card: var(--surface);
-  --bg-card-hover: var(--surface-hover);
-  --bg-card-muted: var(--surface-muted);
-  --bg-header: rgba(244, 247, 251, 0.9);
-  --bg-modal-overlay: rgba(15, 23, 42, 0.45);
-  --bg-tag: var(--surface-muted);
-  --border-subtle: var(--border);
-  --border-card: var(--border);
-  --border-focus: var(--accent);
-  --accent-primary: var(--accent);
-  --scrollbar-thumb: rgba(0, 0, 0, 0.2);
-  --scrollbar-hover: rgba(0, 0, 0, 0.3);
+  --accent-soft: rgba(23, 23, 23, 0.06);
+  --bg-header: var(--bg-app);
+  --bg-modal-overlay: rgba(23, 23, 23, 0.45);
+  --bg-tag: var(--bg-surface-raised);
+  --scrollbar-thumb: var(--border-default);
+  --scrollbar-hover: var(--border-strong);
 }
 
 body {

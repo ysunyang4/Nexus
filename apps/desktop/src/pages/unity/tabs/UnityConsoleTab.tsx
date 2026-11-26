@@ -63,7 +63,7 @@ export const UnityConsoleTab: React.FC<UnityConsoleTabProps> = ({
             onClick={() => setSelectedLevel("ALL")}
             className={`px-2.5 py-1 rounded text-[11px] font-medium transition ${
               selectedLevel === "ALL"
-                ? "bg-theme-card text-theme-primary border border-theme-subtle shadow-xs"
+                ? "bg-theme-card text-theme-primary border border-theme-subtle "
                 : "text-theme-muted hover:text-theme-primary"
             }`}
           >
@@ -75,11 +75,11 @@ export const UnityConsoleTab: React.FC<UnityConsoleTabProps> = ({
             onClick={() => setSelectedLevel("LOG")}
             className={`px-2.5 py-1 rounded text-[11px] font-medium transition flex items-center gap-1 ${
               selectedLevel === "LOG"
-                ? "bg-sky-500/15 text-sky-400 border border-sky-500/30"
+                ? "bg-[var(--btn-primary-bg)]/15 text-theme-primary border border-theme-subtle"
                 : "text-theme-muted hover:text-theme-primary"
             }`}
           >
-            <Info className="w-3 h-3 text-sky-400" />
+            <Info className="w-3 h-3 text-theme-primary" />
             <span>LOG</span>
             <span className="text-[10px] opacity-70">({counts.log})</span>
           </button>
@@ -89,11 +89,11 @@ export const UnityConsoleTab: React.FC<UnityConsoleTabProps> = ({
             onClick={() => setSelectedLevel("WARNING")}
             className={`px-2.5 py-1 rounded text-[11px] font-medium transition flex items-center gap-1 ${
               selectedLevel === "WARNING"
-                ? "bg-amber-500/15 text-amber-400 border border-amber-500/30"
+                ? "bg-[var(--btn-primary-bg)]/15 text-[var(--warning)] border border-theme-subtle"
                 : "text-theme-muted hover:text-theme-primary"
             }`}
           >
-            <AlertTriangle className="w-3 h-3 text-amber-400" />
+            <AlertTriangle className="w-3 h-3 text-[var(--warning)]" />
             <span>WARNING</span>
             <span className="text-[10px] opacity-70">({counts.warning})</span>
           </button>
@@ -103,11 +103,11 @@ export const UnityConsoleTab: React.FC<UnityConsoleTabProps> = ({
             onClick={() => setSelectedLevel("ERROR")}
             className={`px-2.5 py-1 rounded text-[11px] font-medium transition flex items-center gap-1 ${
               selectedLevel === "ERROR"
-                ? "bg-rose-500/15 text-rose-400 border border-rose-500/30"
+                ? "bg-[var(--btn-primary-bg)]/15 text-[var(--warning)] border border-theme-subtle"
                 : "text-theme-muted hover:text-theme-primary"
             }`}
           >
-            <AlertCircle className="w-3 h-3 text-rose-400" />
+            <AlertCircle className="w-3 h-3 text-[var(--warning)]" />
             <span>ERROR</span>
             <span className="text-[10px] opacity-70">({counts.error})</span>
           </button>
@@ -117,11 +117,11 @@ export const UnityConsoleTab: React.FC<UnityConsoleTabProps> = ({
             onClick={() => setSelectedLevel("EXCEPTION")}
             className={`px-2.5 py-1 rounded text-[11px] font-medium transition flex items-center gap-1 ${
               selectedLevel === "EXCEPTION"
-                ? "bg-purple-500/15 text-purple-400 border border-purple-500/30"
+                ? "bg-[var(--btn-primary-bg)]/15 text-theme-primary border border-theme-subtle"
                 : "text-theme-muted hover:text-theme-primary"
             }`}
           >
-            <Terminal className="w-3 h-3 text-purple-400" />
+            <Terminal className="w-3 h-3 text-theme-primary" />
             <span>EXCEPTION</span>
             <span className="text-[10px] opacity-70">({counts.exception})</span>
           </button>
@@ -136,7 +136,7 @@ export const UnityConsoleTab: React.FC<UnityConsoleTabProps> = ({
               placeholder="搜索日志..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-theme-base pl-7 pr-2 py-0.5 rounded text-[11px] text-theme-primary placeholder-theme-muted border border-theme-subtle focus:outline-none focus:border-sky-500/50"
+              className="w-full bg-theme-base pl-7 pr-2 py-0.5 rounded text-[11px] text-theme-primary placeholder-theme-muted border border-theme-subtle focus:outline-none border-theme-subtle"
             />
           </div>
 
@@ -172,11 +172,11 @@ export const UnityConsoleTab: React.FC<UnityConsoleTabProps> = ({
                 onClick={() => handleRowClick(log)}
                 className={`grid grid-cols-12 px-4 py-1.5 cursor-pointer text-[11px] transition items-center hover:bg-theme-card/70 ${
                   isException
-                    ? "bg-purple-500/5 hover:bg-purple-500/10 text-purple-300"
+                    ? "bg-[var(--btn-primary-bg)]/5 hover:bg-[var(--btn-primary-bg)]/10 text-theme-primary"
                     : isError
-                    ? "bg-rose-500/5 hover:bg-rose-500/10 text-rose-300"
+                    ? "bg-[var(--btn-primary-bg)]/5 hover:bg-[var(--btn-primary-bg)]/10 text-[var(--warning)]"
                     : isWarning
-                    ? "text-amber-300"
+                    ? "text-[var(--warning)]"
                     : "text-theme-secondary"
                 }`}
               >
@@ -185,11 +185,11 @@ export const UnityConsoleTab: React.FC<UnityConsoleTabProps> = ({
                   <span
                     className={`px-1.5 py-0.2 rounded text-[10px] font-bold border ${
                       isException
-                        ? "bg-purple-500/20 text-purple-400 border-purple-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/20 text-theme-primary border-theme-subtle"
                         : isError
-                        ? "bg-rose-500/20 text-rose-400 border-rose-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border-theme-subtle"
                         : isWarning
-                        ? "bg-amber-500/20 text-amber-400 border-amber-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border-theme-subtle"
                         : "bg-theme-card text-theme-muted border-theme-subtle"
                     }`}
                   >
@@ -199,7 +199,7 @@ export const UnityConsoleTab: React.FC<UnityConsoleTabProps> = ({
                 <div className="col-span-8 truncate font-mono flex items-center justify-between">
                   <span className="truncate">{log.message}</span>
                   {(isError || isException) && (
-                    <span className="text-[10px] text-sky-400 opacity-80 shrink-0 ml-2">
+                    <span className="text-[10px] text-theme-primary opacity-80 shrink-0 ml-2">
                       [点击查看 Evidence]
                     </span>
                   )}

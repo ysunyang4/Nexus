@@ -15,7 +15,7 @@ export const BrowserPage: React.FC = () => {
       <div className="px-6 py-4 border-b border-theme-subtle bg-theme-card/30 flex items-center justify-between gap-4 shrink-0">
         <div>
           <h1 className="text-base font-semibold text-theme-primary flex items-center gap-2">
-            <Globe className="w-4 h-4 text-sky-500" />
+            <Globe className="w-4 h-4 text-theme-primary" />
             <span>{isZh ? "浏览器自动化" : "Browser Automation"}</span>
           </h1>
           <p className="text-xs text-theme-muted mt-0.5">
@@ -30,8 +30,8 @@ export const BrowserPage: React.FC = () => {
             onClick={() => setHeadless(!headless)}
             className={`px-3 py-1.5 rounded-lg text-xs font-mono border transition ${
               headless
-                ? "bg-sky-500/10 text-sky-500 border-sky-500/30"
-                : "bg-amber-500/10 text-amber-500 border-amber-500/30"
+                ? "bg-[var(--btn-primary-bg)]/10 text-theme-primary border-theme-subtle"
+                : "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border-theme-subtle"
             }`}
           >
             {headless
@@ -43,8 +43,8 @@ export const BrowserPage: React.FC = () => {
 
       <div className="flex-1 p-6 overflow-y-auto space-y-6 max-w-4xl">
         {/* Active Browser Target */}
-        <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-4 shadow-sm">
-          <div className="text-xs font-mono text-sky-500 uppercase tracking-wider font-semibold">
+        <div className="p-5 rounded-xl border border-theme-subtle bg-theme-card space-y-4 ">
+          <div className="text-xs font-mono text-theme-primary uppercase tracking-wider font-semibold">
             Active Navigation Target
           </div>
 
@@ -53,9 +53,9 @@ export const BrowserPage: React.FC = () => {
               type="text"
               value={currentUrl}
               onChange={(e) => setCurrentUrl(e.target.value)}
-              className="flex-1 px-3 py-2 bg-theme-base text-theme-primary border border-theme-subtle rounded-lg text-xs font-mono focus:outline-none focus:border-sky-500"
+              className="flex-1 px-3 py-2 bg-theme-base text-theme-primary border border-theme-subtle rounded-lg text-xs font-mono focus:outline-none border-theme-subtle"
             />
-            <span className="px-2.5 py-1.5 rounded-lg text-xs font-mono bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+            <span className="px-2.5 py-1.5 rounded-lg text-xs font-mono bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle">
               CDP Ready
             </span>
           </div>
@@ -77,7 +77,7 @@ export const BrowserPage: React.FC = () => {
             </div>
             <div className="p-3 rounded-lg bg-theme-base/60 border border-theme-subtle/60">
               <div className="text-theme-muted text-[11px]">Evidence Capture</div>
-              <div className="font-mono font-medium text-emerald-500 mt-1">DOM / Snapshot</div>
+              <div className="font-mono font-medium text-[var(--success)] mt-1">DOM / Snapshot</div>
             </div>
           </div>
         </div>
@@ -90,19 +90,19 @@ export const BrowserPage: React.FC = () => {
           <div className="space-y-2 text-xs font-mono">
             <div className="flex items-center justify-between text-theme-secondary py-1 border-b border-theme-subtle/40">
               <span>browser_open (url, headless)</span>
-              <span className="text-emerald-500">✓ Enabled</span>
+              <span className="text-[var(--success)]">✓ Enabled</span>
             </div>
             <div className="flex items-center justify-between text-theme-secondary py-1 border-b border-theme-subtle/40">
               <span>browser_navigate (url)</span>
-              <span className="text-emerald-500">✓ Enabled</span>
+              <span className="text-[var(--success)]">✓ Enabled</span>
             </div>
             <div className="flex items-center justify-between text-theme-secondary py-1 border-b border-theme-subtle/40">
               <span>browser_click (selector)</span>
-              <span className="text-emerald-500">✓ Enabled</span>
+              <span className="text-[var(--success)]">✓ Enabled</span>
             </div>
             <div className="flex items-center justify-between text-theme-secondary py-1">
               <span>browser_screenshot ()</span>
-              <span className="text-emerald-500">✓ Enabled</span>
+              <span className="text-[var(--success)]">✓ Enabled</span>
             </div>
           </div>
         </div>

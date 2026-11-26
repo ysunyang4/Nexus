@@ -59,7 +59,7 @@ export const ApprovalCard: React.FC<ApprovalCardProps> = ({
     <div
       className={`rounded-xl border transition-all duration-150 overflow-hidden ${
         isDangerous
-          ? "bg-red-500/5 dark:bg-red-950/20 border-red-500/30"
+          ? "bg-[var(--btn-primary-bg)]/5 bg-theme-card border-theme-subtle"
           : "bg-theme-card border-theme-subtle"
       }`}
     >
@@ -69,8 +69,8 @@ export const ApprovalCard: React.FC<ApprovalCardProps> = ({
           <div
             className={`p-2 rounded-lg shrink-0 mt-0.5 ${
               isDangerous
-                ? "bg-red-500/15 text-red-500"
-                : "bg-amber-500/15 text-amber-500"
+                ? "bg-[var(--btn-primary-bg)]/15 text-[var(--warning)]"
+                : "bg-[var(--btn-primary-bg)]/15 text-[var(--warning)]"
             }`}
           >
             <ShieldAlert className="w-4 h-4" />
@@ -84,24 +84,24 @@ export const ApprovalCard: React.FC<ApprovalCardProps> = ({
                   : (t.approvalCard?.wantsToExecute || "AI wants to execute:")}
               </span>
               {approval.clientName && (
-                <span className="px-1.5 py-0.5 rounded font-mono text-[10px] bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                <span className="px-1.5 py-0.5 rounded font-mono text-[10px] bg-[var(--btn-primary-bg)]/10 text-theme-primary text-theme-primary border border-theme-subtle">
                   {approval.clientName}
                 </span>
               )}
-              <span className="px-2 py-0.5 rounded font-mono text-xs bg-theme-card-muted text-sky-600 dark:text-sky-300 border border-theme-subtle truncate max-w-md">
+              <span className="px-2 py-0.5 rounded font-mono text-xs bg-theme-card-muted text-theme-primary text-theme-primary border border-theme-subtle truncate max-w-md">
                 {approval.operation}
               </span>
               <span
                 className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-medium ${
                   isDangerous
-                    ? "bg-red-500/15 text-red-600 dark:text-red-400 border border-red-500/30"
-                    : "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30"
+                    ? "bg-[var(--btn-primary-bg)]/15 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle"
+                    : "bg-[var(--btn-primary-bg)]/15 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle"
                 }`}
               >
                 {approval.risk}
               </span>
               <span
-                className="text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300 flex items-center gap-1"
+                className="text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-theme-subtle bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[var(--warning)] flex items-center gap-1"
                 title="Nexus Security Policy (Deterministic & Enforced)"
               >
                 <span className="opacity-75">{t.approvalCard?.nexusPolicyLabel || "Nexus Policy"}:</span>
@@ -111,16 +111,16 @@ export const ApprovalCard: React.FC<ApprovalCardProps> = ({
               {/* Laya Multilingual Advisory Badge */}
               {effectiveAdvice && (
                 <span
-                  className={`text-[10px] px-2 py-0.5 rounded font-mono font-medium border flex items-center gap-1.5 shadow-sm ${
+                  className={`text-[10px] px-2 py-0.5 rounded font-mono font-medium border flex items-center gap-1.5  ${
                     isHighRisk
-                      ? "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30"
+                      ? "bg-[var(--btn-primary-bg)]/10 text-theme-primary text-theme-primary border-theme-subtle"
                       : isMediumRisk
-                        ? "bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/10 text-theme-primary text-theme-primary border-theme-subtle"
                         : "bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/30"
                   }`}
                   title={t.approvalCard?.advisoryDisclaimer || "Advisory only · Nexus deterministic policy always takes precedence"}
                 >
-                  <Brain className="w-3 h-3 shrink-0 text-purple-600 dark:text-purple-400" />
+                  <Brain className="w-3 h-3 shrink-0 text-theme-primary text-theme-primary" />
                   <span className="font-semibold">
                     {t.approvalCard?.aiAdviceLabel || "AI Advice"}:
                   </span>
@@ -164,7 +164,7 @@ export const ApprovalCard: React.FC<ApprovalCardProps> = ({
           <button
             onClick={() => onDeny(approval.id)}
             disabled={isProcessing}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/30 transition disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle transition disabled:opacity-50"
             title={t.approvalCard?.deny || "Deny"}
           >
             <X className="w-3.5 h-3.5" />
@@ -174,7 +174,7 @@ export const ApprovalCard: React.FC<ApprovalCardProps> = ({
           <button
             onClick={() => onApprove(approval.id)}
             disabled={isProcessing}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]  transition disabled:opacity-50"
             title={t.approvalCard?.approve || "Approve"}
           >
             <Check className="w-3.5 h-3.5" />
@@ -210,7 +210,7 @@ export const ApprovalCard: React.FC<ApprovalCardProps> = ({
           {effectiveAdvice && (
             <div className="p-3 rounded-lg bg-theme-card border border-theme-subtle space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 flex items-center gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-theme-primary text-theme-primary flex items-center gap-1.5">
                   <Brain className="w-3.5 h-3.5" />
                   <span>{t.approvalCard?.aiRiskAdvice || "Decision Intelligence (Laya)"}</span>
                 </span>
@@ -250,7 +250,7 @@ export const ApprovalCard: React.FC<ApprovalCardProps> = ({
               <div className="text-theme-muted text-[10px]">
                 {t.approvalCard?.operation || "Operation"}
               </div>
-              <div className="text-sky-600 dark:text-sky-300 font-semibold truncate">
+              <div className="text-theme-primary text-theme-primary font-semibold truncate">
                 {approval.operation}
               </div>
             </div>
@@ -260,7 +260,7 @@ export const ApprovalCard: React.FC<ApprovalCardProps> = ({
                 <div className="text-theme-muted text-[10px]">
                   {language === "zh-CN" ? "发起请求客户端" : "Requesting AI Client"}
                 </div>
-                <div className="text-sky-600 dark:text-sky-300 font-semibold truncate flex items-center gap-1.5">
+                <div className="text-theme-primary text-theme-primary font-semibold truncate flex items-center gap-1.5">
                   <span>{approval.clientName}</span>
                   {approval.clientType && (
                     <span className="text-[10px] font-mono text-theme-muted">({approval.clientType})</span>
@@ -302,7 +302,7 @@ export const ApprovalCard: React.FC<ApprovalCardProps> = ({
                 title={copied ? (t.approvalCard?.copied || "Copied") : (t.approvalCard?.copyId || "Copy ID")}
               >
                 {copied ? (
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  <Check className="w-3.5 h-3.5 text-[var(--success)]" />
                 ) : (
                   <Copy className="w-3.5 h-3.5" />
                 )}

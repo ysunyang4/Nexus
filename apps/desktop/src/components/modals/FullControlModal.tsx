@@ -66,12 +66,12 @@ export const FullControlModal: React.FC<FullControlModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-in fade-in duration-150 select-none">
-      <div className="bg-theme-card border border-amber-500/40 rounded-xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4 animate-in fade-in duration-150 select-none">
+      <div className="bg-theme-card border border-theme-subtle rounded-xl w-full max-w-lg  overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 bg-amber-500/10 border-b border-amber-500/20 flex items-center justify-between">
-          <div className="flex items-center gap-2.5 text-amber-500 font-bold text-base">
-            <ShieldAlert className="w-5 h-5 text-amber-500" />
+        <div className="px-6 py-4 bg-[var(--btn-primary-bg)]/10 border-b border-theme-subtle flex items-center justify-between">
+          <div className="flex items-center gap-2.5 text-[var(--warning)] font-bold text-base">
+            <ShieldAlert className="w-5 h-5 text-[var(--warning)]" />
             <span>开启 Nexus 完全控制模式 (Full Control)</span>
           </div>
           <button
@@ -85,7 +85,7 @@ export const FullControlModal: React.FC<FullControlModalProps> = ({
         {/* Body */}
         <div className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
           {error && (
-            <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-xs text-red-400 flex items-center gap-2">
+            <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg text-xs text-[var(--warning)] flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
@@ -107,7 +107,7 @@ export const FullControlModal: React.FC<FullControlModalProps> = ({
             <select
               value={selectedClientId}
               onChange={(e) => setSelectedClientId(e.target.value)}
-              className="w-full bg-theme-bg border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-amber-500"
+              className="w-full bg-theme-bg border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
             >
               {connections.length > 0 ? (
                 connections.map((c) => (
@@ -132,19 +132,19 @@ export const FullControlModal: React.FC<FullControlModalProps> = ({
                 onClick={() => setScope("current-project")}
                 className={`p-3.5 rounded-lg border cursor-pointer transition flex items-start gap-3 ${
                   scope === "current-project"
-                    ? "bg-amber-500/10 border-amber-500/50 text-theme-primary"
+                    ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle text-theme-primary"
                     : "bg-theme-bg border-theme-subtle text-theme-secondary hover:border-theme-muted"
                 }`}
               >
                 <FolderGit2
                   className={`w-5 h-5 mt-0.5 shrink-0 ${
-                    scope === "current-project" ? "text-amber-500" : "text-theme-muted"
+                    scope === "current-project" ? "text-[var(--warning)]" : "text-theme-muted"
                   }`}
                 />
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-semibold">当前项目完全控制</span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-500 font-mono">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] font-mono">
                       推荐
                     </span>
                   </div>
@@ -163,19 +163,19 @@ export const FullControlModal: React.FC<FullControlModalProps> = ({
                 onClick={() => setScope("device")}
                 className={`p-3.5 rounded-lg border cursor-pointer transition flex items-start gap-3 ${
                   scope === "device"
-                    ? "bg-red-500/10 border-red-500/50 text-theme-primary"
+                    ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle text-theme-primary"
                     : "bg-theme-bg border-theme-subtle text-theme-secondary hover:border-theme-muted"
                 }`}
               >
                 <HardDrive
                   className={`w-5 h-5 mt-0.5 shrink-0 ${
-                    scope === "device" ? "text-red-500" : "text-theme-muted"
+                    scope === "device" ? "text-[var(--warning)]" : "text-theme-muted"
                   }`}
                 />
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-semibold">整台设备完全控制</span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/20 text-red-500 font-mono">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] font-mono">
                       高危
                     </span>
                   </div>
@@ -189,19 +189,19 @@ export const FullControlModal: React.FC<FullControlModalProps> = ({
 
           {/* Secondary Confirmation for Device Scope */}
           {scope === "device" && (
-            <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg space-y-2">
+            <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg space-y-2">
               <label className="flex items-start gap-2.5 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={confirmedDevice}
                   onChange={(e) => setConfirmedDevice(e.target.checked)}
-                  className="mt-0.5 rounded border-red-500/50 text-red-600 focus:ring-red-500"
+                  className="mt-0.5 rounded border-theme-subtle text-[var(--warning)] ring-[var(--border)]"
                 />
-                <span className="text-xs text-red-400 font-semibold leading-relaxed">
+                <span className="text-xs text-[var(--warning)] font-semibold leading-relaxed">
                   我理解这将允许 AI 操作此设备上的文件
                 </span>
               </label>
-              <p className="text-[11px] text-red-300/80 pl-6">
+              <p className="text-[11px] text-[var(--warning)]/80 pl-6">
                 请确认您信任此 AI 客户端。随时可点击顶部“紧急制动”立即中断。
               </p>
             </div>
@@ -226,7 +226,7 @@ export const FullControlModal: React.FC<FullControlModalProps> = ({
                   onClick={() => setDurationMinutes(item.val)}
                   className={`py-1.5 px-2 rounded-lg text-xs font-medium border transition ${
                     durationMinutes === item.val
-                      ? "bg-amber-500/20 border-amber-500/50 text-amber-500 font-bold"
+                      ? "bg-[var(--btn-primary-bg)]/20 border-theme-subtle text-[var(--warning)] font-bold"
                       : "bg-theme-bg border-theme-subtle text-theme-secondary hover:bg-theme-card-hover"
                   }`}
                 >
@@ -239,7 +239,7 @@ export const FullControlModal: React.FC<FullControlModalProps> = ({
           {/* Safety Notice Bullets */}
           <div className="p-3 bg-theme-bg border border-theme-subtle rounded-lg text-[11px] text-theme-muted space-y-1.5">
             <div className="flex items-center gap-1.5 text-theme-secondary font-semibold">
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
+              <Check className="w-3.5 h-3.5 text-[var(--success)]" />
               <span>安全原则与保护边界</span>
             </div>
             <div>&bull; 临时会话提权：到期后自动恢复普通安全策略，不改写数据库令牌。</div>
@@ -262,10 +262,10 @@ export const FullControlModal: React.FC<FullControlModalProps> = ({
             type="button"
             onClick={handleStart}
             disabled={loading || (scope === "device" && !confirmedDevice)}
-            className={`px-5 py-2 text-xs font-semibold rounded-lg shadow-sm transition flex items-center gap-1.5 ${
+            className={`px-5 py-2 text-xs font-semibold rounded-lg  transition flex items-center gap-1.5 ${
               scope === "device" && !confirmedDevice
                 ? "bg-theme-card-muted text-theme-muted cursor-not-allowed"
-                : "bg-amber-600 hover:bg-amber-500 text-white"
+                : "bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]"
             }`}
           >
             {loading ? "开启中..." : "开启完全控制"}

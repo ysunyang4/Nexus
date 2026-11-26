@@ -277,11 +277,11 @@ export const PromptPage: React.FC<PromptPageProps> = ({ projects }) => {
                 onClick={() => setActiveCategory(cat.id)}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                   isActive
-                    ? "bg-theme-card-hover text-theme-primary border border-theme-strong shadow-sm font-semibold"
+                    ? "bg-theme-card-hover text-theme-primary border border-theme-strong  font-semibold"
                     : "text-theme-muted hover:text-theme-primary hover:bg-theme-card/60 border border-transparent"
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? "text-sky-500" : "text-theme-muted"}`} />
+                <Icon className={`w-3.5 h-3.5 ${isActive ? "text-theme-primary" : "text-theme-muted"}`} />
                 <span>{cat.label}</span>
               </button>
             );
@@ -295,7 +295,7 @@ export const PromptPage: React.FC<PromptPageProps> = ({ projects }) => {
               <select
                 value={selectedProjectId}
                 onChange={(e) => setSelectedProjectId(e.target.value)}
-                className="bg-theme-card text-theme-primary text-xs px-2.5 py-1.5 rounded-lg border border-theme-subtle focus:outline-none focus:border-sky-500 font-mono"
+                className="bg-theme-card text-theme-primary text-xs px-2.5 py-1.5 rounded-lg border border-theme-subtle focus:outline-none border-theme-subtle font-mono"
               >
                 {projects.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -311,7 +311,7 @@ export const PromptPage: React.FC<PromptPageProps> = ({ projects }) => {
             onClick={handleCreateNew}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-theme-card-hover hover:bg-theme-card text-theme-primary border border-theme-subtle hover:border-theme-strong rounded-lg text-xs font-medium transition"
           >
-            <Plus className="w-3.5 h-3.5 text-sky-500" />
+            <Plus className="w-3.5 h-3.5 text-theme-primary" />
             <span>{isZh ? "新建提示词" : "New Prompt"}</span>
           </button>
         </div>
@@ -328,7 +328,7 @@ export const PromptPage: React.FC<PromptPageProps> = ({ projects }) => {
               <button
                 type="button"
                 onClick={handleCreateNew}
-                className="px-3 py-1.5 bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 border border-sky-500/30 rounded-lg text-xs font-medium transition"
+                className="px-3 py-1.5 bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-theme-primary border border-theme-subtle rounded-lg text-xs font-medium transition"
               >
                 {isZh ? "创建第一条提示词" : "Create First Prompt"}
               </button>
@@ -343,7 +343,7 @@ export const PromptPage: React.FC<PromptPageProps> = ({ projects }) => {
                     onClick={() => handleSelectPrompt(p)}
                     className={`p-3.5 cursor-pointer transition flex items-start justify-between gap-2 ${
                       isSelected
-                        ? "bg-theme-card border-l-2 border-l-sky-500 text-theme-primary"
+                        ? "bg-theme-card border-l-2 border-l-[var(--text-primary)] text-theme-primary"
                         : "hover:bg-theme-card/40 text-theme-secondary hover:text-theme-primary"
                     }`}
                   >
@@ -369,7 +369,7 @@ export const PromptPage: React.FC<PromptPageProps> = ({ projects }) => {
                         className="text-theme-muted hover:text-theme-primary transition"
                       >
                         {p.enabled ? (
-                          <ToggleRight className="w-4 h-4 text-emerald-500" />
+                          <ToggleRight className="w-4 h-4 text-[var(--success)]" />
                         ) : (
                           <ToggleLeft className="w-4 h-4 text-theme-muted" />
                         )}
@@ -381,7 +381,7 @@ export const PromptPage: React.FC<PromptPageProps> = ({ projects }) => {
                           handleDelete(p.id);
                         }}
                         title={isZh ? "删除提示词" : "Delete Prompt"}
-                        className="text-theme-muted hover:text-red-500 transition p-0.5"
+                        className="text-theme-muted hover:text-[var(--warning)] transition p-0.5"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -399,7 +399,7 @@ export const PromptPage: React.FC<PromptPageProps> = ({ projects }) => {
             <div className="p-6 max-w-4xl space-y-5">
               <div className="flex items-center justify-between gap-4">
                 <div className="space-y-1">
-                  <div className="text-xs uppercase tracking-wider font-mono text-sky-500 font-semibold">
+                  <div className="text-xs uppercase tracking-wider font-mono text-theme-primary font-semibold">
                     {activeCategory} {isZh ? "提示词配置" : "Prompt Configuration"}
                   </div>
                   <div className="text-sm font-semibold text-theme-primary">
@@ -413,7 +413,7 @@ export const PromptPage: React.FC<PromptPageProps> = ({ projects }) => {
                     onClick={() => setEditEnabled(!editEnabled)}
                     className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono border transition ${
                       editEnabled
-                        ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border-theme-subtle"
                         : "bg-theme-card-muted text-theme-muted border-theme-subtle"
                     }`}
                   >
@@ -430,7 +430,7 @@ export const PromptPage: React.FC<PromptPageProps> = ({ projects }) => {
                   <button
                     type="button"
                     onClick={handleSave}
-                    className="flex items-center gap-1.5 px-4 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-medium shadow-sm transition"
+                    className="flex items-center gap-1.5 px-4 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded-lg text-xs font-medium  transition"
                   >
                     {saveSuccess ? (
                       <>
@@ -456,7 +456,7 @@ export const PromptPage: React.FC<PromptPageProps> = ({ projects }) => {
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
                     placeholder={isZh ? "例如：本地工程开发指令 / 前端代码规范" : "e.g. Hexo Blog Engineering Directives"}
-                    className="w-full px-3 py-2 bg-theme-base text-theme-primary border border-theme-subtle rounded-lg text-xs focus:outline-none focus:border-sky-500"
+                    className="w-full px-3 py-2 bg-theme-base text-theme-primary border border-theme-subtle rounded-lg text-xs focus:outline-none border-theme-subtle"
                   />
                 </div>
 
@@ -467,7 +467,7 @@ export const PromptPage: React.FC<PromptPageProps> = ({ projects }) => {
                     value={editDescription}
                     onChange={(e) => setEditDescription(e.target.value)}
                     placeholder={isZh ? "简述该提示词的使用场景或触发条件" : "Short description of when this prompt is applied"}
-                    className="w-full px-3 py-2 bg-theme-base text-theme-primary border border-theme-subtle rounded-lg text-xs focus:outline-none focus:border-sky-500"
+                    className="w-full px-3 py-2 bg-theme-base text-theme-primary border border-theme-subtle rounded-lg text-xs focus:outline-none border-theme-subtle"
                   />
                 </div>
 
@@ -483,7 +483,7 @@ export const PromptPage: React.FC<PromptPageProps> = ({ projects }) => {
                     value={editContent}
                     onChange={(e) => setEditContent(e.target.value)}
                     placeholder={isZh ? "在此输入具体的指令规范、安全约束或行为准则..." : "Enter instructions, constraints, or behavioral guidelines..."}
-                    className="w-full p-3.5 bg-theme-base text-theme-primary font-mono text-xs border border-theme-subtle rounded-lg focus:outline-none focus:border-sky-500 leading-relaxed resize-y"
+                    className="w-full p-3.5 bg-theme-base text-theme-primary font-mono text-xs border border-theme-subtle rounded-lg focus:outline-none border-theme-subtle leading-relaxed resize-y"
                   />
                 </div>
               </div>

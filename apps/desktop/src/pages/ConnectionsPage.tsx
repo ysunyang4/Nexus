@@ -33,10 +33,10 @@ export const ConnectionsPage: React.FC<ConnectionsPageProps> = ({
       </div>
 
       {/* Server Status Box */}
-      <div className="p-5 bg-theme-card border border-theme-card rounded-xl space-y-3 shadow-sm">
+      <div className="p-5 bg-theme-card border border-theme-card rounded-xl space-y-3 ">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 font-semibold text-sm text-theme-primary">
-            <Server className="w-4 h-4 text-indigo-500" />
+            <Server className="w-4 h-4 text-theme-primary" />
             <span>{t.connections.serverSection}</span>
           </div>
           <span
@@ -54,7 +54,7 @@ export const ConnectionsPage: React.FC<ConnectionsPageProps> = ({
           <div className="p-3 bg-theme-card-muted rounded-lg border border-theme-subtle">
             <div className="text-theme-muted">{t.settings.versionLabel}</div>
             <div className="font-semibold text-theme-primary">
-              {serverStatus?.version || "1.3.4"}
+              {serverStatus?.version || "1.4.0"}
             </div>
           </div>
           <div className="p-3 bg-theme-card-muted rounded-lg border border-theme-subtle">
@@ -65,7 +65,7 @@ export const ConnectionsPage: React.FC<ConnectionsPageProps> = ({
           </div>
           <div className="p-3 bg-theme-card-muted rounded-lg border border-theme-subtle">
             <div className="text-theme-muted">MCP Protocol</div>
-            <div className="font-mono text-emerald-500 mt-0.5">2026-07-28</div>
+            <div className="font-mono text-[var(--success)] mt-0.5">2026-07-28</div>
           </div>
         </div>
       </div>
@@ -74,14 +74,14 @@ export const ConnectionsPage: React.FC<ConnectionsPageProps> = ({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-base font-bold text-theme-primary flex items-center gap-2">
-            <Cpu className="w-4 h-4 text-indigo-500" />
+            <Cpu className="w-4 h-4 text-theme-primary" />
             <span>{t.connections.runnerSection} ({runners.length})</span>
           </h3>
         </div>
 
         {runners.length === 0 ? (
-          <div className="p-8 text-center bg-theme-card border border-theme-card rounded-xl space-y-3 shadow-sm">
-            <XCircle className="w-8 h-8 text-amber-500 mx-auto" />
+          <div className="p-8 text-center bg-theme-card border border-theme-card rounded-xl space-y-3 ">
+            <XCircle className="w-8 h-8 text-[var(--warning)] mx-auto" />
             <div className="text-theme-primary font-semibold text-sm">
               {t.connections.noRunners}
             </div>
@@ -91,7 +91,7 @@ export const ConnectionsPage: React.FC<ConnectionsPageProps> = ({
             <div className="pt-2 flex justify-center">
               <button
                 onClick={onRefresh}
-                className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1.5"
+                className="px-3.5 py-1.5 bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] rounded-lg text-xs font-medium transition  flex items-center gap-1.5"
               >
                 <RotateCw className="w-3.5 h-3.5" />
                 <span>{t.common.refresh}</span>
@@ -106,7 +106,7 @@ export const ConnectionsPage: React.FC<ConnectionsPageProps> = ({
             {runners.map((runner) => (
               <div
                 key={runner.id}
-                className="p-5 bg-theme-card border border-theme-card rounded-xl space-y-4 shadow-sm"
+                className="p-5 bg-theme-card border border-theme-card rounded-xl space-y-4 "
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">

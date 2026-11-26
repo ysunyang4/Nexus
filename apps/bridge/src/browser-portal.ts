@@ -335,7 +335,7 @@ function fetchHtml(targetUrl: string): Promise<string> {
       {
         headers: {
           "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 NexusAI/1.3.4",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 NexusAI/1.4.0",
           Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
           "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
         },
@@ -385,7 +385,7 @@ export function handleNexusProxyRequest(
   const client = parsed.protocol === "https:" ? https : http;
   const outgoingHeaders: Record<string, string> = {
     "User-Agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 NexusAI/1.3.4",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 NexusAI/1.4.0",
     Accept: (req.headers["accept"] as string) || "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": (req.headers["accept-language"] as string) || "zh-CN,zh;q=0.9,en;q=0.8",
   };

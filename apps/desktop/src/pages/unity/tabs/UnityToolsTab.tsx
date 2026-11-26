@@ -111,25 +111,25 @@ export const UnityToolsTab: React.FC<UnityToolsTabProps> = ({
   const getRiskBadge = (risk: string) => {
     switch (risk) {
       case "LOW":
-        return <span className="px-1.5 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">LOW</span>;
+        return <span className="px-1.5 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle font-mono">LOW</span>;
       case "MEDIUM":
-        return <span className="px-1.5 py-0.5 rounded text-[10px] bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono">MED</span>;
+        return <span className="px-1.5 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle font-mono">MED</span>;
       case "HIGH":
-        return <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">HIGH</span>;
+        return <span className="px-1.5 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle font-mono">HIGH</span>;
       case "CRITICAL":
       default:
-        return <span className="px-1.5 py-0.5 rounded text-[10px] bg-rose-500/10 text-rose-400 border border-rose-500/20 font-mono">CRITICAL</span>;
+        return <span className="px-1.5 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle font-mono">CRITICAL</span>;
     }
   };
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case "READ_ONLY":
-        return <Eye className="w-3.5 h-3.5 text-sky-400" />;
+        return <Eye className="w-3.5 h-3.5 text-theme-primary" />;
       case "SCENE_MUTATION":
-        return <Layers className="w-3.5 h-3.5 text-emerald-400" />;
+        return <Layers className="w-3.5 h-3.5 text-[var(--success)]" />;
       case "CODE_EXECUTION":
-        return <Code className="w-3.5 h-3.5 text-purple-400" />;
+        return <Code className="w-3.5 h-3.5 text-theme-primary" />;
       default:
         return <Wrench className="w-3.5 h-3.5 text-theme-muted" />;
     }
@@ -148,7 +148,7 @@ export const UnityToolsTab: React.FC<UnityToolsTabProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="搜索 MCP 工具..."
-              className="w-full pl-8 pr-2.5 py-1.5 bg-theme-base border border-theme-subtle rounded text-xs font-mono text-theme-primary placeholder-theme-muted/50 focus:border-sky-500 focus:outline-none"
+              className="w-full pl-8 pr-2.5 py-1.5 bg-theme-base border border-theme-subtle rounded text-xs font-mono text-theme-primary placeholder-theme-muted/50 border-theme-subtle focus:outline-none"
             />
           </div>
 
@@ -176,7 +176,7 @@ export const UnityToolsTab: React.FC<UnityToolsTabProps> = ({
                 onClick={() => setCategoryFilter(cat)}
                 className={`px-2 py-0.5 rounded transition shrink-0 ${
                   categoryFilter === cat
-                    ? "bg-sky-600 text-white font-medium"
+                    ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] font-medium"
                     : "text-theme-muted hover:text-theme-primary bg-theme-base border border-theme-subtle/60"
                 }`}
               >
@@ -195,7 +195,7 @@ export const UnityToolsTab: React.FC<UnityToolsTabProps> = ({
                   onClick={() => setPermissionFilter(lvl)}
                   className={`px-1.5 py-0.5 rounded transition shrink-0 ${
                     permissionFilter === lvl
-                      ? "bg-amber-600 text-white font-semibold"
+                      ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] font-semibold"
                       : "text-theme-muted hover:text-theme-primary bg-theme-base border border-theme-subtle/40"
                   }`}
                 >
@@ -204,7 +204,7 @@ export const UnityToolsTab: React.FC<UnityToolsTabProps> = ({
               ))}
             </div>
             <span className="text-[10px] text-theme-muted shrink-0" title="当前 UI 授权级别">
-              Auth: <strong className="text-sky-400">{currentPermission}</strong>
+              Auth: <strong className="text-theme-primary">{currentPermission}</strong>
             </span>
           </div>
         </div>
@@ -222,7 +222,7 @@ export const UnityToolsTab: React.FC<UnityToolsTabProps> = ({
                 }}
                 className={`p-2.5 cursor-pointer transition select-none ${
                   isSelected
-                    ? "bg-sky-500/15 border-l-2 border-sky-500 text-sky-400 font-medium"
+                    ? "bg-[var(--btn-primary-bg)]/15 border-l-2 border-theme-subtle text-theme-primary font-medium"
                     : "hover:bg-theme-card/50 text-theme-secondary hover:text-theme-primary"
                 }`}
               >
@@ -235,7 +235,7 @@ export const UnityToolsTab: React.FC<UnityToolsTabProps> = ({
                 </div>
                 <div className="flex items-center justify-between text-[10px] text-theme-muted">
                   <span className="truncate max-w-[170px]">{tool.description.replace(/^\[Unity Native Tool[^\]]*\]\s*/, "")}</span>
-                  <span className="text-sky-500/80 font-bold shrink-0">{tool.requiredPermission}</span>
+                  <span className="text-theme-primary/80 font-bold shrink-0">{tool.requiredPermission}</span>
                 </div>
               </div>
             );
@@ -256,7 +256,7 @@ export const UnityToolsTab: React.FC<UnityToolsTabProps> = ({
             <div className="p-4 bg-theme-sidebar/40 border border-theme-subtle rounded-xl space-y-3 font-mono">
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                  <div className="p-2 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle">
                     {getCategoryIcon(selectedTool.category)}
                   </div>
                   <div>
@@ -269,13 +269,13 @@ export const UnityToolsTab: React.FC<UnityToolsTabProps> = ({
 
                 <div className="flex items-center gap-2 flex-wrap">
                   <div className="flex items-center gap-1 text-xs bg-theme-base px-2.5 py-1 rounded border border-theme-subtle">
-                    <Shield className="w-3.5 h-3.5 text-sky-400" />
+                    <Shield className="w-3.5 h-3.5 text-theme-primary" />
                     <span className="text-theme-muted">Required:</span>
-                    <span className="font-bold text-sky-400">{selectedTool.requiredPermission}</span>
+                    <span className="font-bold text-theme-primary">{selectedTool.requiredPermission}</span>
                   </div>
 
                   <div className="flex items-center gap-1 text-xs bg-theme-base px-2.5 py-1 rounded border border-theme-subtle">
-                    <Zap className="w-3.5 h-3.5 text-amber-400" />
+                    <Zap className="w-3.5 h-3.5 text-[var(--warning)]" />
                     <span className="text-theme-muted">Strategy:</span>
                     <span className="text-theme-primary">{selectedTool.strategy}</span>
                   </div>
@@ -298,9 +298,9 @@ export const UnityToolsTab: React.FC<UnityToolsTabProps> = ({
 
             {/* Raw JSON Schema Modal / Toggle */}
             {showRawSchema && (
-              <div className="p-3 bg-black/40 border border-theme-subtle rounded-lg space-y-1 font-mono text-xs">
+              <div className="p-3 bg-[var(--bg-app)] border border-theme-subtle rounded-lg space-y-1 font-mono text-xs">
                 <div className="text-theme-muted text-[10px] uppercase">Input Schema (JSON)</div>
-                <pre className="overflow-x-auto text-[11px] text-sky-300/90 max-h-48">
+                <pre className="overflow-x-auto text-[11px] text-theme-primary/90 max-h-48">
                   {JSON.stringify(selectedTool.inputSchema, null, 2)}
                 </pre>
               </div>
@@ -331,9 +331,9 @@ export const UnityToolsTab: React.FC<UnityToolsTabProps> = ({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {executionResult.isError || executionResult.permission?.status === 403 ? (
-                      <XCircle className="w-4 h-4 text-rose-400" />
+                      <XCircle className="w-4 h-4 text-[var(--warning)]" />
                     ) : (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      <CheckCircle2 className="w-4 h-4 text-[var(--success)]" />
                     )}
                     <span className="font-semibold text-theme-primary">
                       {executionResult.permission?.status === 403
@@ -366,7 +366,7 @@ export const UnityToolsTab: React.FC<UnityToolsTabProps> = ({
                             objectStateSnapshot: executionResult.structuredContent || executionResult.content,
                           })
                         }
-                        className="text-sky-400 hover:text-sky-300 flex items-center gap-1 transition"
+                        className="text-theme-primary hover:text-theme-primary flex items-center gap-1 transition"
                       >
                         <ExternalLink className="w-3 h-3" />
                         <span>查看审计证据 ({executionResult.evidenceId})</span>
@@ -376,7 +376,7 @@ export const UnityToolsTab: React.FC<UnityToolsTabProps> = ({
                 </div>
 
                 {/* Content Payload Output */}
-                <div className="p-3 bg-black/40 border border-theme-subtle rounded text-[11px] overflow-x-auto max-h-60">
+                <div className="p-3 bg-[var(--bg-app)] border border-theme-subtle rounded text-[11px] overflow-x-auto max-h-60">
                   <pre className="text-theme-secondary">
                     {executionResult.content?.[0]?.text ||
                       JSON.stringify(executionResult.structuredContent || executionResult, null, 2)}
@@ -387,7 +387,7 @@ export const UnityToolsTab: React.FC<UnityToolsTabProps> = ({
           </div>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-theme-muted font-mono text-xs">
-            <Wrench className="w-8 h-8 mb-2 opacity-40 text-sky-400" />
+            <Wrench className="w-8 h-8 mb-2 opacity-40 text-theme-primary" />
             <p>请从左侧选择一个 MCP 工具以查看详情并填写表单</p>
           </div>
         )}

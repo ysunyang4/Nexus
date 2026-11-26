@@ -28,14 +28,14 @@ export const UnityEvidenceDrawer: React.FC<UnityEvidenceDrawerProps> = ({
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 w-[420px] bg-theme-sidebar border-l border-theme-subtle shadow-2xl z-40 flex flex-col select-none animate-in slide-in-from-right duration-200">
+    <div className="fixed inset-y-0 right-0 w-[420px] bg-theme-sidebar border-l border-theme-subtle  z-40 flex flex-col select-none animate-in slide-in-from-right duration-200">
       {/* Drawer Header */}
       <div className="h-14 px-4 border-b border-theme-subtle flex items-center justify-between shrink-0 bg-theme-header">
         <div className="flex items-center gap-2">
           {data.verificationVerdict === "VERIFIED" ? (
-            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+            <ShieldCheck className="w-4 h-4 text-[var(--success)]" />
           ) : (
-            <ShieldAlert className="w-4 h-4 text-amber-500" />
+            <ShieldAlert className="w-4 h-4 text-[var(--warning)]" />
           )}
           <span className="font-semibold text-xs tracking-wider text-theme-primary uppercase">
             Evidence Audit
@@ -43,8 +43,8 @@ export const UnityEvidenceDrawer: React.FC<UnityEvidenceDrawerProps> = ({
           <span
             className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${
               data.verificationVerdict === "VERIFIED"
-                ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/30"
-                : "bg-amber-500/10 text-amber-500 border-amber-500/30"
+                ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border-theme-subtle"
+                : "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border-theme-subtle"
             }`}
           >
             {data.verificationVerdict}
@@ -69,7 +69,7 @@ export const UnityEvidenceDrawer: React.FC<UnityEvidenceDrawerProps> = ({
           <div className="text-theme-primary font-semibold truncate">{data.operationId}</div>
           <div className="text-[11px] text-theme-secondary flex items-center justify-between">
             <span>Capability:</span>
-            <span className="text-sky-500">{data.capability}</span>
+            <span className="text-theme-primary">{data.capability}</span>
           </div>
           <div className="text-[11px] text-theme-secondary flex items-center justify-between">
             <span>Timestamp:</span>
@@ -93,7 +93,7 @@ export const UnityEvidenceDrawer: React.FC<UnityEvidenceDrawerProps> = ({
             </div>
             <div className="flex items-center justify-between text-[11px]">
               <span className="text-theme-muted">Post-State Hash:</span>
-              <span className="text-emerald-500/90 font-mono bg-theme-base/60 px-1.5 py-0.5 rounded border border-theme-subtle">
+              <span className="text-[var(--success)]/90 font-mono bg-theme-base/60 px-1.5 py-0.5 rounded border border-theme-subtle">
                 {data.postStateHash || "POST_COMMITTED"}
               </span>
             </div>
@@ -107,9 +107,9 @@ export const UnityEvidenceDrawer: React.FC<UnityEvidenceDrawerProps> = ({
             <button
               type="button"
               onClick={handleCopyHash}
-              className="text-[10px] text-sky-500 hover:text-sky-400 flex items-center gap-1 transition"
+              className="text-[10px] text-theme-primary hover:text-theme-primary flex items-center gap-1 transition"
             >
-              {copiedHash ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+              {copiedHash ? <Check className="w-3 h-3 text-[var(--success)]" /> : <Copy className="w-3 h-3" />}
               <span>{copiedHash ? "已复制" : "复制"}</span>
             </button>
           </div>
@@ -120,12 +120,12 @@ export const UnityEvidenceDrawer: React.FC<UnityEvidenceDrawerProps> = ({
 
         {/* Stack Trace (if error/exception) */}
         {data.stackTrace && (
-          <div className="p-3 bg-rose-500/5 border border-rose-500/20 rounded-lg space-y-1.5">
-            <div className="flex items-center gap-1.5 text-rose-400 text-[10px] uppercase font-semibold">
+          <div className="p-3 bg-[var(--btn-primary-bg)]/5 border border-theme-subtle rounded-lg space-y-1.5">
+            <div className="flex items-center gap-1.5 text-[var(--warning)] text-[10px] uppercase font-semibold">
               <Terminal className="w-3.5 h-3.5" />
               <span>Stack Trace</span>
             </div>
-            <pre className="text-[11px] text-rose-300 font-mono whitespace-pre-wrap break-all bg-theme-base/80 p-2 rounded max-h-40 overflow-y-auto">
+            <pre className="text-[11px] text-[var(--warning)] font-mono whitespace-pre-wrap break-all bg-theme-base/80 p-2 rounded max-h-40 overflow-y-auto">
               {data.stackTrace}
             </pre>
           </div>
@@ -138,7 +138,7 @@ export const UnityEvidenceDrawer: React.FC<UnityEvidenceDrawerProps> = ({
               <ImageIcon className="w-3.5 h-3.5" />
               <span>Runtime Viewport Capture</span>
             </div>
-            <div className="rounded border border-theme-subtle overflow-hidden bg-black/40">
+            <div className="rounded border border-theme-subtle overflow-hidden bg-[var(--bg-app)]">
               <img
                 src={data.screenshotUrl}
                 alt="Evidence Viewport"

@@ -40,8 +40,8 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-theme-card border border-theme-subtle rounded-2xl shadow-2xl p-6 sm:p-7 space-y-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--bg-app)] backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="relative w-full max-w-lg bg-theme-card border border-theme-subtle rounded-2xl  p-6 sm:p-7 space-y-6">
         {/* Close Button */}
         <button
           type="button"
@@ -54,7 +54,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
         {/* Header */}
         <div className="flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-theme-card-muted border border-theme-subtle flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+          <div className="w-11 h-11 rounded-xl bg-theme-card-muted border border-theme-subtle flex items-center justify-center overflow-hidden shrink-0 ">
             <img
               src={nexusLogo}
               alt="Nexus"
@@ -78,7 +78,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
         <div className="space-y-2.5">
           {/* Step 1 */}
           <div className="p-3.5 rounded-xl bg-theme-card-muted border border-theme-subtle flex items-start gap-3 transition hover:border-theme-muted">
-            <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
+            <div className="w-8 h-8 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary flex items-center justify-center shrink-0 mt-0.5">
               <FolderGit2 className="w-4 h-4" />
             </div>
             <div className="space-y-0.5 text-xs flex-1">
@@ -93,7 +93,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
           {/* Step 2 */}
           <div className="p-3.5 rounded-xl bg-theme-card-muted border border-theme-subtle flex items-start gap-3 transition hover:border-theme-muted">
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+            <div className="w-8 h-8 rounded-lg bg-[var(--btn-primary-bg)]/10 text-[var(--success)] flex items-center justify-center shrink-0 mt-0.5">
               <Sparkles className="w-4 h-4" />
             </div>
             <div className="space-y-0.5 text-xs flex-1">
@@ -108,7 +108,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
           {/* Step 3 */}
           <div className="p-3.5 rounded-xl bg-theme-card-muted border border-theme-subtle flex items-start gap-3 transition hover:border-theme-muted">
-            <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center shrink-0 mt-0.5">
+            <div className="w-8 h-8 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary flex items-center justify-center shrink-0 mt-0.5">
               <CheckCircle2 className="w-4 h-4" />
             </div>
             <div className="space-y-0.5 text-xs flex-1">
@@ -122,12 +122,12 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           </div>
 
           {/* Step 4 Optional */}
-          <div className="p-3 rounded-xl bg-purple-500/5 border border-purple-500/20 flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center shrink-0 mt-0.5">
+          <div className="p-3 rounded-xl bg-[var(--btn-primary-bg)]/5 border border-theme-subtle flex items-start gap-3">
+            <div className="w-8 h-8 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary flex items-center justify-center shrink-0 mt-0.5">
               <Cpu className="w-4 h-4" />
             </div>
             <div className="space-y-1 text-xs flex-1">
-              <div className="font-medium text-purple-400">
+              <div className="font-medium text-theme-primary">
                 {t.onboarding.step4OptionalTitle}
               </div>
               <div className="text-theme-muted leading-relaxed">
@@ -137,7 +137,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                 <button
                   type="button"
                   onClick={handleDownloadLayaAndFinish}
-                  className="text-[11px] font-medium text-purple-400 hover:text-purple-300 underline underline-offset-2 transition"
+                  className="text-[11px] font-medium text-theme-primary hover:text-theme-primary underline underline-offset-2 transition"
                 >
                   {t.onboarding.downloadLayaBtn} &rarr;
                 </button>
@@ -166,7 +166,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           <button
             type="button"
             onClick={handleAuthorizeAndFinish}
-            className="px-5 py-2 rounded-lg text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition flex items-center gap-1.5"
+            className="px-5 py-2 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]  transition flex items-center gap-1.5"
           >
             <span>{t.onboarding.getStartedBtn}</span>
             <ArrowRight className="w-3.5 h-3.5" />

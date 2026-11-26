@@ -123,7 +123,7 @@ export const NexusAppsPage: React.FC = () => {
     JSON.stringify(
       {
         projectName: "Nexus Workspace",
-        version: "1.3.4",
+        version: "1.4.0",
         sandbox: { enabled: true, loopback: "127.0.0.1", port: 8787 },
         activeProviders: ["blender", "photoshop", "autocad", "playwright"],
       },
@@ -238,7 +238,7 @@ export const NexusAppsPage: React.FC = () => {
     <div className="flex-1 flex flex-col h-full bg-theme-base overflow-hidden">
       {/* Toast Notification */}
       {toastMsg && (
-        <div className="fixed top-4 right-6 z-50 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-medium shadow-2xl border border-sky-500/30 flex items-center gap-2 animate-fade-in">
+        <div className="fixed top-4 right-6 z-50 px-4 py-2.5 rounded-xl bg-theme-base text-white text-xs font-medium  border border-theme-subtle flex items-center gap-2 animate-fade-in">
           <span>{toastMsg}</span>
         </div>
       )}
@@ -247,9 +247,9 @@ export const NexusAppsPage: React.FC = () => {
       <div className="px-6 py-4 border-b border-theme-subtle bg-theme-card/30 flex items-center justify-between gap-4 shrink-0">
         <div>
           <h1 className="text-base font-semibold text-theme-primary flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-sky-500" />
+            <Sparkles className="w-4 h-4 text-theme-primary" />
             <span>{isZh ? "Nexus 专属应用中心" : "Nexus Dedicated Applications"}</span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-500 border border-sky-500/20">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle">
               Native Productivity Suite
             </span>
           </h1>
@@ -265,20 +265,20 @@ export const NexusAppsPage: React.FC = () => {
       <div className="flex-1 p-6 overflow-y-auto max-w-6xl w-full mx-auto space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {/* App 1: 极速网页转 Markdown 提纯器 */}
-          <div className="rounded-xl border border-theme-subtle bg-theme-card p-5 flex flex-col justify-between hover:border-emerald-500/40 transition shadow-sm group">
+          <div className="rounded-xl border border-theme-subtle bg-theme-card p-5 flex flex-col justify-between border-theme-subtle transition  group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center border border-emerald-500/20">
+                <div className="w-9 h-9 rounded-lg bg-[var(--btn-primary-bg)]/10 text-[var(--success)] flex items-center justify-center border border-theme-subtle">
                   <FileText className="w-5 h-5" />
                 </div>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--btn-primary-bg)]" />
                   {isZh ? "就绪" : "Ready"}
                 </span>
               </div>
 
               <div>
-                <h2 className="text-sm font-semibold text-theme-primary group-hover:text-emerald-400 transition">
+                <h2 className="text-sm font-semibold text-theme-primary group-hover:text-[var(--success)] transition">
                   {isZh ? "📄 极速网页转 Markdown 提纯器" : "📄 Web-to-Markdown Purifier"}
                 </h2>
                 <p className="text-xs text-theme-muted mt-1 leading-relaxed">
@@ -290,11 +290,11 @@ export const NexusAppsPage: React.FC = () => {
 
               <div className="space-y-1.5 pt-1 text-xs text-theme-secondary">
                 <div className="flex items-center gap-2">
-                  <Zap className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <Zap className="w-3.5 h-3.5 text-[var(--success)] shrink-0" />
                   <span>{isZh ? "零 Token 浪费，广告标签全脱水" : "Zero token waste, ads stripped"}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+                  <Sparkles className="w-3.5 h-3.5 text-theme-primary shrink-0" />
                   <span>{isZh ? "1 秒将任意网页转纯净 Markdown" : "Instant 1-second extraction"}</span>
                 </div>
               </div>
@@ -304,7 +304,7 @@ export const NexusAppsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveModal("reader")}
-                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-medium transition shadow-xs"
+                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-xs font-medium transition "
               >
                 <Play className="w-3.5 h-3.5 fill-current" />
                 <span>{isZh ? "打开提纯器工作台" : "Open Purifier Workbench"}</span>
@@ -313,21 +313,21 @@ export const NexusAppsPage: React.FC = () => {
           </div>
 
           {/* App 2: Token 极致压缩与上下文精炼器 */}
-          <div className="rounded-xl border border-theme-subtle bg-theme-card p-5 flex flex-col justify-between hover:border-amber-500/40 transition shadow-sm group">
+          <div className="rounded-xl border border-theme-subtle bg-theme-card p-5 flex flex-col justify-between border-theme-subtle transition  group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <div className="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20">
+                <div className="w-9 h-9 rounded-lg bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] flex items-center justify-center border border-theme-subtle">
                   <Scissors className="w-5 h-5" />
                 </div>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--warning)]" />
                   {isZh ? "节省 60%+" : "Save 60%+"}
                 </span>
               </div>
 
               <div>
-                <h2 className="text-sm font-semibold text-theme-primary group-hover:text-amber-400 transition">
-                  {isZh ? "⚡ Token 极致压缩与上下文精炼器" : "⚡ Token Shrinker & Context Minifier"}
+                <h2 className="text-sm font-semibold text-theme-primary group-hover:text-[var(--warning)] transition">
+                  {isZh ? "Token 极致压缩与上下文精炼器" : "Token Shrinker & Context Minifier"}
                 </h2>
                 <p className="text-xs text-theme-muted mt-1 leading-relaxed">
                   {isZh
@@ -338,11 +338,11 @@ export const NexusAppsPage: React.FC = () => {
 
               <div className="space-y-1.5 pt-1 text-xs text-theme-secondary">
                 <div className="flex items-center gap-2">
-                  <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <Zap className="w-3.5 h-3.5 text-[var(--warning)] shrink-0" />
                   <span>{isZh ? "代码/JSON/Prompt 多模态脱水" : "Code/JSON/Prompt multi-mode dehydration"}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Shield className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <Shield className="w-3.5 h-3.5 text-[var(--success)] shrink-0" />
                   <span>{isZh ? "实时预估 Token 减少量" : "Realtime token saving percentage preview"}</span>
                 </div>
               </div>
@@ -352,7 +352,7 @@ export const NexusAppsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveModal("shrink")}
-                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium transition shadow-xs"
+                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-xs font-medium transition "
               >
                 <Scissors className="w-3.5 h-3.5" />
                 <span>{isZh ? "打开 Token 精炼器" : "Open Token Shrinker"}</span>
@@ -361,20 +361,20 @@ export const NexusAppsPage: React.FC = () => {
           </div>
 
           {/* App 3: 架构校验与格式转换器 */}
-          <div className="rounded-xl border border-theme-subtle bg-theme-card p-5 flex flex-col justify-between hover:border-sky-500/40 transition shadow-sm group">
+          <div className="rounded-xl border border-theme-subtle bg-theme-card p-5 flex flex-col justify-between border-theme-subtle transition  group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <div className="w-9 h-9 rounded-lg bg-sky-500/10 text-sky-500 flex items-center justify-center border border-sky-500/20">
+                <div className="w-9 h-9 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary flex items-center justify-center border border-theme-subtle">
                   <Code2 className="w-5 h-5" />
                 </div>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-primary)]" />
                   JSON / YAML
                 </span>
               </div>
 
               <div>
-                <h2 className="text-sm font-semibold text-theme-primary group-hover:text-sky-400 transition">
+                <h2 className="text-sm font-semibold text-theme-primary group-hover:text-theme-primary transition">
                   {isZh ? "🛠️ JSON / YAML 智能转换与校验器" : "🛠️ Schema Studio & Formatter"}
                 </h2>
                 <p className="text-xs text-theme-muted mt-1 leading-relaxed">
@@ -386,11 +386,11 @@ export const NexusAppsPage: React.FC = () => {
 
               <div className="space-y-1.5 pt-1 text-xs text-theme-secondary">
                 <div className="flex items-center gap-2">
-                  <FileCode2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                  <FileCode2 className="w-3.5 h-3.5 text-theme-primary shrink-0" />
                   <span>{isZh ? "结构化配置零损无缝互转" : "Lossless config format transformations"}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-[var(--success)] shrink-0" />
                   <span>{isZh ? "语法严格高亮与错误定位" : "Syntax error locating & linting"}</span>
                 </div>
               </div>
@@ -400,7 +400,7 @@ export const NexusAppsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveModal("schema")}
-                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-sky-500 hover:bg-sky-600 text-white text-xs font-medium transition shadow-xs"
+                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-xs font-medium transition "
               >
                 <Code2 className="w-3.5 h-3.5" />
                 <span>{isZh ? "打开格式转换工坊" : "Open Schema Studio"}</span>
@@ -409,20 +409,20 @@ export const NexusAppsPage: React.FC = () => {
           </div>
 
           {/* App 4: 结构化提示词工坊 */}
-          <div className="rounded-xl border border-theme-subtle bg-theme-card p-5 flex flex-col justify-between hover:border-purple-500/40 transition shadow-sm group">
+          <div className="rounded-xl border border-theme-subtle bg-theme-card p-5 flex flex-col justify-between border-theme-subtle transition  group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <div className="w-9 h-9 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center border border-purple-500/20">
+                <div className="w-9 h-9 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary flex items-center justify-center border border-theme-subtle">
                   <Wand2 className="w-5 h-5" />
                 </div>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-primary)]" />
                   Engineering
                 </span>
               </div>
 
               <div>
-                <h2 className="text-sm font-semibold text-theme-primary group-hover:text-purple-400 transition">
+                <h2 className="text-sm font-semibold text-theme-primary group-hover:text-theme-primary transition">
                   {isZh ? "🎨 Prompt 结构化提示词工坊" : "🎨 Prompt Engineering Studio"}
                 </h2>
                 <p className="text-xs text-theme-muted mt-1 leading-relaxed">
@@ -434,11 +434,11 @@ export const NexusAppsPage: React.FC = () => {
 
               <div className="space-y-1.5 pt-1 text-xs text-theme-secondary">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                  <Sparkles className="w-3.5 h-3.5 text-theme-primary shrink-0" />
                   <span>{isZh ? "消除模型模糊输出与格式违规" : "Eliminate format hallucinations"}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-[var(--success)] shrink-0" />
                   <span>{isZh ? "一键生成标准工程级 Prompt" : "One-click copy production ready prompts"}</span>
                 </div>
               </div>
@@ -448,7 +448,7 @@ export const NexusAppsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveModal("prompt")}
-                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-purple-500 hover:bg-purple-600 text-white text-xs font-medium transition shadow-xs"
+                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-xs font-medium transition "
               >
                 <Wand2 className="w-3.5 h-3.5" />
                 <span>{isZh ? "打开提示词工坊" : "Open Prompt Studio"}</span>
@@ -457,20 +457,20 @@ export const NexusAppsPage: React.FC = () => {
           </div>
 
           {/* App 5: 敏感信息脱敏与正则沙箱 */}
-          <div className="rounded-xl border border-theme-subtle bg-theme-card p-5 flex flex-col justify-between hover:border-rose-500/40 transition shadow-sm group">
+          <div className="rounded-xl border border-theme-subtle bg-theme-card p-5 flex flex-col justify-between border-theme-subtle transition  group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <div className="w-9 h-9 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20">
+                <div className="w-9 h-9 rounded-lg bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] flex items-center justify-center border border-theme-subtle">
                   <Lock className="w-5 h-5" />
                 </div>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--warning)]" />
                   Security
                 </span>
               </div>
 
               <div>
-                <h2 className="text-sm font-semibold text-theme-primary group-hover:text-rose-400 transition">
+                <h2 className="text-sm font-semibold text-theme-primary group-hover:text-[var(--warning)] transition">
                   {isZh ? "🔒 敏感信息脱敏与文本清洗沙箱" : "🔒 Sensitive Data Masker & Sanitizer"}
                 </h2>
                 <p className="text-xs text-theme-muted mt-1 leading-relaxed">
@@ -482,11 +482,11 @@ export const NexusAppsPage: React.FC = () => {
 
               <div className="space-y-1.5 pt-1 text-xs text-theme-secondary">
                 <div className="flex items-center gap-2">
-                  <Shield className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                  <Shield className="w-3.5 h-3.5 text-[var(--warning)] shrink-0" />
                   <span>{isZh ? "手机/邮箱/Key/身份证自动识别打码" : "Auto regex matching & token masking"}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-[var(--success)] shrink-0" />
                   <span>{isZh ? "本地完全离线处理，绝不上云" : "100% offline local processing"}</span>
                 </div>
               </div>
@@ -496,7 +496,7 @@ export const NexusAppsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveModal("masker")}
-                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-rose-500 hover:bg-rose-600 text-white text-xs font-medium transition shadow-xs"
+                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-xs font-medium transition "
               >
                 <Lock className="w-3.5 h-3.5" />
                 <span>{isZh ? "打开安全脱敏沙箱" : "Open Security Masker"}</span>
@@ -505,20 +505,20 @@ export const NexusAppsPage: React.FC = () => {
           </div>
 
           {/* App 6: 本地脚本与代码执行沙箱 */}
-          <div className="rounded-xl border border-theme-subtle bg-theme-card p-5 flex flex-col justify-between hover:border-indigo-500/40 transition shadow-sm group">
+          <div className="rounded-xl border border-theme-subtle bg-theme-card p-5 flex flex-col justify-between border-theme-subtle transition  group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <div className="w-9 h-9 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20">
+                <div className="w-9 h-9 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary flex items-center justify-center border border-theme-subtle">
                   <Terminal className="w-5 h-5" />
                 </div>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-primary)]" />
                   uv / Node.js
                 </span>
               </div>
 
               <div>
-                <h2 className="text-sm font-semibold text-theme-primary group-hover:text-indigo-400 transition">
+                <h2 className="text-sm font-semibold text-theme-primary group-hover:text-theme-primary transition">
                   {isZh ? "💻 本地脚本与代码执行沙箱" : "💻 Local Script Execution Sandbox"}
                 </h2>
                 <p className="text-xs text-theme-muted mt-1 leading-relaxed">
@@ -530,11 +530,11 @@ export const NexusAppsPage: React.FC = () => {
 
               <div className="space-y-1.5 pt-1 text-xs text-theme-secondary">
                 <div className="flex items-center gap-2">
-                  <Terminal className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                  <Terminal className="w-3.5 h-3.5 text-theme-primary shrink-0" />
                   <span>{isZh ? "免配环境变量，内置 uv 原生驱动" : "Zero config, driven by bundled uv"}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <Zap className="w-3.5 h-3.5 text-[var(--warning)] shrink-0" />
                   <span>{isZh ? "毫秒级响应，实时捕获标准输出" : "Millisecond response & stdout capture"}</span>
                 </div>
               </div>
@@ -544,7 +544,7 @@ export const NexusAppsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveModal("playground")}
-                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-medium transition shadow-xs"
+                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-xs font-medium transition "
               >
                 <Terminal className="w-3.5 h-3.5" />
                 <span>{isZh ? "打开脚本沙箱" : "Open Script Playground"}</span>
@@ -556,11 +556,11 @@ export const NexusAppsPage: React.FC = () => {
 
       {/* Modal 1: 网页提纯器 */}
       {activeModal === "reader" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh] shadow-2xl overflow-hidden animate-scale-up">
+        <div className="fixed inset-0 z-50 bg-[var(--bg-app)] backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh]  overflow-hidden animate-scale-up">
             <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-emerald-500" />
+                <FileText className="w-5 h-5 text-[var(--success)]" />
                 <h3 className="font-semibold text-sm text-theme-primary">
                   {isZh ? "网页转 Markdown 提纯器" : "Web-to-Markdown Purifier"}
                 </h3>
@@ -577,12 +577,12 @@ export const NexusAppsPage: React.FC = () => {
                   value={readerUrl}
                   onChange={(e) => setReaderUrl(e.target.value)}
                   placeholder="https://example.com/article"
-                  className="flex-1 px-3 py-2 rounded-lg bg-theme-base border border-theme-subtle text-xs text-theme-primary focus:outline-hidden focus:border-emerald-500"
+                  className="flex-1 px-3 py-2 rounded-lg bg-theme-base border border-theme-subtle text-xs text-theme-primary focus:outline-hidden border-theme-subtle"
                 />
                 <button
                   onClick={handleExtractMarkdown}
                   disabled={isExtracting}
-                  className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold flex items-center gap-1.5 transition"
+                  className="px-4 py-2 rounded-lg bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-xs font-semibold flex items-center gap-1.5 transition"
                 >
                   {isExtracting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5 fill-current" />}
                   <span>{isZh ? "开始提纯" : "Extract"}</span>
@@ -598,7 +598,7 @@ export const NexusAppsPage: React.FC = () => {
                     <div className="flex items-center gap-3 font-mono text-[11px]">
                       <span>{readerResult.wordCount} 字</span>
                       <span>&bull;</span>
-                      <span className="text-emerald-400">~{readerResult.estimatedTokens} Tokens</span>
+                      <span className="text-[var(--success)]">~{readerResult.estimatedTokens} Tokens</span>
                     </div>
                   </div>
 
@@ -612,9 +612,9 @@ export const NexusAppsPage: React.FC = () => {
                     <div className="absolute top-2 right-2 flex items-center gap-2">
                       <button
                         onClick={() => copyToClipboard(readerResult.markdown, "reader")}
-                        className="px-2 py-1 rounded bg-theme-card/80 border border-theme-subtle text-[11px] text-theme-primary hover:bg-theme-card transition flex items-center gap-1 shadow-xs"
+                        className="px-2 py-1 rounded bg-theme-card/80 border border-theme-subtle text-[11px] text-theme-primary hover:bg-theme-card transition flex items-center gap-1 "
                       >
-                        {copiedKey === "reader" ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                        {copiedKey === "reader" ? <Check className="w-3 h-3 text-[var(--success)]" /> : <Copy className="w-3 h-3" />}
                         <span>{isZh ? "复制 Markdown" : "Copy"}</span>
                       </button>
                     </div>
@@ -628,11 +628,11 @@ export const NexusAppsPage: React.FC = () => {
 
       {/* Modal 2: Token 精炼器 */}
       {activeModal === "shrink" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh] shadow-2xl overflow-hidden animate-scale-up">
+        <div className="fixed inset-0 z-50 bg-[var(--bg-app)] backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh]  overflow-hidden animate-scale-up">
             <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Scissors className="w-5 h-5 text-amber-500" />
+                <Scissors className="w-5 h-5 text-[var(--warning)]" />
                 <h3 className="font-semibold text-sm text-theme-primary">
                   {isZh ? "Token 极致压缩与上下文精炼器" : "Token Shrinker & Context Minifier"}
                 </h3>
@@ -648,7 +648,7 @@ export const NexusAppsPage: React.FC = () => {
                 <button
                   onClick={() => setShrinkMode("code")}
                   className={`px-2.5 py-1 rounded text-xs transition ${
-                    shrinkMode === "code" ? "bg-amber-500 text-white font-semibold" : "bg-theme-base border border-theme-subtle text-theme-muted"
+                    shrinkMode === "code" ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] font-semibold" : "bg-theme-base border border-theme-subtle text-theme-muted"
                   }`}
                 >
                   Code (剥离注释/空行)
@@ -656,7 +656,7 @@ export const NexusAppsPage: React.FC = () => {
                 <button
                   onClick={() => setShrinkMode("json")}
                   className={`px-2.5 py-1 rounded text-xs transition ${
-                    shrinkMode === "json" ? "bg-amber-500 text-white font-semibold" : "bg-theme-base border border-theme-subtle text-theme-muted"
+                    shrinkMode === "json" ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] font-semibold" : "bg-theme-base border border-theme-subtle text-theme-muted"
                   }`}
                 >
                   JSON (紧凑无空格)
@@ -664,7 +664,7 @@ export const NexusAppsPage: React.FC = () => {
                 <button
                   onClick={() => setShrinkMode("text")}
                   className={`px-2.5 py-1 rounded text-xs transition ${
-                    shrinkMode === "text" ? "bg-amber-500 text-white font-semibold" : "bg-theme-base border border-theme-subtle text-theme-muted"
+                    shrinkMode === "text" ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] font-semibold" : "bg-theme-base border border-theme-subtle text-theme-muted"
                   }`}
                 >
                   Prompt 文本 (去多余换行)
@@ -672,7 +672,7 @@ export const NexusAppsPage: React.FC = () => {
                 <div className="flex-1" />
                 <button
                   onClick={handleShrink}
-                  className="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold flex items-center gap-1.5 transition"
+                  className="px-4 py-1.5 rounded-lg bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-xs font-semibold flex items-center gap-1.5 transition"
                 >
                   <Scissors className="w-3.5 h-3.5" />
                   <span>{isZh ? "一键脱水" : "Shrink Now"}</span>
@@ -694,7 +694,7 @@ export const NexusAppsPage: React.FC = () => {
                   <div className="text-xs text-theme-muted font-medium flex items-center justify-between">
                     <span>{isZh ? "脱水结果:" : "Dehydrated Output:"}</span>
                     {shrinkResult && (
-                      <span className="text-emerald-400 font-mono text-[11px]">
+                      <span className="text-[var(--success)] font-mono text-[11px]">
                         {shrinkResult.beforeTokens} → {shrinkResult.afterTokens} Token (-{shrinkResult.savingPct}%)
                       </span>
                     )}
@@ -705,14 +705,14 @@ export const NexusAppsPage: React.FC = () => {
                       rows={10}
                       value={shrinkResult?.text || ""}
                       placeholder={isZh ? "点击上方【一键脱水】开始处理..." : "Click Shrink Now to process..."}
-                      className="w-full p-3 rounded-lg bg-theme-base border border-theme-subtle font-mono text-xs text-emerald-400 focus:outline-hidden"
+                      className="w-full p-3 rounded-lg bg-theme-base border border-theme-subtle font-mono text-xs text-[var(--success)] focus:outline-hidden"
                     />
                     {shrinkResult && (
                       <button
                         onClick={() => copyToClipboard(shrinkResult.text, "shrink")}
-                        className="absolute top-2 right-2 px-2 py-1 rounded bg-theme-card/80 border border-theme-subtle text-[11px] text-theme-primary hover:bg-theme-card transition flex items-center gap-1 shadow-xs"
+                        className="absolute top-2 right-2 px-2 py-1 rounded bg-theme-card/80 border border-theme-subtle text-[11px] text-theme-primary hover:bg-theme-card transition flex items-center gap-1 "
                       >
-                        {copiedKey === "shrink" ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                        {copiedKey === "shrink" ? <Check className="w-3 h-3 text-[var(--success)]" /> : <Copy className="w-3 h-3" />}
                         <span>{isZh ? "复制精炼文本" : "Copy"}</span>
                       </button>
                     )}
@@ -726,11 +726,11 @@ export const NexusAppsPage: React.FC = () => {
 
       {/* Modal 3: Schema 工坊 */}
       {activeModal === "schema" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh] shadow-2xl overflow-hidden animate-scale-up">
+        <div className="fixed inset-0 z-50 bg-[var(--bg-app)] backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh]  overflow-hidden animate-scale-up">
             <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Code2 className="w-5 h-5 text-sky-500" />
+                <Code2 className="w-5 h-5 text-theme-primary" />
                 <h3 className="font-semibold text-sm text-theme-primary">
                   {isZh ? "JSON / YAML 智能转换与校验器" : "Schema Studio & Formatter"}
                 </h3>
@@ -744,7 +744,7 @@ export const NexusAppsPage: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleFormatJson}
-                  className="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold flex items-center gap-1 transition"
+                  className="px-3 py-1.5 rounded-lg bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-xs font-semibold flex items-center gap-1 transition"
                 >
                   <Code2 className="w-3.5 h-3.5" />
                   <span>{isZh ? "格式化 JSON" : "Format JSON"}</span>
@@ -756,7 +756,7 @@ export const NexusAppsPage: React.FC = () => {
                   <FileCode2 className="w-3.5 h-3.5" />
                   <span>{isZh ? "转换为 YAML" : "Convert to YAML"}</span>
                 </button>
-                {schemaError && <span className="text-xs text-rose-400 font-mono">⚠️ {schemaError}</span>}
+                {schemaError && <span className="text-xs text-[var(--warning)] font-mono">⚠️ {schemaError}</span>}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -772,14 +772,14 @@ export const NexusAppsPage: React.FC = () => {
                     rows={12}
                     value={schemaOutput}
                     placeholder={isZh ? "转换结果将实时显示在此处..." : "Output will appear here..."}
-                    className="w-full p-3 rounded-lg bg-theme-base border border-theme-subtle font-mono text-xs text-sky-400 focus:outline-hidden"
+                    className="w-full p-3 rounded-lg bg-theme-base border border-theme-subtle font-mono text-xs text-theme-primary focus:outline-hidden"
                   />
                   {schemaOutput && (
                     <button
                       onClick={() => copyToClipboard(schemaOutput, "schema")}
-                      className="absolute top-2 right-2 px-2 py-1 rounded bg-theme-card/80 border border-theme-subtle text-[11px] text-theme-primary hover:bg-theme-card transition flex items-center gap-1 shadow-xs"
+                      className="absolute top-2 right-2 px-2 py-1 rounded bg-theme-card/80 border border-theme-subtle text-[11px] text-theme-primary hover:bg-theme-card transition flex items-center gap-1 "
                     >
-                      {copiedKey === "schema" ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                      {copiedKey === "schema" ? <Check className="w-3 h-3 text-[var(--success)]" /> : <Copy className="w-3 h-3" />}
                       <span>{isZh ? "复制结果" : "Copy"}</span>
                     </button>
                   )}
@@ -792,11 +792,11 @@ export const NexusAppsPage: React.FC = () => {
 
       {/* Modal 4: Prompt 工坊 */}
       {activeModal === "prompt" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh] shadow-2xl overflow-hidden animate-scale-up">
+        <div className="fixed inset-0 z-50 bg-[var(--bg-app)] backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh]  overflow-hidden animate-scale-up">
             <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Wand2 className="w-5 h-5 text-purple-400" />
+                <Wand2 className="w-5 h-5 text-theme-primary" />
                 <h3 className="font-semibold text-sm text-theme-primary">
                   {isZh ? "Prompt 结构化提示词工坊" : "Prompt Engineering Studio"}
                 </h3>
@@ -851,7 +851,7 @@ export const NexusAppsPage: React.FC = () => {
                   <span className="text-xs font-semibold text-theme-primary">拼装成型的 System Prompt:</span>
                   <button
                     onClick={() => copyToClipboard(buildSystemPrompt(), "prompt")}
-                    className="px-2.5 py-1 rounded bg-purple-500 hover:bg-purple-600 text-white text-xs font-semibold transition flex items-center gap-1"
+                    className="px-2.5 py-1 rounded bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-xs font-semibold transition flex items-center gap-1"
                   >
                     {copiedKey === "prompt" ? <Check className="w-3 h-3 text-white" /> : <Copy className="w-3 h-3" />}
                     <span>{isZh ? "复制完整 Prompt" : "Copy Prompt"}</span>
@@ -861,7 +861,7 @@ export const NexusAppsPage: React.FC = () => {
                   readOnly
                   rows={6}
                   value={buildSystemPrompt()}
-                  className="w-full p-3 rounded-lg bg-theme-base border border-theme-subtle font-mono text-xs text-purple-300 leading-relaxed"
+                  className="w-full p-3 rounded-lg bg-theme-base border border-theme-subtle font-mono text-xs text-theme-primary leading-relaxed"
                 />
               </div>
             </div>
@@ -871,11 +871,11 @@ export const NexusAppsPage: React.FC = () => {
 
       {/* Modal 5: 脱敏沙箱 */}
       {activeModal === "masker" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh] shadow-2xl overflow-hidden animate-scale-up">
+        <div className="fixed inset-0 z-50 bg-[var(--bg-app)] backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh]  overflow-hidden animate-scale-up">
             <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Lock className="w-5 h-5 text-rose-500" />
+                <Lock className="w-5 h-5 text-[var(--warning)]" />
                 <h3 className="font-semibold text-sm text-theme-primary">
                   {isZh ? "敏感信息脱敏与文本清洗沙箱" : "Sensitive Data Masker"}
                 </h3>
@@ -892,7 +892,7 @@ export const NexusAppsPage: React.FC = () => {
                 </span>
                 <button
                   onClick={handleMaskData}
-                  className="px-4 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white text-xs font-semibold flex items-center gap-1.5 transition"
+                  className="px-4 py-1.5 rounded-lg bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-xs font-semibold flex items-center gap-1.5 transition"
                 >
                   <Lock className="w-3.5 h-3.5" />
                   <span>{isZh ? "执行一键脱敏" : "Mask Sensitive Data"}</span>
@@ -913,14 +913,14 @@ export const NexusAppsPage: React.FC = () => {
                     rows={10}
                     value={maskedText}
                     placeholder={isZh ? "脱敏处理后的安全文本将在此显示..." : "Masked text will appear here..."}
-                    className="w-full p-3 rounded-lg bg-theme-base border border-theme-subtle font-mono text-xs text-rose-300 focus:outline-hidden"
+                    className="w-full p-3 rounded-lg bg-theme-base border border-theme-subtle font-mono text-xs text-[var(--warning)] focus:outline-hidden"
                   />
                   {maskedText && (
                     <button
                       onClick={() => copyToClipboard(maskedText, "masker")}
-                      className="absolute top-2 right-2 px-2 py-1 rounded bg-theme-card/80 border border-theme-subtle text-[11px] text-theme-primary hover:bg-theme-card transition flex items-center gap-1 shadow-xs"
+                      className="absolute top-2 right-2 px-2 py-1 rounded bg-theme-card/80 border border-theme-subtle text-[11px] text-theme-primary hover:bg-theme-card transition flex items-center gap-1 "
                     >
-                      {copiedKey === "masker" ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                      {copiedKey === "masker" ? <Check className="w-3 h-3 text-[var(--success)]" /> : <Copy className="w-3 h-3" />}
                       <span>{isZh ? "复制脱敏文本" : "Copy"}</span>
                     </button>
                   )}
@@ -933,11 +933,11 @@ export const NexusAppsPage: React.FC = () => {
 
       {/* Modal 6: 脚本沙箱 */}
       {activeModal === "playground" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh] shadow-2xl overflow-hidden animate-scale-up">
+        <div className="fixed inset-0 z-50 bg-[var(--bg-app)] backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh]  overflow-hidden animate-scale-up">
             <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Terminal className="w-5 h-5 text-indigo-400" />
+                <Terminal className="w-5 h-5 text-theme-primary" />
                 <h3 className="font-semibold text-sm text-theme-primary">
                   {isZh ? "本地安全脚本测试沙箱" : "Local Script Playground"}
                 </h3>
@@ -954,7 +954,7 @@ export const NexusAppsPage: React.FC = () => {
                   <button
                     onClick={() => setPlaygroundRuntime("python")}
                     className={`px-2.5 py-1 rounded text-xs transition ${
-                      playgroundRuntime === "python" ? "bg-indigo-500 text-white font-semibold" : "bg-theme-base border border-theme-subtle text-theme-muted"
+                      playgroundRuntime === "python" ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] font-semibold" : "bg-theme-base border border-theme-subtle text-theme-muted"
                     }`}
                   >
                     Python (uv)
@@ -962,7 +962,7 @@ export const NexusAppsPage: React.FC = () => {
                   <button
                     onClick={() => setPlaygroundRuntime("node")}
                     className={`px-2.5 py-1 rounded text-xs transition ${
-                      playgroundRuntime === "node" ? "bg-indigo-500 text-white font-semibold" : "bg-theme-base border border-theme-subtle text-theme-muted"
+                      playgroundRuntime === "node" ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] font-semibold" : "bg-theme-base border border-theme-subtle text-theme-muted"
                     }`}
                   >
                     Node.js
@@ -971,7 +971,7 @@ export const NexusAppsPage: React.FC = () => {
                 <button
                   onClick={handleRunPlayground}
                   disabled={isRunningScript}
-                  className="px-4 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-semibold flex items-center gap-1.5 transition"
+                  className="px-4 py-1.5 rounded-lg bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-xs font-semibold flex items-center gap-1.5 transition"
                 >
                   {isRunningScript ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5 fill-current" />}
                   <span>{isZh ? "运行代码" : "Run Script"}</span>
@@ -982,7 +982,7 @@ export const NexusAppsPage: React.FC = () => {
                 rows={8}
                 value={playgroundCode}
                 onChange={(e) => setPlaygroundCode(e.target.value)}
-                className="w-full p-3 rounded-lg bg-theme-base border border-theme-subtle font-mono text-xs text-indigo-300 focus:outline-hidden"
+                className="w-full p-3 rounded-lg bg-theme-base border border-theme-subtle font-mono text-xs text-theme-primary focus:outline-hidden"
               />
 
               <div className="space-y-1">
@@ -992,7 +992,7 @@ export const NexusAppsPage: React.FC = () => {
                   rows={6}
                   value={playgroundOutput}
                   placeholder={isZh ? "等待执行..." : "Awaiting execution..."}
-                  className="w-full p-3 rounded-lg bg-slate-950 border border-theme-subtle/80 font-mono text-xs text-emerald-400 focus:outline-hidden"
+                  className="w-full p-3 rounded-lg bg-theme-base border border-theme-subtle/80 font-mono text-xs text-[var(--success)] focus:outline-hidden"
                 />
               </div>
             </div>

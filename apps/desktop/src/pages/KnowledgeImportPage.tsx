@@ -122,8 +122,8 @@ export const KnowledgeImportPage: React.FC = () => {
         <div
           className={`p-3 rounded-lg text-xs flex items-center justify-between ${
             message.type === "success"
-              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-              : "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
+              ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] text-[var(--success)] border border-theme-subtle"
+              : "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle"
           }`}
         >
           <span>{message.text}</span>
@@ -134,7 +134,7 @@ export const KnowledgeImportPage: React.FC = () => {
       )}
 
       {/* Import Form */}
-      <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 shadow-sm space-y-4">
+      <div className="bg-theme-card border border-theme-subtle rounded-xl p-5  space-y-4">
         <h2 className="text-sm font-bold text-theme-primary flex items-center gap-2">
           <UploadCloud className="w-4 h-4 text-teal-500" />
           <span>{t.knowledge?.importBoxTitle || "Import Knowledge File"}</span>
@@ -203,7 +203,7 @@ export const KnowledgeImportPage: React.FC = () => {
             <button
               type="submit"
               disabled={importing}
-              className="px-4 py-2 rounded-lg text-xs font-medium bg-teal-600 hover:bg-teal-500 text-white flex items-center gap-1.5 transition shadow-sm"
+              className="px-4 py-2 rounded-lg text-xs font-medium bg-teal-600 hover:bg-teal-500 text-white flex items-center gap-1.5 transition "
             >
               <UploadCloud className="w-3.5 h-3.5" />
               <span>{importing ? (t.knowledge?.importing || "Importing & Classifying...") : (t.knowledge?.importButton || "Import Knowledge")}</span>
@@ -228,7 +228,7 @@ export const KnowledgeImportPage: React.FC = () => {
             {documents.map((doc) => (
               <div
                 key={doc.documentId}
-                className="bg-theme-card border border-theme-subtle rounded-xl p-4 flex flex-col justify-between hover:border-theme-muted transition shadow-sm space-y-3"
+                className="bg-theme-card border border-theme-subtle rounded-xl p-4 flex flex-col justify-between hover:border-theme-muted transition  space-y-3"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
@@ -267,7 +267,7 @@ export const KnowledgeImportPage: React.FC = () => {
                     <span className="text-[10px] text-theme-muted">{doc.source || "upload"}</span>
                     <button
                       onClick={() => handleDeleteDocument(doc.documentId)}
-                      className="p-1 rounded text-theme-muted hover:text-red-500 transition"
+                      className="p-1 rounded text-theme-muted hover:text-[var(--warning)] transition"
                       title="Delete Document"
                     >
                       <Trash2 className="w-3.5 h-3.5" />

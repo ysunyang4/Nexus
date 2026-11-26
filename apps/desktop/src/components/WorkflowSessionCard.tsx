@@ -92,7 +92,7 @@ export const WorkflowSessionCard: React.FC<WorkflowSessionCardProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 min-w-0">
-          <Compass className="w-4 h-4 text-indigo-500 shrink-0" />
+          <Compass className="w-4 h-4 text-theme-primary shrink-0" />
           <span className="font-semibold text-theme-primary">{t.workflow.title}</span>
           {activeSession ? (
             <span className="badge badge-green text-[10px]">
@@ -109,7 +109,7 @@ export const WorkflowSessionCard: React.FC<WorkflowSessionCardProps> = ({
           {activeSession ? (
             <button
               onClick={() => setSelectedSession(activeSession)}
-              className="flex items-center gap-1.5 px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs font-medium transition"
+              className="flex items-center gap-1.5 px-2.5 py-1 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded text-xs font-medium transition"
             >
               <Send className="w-3 h-3" />
               <span>{t.workflow.viewSessionBtn}</span>
@@ -117,7 +117,7 @@ export const WorkflowSessionCard: React.FC<WorkflowSessionCardProps> = ({
           ) : !showStartForm ? (
             <button
               onClick={() => setShowStartForm(true)}
-              className="flex items-center gap-1.5 px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs font-medium transition"
+              className="flex items-center gap-1.5 px-2.5 py-1 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded text-xs font-medium transition"
             >
               <Plus className="w-3 h-3" />
               <span>{t.workflow.startSessionBtn}</span>
@@ -128,7 +128,7 @@ export const WorkflowSessionCard: React.FC<WorkflowSessionCardProps> = ({
 
       {/* Error alert */}
       {errorMsg && (
-        <div className="p-2 bg-red-500/10 border border-red-500/20 rounded text-[11px] text-red-500 flex items-center gap-1.5">
+        <div className="p-2 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded text-[11px] text-[var(--warning)] flex items-center gap-1.5">
           <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
           <span>{errorMsg}</span>
         </div>
@@ -183,7 +183,7 @@ export const WorkflowSessionCard: React.FC<WorkflowSessionCardProps> = ({
               value={startTitle}
               onChange={(e) => setStartTitle(e.target.value)}
               placeholder="e.g., Refactor Auth Flow & Token Validation"
-              className="w-full bg-theme-input border border-theme-input rounded px-2.5 py-1 text-xs text-theme-primary focus:outline-none focus:border-indigo-500"
+              className="w-full bg-theme-input border border-theme-input rounded px-2.5 py-1 text-xs text-theme-primary focus:outline-none border-theme-subtle"
             />
           </div>
           <div>
@@ -195,7 +195,7 @@ export const WorkflowSessionCard: React.FC<WorkflowSessionCardProps> = ({
               onChange={(e) => setStartGoals(e.target.value)}
               placeholder="Goal 1: Implement token rotation&#10;Goal 2: Add test suite"
               rows={2}
-              className="w-full bg-theme-input border border-theme-input rounded p-2 text-xs text-theme-primary focus:outline-none focus:border-indigo-500"
+              className="w-full bg-theme-input border border-theme-input rounded p-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
             />
           </div>
           <div className="flex items-center justify-end gap-2">
@@ -209,7 +209,7 @@ export const WorkflowSessionCard: React.FC<WorkflowSessionCardProps> = ({
             <button
               type="submit"
               disabled={starting}
-              className="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded text-xs transition disabled:opacity-50"
+              className="px-3 py-1 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-medium rounded text-xs transition disabled:opacity-50"
             >
               {starting ? t.common.loading : t.workflow.startSessionBtn}
             </button>

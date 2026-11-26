@@ -143,7 +143,7 @@ export const ApprovalsPage: React.FC<ApprovalsPageProps> = ({
                 }}
                 className={`px-3 py-1 rounded text-xs font-medium transition ${
                   filter === f.id
-                    ? "bg-indigo-600 text-white shadow-sm"
+                    ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] "
                     : "text-theme-muted hover:text-theme-primary"
                 }`}
               >
@@ -156,7 +156,7 @@ export const ApprovalsPage: React.FC<ApprovalsPageProps> = ({
 
       {/* Notice Toast */}
       {notice && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
+        <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg text-[var(--success)] text-[var(--success)] text-xs flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{notice}</span>
         </div>
@@ -164,13 +164,13 @@ export const ApprovalsPage: React.FC<ApprovalsPageProps> = ({
 
       {/* Bulk Action Bar */}
       {pendingApprovals.length > 0 && (
-        <div className="flex items-center justify-between p-3 bg-theme-card border border-theme-card rounded-xl shadow-sm">
+        <div className="flex items-center justify-between p-3 bg-theme-card border border-theme-card rounded-xl ">
           <button
             onClick={toggleSelectAll}
             className="flex items-center gap-2 text-xs text-theme-secondary hover:text-theme-primary font-medium transition"
           >
             {selectedIds.size > 0 && selectedIds.size === pendingApprovals.length ? (
-              <CheckSquare className="w-4 h-4 text-indigo-600" />
+              <CheckSquare className="w-4 h-4 text-theme-primary" />
             ) : (
               <Square className="w-4 h-4 text-theme-muted" />
             )}
@@ -186,7 +186,7 @@ export const ApprovalsPage: React.FC<ApprovalsPageProps> = ({
               <button
                 disabled={busy}
                 onClick={() => handleBulkResolve("approve")}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-lg text-xs font-semibold shadow-sm transition"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] disabled:opacity-50 text-[var(--btn-primary-text)] rounded-lg text-xs font-semibold  transition"
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>{t.approvals.bulkApproveBtn}</span>
@@ -194,7 +194,7 @@ export const ApprovalsPage: React.FC<ApprovalsPageProps> = ({
               <button
                 disabled={busy}
                 onClick={() => handleBulkResolve("deny")}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white rounded-lg text-xs font-semibold shadow-sm transition"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] disabled:opacity-50 text-[var(--btn-primary-text)] rounded-lg text-xs font-semibold  transition"
               >
                 <XCircle className="w-3.5 h-3.5" />
                 <span>{t.approvals.bulkDenyBtn}</span>
@@ -206,7 +206,7 @@ export const ApprovalsPage: React.FC<ApprovalsPageProps> = ({
 
       {/* Approvals List */}
       {filtered.length === 0 ? (
-        <div className="p-12 text-center bg-theme-card border border-theme-card rounded-xl space-y-3 shadow-sm">
+        <div className="p-12 text-center bg-theme-card border border-theme-card rounded-xl space-y-3 ">
           <ShieldAlert className="w-10 h-10 text-theme-muted mx-auto" />
           <div className="text-theme-primary font-semibold text-sm">{t.approvals.noApprovals}</div>
           <p className="text-theme-muted text-xs">{t.approvals.noApprovalsDesc}</p>
@@ -223,9 +223,9 @@ export const ApprovalsPage: React.FC<ApprovalsPageProps> = ({
               <div
                 key={approval.id}
                 onClick={() => onSelectApproval(approval)}
-                className={`p-4 bg-theme-card border rounded-xl hover:border-indigo-500/50 cursor-pointer transition flex items-center justify-between gap-4 shadow-sm ${
+                className={`p-4 bg-theme-card border rounded-xl border-theme-subtle cursor-pointer transition flex items-center justify-between gap-4  ${
                   isPending
-                    ? "border-amber-500/40 bg-amber-500/[0.03]"
+                    ? "border-theme-subtle bg-[var(--btn-primary-bg)]/[0.03]"
                     : "border-theme-card"
                 }`}
               >
@@ -233,10 +233,10 @@ export const ApprovalsPage: React.FC<ApprovalsPageProps> = ({
                   {isPending && (
                     <button
                       onClick={(e) => toggleSelect(approval.id, e)}
-                      className="mt-0.5 text-theme-muted hover:text-indigo-600 transition shrink-0"
+                      className="mt-0.5 text-theme-muted hover:text-theme-primary transition shrink-0"
                     >
                       {isSelected ? (
-                        <CheckSquare className="w-4 h-4 text-indigo-600" />
+                        <CheckSquare className="w-4 h-4 text-theme-primary" />
                       ) : (
                         <Square className="w-4 h-4" />
                       )}
@@ -288,7 +288,7 @@ export const ApprovalsPage: React.FC<ApprovalsPageProps> = ({
                         handleGrantSessionTrust(approval.projectId, approval.id, e)
                       }
                       title={t.approvals.grantSessionTrustForProject}
-                      className="flex items-center gap-1 px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 rounded-lg text-[11px] font-medium transition"
+                      className="flex items-center gap-1 px-2.5 py-1.5 bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle rounded-lg text-[11px] font-medium transition"
                     >
                       <Zap className="w-3.5 h-3.5" />
                       <span>{t.approvals.grantSessionTrustForProject}</span>
@@ -301,7 +301,7 @@ export const ApprovalsPage: React.FC<ApprovalsPageProps> = ({
                         e.stopPropagation();
                         onSelectApproval(approval);
                       }}
-                      className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm transition"
+                      className="px-3.5 py-1.5 bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] rounded-lg text-xs font-semibold  transition"
                     >
                       {t.common.details}
                     </button>

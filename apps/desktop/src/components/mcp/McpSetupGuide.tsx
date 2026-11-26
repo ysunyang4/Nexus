@@ -4,7 +4,6 @@ import {
   AlertTriangle,
   BookOpen,
   Check,
-  CheckCircle2,
   Copy,
   ExternalLink,
   Globe,
@@ -14,7 +13,6 @@ import {
   Terminal,
   Trash2,
   Wrench,
-  XCircle,
 } from "lucide-react";
 import { bridge, type McpEnvCheckResult } from "../../api/bridge.js";
 import { openExternalUrl } from "../../api/browser-helper.js";
@@ -87,32 +85,32 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
     cmd: string;
     label?: string;
   }) => (
-    <div className="rounded-lg border border-theme-subtle bg-slate-950 text-slate-100 overflow-hidden">
+    <div className="rounded-lg border border-theme-subtle bg-theme-base text-theme-primary overflow-hidden">
       {label && (
-        <div className="px-3 py-1.5 bg-slate-900 border-b border-slate-800 text-[11px] font-medium text-slate-400">
+        <div className="px-3 py-1.5 bg-theme-card border-b border-theme-subtle text-[11px] font-medium text-theme-secondary">
           {label}
         </div>
       )}
       <div className="px-3 py-2 flex items-center justify-between gap-2">
-        <code className="text-xs font-mono text-emerald-300 break-all select-all">
+        <code className="text-xs font-mono text-theme-primary break-all select-all">
           {cmd}
         </code>
         <button
           type="button"
           onClick={() => handleCopy(id, cmd)}
-          className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-medium transition-colors cursor-pointer"
+          className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-md border border-theme-subtle bg-transparent hover:bg-theme-card-hover text-theme-primary text-[11px] font-medium transition-colors cursor-pointer"
           title={tText("复制命令", "Copy command", "コマンドをコピー", "Befehl kopieren")}
         >
           {copiedId === id ? (
             <>
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-emerald-300">
+              <Check className="w-3.5 h-3.5 text-[var(--success)]" />
+              <span className="text-[var(--success)]">
                 {tText("已复制", "Copied", "コピー済み", "Kopiert")}
               </span>
             </>
           ) : (
             <>
-              <Copy className="w-3.5 h-3.5" />
+              <Copy className="w-3.5 h-3.5 text-theme-secondary" />
               <span>{tText("复制", "Copy", "コピー", "Kopieren")}</span>
             </>
           )}
@@ -136,24 +134,18 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
     return (
       <div
         key={name}
-        className={`p-3 rounded-xl border text-xs ${
-          info.ok
-            ? "bg-emerald-500/10 border-emerald-500/25"
-            : info.installed
-              ? "bg-amber-500/10 border-amber-500/25"
-              : "bg-rose-500/10 border-rose-500/25"
-        }`}
+        className="p-3 rounded-xl border border-theme-subtle bg-theme-base text-xs"
       >
         <div className="flex items-center justify-between gap-2 mb-1">
           <span className="font-semibold text-theme-primary">{name}</span>
           {info.ok ? (
-            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 text-[10px] font-semibold">
-              <CheckCircle2 className="w-3 h-3" />
+            <span className="inline-flex items-center gap-1 text-[var(--success)] text-[11px] font-semibold">
+              <span>✓</span>
               {tText("就绪", "Ready", "準備完了", "Bereit")}
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-rose-500/15 text-rose-500 text-[10px] font-semibold">
-              <XCircle className="w-3 h-3" />
+            <span className="inline-flex items-center gap-1 text-[var(--warning)] text-[11px] font-semibold">
+              <span>△</span>
               {tText("缺失 / 不兼容", "Missing", "未検出", "Fehlt")}
             </span>
           )}
@@ -185,7 +177,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-1.5 max-w-2xl">
             <h2 className="text-lg font-semibold text-theme-primary flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-sky-500" />
+              <BookOpen className="w-5 h-5 text-theme-secondary" />
               {tText(
                 "MCP 通用接入与环境排障指南",
                 "Universal MCP Setup & Troubleshooting Guide",
@@ -207,25 +199,25 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
             <button
               type="button"
               onClick={() => handleOpenExternal("https://blog.ycu.de5.net/")}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold shadow-xs transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-theme-subtle bg-transparent hover:bg-theme-card-hover text-theme-primary font-semibold transition-colors cursor-pointer"
             >
-              <BookOpen className="w-3.5 h-3.5" />
+              <BookOpen className="w-3.5 h-3.5 text-theme-secondary" />
               <span>{tText("博客完整教程", "Blog Tutorials", "ブログ解説", "Blog-Anleitung")}</span>
-              <ExternalLink className="w-3 h-3" />
+              <ExternalLink className="w-3 h-3 text-theme-secondary" />
             </button>
-            <span className="px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-medium">
+            <span className="px-2.5 py-1 rounded-full bg-theme-base text-theme-secondary border border-theme-subtle font-medium">
               {tText("实时工具池", "Live Tool Pool", "ツールプール", "Live-Tool-Pool")}:{" "}
-              <strong className="font-mono">{totalToolsCount}</strong>
+              <strong className="font-mono text-theme-primary">{totalToolsCount}</strong>
             </span>
-            <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-medium">
+            <span className="px-2.5 py-1 rounded-full bg-theme-base text-theme-secondary border border-theme-subtle font-medium">
               {tText("托管服务", "Managed Services", "管理サービス", "Dienste")}:{" "}
-              <strong className="font-mono">
-                {runningCount}/{totalServicesCount}
+              <strong className="font-mono text-[var(--success)]">
+                ✓ {runningCount}/{totalServicesCount}
               </strong>
             </span>
             <span className="px-2.5 py-1 rounded-full bg-theme-base text-theme-secondary border border-theme-subtle font-medium">
               {tText("已配置数", "Configured", "設定済み", "Konfiguriert")}:{" "}
-              <strong className="font-mono">{externalProvidersCount}</strong>
+              <strong className="font-mono text-theme-primary">{externalProvidersCount}</strong>
             </span>
           </div>
         </div>
@@ -236,7 +228,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="text-sm font-semibold text-theme-primary flex items-center gap-2">
-              <Activity className="w-4 h-4 text-emerald-500" />
+              <Activity className="w-4 h-4 text-theme-secondary" />
               {tText(
                 "一键基础环境检测（Node.js / npm / uv / Python / 端口）",
                 "One-Click Base Environment Check (Node.js / npm / uv / Python / Ports)",
@@ -257,7 +249,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
             type="button"
             onClick={handleRunEnvCheck}
             disabled={checkingEnv}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] hover:opacity-90 disabled:opacity-60 text-xs font-semibold transition-opacity cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${checkingEnv ? "animate-spin" : ""}`} />
             {checkingEnv
@@ -267,8 +259,8 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
         </div>
 
         {envError && (
-          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-xs text-rose-500">
-            {envError}
+          <div className="p-3 rounded-xl border border-theme-subtle bg-theme-base text-xs text-[var(--warning)]">
+            △ {envError}
           </div>
         )}
 
@@ -309,13 +301,15 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
                     </div>
                     <div className="flex items-center gap-2">
                       {p.inUse ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-500 border border-amber-500/25 text-[11px] font-medium font-mono">
+                        <span className="inline-flex items-center gap-1 text-[var(--warning)] text-[11px] font-medium font-mono">
+                          <span>△</span>
                           {tText("已占用", "In Use", "使用中", "Belegt")}
                           {p.pid ? ` · PID ${p.pid}` : ""}
                           {p.processName ? ` (${p.processName})` : ""}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[11px] font-medium">
+                        <span className="inline-flex items-center gap-1 text-[var(--success)] text-[11px] font-medium">
+                          <span>✓</span>
                           {tText("空闲", "Free", "空き", "Frei")}
                         </span>
                       )}
@@ -332,7 +326,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
       <div className="bg-theme-card rounded-2xl border border-theme-subtle p-5 sm:p-6 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-sm font-semibold text-theme-primary flex items-center gap-2">
-            <Wrench className="w-4 h-4 text-sky-500" />
+            <Wrench className="w-4 h-4 text-theme-secondary" />
             {tText(
               "各类 MCP 怎么安装与接入（按类型对号入座）",
               "How to Install & Connect Any MCP (By Type)",
@@ -353,7 +347,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Type 1 */}
           <div className="p-4 rounded-xl border border-theme-subtle bg-theme-base space-y-2">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-emerald-500">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-theme-primary">
               {tText("类型 1 · 内置 uv / Python 托管型", "Type 1 · Built-in uv / Python", "タイプ 1 · 内蔵 uv / Python", "Typ 1 · Integriertes uv / Python")}
             </div>
             <p className="text-xs text-theme-secondary leading-relaxed">
@@ -368,7 +362,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
 
           {/* Type 2 */}
           <div className="p-4 rounded-xl border border-theme-subtle bg-theme-base space-y-2">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-sky-500">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-theme-primary">
               {tText("类型 2 · npx / uvx 按需拉取型", "Type 2 · npx / uvx On-Demand", "タイプ 2 · npx / uvx オンデマンド", "Typ 2 · npx / uvx Bei Bedarf")}
             </div>
             <p className="text-xs text-theme-secondary leading-relaxed">
@@ -383,7 +377,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
 
           {/* Type 3 */}
           <div className="p-4 rounded-xl border border-theme-subtle bg-theme-base space-y-2.5 md:col-span-2">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-indigo-400">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-theme-primary">
               {tText("类型 3 · 全局 npm CLI 安装型（需先在终端装包）", "Type 3 · Global npm CLI (Pre-install Required)", "タイプ 3 · グローバル npm CLI（事前インストール必要）", "Typ 3 · Globales npm-CLI (Vorab-Installation)")}
             </div>
             <p className="text-xs text-theme-secondary leading-relaxed">
@@ -394,7 +388,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
                 "Wenn ein Server ein globales CLI (`xxx-mcp.cmd`) nutzt, zuerst global installieren, mit `where.exe` prüfen und dann in Nexus starten.",
               )}
             </p>
-            <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/25 text-xs text-amber-500 flex items-start gap-2">
+            <div className="p-2.5 rounded-lg border border-theme-subtle bg-theme-card text-xs text-[var(--warning)] flex items-start gap-2">
               <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
               <span>
                 {tText(
@@ -426,7 +420,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
 
           {/* Type 4 */}
           <div className="p-4 rounded-xl border border-theme-subtle bg-theme-base space-y-2">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-purple-400">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-theme-primary">
               {tText("类型 4 · 本地源码 / 自定义脚本型", "Type 4 · Local Source / Custom Script", "タイプ 4 · ローカルソース / 自作スクリプト", "Typ 4 · Lokaler Quellcode / Skript")}
             </div>
             <p className="text-xs text-theme-secondary leading-relaxed">
@@ -441,7 +435,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
 
           {/* Type 5 */}
           <div className="p-4 rounded-xl border border-theme-subtle bg-theme-base space-y-2">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-amber-500">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-theme-primary">
               {tText("类型 5 · 宿主软件联动桥接型", "Type 5 · Host Application Bridge", "タイプ 5 · ホストアプリ連携型", "Typ 5 · Host-Anwendungs-Bridge")}
             </div>
             <p className="text-xs text-theme-secondary leading-relaxed">
@@ -456,7 +450,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
 
           {/* Type 6 */}
           <div className="p-4 rounded-xl border border-theme-subtle bg-theme-base space-y-2 md:col-span-2">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-cyan-400">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-theme-primary">
               {tText("类型 6 · 独立 HTTP / SSE 常驻服务或容器型", "Type 6 · Standalone HTTP / SSE Daemon or Container", "タイプ 6 · 独立 HTTP / SSE 常駐サーバー", "Typ 6 · Eigenständiger HTTP / SSE-Dienst")}
             </div>
             <p className="text-xs text-theme-secondary leading-relaxed">
@@ -475,7 +469,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="bg-theme-card rounded-2xl border border-theme-subtle p-5 sm:p-6 space-y-3">
           <h3 className="text-sm font-semibold text-theme-primary flex items-center gap-2">
-            <Globe className="w-4 h-4 text-sky-500" />
+            <Globe className="w-4 h-4 text-theme-secondary" />
             {tText(
               "网络镜像加速（uv / npm 下载慢或超时）",
               "Regional Mirror Acceleration (uv / npm)",
@@ -505,7 +499,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
 
         <div className="bg-theme-card rounded-2xl border border-theme-subtle p-5 sm:p-6 space-y-3">
           <h3 className="text-sm font-semibold text-theme-primary flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-sky-500" />
+            <Terminal className="w-4 h-4 text-theme-secondary" />
             {tText(
               "日志查看、停止与卸载",
               "Logs, Stop & Uninstall",
@@ -515,7 +509,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
           </h3>
           <ul className="space-y-2.5 text-xs text-theme-secondary">
             <li className="flex items-start gap-2">
-              <Terminal className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+              <Terminal className="w-4 h-4 text-theme-secondary shrink-0 mt-0.5" />
               <span>
                 <strong className="text-theme-primary">{tText("查看日志：", "View Logs: ", "ログ確認: ", "Logs: ")}</strong>
                 {tText(
@@ -527,13 +521,13 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
               </span>
             </li>
             <li className="flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+              <AlertTriangle className="w-4 h-4 text-[var(--warning)] shrink-0 mt-0.5" />
               <span>
                 <strong className="text-theme-primary">{tText("停止服务：", "Stop Service: ", "停止: ", "Stoppen: ")}</strong>
                 {tText(
-                  "点击红色 Stop 按钮可安全终止子进程并释放对应监听端口。",
-                  "Click the red Stop button to terminate the child process and free its port.",
-                  "赤い Stop ボタンで子プロセスを終了しポートを解放します。",
+                  "点击 Stop 按钮可安全终止子进程并释放对应监听端口。",
+                  "Click the Stop button to terminate the child process and free its port.",
+                  "Stop ボタンで子プロセスを終了しポートを解放します。",
                   "Mit Stop den Kindprozess beenden und den Port freigeben.",
                 )}
               </span>
@@ -561,7 +555,7 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
       {/* Universal Troubleshooting FAQ */}
       <div className="bg-theme-card rounded-2xl border border-theme-subtle p-5 sm:p-6 space-y-3">
         <h3 className="text-sm font-semibold text-theme-primary flex items-center gap-2">
-          <HelpCircle className="w-4 h-4 text-amber-500" />
+          <HelpCircle className="w-4 h-4 text-[var(--warning)]" />
           {tText(
             "通用报错速查",
             "Common Error Quick Reference",
@@ -571,8 +565,8 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
           <div className="p-3.5 rounded-xl bg-theme-base border border-theme-subtle space-y-1">
-            <div className="font-mono font-semibold text-rose-500">
-              npm.ps1 / npx.ps1 cannot be loaded
+            <div className="font-mono font-semibold text-[var(--warning)]">
+              △ npm.ps1 / npx.ps1 cannot be loaded
             </div>
             <p className="text-theme-secondary">
               {tText(
@@ -584,8 +578,8 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
             </p>
           </div>
           <div className="p-3.5 rounded-xl bg-theme-base border border-theme-subtle space-y-1">
-            <div className="font-mono font-semibold text-rose-500">
-              spawn ... ENOENT
+            <div className="font-mono font-semibold text-[var(--warning)]">
+              △ spawn ... ENOENT
             </div>
             <p className="text-theme-secondary">
               {tText(
@@ -597,8 +591,8 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
             </p>
           </div>
           <div className="p-3.5 rounded-xl bg-theme-base border border-theme-subtle space-y-1">
-            <div className="font-mono font-semibold text-amber-500">
-              0 Tools {tText("（启动后工具数为 0）", "(0 tools after Start)", "(起動後にツール数 0)", "(0 Tools nach Start)")}
+            <div className="font-mono font-semibold text-[var(--warning)]">
+              △ 0 Tools {tText("（启动后工具数为 0）", "(0 tools after Start)", "(起動後にツール数 0)", "(0 Tools nach Start)")}
             </div>
             <p className="text-theme-secondary">
               {tText(
@@ -610,8 +604,8 @@ export const McpSetupGuide: React.FC<McpSetupGuideProps> = ({
             </p>
           </div>
           <div className="p-3.5 rounded-xl bg-theme-base border border-theme-subtle space-y-1">
-            <div className="font-mono font-semibold text-amber-500">
-              EADDRINUSE / {tText("端口冲突", "Port conflict", "ポート競合", "Portkonflikt")}
+            <div className="font-mono font-semibold text-[var(--warning)]">
+              △ EADDRINUSE / {tText("端口冲突", "Port conflict", "ポート競合", "Portkonflikt")}
             </div>
             <p className="text-theme-secondary">
               {tText(

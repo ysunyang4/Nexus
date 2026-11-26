@@ -2459,6 +2459,7 @@ export class SkillImporter {
         resolvedPath.startsWith(userDir) ||
         (params.projectRoot && resolvedPath.startsWith(path.resolve(params.projectRoot))) ||
         resolvedPath.includes(path.join(".nexus", "skills")) ||
+        resolvedPath.includes(path.join(".nexus", "skills")) ||
         resolvedPath.includes("LocalBridge")
       ) {
         dirsToDelete.add(resolvedPath);
@@ -2480,11 +2481,13 @@ export class SkillImporter {
     if (params.projectRoot || existing?.source === "project") {
       const pRoot = params.projectRoot || (existing?.sourcePath ? path.resolve(existing.sourcePath, "../../..") : undefined);
       if (pRoot) {
-        const projectSkillsDir = path.resolve(pRoot, ".nexus", "skills");
-        const pTarget1 = path.join(projectSkillsDir, params.skillId);
-        const pTarget2 = path.join(projectSkillsDir, strippedId);
-        if (fs.existsSync(pTarget1)) dirsToDelete.add(path.resolve(pTarget1));
-        if (fs.existsSync(pTarget2)) dirsToDelete.add(path.resolve(pTarget2));
+        for (const folder of [".nexus", ".nexus"]) {
+          const projectSkillsDir = path.resolve(pRoot, folder, "skills");
+          const pTarget1 = path.join(projectSkillsDir, params.skillId);
+          const pTarget2 = path.join(projectSkillsDir, strippedId);
+          if (fs.existsSync(pTarget1)) dirsToDelete.add(path.resolve(pTarget1));
+          if (fs.existsSync(pTarget2)) dirsToDelete.add(path.resolve(pTarget2));
+        }
       }
     }
 

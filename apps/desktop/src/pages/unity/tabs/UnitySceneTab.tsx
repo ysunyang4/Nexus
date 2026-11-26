@@ -69,7 +69,7 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
           onClick={() => onSelectObject(node.id)}
           className={`flex items-center gap-1.5 py-1 px-2 rounded cursor-pointer text-xs transition ${
             isSelected
-              ? "bg-sky-500/15 text-sky-400 font-medium border border-sky-500/30"
+              ? "bg-[var(--btn-primary-bg)]/15 text-theme-primary font-medium border border-theme-subtle"
               : "hover:bg-theme-card/60 text-theme-secondary hover:text-theme-primary"
           } ${!node.active ? "opacity-50" : ""}`}
           style={{ paddingLeft: `${depth * 14 + 8}px` }}
@@ -92,7 +92,7 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
           )}
 
           {/* Node Icon */}
-          <Box className={`w-3.5 h-3.5 shrink-0 ${isSelected ? "text-sky-400" : "text-theme-muted"}`} />
+          <Box className={`w-3.5 h-3.5 shrink-0 ${isSelected ? "text-theme-primary" : "text-theme-muted"}`} />
 
           {/* Node Name */}
           <span className="truncate flex-1 font-mono text-[11px]">{node.name}</span>
@@ -101,7 +101,7 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
           {node.hasMissingScript && (
             <span
               title="Missing Script (MonoBehaviour 脚本丢失)"
-              className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0"
+              className="w-1.5 h-1.5 rounded-full bg-[var(--btn-primary-bg)] shrink-0"
             />
           )}
         </div>
@@ -122,7 +122,7 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
       <div className="w-72 border-r border-theme-subtle flex flex-col h-full bg-theme-sidebar/40 shrink-0">
         <div className="p-3 border-b border-theme-subtle flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2 text-xs font-semibold text-theme-primary">
-            <Layers className="w-3.5 h-3.5 text-sky-500" />
+            <Layers className="w-3.5 h-3.5 text-theme-primary" />
             <span>Hierarchy</span>
           </div>
           <span className="text-[10px] font-mono text-theme-muted">
@@ -139,7 +139,7 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
               placeholder="搜索对象..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-theme-base pl-8 pr-2.5 py-1 rounded text-xs text-theme-primary placeholder-theme-muted border border-theme-subtle focus:outline-none focus:border-sky-500/50"
+              className="w-full bg-theme-base pl-8 pr-2.5 py-1 rounded text-xs text-theme-primary placeholder-theme-muted border border-theme-subtle focus:outline-none border-theme-subtle"
             />
           </div>
         </div>
@@ -170,7 +170,7 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
                   type="checkbox"
                   checked={selectedObject.active}
                   readOnly
-                  className="rounded border-theme-subtle accent-sky-500"
+                  className="rounded border-theme-subtle accent-[var(--text-primary)]"
                 />
                 <h2 className="text-sm font-semibold text-theme-primary truncate font-mono">
                   {selectedObject.objectName}
@@ -199,7 +199,7 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
                     objectStateSnapshot: selectedObject,
                   })
                 }
-                className="px-2.5 py-1 text-xs font-mono bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/30 rounded flex items-center gap-1.5 transition"
+                className="px-2.5 py-1 text-xs font-mono bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-theme-primary border border-theme-subtle rounded flex items-center gap-1.5 transition"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>Evidence</span>
@@ -214,7 +214,7 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
                 className="w-full px-3 py-2 bg-theme-header/60 flex items-center justify-between text-xs font-semibold text-theme-primary"
               >
                 <span className="flex items-center gap-2">
-                  <Sliders className="w-3.5 h-3.5 text-sky-500" />
+                  <Sliders className="w-3.5 h-3.5 text-theme-primary" />
                   <span>Transform</span>
                 </span>
                 {collapsedGroups.transform ? (
@@ -230,15 +230,15 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
                   <div className="grid grid-cols-4 items-center gap-2">
                     <span className="text-theme-muted">Position</span>
                     <div className="flex items-center gap-1 bg-theme-base px-2 py-1 rounded border border-theme-subtle text-[11px]">
-                      <span className="text-rose-400 font-bold">X</span>
+                      <span className="text-[var(--warning)] font-bold">X</span>
                       <span>{selectedObject.transform.position.x.toFixed(2)}</span>
                     </div>
                     <div className="flex items-center gap-1 bg-theme-base px-2 py-1 rounded border border-theme-subtle text-[11px]">
-                      <span className="text-emerald-400 font-bold">Y</span>
+                      <span className="text-[var(--success)] font-bold">Y</span>
                       <span>{selectedObject.transform.position.y.toFixed(2)}</span>
                     </div>
                     <div className="flex items-center gap-1 bg-theme-base px-2 py-1 rounded border border-theme-subtle text-[11px]">
-                      <span className="text-sky-400 font-bold">Z</span>
+                      <span className="text-theme-primary font-bold">Z</span>
                       <span>{selectedObject.transform.position.z.toFixed(2)}</span>
                     </div>
                   </div>
@@ -247,15 +247,15 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
                   <div className="grid grid-cols-4 items-center gap-2">
                     <span className="text-theme-muted">Rotation</span>
                     <div className="flex items-center gap-1 bg-theme-base px-2 py-1 rounded border border-theme-subtle text-[11px]">
-                      <span className="text-rose-400 font-bold">X</span>
+                      <span className="text-[var(--warning)] font-bold">X</span>
                       <span>{selectedObject.transform.rotation.x.toFixed(2)}</span>
                     </div>
                     <div className="flex items-center gap-1 bg-theme-base px-2 py-1 rounded border border-theme-subtle text-[11px]">
-                      <span className="text-emerald-400 font-bold">Y</span>
+                      <span className="text-[var(--success)] font-bold">Y</span>
                       <span>{selectedObject.transform.rotation.y.toFixed(2)}</span>
                     </div>
                     <div className="flex items-center gap-1 bg-theme-base px-2 py-1 rounded border border-theme-subtle text-[11px]">
-                      <span className="text-sky-400 font-bold">Z</span>
+                      <span className="text-theme-primary font-bold">Z</span>
                       <span>{selectedObject.transform.rotation.z.toFixed(2)}</span>
                     </div>
                   </div>
@@ -264,15 +264,15 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
                   <div className="grid grid-cols-4 items-center gap-2">
                     <span className="text-theme-muted">Scale</span>
                     <div className="flex items-center gap-1 bg-theme-base px-2 py-1 rounded border border-theme-subtle text-[11px]">
-                      <span className="text-rose-400 font-bold">X</span>
+                      <span className="text-[var(--warning)] font-bold">X</span>
                       <span>{selectedObject.transform.scale.x.toFixed(2)}</span>
                     </div>
                     <div className="flex items-center gap-1 bg-theme-base px-2 py-1 rounded border border-theme-subtle text-[11px]">
-                      <span className="text-emerald-400 font-bold">Y</span>
+                      <span className="text-[var(--success)] font-bold">Y</span>
                       <span>{selectedObject.transform.scale.y.toFixed(2)}</span>
                     </div>
                     <div className="flex items-center gap-1 bg-theme-base px-2 py-1 rounded border border-theme-subtle text-[11px]">
-                      <span className="text-sky-400 font-bold">Z</span>
+                      <span className="text-theme-primary font-bold">Z</span>
                       <span>{selectedObject.transform.scale.z.toFixed(2)}</span>
                     </div>
                   </div>
@@ -288,7 +288,7 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
                 className="w-full px-3 py-2 bg-theme-header/60 flex items-center justify-between text-xs font-semibold text-theme-primary"
               >
                 <span className="flex items-center gap-2">
-                  <FileCode className="w-3.5 h-3.5 text-sky-500" />
+                  <FileCode className="w-3.5 h-3.5 text-theme-primary" />
                   <span>Components ({selectedObject.components.length})</span>
                 </span>
                 {collapsedGroups.components ? (
@@ -308,14 +308,14 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
                             type="checkbox"
                             checked={comp.enabled}
                             readOnly
-                            className="rounded border-theme-subtle accent-sky-500"
+                            className="rounded border-theme-subtle accent-[var(--text-primary)]"
                           />
                           <span className="font-semibold text-theme-primary">{comp.name}</span>
                           <span className="text-[10px] text-theme-muted">({comp.type})</span>
                         </div>
 
                         {comp.isMissingScript && (
-                          <span className="flex items-center gap-1 text-[10px] text-rose-400 font-semibold bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/30">
+                          <span className="flex items-center gap-1 text-[10px] text-[var(--warning)] font-semibold bg-[var(--btn-primary-bg)]/10 px-2 py-0.5 rounded border border-theme-subtle">
                             <AlertTriangle className="w-3 h-3" />
                             <span>Missing Script</span>
                           </span>
@@ -353,7 +353,7 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
                   className="w-full px-3 py-2 bg-theme-header/60 flex items-center justify-between text-xs font-semibold text-theme-primary"
                 >
                   <span className="flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-sky-500" />
+                    <Sparkles className="w-3.5 h-3.5 text-theme-primary" />
                     <span>References ({selectedObject.references.length})</span>
                   </span>
                   {collapsedGroups.references ? (
@@ -375,7 +375,7 @@ export const UnitySceneTab: React.FC<UnitySceneTabProps> = ({
                           <span className="text-theme-primary">{ref.targetName}</span>
                           <span className="text-[10px] text-theme-muted">({ref.targetType})</span>
                           {ref.isMissing && (
-                            <span className="text-[10px] text-rose-400 bg-rose-500/10 px-1 rounded">
+                            <span className="text-[10px] text-[var(--warning)] bg-[var(--btn-primary-bg)]/10 px-1 rounded">
                               Missing
                             </span>
                           )}

@@ -11,12 +11,12 @@ import { bridge } from "../api/bridge.js";
 import { useTranslation } from "../i18n/useTranslation.js";
 
 const PRIORITY_BADGES: Record<string, { label: string; color: string; rank: number }> = {
-  SYSTEM: { label: "系统级 (100)", color: "bg-red-500/10 text-red-500 border-red-500/20", rank: 100 },
-  CORE_GLOBAL: { label: "核心全局 (80)", color: "bg-purple-500/10 text-purple-500 border-purple-500/20", rank: 80 },
-  USER_GLOBAL: { label: "用户全局 (60)", color: "bg-sky-500/10 text-sky-500 border-sky-500/20", rank: 60 },
-  PROJECT: { label: "项目级 (40)", color: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20", rank: 40 },
-  TASK: { label: "任务级 (20)", color: "bg-amber-500/10 text-amber-500 border-amber-500/20", rank: 20 },
-  SKILL: { label: "技能级 (10)", color: "bg-zinc-500/10 text-zinc-400 border-zinc-500/20", rank: 10 },
+  SYSTEM: { label: "系统级 (100)", color: "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border-theme-subtle", rank: 100 },
+  CORE_GLOBAL: { label: "核心全局 (80)", color: "bg-[var(--btn-primary-bg)]/10 text-theme-primary border-theme-subtle", rank: 80 },
+  USER_GLOBAL: { label: "用户全局 (60)", color: "bg-[var(--btn-primary-bg)]/10 text-theme-primary border-theme-subtle", rank: 60 },
+  PROJECT: { label: "项目级 (40)", color: "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border-theme-subtle", rank: 40 },
+  TASK: { label: "任务级 (20)", color: "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border-theme-subtle", rank: 20 },
+  SKILL: { label: "技能级 (10)", color: "bg-zinc-500/10 text-theme-secondary border-zinc-500/20", rank: 10 },
 };
 
 export const GlobalRulesPage: React.FC = () => {
@@ -101,7 +101,7 @@ export const GlobalRulesPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-theme-subtle pb-5">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-purple-500/10 text-purple-500 border border-purple-500/20">
+          <div className="p-2 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle">
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
@@ -116,7 +116,7 @@ export const GlobalRulesPage: React.FC = () => {
           <select
             value={selectedScope}
             onChange={(e) => setSelectedScope(e.target.value)}
-            className="bg-theme-card border border-theme-subtle rounded-lg px-2.5 py-1.5 text-xs text-theme-primary focus:outline-none focus:border-purple-500"
+            className="bg-theme-card border border-theme-subtle rounded-lg px-2.5 py-1.5 text-xs text-theme-primary focus:outline-none border-theme-subtle"
           >
             <option value="ALL">{t.rules?.allScopes || "所有作用域"}</option>
             <option value="GLOBAL">全局 (GLOBAL)</option>
@@ -135,7 +135,7 @@ export const GlobalRulesPage: React.FC = () => {
           </button>
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-purple-600 hover:bg-purple-500 text-white flex items-center gap-1.5 transition shadow-sm"
+            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] flex items-center gap-1.5 transition "
           >
             <Plus className="w-3.5 h-3.5" />
             <span>{t.rules?.addRule || "添加规则"}</span>
@@ -147,8 +147,8 @@ export const GlobalRulesPage: React.FC = () => {
         <div
           className={`p-3 rounded-lg text-xs flex items-center justify-between ${
             message.type === "success"
-              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-              : "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
+              ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] text-[var(--success)] border border-theme-subtle"
+              : "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle"
           }`}
         >
           <span>{message.text}</span>
@@ -169,7 +169,7 @@ export const GlobalRulesPage: React.FC = () => {
           rules.map((rule) => {
             const badge = PRIORITY_BADGES[rule.priority] || {
               label: rule.priority,
-              color: "bg-zinc-500/10 text-zinc-400 border-zinc-500/20",
+              color: "bg-zinc-500/10 text-theme-secondary border-zinc-500/20",
               rank: 0,
             };
             const isProtected = rule.priority === "SYSTEM" || rule.priority === "CORE_GLOBAL";
@@ -177,7 +177,7 @@ export const GlobalRulesPage: React.FC = () => {
             return (
               <div
                 key={rule.ruleId}
-                className="bg-theme-card border border-theme-subtle rounded-xl p-4 flex flex-col md:flex-row md:items-start justify-between gap-4 hover:border-theme-muted transition shadow-sm"
+                className="bg-theme-card border border-theme-subtle rounded-xl p-4 flex flex-col md:flex-row md:items-start justify-between gap-4 hover:border-theme-muted transition "
               >
                 <div className="space-y-2 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -191,7 +191,7 @@ export const GlobalRulesPage: React.FC = () => {
                       作用域: {rule.scope}
                     </span>
                     {isProtected && (
-                      <span className="text-[10px] text-amber-500 flex items-center gap-1 font-medium">
+                      <span className="text-[10px] text-[var(--warning)] flex items-center gap-1 font-medium">
                         <Lock className="w-3 h-3" />
                         受保护系统规则
                       </span>
@@ -220,7 +220,7 @@ export const GlobalRulesPage: React.FC = () => {
                 {!isProtected && (
                   <button
                     onClick={() => handleDeleteRule(rule.ruleId, rule.priority)}
-                    className="p-1.5 rounded-lg text-theme-muted hover:text-red-500 hover:bg-theme-card-hover transition shrink-0"
+                    className="p-1.5 rounded-lg text-theme-muted hover:text-[var(--warning)] hover:bg-theme-card-hover transition shrink-0"
                     title="删除规则"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -234,8 +234,8 @@ export const GlobalRulesPage: React.FC = () => {
 
       {/* Add Rule Modal */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-theme-card border border-theme-subtle rounded-xl max-w-lg w-full p-6 space-y-4 shadow-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+          <div className="bg-theme-card border border-theme-subtle rounded-xl max-w-lg w-full p-6 space-y-4 ">
             <h2 className="text-base font-bold text-theme-primary">{t.rules?.createRuleTitle || "新建全局 / 项目规则"}</h2>
             <form onSubmit={handleCreateRule} className="space-y-3">
               <div>
@@ -246,7 +246,7 @@ export const GlobalRulesPage: React.FC = () => {
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder="例如: enforce_action_ledger_verification"
-                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-purple-500"
+                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -256,7 +256,7 @@ export const GlobalRulesPage: React.FC = () => {
                   <select
                     value={newPriority}
                     onChange={(e) => setNewPriority(e.target.value)}
-                    className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-purple-500"
+                    className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                   >
                     <option value="USER_GLOBAL">用户全局 (60)</option>
                     <option value="PROJECT">项目级 (40)</option>
@@ -269,7 +269,7 @@ export const GlobalRulesPage: React.FC = () => {
                   <select
                     value={newScope}
                     onChange={(e) => setNewScope(e.target.value)}
-                    className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-purple-500"
+                    className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                   >
                     <option value="GLOBAL">全局 (GLOBAL)</option>
                     <option value="USER_GLOBAL">用户全局 (USER_GLOBAL)</option>
@@ -287,7 +287,7 @@ export const GlobalRulesPage: React.FC = () => {
                   value={newContent}
                   onChange={(e) => setNewContent(e.target.value)}
                   placeholder="详细定义行为约束、系统策略或安全要求..."
-                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-purple-500 font-mono"
+                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle font-mono"
                 />
               </div>
 
@@ -298,7 +298,7 @@ export const GlobalRulesPage: React.FC = () => {
                   value={newTags}
                   onChange={(e) => setNewTags(e.target.value)}
                   placeholder="安全, 文件系统, 验证"
-                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-purple-500"
+                  className="w-full bg-theme-sidebar border border-theme-subtle rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -312,7 +312,7 @@ export const GlobalRulesPage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg text-xs font-medium bg-purple-600 hover:bg-purple-500 text-white"
+                  className="px-4 py-2 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)]"
                 >
                   {t.rules?.addRule || "确认创建"}
                 </button>

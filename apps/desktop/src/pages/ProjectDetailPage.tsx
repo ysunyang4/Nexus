@@ -333,7 +333,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
       <div className="space-y-3">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 text-xs font-mono text-theme-muted hover:text-sky-400 transition"
+          className="flex items-center gap-1.5 text-xs font-mono text-theme-muted hover:text-theme-primary transition"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>{t.projectDetail.backToProjects}</span>
@@ -349,8 +349,8 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
               <span
                 className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
                   project.enabled
-                    ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                    : "bg-amber-500/15 text-amber-400 border border-amber-500/30"
+                    ? "bg-[var(--btn-primary-bg)]/15 text-[var(--success)] border border-theme-subtle"
+                    : "bg-[var(--btn-primary-bg)]/15 text-[var(--warning)] border border-theme-subtle"
                 }`}
               >
                 {project.enabled ? t.projectDetail.authorized : t.control.statusDisabled}
@@ -370,8 +370,8 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
               disabled={actionLoading === "access"}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium border transition ${
                 project.accessMode === "read-write"
-                  ? "bg-amber-500/10 text-amber-300 border-amber-500/30"
-                  : "bg-emerald-500/10 text-emerald-300 border-emerald-500/30"
+                  ? "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border-theme-subtle"
+                  : "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border-theme-subtle"
               }`}
               title="Toggle Read-Only / Read-Write mode"
             >
@@ -386,7 +386,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
                 )
               }
               disabled={actionLoading === "execution"}
-              className="bg-theme-card-muted border border-theme-subtle text-xs font-mono text-theme-secondary rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-500"
+              className="bg-theme-card-muted border border-theme-subtle text-xs font-mono text-theme-secondary rounded-lg px-2.5 py-1.5 focus:outline-none border-theme-subtle"
             >
               <option value="safe-only">{t.projectDetail.execSafeOnly}</option>
               <option value="project-code">{t.projectDetail.execProjectCode}</option>
@@ -399,7 +399,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
               className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition ${
                 project.enabled
                   ? "bg-theme-card-muted text-theme-secondary border-theme-subtle hover:bg-theme-card"
-                  : "bg-emerald-600 text-white border-emerald-500"
+                  : "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] border-theme-subtle"
               }`}
             >
               {project.enabled ? t.projectDetail.disable : t.projectDetail.enable}
@@ -410,7 +410,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
                 <button
                   onClick={handleRemoveProject}
                   disabled={actionLoading === "remove"}
-                  className="px-2.5 py-1.5 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-lg transition"
+                  className="px-2.5 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] text-xs font-bold rounded-lg transition"
                 >
                   {t.projectDetail.confirmRemove}
                 </button>
@@ -424,7 +424,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
             ) : (
               <button
                 onClick={() => setDeleteConfirm(true)}
-                className="p-1.5 rounded-lg text-theme-muted hover:text-red-400 hover:bg-theme-card-muted transition"
+                className="p-1.5 rounded-lg text-theme-muted hover:text-[var(--warning)] hover:bg-theme-card-muted transition"
                 title={t.projectDetail.removeProject}
               >
                 <Trash2 className="w-4 h-4" />
@@ -436,14 +436,14 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
 
       {/* Notifications / Alerts */}
       {errorMsg && (
-        <div className="p-3 bg-red-500/10 border border-red-500/25 rounded-xl text-xs text-red-400 flex items-center gap-2">
+        <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-xl text-xs text-[var(--warning)] flex items-center gap-2">
           <AlertTriangle className="w-4 h-4 shrink-0" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {successMsg && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/25 rounded-xl text-xs text-emerald-400 flex items-center gap-2">
+        <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-xl text-xs text-[var(--success)] flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{successMsg}</span>
         </div>
@@ -473,7 +473,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
               <div className="text-[11px] font-mono text-theme-muted uppercase tracking-wider">
                 {t.projectDetail.status || "Status"}
               </div>
-              <div className="text-sm font-semibold text-emerald-500">
+              <div className="text-sm font-semibold text-[var(--success)]">
                 {project.enabled ? t.projectDetail.authorized : t.control.statusDisabled}
               </div>
             </div>
@@ -490,14 +490,14 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         <div className="p-4 rounded-xl bg-theme-card border border-theme-subtle space-y-2">
           <div className="flex items-center justify-between text-xs">
             <span className="font-semibold text-theme-primary flex items-center gap-1.5">
-              <Terminal className="w-4 h-4 text-sky-400" />
+              <Terminal className="w-4 h-4 text-theme-primary" />
               <span>{t.projectDetail.cardRuntime}</span>
             </span>
             <span
               className={`text-[10px] font-mono px-2 py-0.5 rounded ${
                 isRuntimeRunning
-                  ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                  : "bg-slate-500/15 text-slate-400 border border-slate-500/30"
+                  ? "bg-[var(--btn-primary-bg)]/15 text-[var(--success)] border border-theme-subtle"
+                  : "bg-slate-500/15 text-theme-secondary border border-slate-500/30"
               }`}
             >
               {isRuntimeRunning ? t.projectDetail.running : t.projectDetail.stopped}
@@ -517,7 +517,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
                   href={`http://localhost:${selectedRuntime.listeningPorts[0]}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-sky-400 hover:underline"
+                  className="text-theme-primary hover:underline"
                 >
                   http://localhost:{selectedRuntime.listeningPorts[0]}
                 </a>
@@ -532,14 +532,14 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         <div className="p-4 rounded-xl bg-theme-card border border-theme-subtle space-y-2">
           <div className="flex items-center justify-between text-xs">
             <span className="font-semibold text-theme-primary flex items-center gap-1.5">
-              <Code2 className="w-4 h-4 text-indigo-400" />
+              <Code2 className="w-4 h-4 text-theme-primary" />
               <span>{t.projectDetail.cardCodeIntelligence}</span>
             </span>
             <span
               className={`text-[10px] font-mono px-2 py-0.5 rounded ${
                 lspStatus?.status === "ready"
-                  ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                  : "bg-slate-500/15 text-slate-400 border border-slate-500/30"
+                  ? "bg-[var(--btn-primary-bg)]/15 text-[var(--success)] border border-theme-subtle"
+                  : "bg-slate-500/15 text-theme-secondary border border-slate-500/30"
               }`}
             >
               {lspStatus?.status ? (t.statusMap[lspStatus.status.toLowerCase() as keyof typeof t.statusMap] || lspStatus.status.toUpperCase()) : t.projectDetail.stopped}
@@ -562,14 +562,14 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         <div className="p-4 rounded-xl bg-theme-card border border-theme-subtle space-y-2">
           <div className="flex items-center justify-between text-xs">
             <span className="font-semibold text-theme-primary flex items-center gap-1.5">
-              <Compass className="w-4 h-4 text-sky-400" />
+              <Compass className="w-4 h-4 text-theme-primary" />
               <span>{t.projectDetail.cardActiveWorkflow}</span>
             </span>
             <span
               className={`text-[10px] font-mono px-2 py-0.5 rounded ${
                 activeSession
-                  ? "bg-sky-500/15 text-sky-400 border border-sky-500/30"
-                  : "bg-slate-500/15 text-slate-400 border border-slate-500/30"
+                  ? "bg-[var(--btn-primary-bg)]/15 text-theme-primary border border-theme-subtle"
+                  : "bg-slate-500/15 text-theme-secondary border border-slate-500/30"
               }`}
             >
               {activeSession ? t.statusMap.active : t.statusMap.idle}
@@ -605,7 +605,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
             <h3 className="text-sm font-semibold text-theme-primary flex items-center gap-2">
-              <Terminal className="w-4 h-4 text-sky-400" />
+              <Terminal className="w-4 h-4 text-theme-primary" />
               <span>{t.projectDetail.runtimeControllerTitle}</span>
             </h3>
             <p className="text-xs text-theme-muted">
@@ -639,7 +639,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
               <button
                 onClick={handleStopRuntime}
                 disabled={actionLoading === "stop-runtime"}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/25 transition disabled:opacity-50"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border border-theme-subtle transition disabled:opacity-50"
               >
                 {actionLoading === "stop-runtime" ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -653,7 +653,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
             <button
               onClick={handleRestartRuntime}
               disabled={actionLoading === "restart-runtime"}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-sky-600 hover:bg-sky-500 text-white shadow-sm transition disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]  transition disabled:opacity-50"
             >
               {actionLoading === "restart-runtime" ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -670,7 +670,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
           {/* Terminal Toolbar */}
           <div className="px-4 py-2 bg-theme-card-muted border-b border-theme-subtle flex items-center justify-between text-[11px] font-mono text-theme-muted">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              <span className="w-2 h-2 rounded-full bg-[var(--success)]" />
               <span>
                 {selectedRuntime
                   ? `${selectedRuntime.runtimeId} · Gen ${selectedGen}`
@@ -684,7 +684,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
                   type="checkbox"
                   checked={autoScroll}
                   onChange={(e) => setAutoScroll(e.target.checked)}
-                  className="rounded bg-black border-white/20 text-sky-500 focus:ring-0 w-3 h-3"
+                  className="rounded bg-[var(--bg-app)] border-white/20 text-theme-primary focus:ring-0 w-3 h-3"
                 />
                 <span>{t.projectDetail.autoScroll}</span>
               </label>
@@ -694,7 +694,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
                 className="flex items-center gap-1 hover:text-theme-secondary transition"
               >
                 {copiedLogs ? (
-                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                  <CheckCircle2 className="w-3 h-3 text-[var(--success)]" />
                 ) : (
                   <Copy className="w-3 h-3" />
                 )}
@@ -716,7 +716,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
             className="p-4 h-64 overflow-y-auto font-mono text-xs leading-relaxed space-y-0.5 text-slate-300 select-text"
           >
             {logs.length === 0 ? (
-              <div className="text-slate-500 italic">
+              <div className="text-theme-secondary italic">
                 {selectedRuntime
                   ? `[Generation ${selectedGen}] ${t.projectDetail.noRuntimeOutput}`
                   : t.projectDetail.noRuntimeCreated}
@@ -726,10 +726,10 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
                 <div
                   key={`${chunk.seq}-${idx}`}
                   className={`whitespace-pre-wrap break-all ${
-                    chunk.stream === "stderr" ? "text-amber-400/90" : "text-slate-300"
+                    chunk.stream === "stderr" ? "text-[var(--warning)]/90" : "text-slate-300"
                   }`}
                 >
-                  <span className="text-slate-500 select-none text-[10px] mr-2">
+                  <span className="text-theme-secondary select-none text-[10px] mr-2">
                     {new Date(chunk.timestamp).toLocaleTimeString()}
                   </span>
                   {chunk.text}
@@ -745,7 +745,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-semibold text-theme-primary flex items-center gap-2">
-              <Compass className="w-4 h-4 text-sky-400" />
+              <Compass className="w-4 h-4 text-theme-primary" />
               <span>{t.projectDetail.workflowTrajectoryTitle}</span>
             </h3>
             <p className="text-xs text-theme-muted">
@@ -756,7 +756,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
           {activeSession && (
             <button
               onClick={() => setSelectedSessionForModal(activeSession)}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium bg-sky-600 hover:bg-sky-500 text-white transition shadow-sm"
+              className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] transition "
             >
               {t.projectDetail.openFullSessionHandoff}
             </button>
@@ -783,14 +783,14 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
                     <span
                       className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
                         sess.state === "active"
-                          ? "bg-sky-500/15 text-sky-300 border border-sky-500/30"
-                          : "bg-slate-500/15 text-slate-400 border border-slate-500/30"
+                          ? "bg-[var(--btn-primary-bg)]/15 text-theme-primary border border-theme-subtle"
+                          : "bg-slate-500/15 text-theme-secondary border border-slate-500/30"
                       }`}
                     >
                       {sess.state ? (t.statusMap[sess.state.toLowerCase() as keyof typeof t.statusMap] || sess.state.toUpperCase()) : sess.state}
                     </span>
                     {sess.workspace?.mode === "worktree" && (
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle">
                         worktree: {sess.workspace.branchName}
                       </span>
                     )}
@@ -820,10 +820,10 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
       {activeSession?.workspace && activeSession.workspace.mode === "worktree" && (() => {
         const wt = activeSession.workspace;
         return (
-          <section className="p-5 rounded-xl bg-theme-card border border-amber-500/30 space-y-3">
+          <section className="p-5 rounded-xl bg-theme-card border border-theme-subtle space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <GitBranch className="w-4 h-4 text-amber-400" />
+                <GitBranch className="w-4 h-4 text-[var(--warning)]" />
                 <h3 className="text-sm font-semibold text-theme-primary">
                   {t.projectDetail.activeManagedWorktree}
                 </h3>
@@ -831,7 +831,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
               <button
                 onClick={() => handleRemoveWorktree(wt.worktreeId)}
                 disabled={actionLoading?.startsWith("remove-worktree")}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/25 transition"
+                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border border-theme-subtle transition"
               >
                 {t.projectDetail.safeRemoveWorktree}
               </button>
@@ -839,21 +839,21 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
 
             <div className="p-3 bg-theme-card-muted rounded-lg border border-theme-subtle text-xs font-mono space-y-1.5 text-theme-secondary">
               <div>
-                {t.projectDetail.branch}: <span className="text-amber-300">{wt.branchName}</span>
+                {t.projectDetail.branch}: <span className="text-[var(--warning)]">{wt.branchName}</span>
               </div>
               <div>
                 {t.projectDetail.path}: <span className="text-theme-muted">{wt.worktreeRoot}</span>
               </div>
               <div>
                 {t.projectDetail.cleanState}:{" "}
-                <span className={wt.isClean ? "text-emerald-400" : "text-amber-400"}>
+                <span className={wt.isClean ? "text-[var(--success)]" : "text-[var(--warning)]"}>
                   {wt.isClean ? t.projectDetail.clean : t.projectDetail.modifiedFilesPresent}
                 </span>
               </div>
             </div>
 
             {worktreeSafetyWarning && (
-              <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-xs text-red-400 flex items-center gap-2">
+              <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg text-xs text-[var(--warning)] flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 shrink-0" />
                 <span>{worktreeSafetyWarning}</span>
               </div>
@@ -867,7 +867,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-semibold text-theme-primary flex items-center gap-2">
-              <Code2 className="w-4 h-4 text-indigo-400" />
+              <Code2 className="w-4 h-4 text-theme-primary" />
               <span>{t.projectDetail.lspTitle}</span>
             </h3>
             <p className="text-xs text-theme-muted">
@@ -888,7 +888,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
               <button
                 onClick={handleStopLsp}
                 disabled={actionLoading === "stop-lsp"}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border border-theme-subtle transition"
               >
                 <Square className="w-3.5 h-3.5" />
                 <span>{t.projectDetail.stopLsp}</span>
@@ -900,7 +900,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
           <div className="p-2.5 rounded bg-theme-card-muted border border-theme-subtle">
             <div className="text-[10px] text-theme-muted">{t.projectDetail.status}</div>
-            <div className="text-emerald-400 font-semibold mt-0.5">
+            <div className="text-[var(--success)] font-semibold mt-0.5">
               {lspStatus?.status ? (t.statusMap[lspStatus.status.toLowerCase() as keyof typeof t.statusMap] || lspStatus.status.toUpperCase()) : t.projectDetail.stopped}
             </div>
           </div>
@@ -926,7 +926,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         <div className="pt-2 flex justify-center">
           <button
             onClick={() => setShowAdvancedDetails(!showAdvancedDetails)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-theme-card hover:bg-theme-card-hover text-theme-secondary hover:text-theme-primary border border-theme-subtle transition shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-theme-card hover:bg-theme-card-hover text-theme-secondary hover:text-theme-primary border border-theme-subtle transition "
           >
             {showAdvancedDetails ? (
               <>

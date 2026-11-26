@@ -165,37 +165,37 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
     switch (status) {
       case "pending":
         return (
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30">
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle">
             {t.activity?.statusPending || "PENDING"}
           </span>
         );
       case "approved":
         return (
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle">
             {t.activity?.statusApproved || "APPROVED"}
           </span>
         );
       case "denied":
         return (
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/30">
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle">
             {t.activity?.statusDenied || "DENIED"}
           </span>
         );
       case "consumed":
         return (
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/30">
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle">
             {t.activity?.statusConsumed || "CONSUMED"}
           </span>
         );
       case "expired":
         return (
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-500/10 text-slate-400 border border-slate-500/30">
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-500/10 text-theme-secondary border border-slate-500/30">
             {t.activity?.statusExpired || "EXPIRED"}
           </span>
         );
       default:
         return (
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-500/10 text-slate-400">
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-500/10 text-theme-secondary">
             {status}
           </span>
         );
@@ -243,7 +243,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
 
         <button
           onClick={onRefresh}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-theme-card hover:bg-theme-card-hover text-theme-secondary border border-theme-subtle rounded-lg text-xs font-medium transition shadow-sm"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-theme-card hover:bg-theme-card-hover text-theme-secondary border border-theme-subtle rounded-lg text-xs font-medium transition "
         >
           <RotateCw className="w-3.5 h-3.5" />
           <span>{t.common?.refresh || "Refresh"}</span>
@@ -252,7 +252,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
 
       {/* Action Toast Feedback */}
       {actionNotice && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-xs flex items-center gap-2">
+        <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-xl text-[var(--success)] text-xs flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{actionNotice}</span>
         </div>
@@ -273,14 +273,14 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
                 onClick={() => setFilter(tab.id)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition shrink-0 ${
                   active
-                    ? "bg-theme-card text-theme-primary shadow-sm border border-theme-subtle font-semibold"
+                    ? "bg-theme-card text-theme-primary  border border-theme-subtle font-semibold"
                     : "text-theme-muted hover:text-theme-primary"
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
                 <span>{tab.label}</span>
                 {tab.id === "approvals" && pendingCount > 0 && (
-                  <span className="text-[10px] font-mono px-1.5 py-0.2 bg-amber-500 text-slate-900 font-bold rounded-full">
+                  <span className="text-[10px] font-mono px-1.5 py-0.2 bg-[var(--btn-primary-bg)] text-slate-900 font-bold rounded-full">
                     {pendingCount}
                   </span>
                 )}
@@ -297,7 +297,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t.activity?.searchPlaceholder || t.common?.search || "Search activity..."}
-            className="w-full bg-theme-input border border-theme-input rounded-xl pl-9 pr-3 py-1.5 text-xs text-theme-primary focus:outline-none focus:border-sky-500 transition font-mono"
+            className="w-full bg-theme-input border border-theme-input rounded-xl pl-9 pr-3 py-1.5 text-xs text-theme-primary focus:outline-none border-theme-subtle transition font-mono"
           />
         </div>
       </div>
@@ -306,8 +306,8 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
       {pendingApprovals.length > 0 && (
         <section className="space-y-3">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-            <h3 className="text-xs font-mono uppercase tracking-wider text-amber-600 dark:text-amber-300 font-semibold">
+            <span className="w-2 h-2 rounded-full bg-[var(--btn-primary-bg)] animate-pulse" />
+            <h3 className="text-xs font-mono uppercase tracking-wider text-[var(--warning)] text-[var(--warning)] font-semibold">
               {t.activity?.pendingApprovalsTitle || "Pending Operator Approvals"} ({pendingApprovals.length})
             </h3>
           </div>
@@ -327,7 +327,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
 
       {/* Empty State */}
       {totalCount === 0 ? (
-        <div className="p-12 text-center bg-theme-card border border-theme-subtle rounded-xl space-y-3 shadow-sm">
+        <div className="p-12 text-center bg-theme-card border border-theme-subtle rounded-xl space-y-3 ">
           <FileText className="w-10 h-10 text-theme-muted mx-auto" />
           <div className="text-theme-primary font-semibold text-sm">
             {t.activity?.noActivity || "No Activity Recorded"}
@@ -343,7 +343,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
           {showApprovalsSection && resolvedApprovals.length > 0 && (
             <div className="space-y-3">
               <div className="text-xs font-mono font-semibold text-theme-muted uppercase tracking-wider flex items-center gap-2">
-                <ShieldAlert className="w-3.5 h-3.5 text-slate-400" />
+                <ShieldAlert className="w-3.5 h-3.5 text-theme-secondary" />
                 <span>{t.activity?.historyTitle || "Approval History"} ({resolvedApprovals.length})</span>
               </div>
 
@@ -351,7 +351,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
                 {resolvedApprovals.map((app) => (
                   <div
                     key={app.id}
-                    className="p-3 bg-theme-card border border-theme-subtle rounded-xl flex items-center justify-between gap-4 text-xs font-mono shadow-sm"
+                    className="p-3 bg-theme-card border border-theme-subtle rounded-xl flex items-center justify-between gap-4 text-xs font-mono "
                   >
                     <div className="flex items-center gap-2.5 flex-wrap min-w-0">
                       {getStatusBadge(app.status)}
@@ -359,7 +359,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
                         {app.operation}
                       </span>
                       {app.projectId && (
-                        <span className="text-sky-600 dark:text-sky-400 text-[11px]">
+                        <span className="text-theme-primary text-theme-primary text-[11px]">
                           [{app.projectId}]
                         </span>
                       )}
@@ -372,7 +372,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
                       <span>{new Date(app.createdAt).toLocaleTimeString()}</span>
                       <button
                         onClick={() => setSelectedApproval(app)}
-                        className="text-theme-muted hover:text-sky-500 dark:hover:text-sky-400 transition"
+                        className="text-theme-muted hover:text-theme-primary dark:hover:text-theme-primary transition"
                       >
                         {t.activity?.inspect || "Inspect"}
                       </button>
@@ -387,7 +387,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
           {showEventsSection && filteredEvents.length > 0 && (
             <div className="space-y-3">
               <div className="text-xs font-mono font-semibold text-theme-muted uppercase tracking-wider flex items-center gap-2 pt-2 border-t border-theme-subtle">
-                <FileText className="w-3.5 h-3.5 text-sky-500" />
+                <FileText className="w-3.5 h-3.5 text-theme-primary" />
                 <span>{t.activity?.auditLogTitle || "Audit & Execution Log"} ({filteredEvents.length})</span>
               </div>
 
@@ -401,15 +401,15 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
                   return (
                     <div
                       key={evt.id}
-                      className="p-3 bg-theme-card border border-theme-subtle rounded-xl flex items-center justify-between gap-4 text-xs font-mono shadow-sm"
+                      className="p-3 bg-theme-card border border-theme-subtle rounded-xl flex items-center justify-between gap-4 text-xs font-mono "
                     >
                       <div className="flex items-center gap-2.5 flex-wrap min-w-0">
                         {isError ? (
-                          <XCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                          <XCircle className="w-3.5 h-3.5 text-[var(--warning)] shrink-0" />
                         ) : isSuccess ? (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[var(--success)] shrink-0" />
                         ) : (
-                          <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <Clock className="w-3.5 h-3.5 text-theme-secondary shrink-0" />
                         )}
                         <span className="font-semibold text-theme-primary">
                           {evt.toolName}
@@ -418,7 +418,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
                           {evt.event}
                         </span>
                         {evt.projectId && (
-                          <span className="text-sky-600 dark:text-sky-400 text-[11px]">
+                          <span className="text-theme-primary text-theme-primary text-[11px]">
                             [{evt.projectId}]
                           </span>
                         )}
@@ -428,7 +428,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
                           </span>
                         )}
                         {evt.errorCode && (
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
+                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle">
                             {evt.errorCode}
                           </span>
                         )}
@@ -451,11 +451,11 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
 
       {/* Approval Details Modal */}
       {selectedApproval && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-theme-card border border-theme-subtle rounded-xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+          <div className="bg-theme-card border border-theme-subtle rounded-xl w-full max-w-xl  overflow-hidden flex flex-col max-h-[90vh]">
             <div className="px-6 py-4 bg-theme-card-muted border-b border-theme-subtle flex items-center justify-between">
               <div className="flex items-center gap-2 text-theme-primary font-bold text-sm font-mono">
-                <ShieldAlert className="w-4 h-4 text-sky-500" />
+                <ShieldAlert className="w-4 h-4 text-theme-primary" />
                 <span>{t.activity?.detailModalTitle || "Approval Specification"}</span>
               </div>
               <button
@@ -470,7 +470,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
               <div className="p-3 bg-theme-card-muted border border-theme-subtle rounded-lg flex items-center justify-between">
                 <div>
                   <div className="text-[10px] text-theme-muted">{t.activity?.operation || "Operation"}</div>
-                  <div className="font-bold text-sky-600 dark:text-sky-300">{selectedApproval.operation}</div>
+                  <div className="font-bold text-theme-primary text-theme-primary">{selectedApproval.operation}</div>
                 </div>
                 {getStatusBadge(selectedApproval.status)}
               </div>
@@ -508,7 +508,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
                   <span>{t.activity?.approvalId || "Approval ID"}</span>
                   <button
                     onClick={() => copyToClipboard(selectedApproval.id, "appId")}
-                    className="text-sky-500 hover:underline"
+                    className="text-theme-primary hover:underline"
                   >
                     {copiedField === "appId" ? (t.common?.copied || "Copied") : (t.common?.copy || "Copy")}
                   </button>
@@ -521,7 +521,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
                   <span>{t.activity?.payloadHash || "Payload Hash (SHA-256)"}</span>
                   <button
                     onClick={() => copyToClipboard(selectedApproval.payloadHash, "payloadHash")}
-                    className="text-sky-500 hover:underline"
+                    className="text-theme-primary hover:underline"
                   >
                     {copiedField === "payloadHash" ? (t.common?.copied || "Copied") : (t.common?.copy || "Copy")}
                   </button>
@@ -534,7 +534,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
               <button
                 type="button"
                 onClick={() => setSelectedApproval(null)}
-                className="px-4 py-2 bg-theme-card hover:bg-theme-card-hover border border-theme-subtle text-theme-secondary rounded-lg text-xs font-medium transition shadow-sm"
+                className="px-4 py-2 bg-theme-card hover:bg-theme-card-hover border border-theme-subtle text-theme-secondary rounded-lg text-xs font-medium transition "
               >
                 {t.common?.close || "Close"}
               </button>

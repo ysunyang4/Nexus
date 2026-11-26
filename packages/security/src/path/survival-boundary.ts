@@ -51,7 +51,7 @@ export function isSurvivalBoundaryViolation(targetPath: string, customStateDir?:
     baseLower === "nexus.db" ||
     baseLower === "auth_tokens.json"
   ) {
-    if (normTarget.includes(".localbridge") || normTarget.includes(".nexus")) {
+    if (normTarget.includes(".localbridge") || normTarget.includes(".nexus") || normTarget.includes(".dockra")) {
       return true;
     }
   }

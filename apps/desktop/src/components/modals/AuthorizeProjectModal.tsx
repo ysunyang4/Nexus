@@ -76,12 +76,12 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-theme-card border border-theme-card rounded-xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+      <div className="bg-theme-card border border-theme-card rounded-xl w-full max-w-lg  overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">
           <div className="flex items-center gap-2 text-theme-primary font-semibold">
-            <Folder className="w-5 h-5 text-indigo-500" />
+            <Folder className="w-5 h-5 text-theme-primary" />
             <span>{t.modals.authorize.title}</span>
           </div>
           <button
@@ -95,8 +95,8 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
         {/* Content */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
           {error && (
-            <div className="p-3 bg-red-500/15 border border-red-500/30 rounded-lg text-xs text-red-500 flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+            <div className="p-3 bg-[var(--btn-primary-bg)]/15 border border-theme-subtle rounded-lg text-xs text-[var(--warning)] flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 text-[var(--warning)] shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
@@ -104,7 +104,7 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
           {/* Path Input with Browse */}
           <div>
             <label className="block text-xs font-medium text-theme-secondary mb-1.5">
-              {t.modals.authorize.pathLabel} <span className="text-red-500">*</span>
+              {t.modals.authorize.pathLabel} <span className="text-[var(--warning)]">*</span>
             </label>
             <div className="flex gap-2">
               <input
@@ -112,7 +112,7 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
                 value={path}
                 onChange={(e) => setPath(e.target.value)}
                 placeholder={t.modals.authorize.pathPlaceholder}
-                className="flex-1 bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-sm text-theme-primary focus:outline-none focus:border-indigo-500"
+                className="flex-1 bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-sm text-theme-primary focus:outline-none border-theme-subtle"
               />
               <button
                 type="button"
@@ -134,7 +134,7 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={t.modals.authorize.namePlaceholder}
-              className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-sm text-theme-primary focus:outline-none focus:border-indigo-500"
+              className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-sm text-theme-primary focus:outline-none border-theme-subtle"
             />
           </div>
 
@@ -149,11 +149,11 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
                 onClick={() => setAccessMode("read-only")}
                 className={`p-3 rounded-lg border text-left transition ${
                   accessMode === "read-only"
-                    ? "bg-emerald-500/15 border-emerald-500/50 text-theme-primary"
+                    ? "bg-[var(--btn-primary-bg)]/15 border-theme-subtle text-theme-primary"
                     : "bg-theme-input border-theme-input text-theme-muted hover:border-theme-subtle"
                 }`}
               >
-                <div className="font-semibold text-xs text-emerald-500">{t.modals.authorize.readOnlyOption}</div>
+                <div className="font-semibold text-xs text-[var(--success)]">{t.modals.authorize.readOnlyOption}</div>
                 <div className="text-[11px] text-theme-muted mt-0.5">
                   {t.modals.authorize.readOnlyOptionDesc}
                 </div>
@@ -164,11 +164,11 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
                 onClick={() => setAccessMode("read-write")}
                 className={`p-3 rounded-lg border text-left transition ${
                   accessMode === "read-write"
-                    ? "bg-amber-500/15 border-amber-500/50 text-theme-primary"
+                    ? "bg-[var(--btn-primary-bg)]/15 border-theme-subtle text-theme-primary"
                     : "bg-theme-input border-theme-input text-theme-muted hover:border-theme-subtle"
                 }`}
               >
-                <div className="font-semibold text-xs text-amber-500">{t.modals.authorize.readWriteOption}</div>
+                <div className="font-semibold text-xs text-[var(--warning)]">{t.modals.authorize.readWriteOption}</div>
                 <div className="text-[11px] text-theme-muted mt-0.5">
                   {t.modals.authorize.readWriteOptionDesc}
                 </div>
@@ -186,7 +186,7 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
                 onClick={() => setExecutionMode("disabled")}
                 className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition ${
                   executionMode === "disabled"
-                    ? "bg-indigo-500/15 border-indigo-500/50 text-theme-primary"
+                    ? "bg-[var(--btn-primary-bg)]/15 border-theme-subtle text-theme-primary"
                     : "bg-theme-input border-theme-input text-theme-muted hover:border-theme-subtle"
                 }`}
               >
@@ -195,7 +195,7 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
                   name="executionMode"
                   checked={executionMode === "disabled"}
                   onChange={() => setExecutionMode("disabled")}
-                  className="mt-0.5 text-indigo-600 focus:ring-indigo-500"
+                  className="mt-0.5 text-theme-primary ring-[var(--border)]"
                 />
                 <div>
                   <div className="text-xs font-semibold text-theme-primary">{t.modals.authorize.execDisabledOption}</div>
@@ -207,7 +207,7 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
                 onClick={() => setExecutionMode("safe-only")}
                 className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition ${
                   executionMode === "safe-only"
-                    ? "bg-indigo-500/15 border-indigo-500/50 text-theme-primary"
+                    ? "bg-[var(--btn-primary-bg)]/15 border-theme-subtle text-theme-primary"
                     : "bg-theme-input border-theme-input text-theme-muted hover:border-theme-subtle"
                 }`}
               >
@@ -216,7 +216,7 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
                   name="executionMode"
                   checked={executionMode === "safe-only"}
                   onChange={() => setExecutionMode("safe-only")}
-                  className="mt-0.5 text-indigo-600 focus:ring-indigo-500"
+                  className="mt-0.5 text-theme-primary ring-[var(--border)]"
                 />
                 <div>
                   <div className="text-xs font-semibold text-theme-primary">{t.modals.authorize.execSafeOnlyOption}</div>
@@ -228,7 +228,7 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
                 onClick={() => setExecutionMode("project-code")}
                 className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition ${
                   executionMode === "project-code"
-                    ? "bg-red-500/15 border-red-500/50 text-theme-primary"
+                    ? "bg-[var(--btn-primary-bg)]/15 border-theme-subtle text-theme-primary"
                     : "bg-theme-input border-theme-input text-theme-muted hover:border-theme-subtle"
                 }`}
               >
@@ -237,10 +237,10 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
                   name="executionMode"
                   checked={executionMode === "project-code"}
                   onChange={() => setExecutionMode("project-code")}
-                  className="mt-0.5 text-red-600 focus:ring-red-500"
+                  className="mt-0.5 text-[var(--warning)] ring-[var(--border)]"
                 />
                 <div>
-                  <div className="text-xs font-semibold text-red-500 flex items-center gap-1.5">
+                  <div className="text-xs font-semibold text-[var(--warning)] flex items-center gap-1.5">
                     <ShieldAlert className="w-3.5 h-3.5" />
                     {t.modals.authorize.execProjectCodeOption}
                   </div>
@@ -254,12 +254,12 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
 
           {/* Project Code Warning Acknowledgment */}
           {executionMode === "project-code" && (
-            <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg space-y-2">
-              <div className="text-xs font-semibold text-red-500 flex items-center gap-1.5">
-                <AlertTriangle className="w-4 h-4 text-red-500" />
+            <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg space-y-2">
+              <div className="text-xs font-semibold text-[var(--warning)] flex items-center gap-1.5">
+                <AlertTriangle className="w-4 h-4 text-[var(--warning)]" />
                 Security Warning: Arbitrary Code Execution
               </div>
-              <p className="text-[11px] text-red-600/90 dark:text-red-300/80 leading-relaxed">
+              <p className="text-[11px] text-[var(--warning)]/90 text-[var(--warning)]/80 leading-relaxed">
                 Allowing Project Code mode permits execution of commands configured in project build scripts (e.g. package.json or Makefiles).
               </p>
               <label className="flex items-center gap-2 cursor-pointer pt-1">
@@ -267,9 +267,9 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
                   type="checkbox"
                   checked={projectCodeConfirmed}
                   onChange={(e) => setProjectCodeConfirmed(e.target.checked)}
-                  className="rounded text-red-600 focus:ring-red-500"
+                  className="rounded text-[var(--warning)] ring-[var(--border)]"
                 />
-                <span className="text-xs text-red-500 font-medium">
+                <span className="text-xs text-[var(--warning)] font-medium">
                   I understand the risks and trust this repository
                 </span>
               </label>
@@ -288,7 +288,7 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
             <button
               type="submit"
               disabled={loading || (executionMode === "project-code" && !projectCodeConfirmed)}
-              className="px-4 py-2 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50 disabled:pointer-events-none transition shadow-sm"
+              className="px-4 py-2 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] disabled:opacity-50 disabled:pointer-events-none transition "
             >
               {loading ? t.modals.authorize.submitting : t.modals.authorize.submitBtn}
             </button>

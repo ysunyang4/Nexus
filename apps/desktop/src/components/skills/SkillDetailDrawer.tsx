@@ -347,13 +347,13 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
   const getRiskBadge = (risk: string) => {
     switch (risk) {
       case "low":
-        return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/60";
+        return "bg-theme-card text-[var(--success)] border-theme-subtle bg-theme-card text-[var(--success)] border-theme-subtle";
       case "medium":
-        return "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/60";
+        return "bg-theme-card text-[var(--warning)] border-theme-subtle bg-theme-card text-[var(--warning)] border-theme-subtle";
       case "high":
-        return "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/60";
+        return "bg-theme-card text-[var(--warning)] border-theme-subtle bg-theme-card text-[var(--warning)] border-theme-subtle";
       default:
-        return "bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
+        return "bg-theme-card text-slate-700 border-theme-subtle bg-theme-card dark:text-slate-300 border-theme-subtle";
     }
   };
 
@@ -391,25 +391,25 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex justify-end bg-slate-900/40 dark:bg-black/65 backdrop-blur-sm transition-opacity animate-in fade-in duration-150 cursor-pointer"
+      className="fixed inset-0 z-[60] flex justify-end bg-theme-base dark:bg-[var(--bg-app)] backdrop-blur-sm transition-opacity animate-in fade-in duration-150 cursor-pointer"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
-        className="w-full sm:w-[46vw] sm:min-w-[720px] sm:max-w-[920px] bg-white dark:bg-[#0d1320] border-l border-slate-200 dark:border-slate-800 h-full flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-right duration-200 cursor-default"
+        className="w-full sm:w-[46vw] sm:min-w-[720px] sm:max-w-[920px] bg-white dark:bg-[#0d1320] border-l border-theme-subtle border-theme-subtle h-full flex flex-col  overflow-hidden animate-in slide-in-from-right duration-200 cursor-default"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
       >
         {/* Sticky Solid Header */}
-        <div className="sticky top-0 z-20 px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1320]">
+        <div className="sticky top-0 z-20 px-6 py-4 border-b border-theme-subtle border-theme-subtle bg-white dark:bg-[#0d1320]">
           {onBack && (
-            <div className="flex items-center justify-between gap-4 mb-3 pb-2.5 border-b border-slate-100 dark:border-slate-800/80">
+            <div className="flex items-center justify-between gap-4 mb-3 pb-2.5 border-b border-theme-subtle border-theme-subtle">
               <button
                 type="button"
                 onClick={onBack}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/40 border border-purple-200/80 dark:border-purple-800/60 transition group shadow-2xs"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-theme-primary text-theme-primary hover:text-theme-primary dark:hover:text-theme-primary hover:bg-theme-card dark:hover:bg-theme-card border border-theme-subtle border-theme-subtle transition group "
               >
                 <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
                 <span>返回集合{collectionContext?.name ? `「${collectionContext.name}」` : ""}</span>
@@ -419,7 +419,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
 
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/50 border border-sky-200 dark:border-sky-800/60 text-sky-600 dark:text-sky-400 shrink-0">
+              <div className="p-2.5 rounded-xl bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-theme-primary text-theme-primary shrink-0">
                 <Sparkles className="w-5 h-5" />
               </div>
               <div className="min-w-0">
@@ -437,20 +437,20 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                     </span>
                   )}
                   {skill?.source === "builtin" ? (
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-800/60 font-semibold">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-card text-theme-primary border border-theme-subtle bg-theme-card text-theme-primary border-theme-subtle font-semibold">
                       {t.skills.sourceBuiltin}
                     </span>
                   ) : skill?.source === "project" ? (
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-950/40 dark:text-purple-400 dark:border-purple-800/60 font-semibold">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-card text-theme-primary border border-theme-subtle bg-theme-card text-theme-primary border-theme-subtle font-semibold">
                       {t.skills.sourceProject}
                     </span>
                   ) : (
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-800/60 font-semibold">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-card text-theme-primary border border-theme-subtle bg-theme-card text-theme-primary border-theme-subtle font-semibold">
                       {t.skills.sourceUser}
                     </span>
                   )}
                   {skill && (
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-medium">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-theme-secondary text-theme-secondary font-medium">
                       v{skill.version}
                     </span>
                   )}
@@ -458,30 +458,30 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                     <span
                       className={`text-[10px] font-medium px-2 py-0.5 rounded-full border flex items-center gap-1 ${
                         skill.enabled
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/60"
-                          : "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
+                          ? "bg-theme-card text-[var(--success)] border-theme-subtle bg-theme-card text-[var(--success)] border-theme-subtle"
+                          : "bg-theme-card text-theme-secondary border-theme-subtle bg-theme-card text-theme-secondary border-theme-subtle"
                       }`}
                     >
-                      <span className={`w-1.5 h-1.5 rounded-full ${skill.enabled ? "bg-emerald-500" : "bg-slate-400"}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${skill.enabled ? "bg-[var(--btn-primary-bg)]" : "bg-slate-400"}`} />
                       <span>{skill.enabled ? "ChatGPT 可自动使用" : "ChatGPT 不会自动使用"}</span>
                     </span>
                   )}
                   {skill?.collectionName && (
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/60 font-semibold">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-card text-[var(--warning)] border border-theme-subtle bg-theme-card text-[var(--warning)] border-theme-subtle font-semibold">
                       Collection: {skill.collectionName}
                     </span>
                   )}
                 </div>
 
-                <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-500 dark:text-slate-400 font-mono">
+                <div className="flex items-center gap-2 mt-1.5 text-xs text-theme-secondary text-theme-secondary font-mono">
                   <span className="truncate">{skillId}</span>
                   <button
                     onClick={handleCopyId}
-                    className="hover:text-slate-900 dark:hover:text-slate-200 transition p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
+                    className="hover:text-slate-900 dark:hover:text-slate-200 transition p-0.5 rounded hover:bg-theme-card dark:hover:bg-theme-card"
                     title="Copy ID"
                   >
                     {copiedId ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                      <Check className="w-3.5 h-3.5 text-[var(--success)] text-[var(--success)]" />
                     ) : (
                       <Copy className="w-3.5 h-3.5" />
                     )}
@@ -493,14 +493,14 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
             {/* Right Controls: Mode Switch, Enable Toggle, Delete, Close */}
             <div className="flex items-center gap-2.5 shrink-0">
               {/* Standard vs Advanced Mode Switch */}
-              <div className="flex items-center p-0.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+              <div className="flex items-center p-0.5 rounded-lg bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle">
                 <button
                   type="button"
                   onClick={() => setMode("standard")}
                   className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition ${
                     mode === "standard"
-                      ? "bg-white dark:bg-[#121a2c] text-sky-600 dark:text-sky-400 font-semibold shadow-xs"
-                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                      ? "bg-white dark:bg-[#121a2c] text-theme-primary text-theme-primary font-semibold "
+                      : "text-theme-secondary text-theme-secondary hover:text-slate-900 dark:hover:text-slate-200"
                   }`}
                 >
                   {t.skills.standardMode}
@@ -510,8 +510,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                   onClick={() => setMode("advanced")}
                   className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition ${
                     mode === "advanced"
-                      ? "bg-white dark:bg-[#121a2c] text-sky-600 dark:text-sky-400 font-semibold shadow-xs"
-                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                      ? "bg-white dark:bg-[#121a2c] text-theme-primary text-theme-primary font-semibold "
+                      : "text-theme-secondary text-theme-secondary hover:text-slate-900 dark:hover:text-slate-200"
                   }`}
                 >
                   {t.skills.advancedMode}
@@ -524,12 +524,12 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                   onClick={handleToggle}
                   disabled={skill.validationStatus === "invalid" || skill.validationStatus === "conflict"}
                   className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:cursor-not-allowed ${
-                    skill.enabled ? "bg-sky-600 dark:bg-sky-500" : "bg-slate-300 dark:bg-slate-700"
+                    skill.enabled ? "bg-[var(--btn-primary-bg)] dark:bg-[var(--btn-primary-bg)]" : "bg-slate-300 dark:bg-slate-700"
                   }`}
                   title={skill.enabled ? t.common.disable : t.common.enable}
                 >
                   <span
-                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white  ring-0 transition duration-200 ease-in-out ${
                       skill.enabled ? "translate-x-4" : "translate-x-0"
                     }`}
                   />
@@ -541,7 +541,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 border border-slate-200/60 dark:border-slate-700/60 hover:border-rose-200 dark:hover:border-rose-800/60 transition shadow-2xs"
+                  className="p-1.5 rounded-lg text-theme-secondary hover:text-[var(--warning)] dark:hover:text-[var(--warning)] hover:bg-theme-card dark:hover:bg-theme-card border border-theme-subtle border-theme-subtle border-theme-subtle border-theme-subtle transition "
                   title={t.skills.deleteButton}
                 >
                   <Trash2 className="w-4 h-4" />
@@ -551,7 +551,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
               {/* Close Button */}
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                className="p-1.5 rounded-lg text-theme-secondary hover:text-slate-700 dark:hover:text-slate-200 hover:bg-theme-card dark:hover:bg-theme-card transition"
                 title={t.common.close}
               >
                 <X className="w-5 h-5" />
@@ -560,13 +560,13 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
           </div>
 
           {/* Fixed Sticky Tabs */}
-          <div className="flex items-center gap-1.5 mt-4 pt-2.5 border-t border-slate-200 dark:border-slate-800">
+          <div className="flex items-center gap-1.5 mt-4 pt-2.5 border-t border-theme-subtle border-theme-subtle">
             <button
               onClick={() => setActiveTab("overview")}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 activeTab === "overview"
-                  ? "bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-400 font-semibold border border-sky-200 dark:border-sky-800/60 shadow-xs"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-slate-800/60"
+                  ? "bg-theme-card bg-theme-card text-theme-primary text-theme-primary font-semibold border border-theme-subtle border-theme-subtle "
+                  : "text-theme-secondary text-theme-secondary hover:text-slate-900 dark:hover:text-slate-200 hover:bg-theme-card dark:hover:bg-theme-card"
               }`}
             >
               {t.skills.tabOverview}
@@ -576,8 +576,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
               onClick={() => setActiveTab("workflow")}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
                 activeTab === "workflow"
-                  ? "bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-400 font-semibold border border-sky-200 dark:border-sky-800/60 shadow-xs"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-slate-800/60"
+                  ? "bg-theme-card bg-theme-card text-theme-primary text-theme-primary font-semibold border border-theme-subtle border-theme-subtle "
+                  : "text-theme-secondary text-theme-secondary hover:text-slate-900 dark:hover:text-slate-200 hover:bg-theme-card dark:hover:bg-theme-card"
               }`}
             >
               <span>{t.skills.tabWorkflow}</span>
@@ -585,8 +585,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                 <span
                   className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full ${
                     activeTab === "workflow"
-                      ? "bg-sky-100 dark:bg-sky-900/60 text-sky-700 dark:text-sky-300"
-                      : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+                      ? "bg-theme-card bg-theme-card text-theme-primary text-theme-primary"
+                      : "bg-theme-card bg-theme-card text-theme-secondary text-theme-secondary"
                   }`}
                 >
                   {skill.workflow.length}
@@ -599,8 +599,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                 onClick={() => setActiveTab("tools")}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
                   activeTab === "tools"
-                    ? "bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-400 font-semibold border border-sky-200 dark:border-sky-800/60 shadow-xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-slate-800/60"
+                    ? "bg-theme-card bg-theme-card text-theme-primary text-theme-primary font-semibold border border-theme-subtle border-theme-subtle "
+                    : "text-theme-secondary text-theme-secondary hover:text-slate-900 dark:hover:text-slate-200 hover:bg-theme-card dark:hover:bg-theme-card"
                 }`}
               >
                 <span>{t.skills.tabTools}</span>
@@ -608,8 +608,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                   <span
                     className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full ${
                       activeTab === "tools"
-                        ? "bg-sky-100 dark:bg-sky-900/60 text-sky-700 dark:text-sky-300"
-                        : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+                        ? "bg-theme-card bg-theme-card text-theme-primary text-theme-primary"
+                        : "bg-theme-card bg-theme-card text-theme-secondary text-theme-secondary"
                     }`}
                   >
                     {skill.tools.length}
@@ -622,8 +622,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
               onClick={() => setActiveTab("skillMd")}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 activeTab === "skillMd"
-                  ? "bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-400 font-semibold border border-sky-200 dark:border-sky-800/60 shadow-xs"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-slate-800/60"
+                  ? "bg-theme-card bg-theme-card text-theme-primary text-theme-primary font-semibold border border-theme-subtle border-theme-subtle "
+                  : "text-theme-secondary text-theme-secondary hover:text-slate-900 dark:hover:text-slate-200 hover:bg-theme-card dark:hover:bg-theme-card"
               }`}
             >
               {t.skills.tabSkillMd}
@@ -634,8 +634,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                 onClick={() => setActiveTab("rawConfig")}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                   activeTab === "rawConfig"
-                    ? "bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-400 font-semibold border border-sky-200 dark:border-sky-800/60 shadow-xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-slate-800/60"
+                    ? "bg-theme-card bg-theme-card text-theme-primary text-theme-primary font-semibold border border-theme-subtle border-theme-subtle "
+                    : "text-theme-secondary text-theme-secondary hover:text-slate-900 dark:hover:text-slate-200 hover:bg-theme-card dark:hover:bg-theme-card"
                 }`}
               >
                 {t.skills.tabRawConfig}
@@ -647,13 +647,13 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
         {/* Scrollable Content Body */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {loading && (
-            <div className="py-20 text-center text-sm text-slate-500 dark:text-slate-400">
+            <div className="py-20 text-center text-sm text-theme-secondary text-theme-secondary">
               {t.common.loading}...
             </div>
           )}
 
           {error && (
-            <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 dark:bg-rose-950/40 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 text-xs flex items-start gap-2.5">
+            <div className="p-4 rounded-xl bg-theme-card border border-theme-subtle bg-theme-card border-theme-subtle text-[var(--warning)] text-[var(--warning)] text-xs flex items-start gap-2.5">
               <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
@@ -663,8 +663,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
             <>
               {/* Security Warning Alert */}
               {skill.securityWarning && (
-                <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 dark:bg-amber-950/40 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-3">
-                  <ShieldAlert className="w-5 h-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
+                <div className="p-4 rounded-xl bg-theme-card border border-theme-subtle bg-theme-card border-theme-subtle text-[var(--warning)] text-[var(--warning)] text-xs flex items-start gap-3">
+                  <ShieldAlert className="w-5 h-5 shrink-0 text-[var(--warning)] text-[var(--warning)] mt-0.5" />
                   <div>
                     <h4 className="font-semibold text-xs uppercase tracking-wider mb-1">
                       {t.skills.securityWarningTitle}
@@ -676,7 +676,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
 
               {/* Validation Errors Alert */}
               {skill.validationErrors && skill.validationErrors.length > 0 && (
-                <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 dark:bg-rose-950/40 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 text-xs">
+                <div className="p-4 rounded-xl bg-theme-card border border-theme-subtle bg-theme-card border-theme-subtle text-[var(--warning)] text-[var(--warning)] text-xs">
                   <h4 className="font-semibold text-xs uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                     <AlertTriangle className="w-4 h-4" />
                     {t.skills.validationErrorsTitle}
@@ -694,22 +694,22 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                 <div className="space-y-6 animate-in fade-in duration-150">
                   {/* Description Card */}
                   <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-theme-secondary text-theme-secondary mb-2">
                       {language === "zh-CN" ? "技能概述" : "Description"}
                     </h3>
-                    <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-sm text-slate-800 dark:text-slate-200 leading-relaxed shadow-2xs">
+                    <div className="p-4 rounded-xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle text-sm text-slate-800 dark:text-slate-200 leading-relaxed ">
                       {displayDesc || "No description provided."}
                     </div>
                   </div>
 
                   {/* Metadata Grid (6 Cards) */}
                   <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-theme-secondary text-theme-secondary mb-2.5">
                       {language === "zh-CN" ? "配置属性" : "Attributes"}
                     </h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-2xs">
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mb-1">
+                      <div className="p-3.5 rounded-xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle ">
+                        <div className="text-[11px] text-theme-secondary text-theme-secondary mb-1">
                           {language === "zh-CN" ? "来源" : "Source"}
                         </div>
                         <div className="text-xs font-bold text-slate-900 dark:text-slate-100">
@@ -721,8 +721,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                         </div>
                       </div>
 
-                      <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-2xs">
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mb-1">
+                      <div className="p-3.5 rounded-xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle ">
+                        <div className="text-[11px] text-theme-secondary text-theme-secondary mb-1">
                           {language === "zh-CN" ? "版本" : "Version"}
                         </div>
                         <div className="text-xs font-bold text-slate-900 dark:text-slate-100 font-mono">
@@ -730,8 +730,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                         </div>
                       </div>
 
-                      <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-2xs">
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mb-1">
+                      <div className="p-3.5 rounded-xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle ">
+                        <div className="text-[11px] text-theme-secondary text-theme-secondary mb-1">
                           {language === "zh-CN" ? "分类" : "Category"}
                         </div>
                         <div className="text-xs font-bold text-slate-900 dark:text-slate-100">
@@ -739,8 +739,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                         </div>
                       </div>
 
-                      <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-2xs">
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mb-1">
+                      <div className="p-3.5 rounded-xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle ">
+                        <div className="text-[11px] text-theme-secondary text-theme-secondary mb-1">
                           {language === "zh-CN" ? "风险级别" : "Risk"}
                         </div>
                         <div className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase">
@@ -748,14 +748,14 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                         </div>
                       </div>
 
-                      <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-2xs">
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mb-1">
+                      <div className="p-3.5 rounded-xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle ">
+                        <div className="text-[11px] text-theme-secondary text-theme-secondary mb-1">
                           {language === "zh-CN" ? "状态" : "Status"}
                         </div>
                         <div className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
                           <span
                             className={`w-2 h-2 rounded-full ${
-                              skill.enabled ? "bg-emerald-500" : "bg-slate-400"
+                              skill.enabled ? "bg-[var(--btn-primary-bg)]" : "bg-slate-400"
                             }`}
                           />
                           <span>
@@ -770,8 +770,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                         </div>
                       </div>
 
-                      <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-2xs">
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mb-1">
+                      <div className="p-3.5 rounded-xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle ">
+                        <div className="text-[11px] text-theme-secondary text-theme-secondary mb-1">
                           {skill.type === "raw"
                             ? (language === "zh-CN" ? "主文档" : "Primary Doc")
                             : (language === "zh-CN" ? "工作流步数" : "Workflow")}
@@ -787,8 +787,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
 
                   {/* Advanced Mode: Source Path */}
                   {mode === "advanced" && skill.sourcePath && (
-                    <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-2xs">
-                      <div className="text-[11px] text-slate-500 dark:text-slate-400 mb-1 font-semibold uppercase tracking-wider">
+                    <div className="p-4 rounded-xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle ">
+                      <div className="text-[11px] text-theme-secondary text-theme-secondary mb-1 font-semibold uppercase tracking-wider">
                         {language === "zh-CN" ? "安装路径" : "Source Path"}
                       </div>
                       <div className="text-xs font-mono text-slate-800 dark:text-slate-200 break-all select-text">
@@ -801,8 +801,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                   {skill.triggers && skill.triggers.length > 0 && (
                     <div>
                       <div className="flex items-center gap-2 mb-2.5">
-                        <Tag className="w-4 h-4 text-sky-600 dark:text-sky-400" />
-                        <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        <Tag className="w-4 h-4 text-theme-primary text-theme-primary" />
+                        <h3 className="text-xs font-semibold uppercase tracking-wider text-theme-secondary text-theme-secondary">
                           {t.skills.triggers} ({skill.triggers.length})
                         </h3>
                       </div>
@@ -813,7 +813,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                         ).map((trigger, idx) => (
                           <span
                             key={idx}
-                            className="px-3 py-1 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 shadow-2xs"
+                            className="px-3 py-1 rounded-lg bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle text-xs font-medium text-slate-700 dark:text-slate-300 "
                           >
                             {safeFormatItem(trigger)}
                           </span>
@@ -823,7 +823,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                           <button
                             type="button"
                             onClick={() => setIsTriggersExpanded(!isTriggersExpanded)}
-                            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/60 text-xs font-semibold text-sky-700 dark:text-sky-400 hover:bg-sky-100 transition shadow-2xs"
+                            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-xs font-semibold text-theme-primary text-theme-primary hover:bg-theme-card transition "
                           >
                             <span>
                               {isTriggersExpanded
@@ -846,8 +846,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                   )}
 
                   {/* Security Policy Information */}
-                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 flex items-start gap-3 shadow-2xs">
-                    <ShieldCheck className="w-5 h-5 text-sky-600 dark:text-sky-400 shrink-0 mt-0.5" />
+                  <div className="p-4 rounded-xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle text-xs text-theme-secondary text-theme-secondary flex items-start gap-3 ">
+                    <ShieldCheck className="w-5 h-5 text-theme-primary text-theme-primary shrink-0 mt-0.5" />
                     <div className="leading-relaxed">
                       <span className="font-semibold text-slate-800 dark:text-slate-200">
                         {language === "zh-CN" ? "安全与执行约束：" : "Security & Scope Policy: "}
@@ -866,8 +866,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
               {activeTab === "workflow" && (
                 <div className="space-y-4 animate-in fade-in duration-150">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                      <Workflow className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-theme-secondary text-theme-secondary flex items-center gap-2">
+                      <Workflow className="w-4 h-4 text-theme-primary text-theme-primary" />
                       <span>
                         {t.skills.workflowPipeline} ({skill.workflow.length}{" "}
                         {t.skills.workflowSteps})
@@ -876,7 +876,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                   </div>
 
                   {/* Vertical Timeline container */}
-                  <div className="relative pl-8 space-y-4 before:absolute before:left-3.5 before:top-4 before:bottom-4 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-800">
+                  <div className="relative pl-8 space-y-4 before:absolute before:left-3.5 before:top-4 before:bottom-4 before:w-0.5 before:bg-slate-200 dark:before:bg-theme-card">
                     {skill.workflow.map((rawStepId, idx) => {
                       const stepId = safeFormatItem(rawStepId);
                       const titleMapping = WORKFLOW_STEP_TITLE_MAP[stepId];
@@ -901,24 +901,24 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                       return (
                         <div key={idx} className="relative group">
                           {/* Step Index Circle on timeline axis */}
-                          <div className="absolute -left-8 top-2 w-7 h-7 rounded-full bg-white dark:bg-[#0d1320] border-2 border-sky-500 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xs font-bold font-mono shadow-xs">
+                          <div className="absolute -left-8 top-2 w-7 h-7 rounded-full bg-white dark:bg-[#0d1320] border-2 border-theme-subtle text-theme-primary text-theme-primary flex items-center justify-center text-xs font-bold font-mono ">
                             {stepNum}
                           </div>
 
                           {/* Step Card */}
-                          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-sky-500/40 transition shadow-2xs">
+                          <div className="p-4 rounded-xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle border-theme-subtle transition ">
                             <div className="flex items-center justify-between gap-2 mb-1">
                               <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                                 {title}
                               </h4>
-                              <span className="text-[11px] font-mono font-medium text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/50 px-2 py-0.5 rounded border border-sky-200 dark:border-sky-800/50">
+                              <span className="text-[11px] font-mono font-medium text-theme-primary text-theme-primary bg-theme-card bg-theme-card px-2 py-0.5 rounded border border-theme-subtle border-theme-subtle">
                                 Step {stepNum}
                               </span>
                             </div>
-                            <div className="text-xs font-mono text-slate-500 dark:text-slate-400 mb-1.5">
+                            <div className="text-xs font-mono text-theme-secondary text-theme-secondary mb-1.5">
                               {stepId}
                             </div>
-                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            <p className="text-xs text-theme-secondary dark:text-slate-300 leading-relaxed">
                               {description}
                             </p>
                           </div>
@@ -926,7 +926,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                           {/* Down Arrow connector */}
                           {!isLast && (
                             <div className="flex justify-center -mb-2 py-1.5">
-                              <ArrowDown className="w-3.5 h-3.5 text-sky-500/50" />
+                              <ArrowDown className="w-3.5 h-3.5 text-theme-primary/50" />
                             </div>
                           )}
                         </div>
@@ -940,30 +940,30 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
               {activeTab === "tools" && (
                 <div className="space-y-4 animate-in fade-in duration-150">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                      <Wrench className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-theme-secondary text-theme-secondary flex items-center gap-2">
+                      <Wrench className="w-4 h-4 text-theme-primary text-theme-primary" />
                       <span>{t.skills.allowedTools}</span>
                     </h3>
-                    <span className="text-xs font-mono px-2 py-0.5 rounded bg-sky-50 dark:bg-sky-950/50 text-sky-700 dark:text-sky-300 font-semibold border border-sky-200 dark:border-sky-800/50">
+                    <span className="text-xs font-mono px-2 py-0.5 rounded bg-theme-card bg-theme-card text-theme-primary text-theme-primary font-semibold border border-theme-subtle border-theme-subtle">
                       {skill.tools.length} {t.skills.toolsCount}
                     </span>
                   </div>
 
-                  <div className="divide-y divide-slate-200 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 overflow-hidden shadow-2xs">
+                  <div className="divide-y divide-slate-200 dark:divide-slate-800 rounded-xl border border-theme-subtle border-theme-subtle bg-theme-card bg-theme-base overflow-hidden ">
                     {skill.tools.map((rawTool) => {
                       const toolName = safeFormatItem(rawTool);
                       const scope = getToolScopeBadge(toolName);
                       const badgeClass =
                         scope === "READ"
-                          ? "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-800/60"
+                          ? "bg-theme-card text-theme-primary border-theme-subtle bg-theme-card text-theme-primary border-theme-subtle"
                           : scope === "WRITE"
-                          ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/60"
-                          : "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-400 dark:border-purple-800/60";
+                          ? "bg-theme-card text-[var(--warning)] border-theme-subtle bg-theme-card text-[var(--warning)] border-theme-subtle"
+                          : "bg-theme-card text-theme-primary border-theme-subtle bg-theme-card text-theme-primary border-theme-subtle";
 
                       return (
                         <div
                           key={toolName}
-                          className="p-3.5 flex items-center justify-between gap-3 hover:bg-slate-100/60 dark:hover:bg-slate-800/50 transition"
+                          className="p-3.5 flex items-center justify-between gap-3 hover:bg-theme-card dark:hover:bg-theme-card transition"
                         >
                           <div className="min-w-0">
                             <div className="text-xs font-mono font-semibold text-slate-800 dark:text-slate-200 truncate select-text">
@@ -986,20 +986,20 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
               {activeTab === "skillMd" && (
                 <div className="space-y-4 animate-in fade-in duration-150">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-theme-secondary text-theme-secondary flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-theme-primary text-theme-primary" />
                       <span>{t.skills.instructionsTitle}</span>
                     </h3>
 
                     <button
                       type="button"
                       onClick={handleCopyMd}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 shadow-2xs transition"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white bg-theme-card border border-theme-subtle border-theme-subtle hover:bg-theme-card dark:hover:bg-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100  transition"
                     >
                       {copiedMd ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                          <span className="text-emerald-600 dark:text-emerald-400">
+                          <Check className="w-3.5 h-3.5 text-[var(--success)] text-[var(--success)]" />
+                          <span className="text-[var(--success)] text-[var(--success)]">
                             {language === "zh-CN" ? "已复制" : "Copied"}
                           </span>
                         </>
@@ -1013,7 +1013,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                   </div>
 
                   {/* Markdown Typography Container */}
-                  <div className="max-w-[760px] mx-auto p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 leading-[1.7] space-y-4 font-sans select-text shadow-sm overflow-x-auto">
+                  <div className="max-w-[760px] mx-auto p-6 rounded-2xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle text-xs text-slate-800 dark:text-slate-200 leading-[1.7] space-y-4 font-sans select-text  overflow-x-auto">
                     {skill.instructions ? (
                       skill.instructions.split("\n\n").map((block, idx) => {
                         const trimmed = block.trim();
@@ -1024,7 +1024,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                           return (
                             <h4
                               key={idx}
-                              className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-4 mb-2 pb-1 border-b border-slate-200 dark:border-slate-800"
+                              className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-4 mb-2 pb-1 border-b border-theme-subtle border-theme-subtle"
                             >
                               {trimmed.slice(4)}
                             </h4>
@@ -1036,7 +1036,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                           return (
                             <h3
                               key={idx}
-                              className="text-base font-bold text-slate-900 dark:text-slate-100 mt-6 mb-2 pb-1 border-b border-slate-200 dark:border-slate-800"
+                              className="text-base font-bold text-slate-900 dark:text-slate-100 mt-6 mb-2 pb-1 border-b border-theme-subtle border-theme-subtle"
                             >
                               {trimmed.slice(3)}
                             </h3>
@@ -1048,7 +1048,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                           return (
                             <h2
                               key={idx}
-                              className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-2 mb-3 pb-2 border-b-2 border-slate-200 dark:border-slate-800"
+                              className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-2 mb-3 pb-2 border-b-2 border-theme-subtle border-theme-subtle"
                             >
                               {trimmed.slice(2)}
                             </h2>
@@ -1063,10 +1063,10 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                           return (
                             <div
                               key={idx}
-                              className="rounded-xl bg-slate-900 text-slate-100 dark:bg-[#05070d] dark:text-slate-200 border border-slate-700/60 p-4 font-mono text-[11px] overflow-x-auto my-3 shadow-xs"
+                              className="rounded-xl bg-theme-base text-slate-100 dark:bg-[#05070d] dark:text-slate-200 border border-theme-subtle p-4 font-mono text-[11px] overflow-x-auto my-3 "
                             >
                               {lang && (
-                                <div className="text-[10px] uppercase text-slate-400 mb-1.5 font-semibold">
+                                <div className="text-[10px] uppercase text-theme-secondary mb-1.5 font-semibold">
                                   {lang}
                                 </div>
                               )}
@@ -1080,7 +1080,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                           return (
                             <blockquote
                               key={idx}
-                              className="pl-4 border-l-4 border-sky-500 bg-sky-50/50 dark:bg-sky-950/30 py-2.5 my-3 rounded-r-lg text-slate-700 dark:text-slate-300 italic"
+                              className="pl-4 border-l-4 border-theme-subtle bg-theme-card bg-theme-card py-2.5 my-3 rounded-r-lg text-slate-700 dark:text-slate-300 italic"
                             >
                               {trimmed.slice(2)}
                             </blockquote>
@@ -1123,7 +1123,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                         );
                       })
                     ) : (
-                      <p className="text-slate-500 italic">No instructions available.</p>
+                      <p className="text-theme-secondary italic">No instructions available.</p>
                     )}
                   </div>
                 </div>
@@ -1133,20 +1133,20 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
               {activeTab === "rawConfig" && (
                 <div className="space-y-4 animate-in fade-in duration-150">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                      <Code2 className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-theme-secondary text-theme-secondary flex items-center gap-2">
+                      <Code2 className="w-4 h-4 text-theme-primary text-theme-primary" />
                       <span>skill.yaml</span>
                     </h3>
 
                     <button
                       type="button"
                       onClick={handleCopyYaml}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 shadow-2xs transition"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white bg-theme-card border border-theme-subtle border-theme-subtle hover:bg-theme-card dark:hover:bg-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100  transition"
                     >
                       {copiedYaml ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                          <span className="text-emerald-600 dark:text-emerald-400">
+                          <Check className="w-3.5 h-3.5 text-[var(--success)] text-[var(--success)]" />
+                          <span className="text-[var(--success)] text-[var(--success)]">
                             {language === "zh-CN" ? "已复制" : "Copied"}
                           </span>
                         </>
@@ -1160,11 +1160,11 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                   </div>
 
                   {loadingRaw ? (
-                    <div className="py-12 text-center text-xs text-slate-500 dark:text-slate-400">
+                    <div className="py-12 text-center text-xs text-theme-secondary text-theme-secondary">
                       {t.common.loading}...
                     </div>
                   ) : (
-                    <div className="rounded-2xl bg-slate-900 text-slate-100 dark:bg-[#05070d] border border-slate-700/60 p-5 font-mono text-xs text-slate-100 leading-relaxed whitespace-pre overflow-x-auto select-text shadow-sm">
+                    <div className="rounded-2xl bg-theme-base text-slate-100 dark:bg-[#05070d] border border-theme-subtle p-5 font-mono text-xs text-slate-100 leading-relaxed whitespace-pre overflow-x-auto select-text ">
                       {rawContent?.rawYaml || "skill.yaml content not available"}
                     </div>
                   )}
@@ -1176,18 +1176,18 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
 
         {/* Drawer Sticky Solid Footer */}
         {skill && (
-          <div className="sticky bottom-0 z-20 px-6 py-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1320] flex items-center justify-between gap-3">
+          <div className="sticky bottom-0 z-20 px-6 py-4 border-t border-theme-subtle border-theme-subtle bg-white dark:bg-[#0d1320] flex items-center justify-between gap-3">
             {/* Source Tag or Read-only info */}
             <div>
               {skill.source === "builtin" ? (
-                <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 font-medium">
-                  <ShieldCheck className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+                <span className="text-xs text-theme-secondary text-theme-secondary flex items-center gap-1.5 font-medium">
+                  <ShieldCheck className="w-4 h-4 text-theme-primary text-theme-primary" />
                   <span>
                     {language === "zh-CN" ? "官方内置 · 规范受保护" : "Built-in · Read-only"}
                   </span>
                 </span>
               ) : (
-                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                <span className="text-xs text-theme-secondary text-theme-secondary font-medium">
                   {skill.source === "user" ? t.skills.sourceUser : t.skills.sourceProject}
                 </span>
               )}
@@ -1200,9 +1200,9 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                   <button
                     type="button"
                     onClick={handleOpenFolder}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 shadow-2xs transition"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white bg-theme-card border border-theme-subtle border-theme-subtle hover:bg-theme-card dark:hover:bg-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100  transition"
                   >
-                    <FolderOpen className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                    <FolderOpen className="w-3.5 h-3.5 text-theme-primary text-theme-primary" />
                     <span>{t.skills.openFolder}</span>
                   </button>
                 )}
@@ -1210,9 +1210,9 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                 <button
                   type="button"
                   onClick={() => onReload?.()}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 shadow-2xs transition"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white bg-theme-card border border-theme-subtle border-theme-subtle hover:bg-theme-card dark:hover:bg-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100  transition"
                 >
-                  <RotateCw className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                  <RotateCw className="w-3.5 h-3.5 text-theme-primary text-theme-primary" />
                   <span>{t.skills.reloadButton}</span>
                 </button>
 
@@ -1221,7 +1221,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                   type="button"
                   disabled={deleting}
                   onClick={handleDelete}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition shadow-xs"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-xs font-semibold transition "
                 >
                   {deleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                   <span>{language === "zh-CN" ? "确认删除" : "Confirm Delete"}</span>
@@ -1230,7 +1230,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-xs font-medium text-rose-700 dark:text-rose-400 transition"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle hover:bg-theme-card dark:hover:bg-theme-card text-xs font-medium text-[var(--warning)] text-[var(--warning)] transition"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   <span>{t.skills.deleteButton}</span>
@@ -1244,20 +1244,20 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
       {/* Centered High-Priority Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-150"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-xs p-4 animate-in fade-in duration-150"
           onClick={() => !deleting && setShowDeleteConfirm(false)}
         >
           <div
-            className="bg-white dark:bg-[#0f172a] border border-rose-200 dark:border-rose-900/60 rounded-2xl max-w-sm w-full p-6 shadow-2xl animate-in zoom-in-95 duration-150"
+            className="bg-white dark:bg-[#0f172a] border border-theme-subtle border-theme-subtle rounded-2xl max-w-sm w-full p-6  animate-in zoom-in-95 duration-150"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="w-10 h-10 rounded-xl bg-rose-100 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-4">
+            <div className="w-10 h-10 rounded-xl bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-[var(--warning)] text-[var(--warning)] flex items-center justify-center mb-4">
               <Trash2 className="w-5 h-5" />
             </div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
               确定删除该技能？
             </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+            <p className="text-xs text-theme-secondary dark:text-slate-300 mt-2 leading-relaxed">
               将永久删除技能「<span className="font-semibold text-slate-900 dark:text-slate-100">{displayName}</span>」及其配置文件，此操作无法撤销。
             </p>
             <div className="flex items-center justify-end gap-2 mt-5">
@@ -1265,7 +1265,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                 type="button"
                 disabled={deleting}
                 onClick={() => setShowDeleteConfirm(false)}
-                className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition"
+                className="px-3 py-1.5 rounded-lg text-xs font-semibold text-theme-secondary text-theme-secondary hover:bg-theme-card dark:hover:bg-theme-card border border-theme-subtle border-theme-subtle transition"
               >
                 {t.common.cancel}
               </button>
@@ -1273,7 +1273,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                 type="button"
                 disabled={deleting}
                 onClick={handleDelete}
-                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 text-white hover:bg-rose-700 disabled:opacity-50 transition flex items-center gap-1.5 shadow-sm"
+                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] hover:bg-[var(--btn-primary-bg)] disabled:opacity-50 transition flex items-center gap-1.5 "
               >
                 {deleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                 <span>{language === "zh-CN" ? "确认删除" : "Confirm Delete"}</span>

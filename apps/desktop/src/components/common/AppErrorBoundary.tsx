@@ -149,9 +149,9 @@ export class AppErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundar
       const copiedText = isZh ? "已复制" : "Copied";
 
       return (
-        <div className="p-8 rounded-2xl bg-theme-card border border-red-500/30 text-theme-primary space-y-5 shadow-lg my-4 max-w-2xl mx-auto animate-fade-in">
+        <div className="p-8 rounded-2xl bg-theme-card border border-theme-subtle text-theme-primary space-y-5  my-4 max-w-2xl mx-auto animate-fade-in">
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 shrink-0">
+            <div className="p-3 rounded-xl bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[var(--warning)] shrink-0">
               <AlertTriangle className="w-6 h-6" />
             </div>
             <div className="space-y-1">
@@ -165,7 +165,7 @@ export class AppErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundar
             </div>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-theme-card-muted border border-theme-subtle font-mono text-xs text-red-600 dark:text-red-400 break-words max-h-40 overflow-y-auto">
+          <div className="p-3.5 rounded-xl bg-theme-card-muted border border-theme-subtle font-mono text-xs text-[var(--warning)] text-[var(--warning)] break-words max-h-40 overflow-y-auto">
             {sanitizeErrorDetails(this.state.error?.message || "An unexpected error occurred during rendering.")}
           </div>
 
@@ -174,7 +174,7 @@ export class AppErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundar
               <button
                 type="button"
                 onClick={this.handleReset}
-                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition flex items-center gap-1.5"
+                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]  transition flex items-center gap-1.5"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 <span>{retryText}</span>
@@ -195,7 +195,7 @@ export class AppErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundar
               onClick={this.handleCopyDetails}
               className="px-3 py-1.5 rounded-xl text-xs font-medium bg-theme-card-muted hover:bg-theme-card-hover text-theme-muted hover:text-theme-secondary border border-theme-subtle transition flex items-center gap-1.5"
             >
-              {this.state.copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+              {this.state.copied ? <Check className="w-3.5 h-3.5 text-[var(--success)]" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{this.state.copied ? copiedText : copyText}</span>
             </button>
           </div>

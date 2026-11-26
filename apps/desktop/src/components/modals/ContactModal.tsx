@@ -60,19 +60,19 @@ export const ContactModal: React.FC<ContactModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200 select-none"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--bg-app)] backdrop-blur-sm animate-in fade-in duration-200 select-none"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
-        className="relative w-full max-w-xl bg-theme-card border border-theme-subtle rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+        className="relative w-full max-w-xl bg-theme-card border border-theme-subtle rounded-2xl  overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header (Blue Theme) */}
-        <div className="px-6 py-5 bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-transparent border-b border-theme-subtle flex items-center justify-between">
+        <div className="px-6 py-5 bg-theme-card border-b border-theme-subtle flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl border border-sky-500/30 bg-sky-500/15 text-sky-500 flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 rounded-xl border border-theme-subtle bg-[var(--btn-primary-bg)]/15 text-theme-primary flex items-center justify-center ">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
@@ -80,8 +80,8 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 <h2 className="text-base font-bold text-theme-primary tracking-tight">
                   {tText("关于 Nexus 与开源生态", "About Nexus & Ecosystem", "Nexus とエコシステムについて", "Über Nexus & Ökosystem")}
                 </h2>
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 font-mono">
-                  v1.3.4
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[var(--btn-primary-bg)]/10 text-theme-primary text-theme-primary border border-theme-subtle font-mono">
+                  v1.4.0
                 </span>
               </div>
               <p className="text-xs text-theme-secondary mt-0.5">
@@ -110,7 +110,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
             onClick={() => setActiveTab("intro")}
             className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-medium transition cursor-pointer ${
               activeTab === "intro"
-                ? "bg-theme-card text-sky-600 dark:text-sky-400 shadow-xs border border-theme-subtle font-semibold"
+                ? "bg-theme-card text-theme-primary text-theme-primary  border border-theme-subtle font-semibold"
                 : "text-theme-secondary hover:text-theme-primary"
             }`}
           >
@@ -122,7 +122,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
             onClick={() => setActiveTab("projects")}
             className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-medium transition cursor-pointer ${
               activeTab === "projects"
-                ? "bg-theme-card text-sky-600 dark:text-sky-400 shadow-xs border border-theme-subtle font-semibold"
+                ? "bg-theme-card text-theme-primary text-theme-primary  border border-theme-subtle font-semibold"
                 : "text-theme-secondary hover:text-theme-primary"
             }`}
           >
@@ -136,9 +136,9 @@ export const ContactModal: React.FC<ContactModalProps> = ({
           {activeTab === "intro" ? (
             <div className="space-y-4">
               {/* Highlight Notice Card */}
-              <div className="p-4 rounded-xl border border-sky-500/30 bg-gradient-to-br from-sky-500/10 via-indigo-500/5 to-transparent space-y-2">
-                <div className="flex items-center gap-2 text-sky-600 dark:text-sky-400 font-semibold text-xs">
-                  <Star className="w-4 h-4 fill-sky-400 text-sky-400" />
+              <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card space-y-2">
+                <div className="flex items-center gap-2 text-theme-primary text-theme-primary font-semibold text-xs">
+                  <Star className="w-4 h-4 fill-current text-theme-primary" />
                   <span>{tText("作者专属倡议", "Developer Notice", "開発者からのお願い", "Entwickler-Hinweis")}</span>
                 </div>
                 <p className="text-xs text-theme-primary leading-relaxed">
@@ -150,7 +150,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     target="_blank"
                     rel="noreferrer"
                     onClick={(e) => handleOpenUrl(e, "https://github.com/ysunyang4")}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]  transition"
                   >
                     <Github className="w-3.5 h-3.5" />
                     <span>{tText("关注 GitHub 账号", "Follow on GitHub", "GitHub をフォロー", "GitHub folgen")}</span>
@@ -163,7 +163,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     onClick={(e) => handleOpenUrl(e, "https://github.com/ysunyang4/Nexus")}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-theme-base border border-theme-subtle hover:bg-theme-card-hover text-theme-primary transition"
                   >
-                    <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                    <Star className="w-3.5 h-3.5 text-[var(--warning)] fill-current" />
                     <span>Star Nexus</span>
                   </a>
                 </div>
@@ -181,14 +181,14 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     target="_blank"
                     rel="noreferrer"
                     onClick={(e) => handleOpenUrl(e, "https://blog.ycu.de5.net/")}
-                    className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover hover:border-sky-500/40 transition group cursor-pointer"
+                    className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover border-theme-subtle transition group cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-7 h-7 rounded-lg bg-sky-500/10 text-sky-500 flex items-center justify-center shrink-0">
+                      <div className="w-7 h-7 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary flex items-center justify-center shrink-0">
                         <Globe className="w-3.5 h-3.5" />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xs font-bold text-theme-primary group-hover:text-sky-500 transition truncate">
+                        <div className="text-xs font-bold text-theme-primary group-hover:text-theme-primary transition truncate">
                           {tText("个人技术博客", "Tech Blog", "技術ブログ", "Tech-Blog")}
                         </div>
                         <div className="text-[10px] text-theme-muted font-mono truncate">
@@ -204,14 +204,14 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     target="_blank"
                     rel="noreferrer"
                     onClick={(e) => handleOpenUrl(e, "https://linux.do/u/yang_sunny/summary")}
-                    className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover hover:border-sky-500/40 transition group cursor-pointer"
+                    className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover border-theme-subtle transition group cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
+                      <div className="w-7 h-7 rounded-lg bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] flex items-center justify-center shrink-0">
                         <span className="font-bold text-[10px]">🐧</span>
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xs font-bold text-theme-primary group-hover:text-amber-500 transition truncate">
+                        <div className="text-xs font-bold text-theme-primary group-hover:text-[var(--warning)] transition truncate">
                           LINUX DO
                         </div>
                         <div className="text-[10px] text-theme-muted font-mono truncate">
@@ -227,14 +227,14 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     target="_blank"
                     rel="noreferrer"
                     onClick={(e) => handleOpenUrl(e, "https://x.com/yngstein")}
-                    className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover hover:border-sky-500/40 transition group cursor-pointer"
+                    className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover border-theme-subtle transition group cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <div className="w-7 h-7 rounded-lg bg-slate-500/10 text-theme-primary flex items-center justify-center shrink-0">
                         <span className="font-bold text-xs">𝕏</span>
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xs font-bold text-theme-primary group-hover:text-sky-500 transition truncate">
+                        <div className="text-xs font-bold text-theme-primary group-hover:text-theme-primary transition truncate">
                           X (Twitter)
                         </div>
                         <div className="text-[10px] text-theme-muted font-mono truncate">
@@ -250,14 +250,14 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     target="_blank"
                     rel="noreferrer"
                     onClick={(e) => handleOpenUrl(e, "https://afdian.com/a/ysunyang4")}
-                    className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover hover:border-sky-500/40 transition group cursor-pointer"
+                    className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover border-theme-subtle transition group cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-7 h-7 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0">
-                        <span className="font-bold text-[10px]">⚡</span>
+                      <div className="w-7 h-7 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary flex items-center justify-center shrink-0">
+                        <span className="font-bold text-[10px]"></span>
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xs font-bold text-theme-primary group-hover:text-purple-500 transition truncate">
+                        <div className="text-xs font-bold text-theme-primary group-hover:text-theme-primary transition truncate">
                           {tText("爱发电", "Afdian", "Afdian", "Afdian")}
                         </div>
                         <div className="text-[10px] text-theme-muted font-mono truncate">
@@ -273,7 +273,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     target="_blank"
                     rel="noreferrer"
                     onClick={(e) => handleOpenUrl(e, "https://www.reddit.com/user/OutrageousRabbit3296")}
-                    className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover hover:border-sky-500/40 transition group cursor-pointer"
+                    className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover border-theme-subtle transition group cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <div className="w-7 h-7 rounded-lg bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0">
@@ -293,7 +293,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
 
                   <div className="flex items-center justify-between p-3 rounded-xl border border-theme-subtle bg-theme-base/60">
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-7 h-7 rounded-lg bg-sky-500/10 text-sky-500 flex items-center justify-center shrink-0">
+                      <div className="w-7 h-7 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary flex items-center justify-center shrink-0">
                         <Mail className="w-3.5 h-3.5" />
                       </div>
                       <div className="min-w-0">
@@ -308,7 +308,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     <button
                       type="button"
                       onClick={() => handleCopy("ysunyang4@gmail.com", "mail")}
-                      className="px-2 py-1 text-[11px] rounded bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 dark:text-sky-400 transition cursor-pointer flex items-center gap-1"
+                      className="px-2 py-1 text-[11px] rounded bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-theme-primary text-theme-primary transition cursor-pointer flex items-center gap-1"
                     >
                       {copiedKey === "mail" ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                       <span>{copiedKey === "mail" ? tText("已复制", "Copied", "完了", "Kopiert") : tText("复制", "Copy", "コピー", "Kopieren")}</span>
@@ -325,18 +325,18 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 target="_blank"
                 rel="noreferrer"
                 onClick={(e) => handleOpenUrl(e, "https://github.com/ysunyang4")}
-                className="flex items-center justify-between p-4 rounded-xl border border-sky-500/30 bg-gradient-to-r from-sky-500/10 via-indigo-500/5 to-transparent hover:border-sky-500/60 transition group cursor-pointer shadow-xs"
+                className="flex items-center justify-between p-4 rounded-xl border border-theme-subtle bg-theme-card border-theme-subtle transition group cursor-pointer "
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-500 flex items-center justify-center shrink-0 border border-sky-500/30">
+                  <div className="w-10 h-10 rounded-xl bg-[var(--btn-primary-bg)]/20 text-theme-primary flex items-center justify-center shrink-0 border border-theme-subtle">
                     <Github className="w-5 h-5" />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-theme-primary group-hover:text-sky-500 transition">
+                      <span className="text-sm font-bold text-theme-primary group-hover:text-theme-primary transition">
                         Ryan Sun (@ysunyang4)
                       </span>
-                      <span className="px-1.5 py-0.2 rounded text-[10px] font-medium bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30">
+                      <span className="px-1.5 py-0.2 rounded text-[10px] font-medium bg-[var(--btn-primary-bg)]/20 text-theme-primary text-theme-primary border border-theme-subtle">
                         {tText("作者主页", "Author Profile", "作者ページ", "Autor")}
                       </span>
                     </div>
@@ -359,18 +359,18 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 target="_blank"
                 rel="noreferrer"
                 onClick={(e) => handleOpenUrl(e, "https://github.com/ysunyang4/Nexus")}
-                className="flex items-center justify-between p-3.5 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover hover:border-sky-500/30 transition group cursor-pointer"
+                className="flex items-center justify-between p-3.5 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover border-theme-subtle transition group cursor-pointer"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-9 h-9 rounded-lg bg-sky-500/10 text-sky-500 flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary flex items-center justify-center shrink-0">
                     <Sparkles className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-theme-primary group-hover:text-sky-500 transition">
-                        Nexus (v1.3.4)
+                      <span className="text-xs font-bold text-theme-primary group-hover:text-theme-primary transition">
+                        Nexus (v1.4.0)
                       </span>
-                      <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                      <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-[var(--btn-primary-bg)]/10 text-theme-primary text-theme-primary">
                         Core System
                       </span>
                     </div>
@@ -393,18 +393,18 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 target="_blank"
                 rel="noreferrer"
                 onClick={(e) => handleOpenUrl(e, "https://github.com/ysunyang4/webagent")}
-                className="flex items-center justify-between p-3.5 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover hover:border-indigo-500/30 transition group cursor-pointer"
+                className="flex items-center justify-between p-3.5 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover border-theme-subtle transition group cursor-pointer"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-9 h-9 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary flex items-center justify-center shrink-0">
                     <Globe className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-theme-primary group-hover:text-indigo-500 transition">
+                      <span className="text-xs font-bold text-theme-primary group-hover:text-theme-primary transition">
                         WebAgent
                       </span>
-                      <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                      <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-[var(--btn-primary-bg)]/10 text-theme-primary text-theme-primary">
                         Browser Extension
                       </span>
                     </div>
@@ -434,7 +434,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     <Github className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-xs font-bold text-theme-primary group-hover:text-sky-500 transition">
+                    <div className="text-xs font-bold text-theme-primary group-hover:text-theme-primary transition">
                       {tText("GitHub Issues (缺陷报告与建议)", "GitHub Issues (Bug Reports & Requests)", "GitHub Issues (バグ報告 & 要求)", "GitHub Issues")}
                     </div>
                     <div className="text-[11px] text-theme-secondary mt-0.5">
@@ -461,7 +461,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-medium shadow-xs transition cursor-pointer"
+            className="px-4 py-1.5 rounded-lg bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-medium  transition cursor-pointer"
           >
             {tText("关闭", "Close", "閉じる", "Schließen")}
           </button>

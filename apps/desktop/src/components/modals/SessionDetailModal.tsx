@@ -219,12 +219,12 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
   const isActive = session.state === "active";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="bg-theme-card border border-theme-subtle rounded-xl w-full max-w-4xl max-h-[90vh] shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+      <div className="bg-theme-card border border-theme-subtle rounded-xl w-full max-w-4xl max-h-[90vh]  overflow-hidden flex flex-col">
         {/* Modal Header */}
         <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-card-muted/50">
           <div className="flex items-center gap-3 min-w-0">
-            <Compass className="w-5 h-5 text-indigo-500 shrink-0" />
+            <Compass className="w-5 h-5 text-theme-primary shrink-0" />
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="font-bold text-sm text-theme-primary truncate">
@@ -233,10 +233,10 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                 <span
                   className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
                     session.state === "active"
-                      ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                      ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle"
                       : session.state === "completed"
-                      ? "bg-blue-500/10 text-blue-500 border border-blue-500/20"
-                      : "bg-slate-500/10 text-slate-500 border border-slate-500/20"
+                      ? "bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle"
+                      : "bg-slate-500/10 text-theme-secondary border border-slate-500/20"
                   }`}
                 >
                   {session.state === "active"
@@ -268,8 +268,8 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
 
         {/* Goals Banner if any */}
         {session.goals && session.goals.length > 0 && (
-          <div className="px-6 py-2.5 bg-indigo-500/5 border-b border-indigo-500/10 text-xs">
-            <div className="font-medium text-indigo-400 mb-1">{t.workflow.goals}:</div>
+          <div className="px-6 py-2.5 bg-[var(--btn-primary-bg)]/5 border-b border-theme-subtle text-xs">
+            <div className="font-medium text-theme-primary mb-1">{t.workflow.goals}:</div>
             <ul className="list-disc list-inside space-y-0.5 text-theme-secondary text-[11px]">
               {session.goals.map((g, i) => (
                 <li key={i}>{g}</li>
@@ -280,18 +280,18 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
 
         {/* Worktree Workspace Banner */}
         {handoff?.workspace?.mode === "worktree" && (
-          <div className="px-6 py-2.5 bg-amber-500/5 border-b border-amber-500/10 text-xs flex flex-wrap items-center justify-between gap-3">
+          <div className="px-6 py-2.5 bg-[var(--btn-primary-bg)]/5 border-b border-theme-subtle text-xs flex flex-wrap items-center justify-between gap-3">
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
-                <GitBranch className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                <span className="font-semibold text-amber-400">
+                <GitBranch className="w-3.5 h-3.5 text-[var(--warning)] shrink-0" />
+                <span className="font-semibold text-[var(--warning)]">
                   Isolated Worktree: {handoff.workspace.branchName}
                 </span>
                 <span
                   className={`text-[10px] px-1.5 py-0.2 rounded font-medium ${
                     handoff.workspace.isClean
-                      ? "bg-emerald-500/10 text-emerald-400"
-                      : "bg-amber-500/10 text-amber-400"
+                      ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)]"
+                      : "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)]"
                   }`}
                 >
                   {handoff.workspace.isClean ? "clean" : "modified"}
@@ -354,7 +354,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                     setRemovingWorktree(false);
                   }
                 }}
-                className="px-2.5 py-1 bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 rounded text-xs font-medium transition disabled:opacity-50"
+                className="px-2.5 py-1 bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border border-theme-subtle rounded text-xs font-medium transition disabled:opacity-50"
               >
                 {removingWorktree ? "Removing..." : "Remove Worktree"}
               </button>
@@ -374,7 +374,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                 Close
               </button>
             </div>
-            <pre className="p-2.5 bg-black/40 rounded font-mono text-[11px] text-theme-secondary overflow-x-auto max-h-64 whitespace-pre-wrap">
+            <pre className="p-2.5 bg-[var(--bg-app)] rounded font-mono text-[11px] text-theme-secondary overflow-x-auto max-h-64 whitespace-pre-wrap">
               {worktreeDiff}
             </pre>
           </div>
@@ -382,7 +382,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
 
         {/* Error notification */}
         {error && (
-          <div className="m-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-xs text-red-500 flex items-center gap-2">
+          <div className="m-4 p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg text-xs text-[var(--warning)] flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -394,7 +394,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
             onClick={() => setActiveTab("checkpoints")}
             className={`pb-2.5 text-xs font-semibold flex items-center gap-1.5 border-b-2 transition ${
               activeTab === "checkpoints"
-                ? "border-indigo-500 text-indigo-500"
+                ? "border-theme-subtle text-theme-primary"
                 : "border-transparent text-theme-muted hover:text-theme-primary"
             }`}
           >
@@ -407,7 +407,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
             onClick={() => setActiveTab("events")}
             className={`pb-2.5 text-xs font-semibold flex items-center gap-1.5 border-b-2 transition ${
               activeTab === "events"
-                ? "border-indigo-500 text-indigo-500"
+                ? "border-theme-subtle text-theme-primary"
                 : "border-transparent text-theme-muted hover:text-theme-primary"
             }`}
           >
@@ -420,7 +420,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
             onClick={() => setActiveTab("handoff")}
             className={`pb-2.5 text-xs font-semibold flex items-center gap-1.5 border-b-2 transition ${
               activeTab === "handoff"
-                ? "border-indigo-500 text-indigo-500"
+                ? "border-theme-subtle text-theme-primary"
                 : "border-transparent text-theme-muted hover:text-theme-primary"
             }`}
           >
@@ -431,7 +431,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
             onClick={() => setActiveTab("runtimes")}
             className={`pb-2.5 text-xs font-semibold flex items-center gap-1.5 border-b-2 transition ${
               activeTab === "runtimes"
-                ? "border-indigo-500 text-indigo-500"
+                ? "border-theme-subtle text-theme-primary"
                 : "border-transparent text-theme-muted hover:text-theme-primary"
             }`}
           >
@@ -464,7 +464,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                     className="p-4 bg-theme-card-muted rounded-lg border border-theme-subtle space-y-2"
                   >
                     <div className="flex items-center justify-between text-[11px] text-theme-muted">
-                      <span className="font-semibold text-indigo-400">
+                      <span className="font-semibold text-theme-primary">
                         #{cp.checkpointNumber}
                       </span>
                       <span>{new Date(cp.createdAt).toLocaleString()}</span>
@@ -484,10 +484,10 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                     )}
                     {cp.blockers && cp.blockers.length > 0 && (
                       <div className="pt-2 border-t border-theme-subtle/50">
-                        <div className="text-[11px] text-amber-500 font-medium mb-1">
+                        <div className="text-[11px] text-[var(--warning)] font-medium mb-1">
                           Blockers / Issues:
                         </div>
-                        <ul className="list-disc list-inside space-y-0.5 text-amber-400/90 text-[11px]">
+                        <ul className="list-disc list-inside space-y-0.5 text-[var(--warning)]/90 text-[11px]">
                           {cp.blockers.map((b, idx) => (
                             <li key={idx}>{b}</li>
                           ))}
@@ -502,7 +502,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
               {showCheckpointForm && (
                 <form
                   onSubmit={handleCreateCheckpoint}
-                  className="p-4 bg-indigo-500/5 border border-indigo-500/20 rounded-lg space-y-3"
+                  className="p-4 bg-[var(--btn-primary-bg)]/5 border border-theme-subtle rounded-lg space-y-3"
                 >
                   <div className="font-bold text-theme-primary text-xs">
                     {t.workflow.createCheckpointTitle}
@@ -517,7 +517,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                       placeholder={t.workflow.summaryPlaceholder}
                       rows={2}
                       required
-                      className="w-full bg-theme-input border border-theme-input rounded-lg p-2 text-xs text-theme-primary focus:outline-none focus:border-indigo-500"
+                      className="w-full bg-theme-input border border-theme-input rounded-lg p-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                     />
                   </div>
                   <div>
@@ -529,7 +529,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                       onChange={(e) => setNextSteps(e.target.value)}
                       placeholder={t.workflow.nextStepsPlaceholder}
                       rows={2}
-                      className="w-full bg-theme-input border border-theme-input rounded-lg p-2 text-xs text-theme-primary focus:outline-none focus:border-indigo-500"
+                      className="w-full bg-theme-input border border-theme-input rounded-lg p-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                     />
                   </div>
                   <div>
@@ -541,7 +541,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                       onChange={(e) => setBlockers(e.target.value)}
                       placeholder={t.workflow.blockersPlaceholder}
                       rows={2}
-                      className="w-full bg-theme-input border border-theme-input rounded-lg p-2 text-xs text-theme-primary focus:outline-none focus:border-indigo-500"
+                      className="w-full bg-theme-input border border-theme-input rounded-lg p-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                     />
                   </div>
                   <div className="flex items-center justify-end gap-2 pt-1">
@@ -555,7 +555,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                     <button
                       type="submit"
                       disabled={submittingCheckpoint || !summary.trim()}
-                      className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg text-xs transition disabled:opacity-50"
+                      className="px-3 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-semibold rounded-lg text-xs transition disabled:opacity-50"
                     >
                       {submittingCheckpoint ? t.common.loading : t.common.save}
                     </button>
@@ -596,10 +596,10 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                       <span
                         className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
                           evt.status === "success"
-                            ? "text-emerald-400 bg-emerald-500/10"
+                            ? "text-[var(--success)] bg-[var(--btn-primary-bg)]/10"
                             : evt.status === "failure"
-                            ? "text-red-400 bg-red-500/10"
-                            : "text-amber-400 bg-amber-500/10"
+                            ? "text-[var(--warning)] bg-[var(--btn-primary-bg)]/10"
+                            : "text-[var(--warning)] bg-[var(--btn-primary-bg)]/10"
                         }`}
                       >
                         {evt.status}
@@ -644,14 +644,14 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                             <span
                               className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-semibold ${
                                 rt.state === "running"
-                                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                                  ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle"
                                   : rt.state === "starting"
-                                  ? "bg-blue-500/10 text-blue-400 border border-blue-500/20"
+                                  ? "bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle"
                                   : rt.state === "stopping"
-                                  ? "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                                  ? "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle"
                                   : rt.state === "failed"
-                                  ? "bg-red-500/10 text-red-400 border border-red-500/20"
-                                  : "bg-slate-500/10 text-slate-400 border border-slate-500/20"
+                                  ? "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle"
+                                  : "bg-slate-500/10 text-theme-secondary border border-slate-500/20"
                               }`}
                             >
                               {rt.state}
@@ -668,7 +668,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                               <button
                                 onClick={() => handleStopRuntime(rt.runtimeId)}
                                 disabled={isActioning}
-                                className="flex items-center gap-1 px-2.5 py-1 bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 rounded text-xs transition disabled:opacity-50"
+                                className="flex items-center gap-1 px-2.5 py-1 bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border border-theme-subtle rounded text-xs transition disabled:opacity-50"
                               >
                                 <Square className="w-3 h-3" />
                                 <span>{t.runtimes.stop}</span>
@@ -703,7 +703,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                                 </span>
                               )}
                             </div>
-                            <pre className="p-3 bg-black/40 rounded font-mono text-[11px] text-theme-secondary overflow-x-auto max-h-48 whitespace-pre-wrap">
+                            <pre className="p-3 bg-[var(--bg-app)] rounded font-mono text-[11px] text-theme-secondary overflow-x-auto max-h-48 whitespace-pre-wrap">
                               {runtimeLogs.length === 0
                                 ? "No log output recorded."
                                 : runtimeLogs.map((l) => `[${l.stream}] ${l.text}`).join("")}
@@ -729,7 +729,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                     <div className="flex items-center gap-2">
                       <button
                         onClick={handleCopyPrompt}
-                        className="flex items-center gap-1.5 px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs font-semibold transition"
+                        className="flex items-center gap-1.5 px-2.5 py-1 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded text-xs font-semibold transition"
                       >
                         {copiedPrompt ? (
                           <>
@@ -761,7 +761,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                       </button>
                     </div>
                   </div>
-                  <pre className="p-4 bg-slate-950 text-slate-200 border border-theme-subtle rounded-lg text-xs font-mono overflow-x-auto whitespace-pre-wrap max-h-64 select-all leading-relaxed">
+                  <pre className="p-4 bg-theme-base text-slate-200 border border-theme-subtle rounded-lg text-xs font-mono overflow-x-auto whitespace-pre-wrap max-h-64 select-all leading-relaxed">
                     {handoff.continuationPrompt}
                   </pre>
                 </div>
@@ -771,7 +771,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                   {/* Git State */}
                   <div className="p-3 bg-theme-card-muted rounded-lg border border-theme-subtle space-y-1">
                     <div className="text-[11px] font-semibold text-theme-muted flex items-center gap-1">
-                      <GitBranch className="w-3.5 h-3.5 text-indigo-400" />
+                      <GitBranch className="w-3.5 h-3.5 text-theme-primary" />
                       Git State
                     </div>
                     <div className="text-theme-primary font-medium">
@@ -779,9 +779,9 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                     </div>
                     <div className="text-[11px] text-theme-muted">
                       {handoff.currentStatus.git.dirty ? (
-                        <span className="text-amber-400">Working tree dirty</span>
+                        <span className="text-[var(--warning)]">Working tree dirty</span>
                       ) : (
-                        <span className="text-emerald-400">Clean working tree</span>
+                        <span className="text-[var(--success)]">Clean working tree</span>
                       )}
                     </div>
                   </div>
@@ -789,7 +789,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                   {/* Touched Files */}
                   <div className="p-3 bg-theme-card-muted rounded-lg border border-theme-subtle space-y-1">
                     <div className="text-[11px] font-semibold text-theme-muted flex items-center gap-1">
-                      <FileCode className="w-3.5 h-3.5 text-emerald-400" />
+                      <FileCode className="w-3.5 h-3.5 text-[var(--success)]" />
                       Touched Files
                     </div>
                     <div className="text-theme-primary font-medium">
@@ -803,7 +803,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                   {/* Active Jobs, Runtimes & Approvals */}
                   <div className="p-3 bg-theme-card-muted rounded-lg border border-theme-subtle space-y-1">
                     <div className="text-[11px] font-semibold text-theme-muted flex items-center gap-1">
-                      <Layers className="w-3.5 h-3.5 text-amber-400" />
+                      <Layers className="w-3.5 h-3.5 text-[var(--warning)]" />
                       Runtime Guards
                     </div>
                     <div className="text-theme-primary font-medium">
@@ -822,9 +822,9 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
           {showFinishForm && (
             <form
               onSubmit={handleFinishSession}
-              className="p-4 bg-red-500/5 border border-red-500/20 rounded-lg space-y-3"
+              className="p-4 bg-[var(--btn-primary-bg)]/5 border border-theme-subtle rounded-lg space-y-3"
             >
-              <div className="font-bold text-red-400 text-xs">
+              <div className="font-bold text-[var(--warning)] text-xs">
                 {t.workflow.finishSessionTitle}
               </div>
               <div>
@@ -836,7 +836,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                   value={finishReason}
                   onChange={(e) => setFinishReason(e.target.value)}
                   placeholder={t.workflow.reasonPlaceholder}
-                  className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-red-500"
+                  className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
               <div>
@@ -848,7 +848,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                   onChange={(e) => setFinishNotes(e.target.value)}
                   placeholder={t.workflow.notesPlaceholder}
                   rows={2}
-                  className="w-full bg-theme-input border border-theme-input rounded-lg p-2 text-xs text-theme-primary focus:outline-none focus:border-red-500"
+                  className="w-full bg-theme-input border border-theme-input rounded-lg p-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
               <div className="flex items-center justify-end gap-2 pt-1">
@@ -862,7 +862,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
                 <button
                   type="submit"
                   disabled={submittingFinish}
-                  className="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg text-xs transition disabled:opacity-50"
+                  className="px-3 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-semibold rounded-lg text-xs transition disabled:opacity-50"
                 >
                   {submittingFinish ? t.common.loading : t.workflow.finishSessionBtn}
                 </button>
@@ -877,7 +877,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
             {isActive && !showCheckpointForm && (
               <button
                 onClick={() => setShowCheckpointForm(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded-lg text-xs font-semibold transition "
               >
                 <Bookmark className="w-3.5 h-3.5" />
                 <span>{t.workflow.checkpointBtn}</span>
@@ -886,7 +886,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
             {isActive && !showFinishForm && (
               <button
                 onClick={() => setShowFinishForm(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-theme-card-muted hover:bg-red-500/10 text-theme-secondary hover:text-red-400 border border-theme-subtle rounded-lg text-xs font-semibold transition"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-theme-card-muted hover:bg-[var(--btn-primary-bg)]/10 text-theme-secondary hover:text-[var(--warning)] border border-theme-subtle rounded-lg text-xs font-semibold transition"
               >
                 <Flag className="w-3.5 h-3.5" />
                 <span>{t.workflow.finishSessionBtn}</span>

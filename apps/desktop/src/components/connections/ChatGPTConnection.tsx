@@ -505,7 +505,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
     if (s === "Connected" && tunnelStatus?.configured) {
       return (
         <span className="badge badge-emerald flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-[var(--btn-primary-bg)] animate-pulse" />
           {t.tunnel?.chatGptReady || "ChatGPT Ready"}
         </span>
       );
@@ -553,11 +553,11 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
   const renderTokenRevealModal = () => {
     if (!revealedToken) return null;
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-fade-in">
-        <div className="bg-theme-card border border-theme-card rounded-xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col p-6 space-y-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-xs p-4 animate-fade-in">
+        <div className="bg-theme-card border border-theme-card rounded-xl w-full max-w-lg  overflow-hidden flex flex-col p-6 space-y-4">
           <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
             <div className="flex items-center gap-2 text-theme-primary font-bold text-sm">
-              <KeyRound className="w-5 h-5 text-sky-500" />
+              <KeyRound className="w-5 h-5 text-theme-primary" />
               <span>{isZh ? "本地 MCP 访问令牌已就绪" : "Local MCP Access Token Ready"}</span>
             </div>
             <button
@@ -569,7 +569,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
             </button>
           </div>
 
-          <div className="p-3 bg-sky-500/10 border border-sky-500/30 rounded-lg text-xs text-sky-700 dark:text-sky-300">
+          <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg text-xs text-theme-primary text-theme-primary">
             <p className="font-semibold mb-1">
               {isZh
                 ? "Token：填入您的本地 MCP 访问令牌（即以 lb_ 开头的密钥）即可正常调用！"
@@ -592,12 +592,12 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                 readOnly
                 value={revealedToken}
                 onFocus={(e) => e.target.select()}
-                className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2.5 pr-24 text-xs font-mono text-emerald-500 select-all font-semibold"
+                className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2.5 pr-24 text-xs font-mono text-[var(--success)] select-all font-semibold"
               />
               <button
                 type="button"
                 onClick={handleCopyRevealedToken}
-                className="absolute right-1.5 top-1.5 bottom-1.5 px-3 bg-sky-600 hover:bg-sky-500 text-white rounded text-xs font-semibold flex items-center gap-1.5 transition shadow-xs cursor-pointer"
+                className="absolute right-1.5 top-1.5 bottom-1.5 px-3 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded text-xs font-semibold flex items-center gap-1.5 transition  cursor-pointer"
               >
                 {revealedTokenCopied ? (
                   <>
@@ -618,7 +618,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
             <button
               type="button"
               onClick={() => setRevealedToken(null)}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition shadow-xs cursor-pointer"
+              className="px-4 py-2 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded-lg text-xs font-semibold transition  cursor-pointer"
             >
               {isZh ? "完成并关闭" : "Done"}
             </button>
@@ -633,10 +633,10 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
     return (
       <div className="max-w-4xl space-y-6 animate-fade-in select-none">
         {/* Header Banner */}
-        <div className="p-6 rounded-xl bg-theme-card border border-theme-subtle shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="p-6 rounded-xl bg-theme-card border border-theme-subtle  flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1 min-w-0">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-lg bg-sky-500/10 text-sky-500 dark:text-sky-400">
+              <div className="p-2 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary text-theme-primary">
                 <Radio className="w-5 h-5" />
               </div>
               <div>
@@ -647,13 +647,13 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                   <span
                     className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold ${
                       isTunnelConnected
-                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
-                        : "bg-slate-500/10 text-slate-500 dark:text-slate-400 border border-slate-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] text-[var(--success)] border border-theme-subtle"
+                        : "bg-slate-500/10 text-theme-secondary text-theme-secondary border border-slate-500/30"
                     }`}
                   >
                     <span
                       className={`w-1.5 h-1.5 rounded-full ${
-                        isTunnelConnected ? "bg-emerald-500 animate-pulse" : "bg-slate-400"
+                        isTunnelConnected ? "bg-[var(--btn-primary-bg)] animate-pulse" : "bg-slate-400"
                       }`}
                     />
                     {isTunnelConnected
@@ -680,7 +680,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
               <div className="text-[10px] font-mono text-theme-muted uppercase tracking-wider">
                 {isZh ? "暴露元工具" : "Exposed tools"}
               </div>
-              <div className="text-sm font-bold font-mono text-sky-500">3</div>
+              <div className="text-sm font-bold font-mono text-theme-primary">3</div>
             </div>
 
             <div className="px-3 py-2 rounded-lg bg-theme-card-muted border border-theme-subtle text-center">
@@ -711,11 +711,11 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
         {/* Main Two-Column Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Card 1: Secure MCP Tunnel */}
-          <div className="p-5 rounded-xl bg-theme-card border border-theme-subtle space-y-4 shadow-sm flex flex-col justify-between">
+          <div className="p-5 rounded-xl bg-theme-card border border-theme-subtle space-y-4  flex flex-col justify-between">
             <div className="space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-theme-subtle">
                 <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-sky-500" />
+                  <Shield className="w-4 h-4 text-theme-primary" />
                   <h3 className="text-xs font-mono uppercase tracking-wider text-theme-primary font-semibold">
                     Secure MCP Tunnel
                   </h3>
@@ -723,7 +723,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                 <span
                   className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
                     isTunnelConnected
-                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-semibold"
+                      ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] text-[var(--success)] border border-theme-subtle font-semibold"
                       : "bg-slate-500/10 text-theme-muted border border-theme-subtle"
                   }`}
                 >
@@ -776,12 +776,12 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                       <button
                         type="button"
                         onClick={handleCopyEndpoint}
-                        className="inline-flex items-center gap-1 text-[11px] text-sky-500 hover:text-sky-400 font-mono transition"
+                        className="inline-flex items-center gap-1 text-[11px] text-theme-primary hover:text-theme-primary font-mono transition"
                       >
                         {copiedEndpoint ? (
                           <>
-                            <Check className="w-3 h-3 text-emerald-500" />
-                            <span className="text-emerald-500">{isZh ? "已复制" : "Copied"}</span>
+                            <Check className="w-3 h-3 text-[var(--success)]" />
+                            <span className="text-[var(--success)]">{isZh ? "已复制" : "Copied"}</span>
                           </>
                         ) : (
                           <>
@@ -804,7 +804,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                   <span className="text-theme-muted font-mono">
                     {isZh ? "运行时凭据" : "Runtime Credential"}
                   </span>
-                  <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                  <span className="inline-flex items-center gap-1 text-[var(--success)] text-[var(--success)] font-medium">
                     <Lock className="w-3 h-3" />
                     <span>{isZh ? "已安全保存 (DPAPI)" : "Securely Stored (DPAPI)"}</span>
                   </span>
@@ -815,7 +815,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                     {isZh ? "MCP 鉴权状态" : "MCP Auth Status"}
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                    <span className="inline-flex items-center gap-1 text-[var(--success)] text-[var(--success)] font-medium">
                       <CheckCircle2 className="w-3 h-3" />
                       <span>
                         {tunnelStatus?.has_mcp_token || currentMcpToken
@@ -834,23 +834,23 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                 onClick={openTunnelSettings}
                 className="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-theme-card-muted hover:bg-theme-card-hover text-theme-primary border border-theme-subtle flex items-center justify-center gap-1.5 transition cursor-pointer"
               >
-                <Settings className="w-3.5 h-3.5 text-sky-500" />
+                <Settings className="w-3.5 h-3.5 text-theme-primary" />
                 <span>{isZh ? "进入隧道详细设置" : "Configure Tunnel"}</span>
               </button>
             </div>
           </div>
 
           {/* Card 2: Local API & MCP Token Management */}
-          <div className="p-5 rounded-xl bg-theme-card border border-theme-subtle space-y-4 shadow-sm flex flex-col justify-between">
+          <div className="p-5 rounded-xl bg-theme-card border border-theme-subtle space-y-4  flex flex-col justify-between">
             <div className="space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-theme-subtle">
                 <div className="flex items-center gap-2">
-                  <KeyRound className="w-4 h-4 text-sky-500" />
+                  <KeyRound className="w-4 h-4 text-theme-primary" />
                   <h3 className="text-xs font-mono uppercase tracking-wider text-theme-primary font-semibold">
                     {isZh ? "本地 API & MCP 访问令牌" : "Local API & MCP Access Token"}
                   </h3>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-semibold flex items-center gap-1">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/10 text-[var(--success)] text-[var(--success)] border border-theme-subtle font-semibold flex items-center gap-1">
                   <Lock className="w-3 h-3" />
                   <span>{isZh ? "DPAPI 持久化" : "DPAPI Secured"}</span>
                 </span>
@@ -866,16 +866,16 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
               <div className="p-3 rounded-lg bg-theme-card-muted border border-theme-subtle space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold text-theme-primary flex items-center gap-1.5">
-                    <KeyRound className="w-3.5 h-3.5 text-sky-500" />
+                    <KeyRound className="w-3.5 h-3.5 text-theme-primary" />
                     <span>{isZh ? "当前生效令牌" : "Active MCP Token"}</span>
                   </span>
                   {(tunnelStatus?.has_mcp_token || currentMcpToken) ? (
-                    <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                    <span className="text-[10px] font-mono text-[var(--success)] text-[var(--success)] font-semibold flex items-center gap-1">
                       <CheckCircle2 className="w-3 h-3" />
                       <span>{isZh ? "已持久化到 DPAPI" : "Persisted in DPAPI"}</span>
                     </span>
                   ) : (
-                    <span className="text-[10px] font-mono text-amber-500 font-semibold">
+                    <span className="text-[10px] font-mono text-[var(--warning)] font-semibold">
                       {isZh ? "● 尚未配置" : "● Not Configured"}
                     </span>
                   )}
@@ -918,7 +918,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                   <button
                     type="button"
                     onClick={handleCopySavedToken}
-                    className="flex items-center gap-1 px-3 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold shadow-xs transition cursor-pointer shrink-0"
+                    className="flex items-center gap-1 px-3 py-2 rounded-lg bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] text-xs font-semibold  transition cursor-pointer shrink-0"
                     title={isZh ? "复制本地 MCP 访问令牌" : "Copy Token"}
                   >
                     {copiedToken ? (
@@ -937,16 +937,16 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
               </div>
 
               {/* WebAgent Extension Guidance Banner */}
-              <div className="p-3 rounded-lg bg-sky-500/10 border border-sky-500/20 space-y-1.5">
+              <div className="p-3 rounded-lg bg-[var(--btn-primary-bg)]/10 border border-theme-subtle space-y-1.5">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-semibold text-sky-600 dark:text-sky-400 flex items-center gap-1.5">
-                    <Globe className="w-3.5 h-3.5 text-sky-500" />
+                  <span className="text-xs font-semibold text-theme-primary text-theme-primary flex items-center gap-1.5">
+                    <Globe className="w-3.5 h-3.5 text-theme-primary" />
                     <span>{isZh ? "WebAgent 浏览器插件配置" : "WebAgent Browser Extension"}</span>
                   </span>
                   <button
                     type="button"
                     onClick={() => openExternalUrl("https://blog.ycu.de5.net/")}
-                    className="inline-flex items-center gap-1 text-[11px] text-sky-600 dark:text-sky-400 hover:text-sky-500 font-medium hover:underline transition cursor-pointer"
+                    className="inline-flex items-center gap-1 text-[11px] text-theme-primary text-theme-primary hover:text-theme-primary font-medium hover:underline transition cursor-pointer"
                   >
                     <span>{isZh ? "请查看详细的配置教程" : "View Setup Guide"}</span>
                     <ExternalLink className="w-3 h-3" />
@@ -992,7 +992,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                         }}
                         className={`px-2.5 py-1 rounded text-[11px] font-medium border transition cursor-pointer ${
                           isSelected
-                            ? "bg-sky-600 text-white border-sky-600 shadow-xs"
+                            ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] border-theme-subtle "
                             : "bg-theme-card-muted hover:bg-theme-card-hover text-theme-secondary border-theme-subtle"
                         }`}
                       >
@@ -1034,7 +1034,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                         type="checkbox"
                         checked={tokenScopes.includes(s.id)}
                         onChange={() => toggleTokenScope(s.id)}
-                        className="mt-0.5 rounded border-theme-subtle text-sky-600 focus:ring-sky-500"
+                        className="mt-0.5 rounded border-theme-subtle text-theme-primary ring-[var(--border)]"
                       />
                       <div className="space-y-0.5 min-w-0">
                         <div className="text-xs font-medium text-theme-primary">
@@ -1048,14 +1048,14 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                   ))}
 
                   {tokenScopes.includes("write") && (
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs mt-1">
+                    <div className="flex items-center gap-2 p-2 rounded-lg bg-[var(--btn-primary-bg)]/10 border border-theme-subtle text-[var(--warning)] text-[var(--warning)] text-xs mt-1">
                       <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                       <span>{isZh ? "警告：AI 客户端可修改已授权目录内的文件。" : "Warning: AI client can change files in authorized folders."}</span>
                     </div>
                   )}
 
                   {tokenScopes.includes("execute") && (
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs mt-1">
+                    <div className="flex items-center gap-2 p-2 rounded-lg bg-[var(--btn-primary-bg)]/10 border border-theme-subtle text-[var(--warning)] text-[var(--warning)] text-xs mt-1">
                       <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                       <span>{isZh ? "警告：AI 客户端可在已授权项目中执行终端命令。" : "Warning: AI client can run commands in authorized projects."}</span>
                     </div>
@@ -1068,13 +1068,13 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                 type="button"
                 onClick={handleAutoCreateToken}
                 disabled={tunnelBusy}
-                className="w-full py-2.5 px-4 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition disabled:opacity-50 cursor-pointer"
+                className="w-full py-2.5 px-4 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded-lg text-xs font-semibold flex items-center justify-center gap-2  transition disabled:opacity-50 cursor-pointer"
               >
                 <Zap className="w-4 h-4" />
                 <span>
                   {tunnelBusy
                     ? (isZh ? "正在生成并保存..." : "Generating & Persisting...")
-                    : (isZh ? "⚡ 自动生成专属 MCP 令牌并保存到 DPAPI" : "⚡ Auto-Generate Token & Save to DPAPI")}
+                    : (isZh ? "自动生成专属 MCP 令牌并保存到 DPAPI" : "Auto-Generate Token & Save to DPAPI")}
                 </span>
               </button>
 
@@ -1096,13 +1096,13 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                       value={manualMcpInput}
                       onChange={(e) => setManualMcpInput(e.target.value)}
                       placeholder="lb_..."
-                      className="flex-1 bg-theme-input border border-theme-input rounded-lg px-2.5 py-1.5 text-xs font-mono text-theme-primary focus:outline-none focus:border-sky-500"
+                      className="flex-1 bg-theme-input border border-theme-input rounded-lg px-2.5 py-1.5 text-xs font-mono text-theme-primary focus:outline-none border-theme-subtle"
                     />
                     <button
                       type="button"
                       onClick={handleSaveManualToken}
                       disabled={tunnelBusy || !manualMcpInput.trim()}
-                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg shadow-xs transition disabled:opacity-50 cursor-pointer shrink-0"
+                      className="px-3 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] text-xs font-semibold rounded-lg  transition disabled:opacity-50 cursor-pointer shrink-0"
                     >
                       {isZh ? "保存到 DPAPI" : "Save"}
                     </button>
@@ -1123,12 +1123,12 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                 <button
                   type="button"
                   onClick={handleCopyLocalEndpoint}
-                  className="inline-flex items-center gap-1 text-[11px] text-sky-500 hover:text-sky-400 font-mono transition cursor-pointer"
+                  className="inline-flex items-center gap-1 text-[11px] text-theme-primary hover:text-theme-primary font-mono transition cursor-pointer"
                 >
                   {copiedLocalEndpoint ? (
                     <>
-                      <Check className="w-3 h-3 text-emerald-500" />
-                      <span className="text-emerald-500">{isZh ? "已复制" : "Copied"}</span>
+                      <Check className="w-3 h-3 text-[var(--success)]" />
+                      <span className="text-[var(--success)]">{isZh ? "已复制" : "Copied"}</span>
                     </>
                   ) : (
                     <>
@@ -1143,13 +1143,13 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
         </div>
 
         {/* Action Bar */}
-        <div className="p-4 rounded-xl bg-theme-card border border-theme-subtle flex flex-wrap items-center justify-between gap-3 shadow-sm">
+        <div className="p-4 rounded-xl bg-theme-card border border-theme-subtle flex flex-wrap items-center justify-between gap-3 ">
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={handleTestConnection}
               disabled={testing}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white transition shadow-sm disabled:opacity-50"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] transition  disabled:opacity-50"
             >
               <Activity className={`w-3.5 h-3.5 ${testing ? "animate-spin" : ""}`} />
               <span>
@@ -1198,8 +1198,8 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
             <div
               className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-mono ${
                 testResult.success
-                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-                  : "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
+                  ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] text-[var(--success)] border border-theme-subtle"
+                  : "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle"
               }`}
             >
               {testResult.success ? (
@@ -1223,14 +1223,14 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
   return (
     <div className="max-w-4xl space-y-6 animate-fade-in select-none">
       {/* Top Navigation Breadcrumbs and Back Button */}
-      <div className="flex items-center justify-between gap-4 p-3.5 px-4 bg-theme-card border border-theme-subtle rounded-xl shadow-xs">
+      <div className="flex items-center justify-between gap-4 p-3.5 px-4 bg-theme-card border border-theme-subtle rounded-xl ">
         <div className="flex items-center gap-2 text-xs text-theme-muted">
           <span>{isZh ? "应用设置" : "Settings"}</span>
           <span>/</span>
           <button
             type="button"
             onClick={() => setActiveSection("overview")}
-            className="text-sky-600 dark:text-sky-400 hover:underline font-semibold"
+            className="text-theme-primary text-theme-primary hover:underline font-semibold"
           >
             {isZh ? "ChatGPT 连接" : "ChatGPT Connection"}
           </button>
@@ -1243,17 +1243,17 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
         <button
           type="button"
           onClick={() => setActiveSection("overview")}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-theme-card-muted hover:bg-theme-card-hover text-theme-primary border border-theme-subtle transition shadow-xs"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-theme-card-muted hover:bg-theme-card-hover text-theme-primary border border-theme-subtle transition "
         >
           <span>&larr;</span>
           <span>{isZh ? "返回 ChatGPT 连接" : "Back to ChatGPT Connection"}</span>
         </button>
       </div>
 
-      <div className="p-6 bg-theme-card border border-theme-card rounded-xl space-y-5 shadow-sm">
+      <div className="p-6 bg-theme-card border border-theme-card rounded-xl space-y-5 ">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-            <Radio className="w-4 h-4 text-sky-500" />
+            <Radio className="w-4 h-4 text-theme-primary" />
             <span>{t.tunnel?.cardTitle || "Secure MCP Tunnel"}</span>
           </div>
           {getTunnelStatusBadge()}
@@ -1266,19 +1266,19 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
 
         {/* Error, Warning or Success feedback */}
         {tunnelSuccessMsg && (
-          <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg flex items-center gap-2 text-emerald-500 text-xs font-medium">
+          <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg flex items-center gap-2 text-[var(--success)] text-xs font-medium">
             <CheckCircle2 className="w-4 h-4 shrink-0" />
             <span>{tunnelSuccessMsg}</span>
           </div>
         )}
         {tunnelErrorMsg && (
-          <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-2 text-red-500 text-xs font-medium">
+          <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg flex items-center gap-2 text-[var(--warning)] text-xs font-medium">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{tunnelErrorMsg}</span>
           </div>
         )}
         {tunnelStatus?.status === "Reconnecting" && (
-          <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-center gap-2 text-amber-500 text-xs font-medium">
+          <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg flex items-center gap-2 text-[var(--warning)] text-xs font-medium">
             <RefreshCw className="w-4 h-4 shrink-0 animate-spin" />
             <span>{t.tunnel?.reconnectingNotice || "Reconnecting to tunnel..."}</span>
           </div>
@@ -1294,7 +1294,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
             tunnelStatus?.status === "HealthPortConflict" ||
             tunnelStatus?.status === "LocalMcpUnavailable" ||
             tunnelStatus?.status === "Error") && (
-            <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-2 text-red-500 text-xs">
+            <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg flex items-center gap-2 text-[var(--warning)] text-xs">
               <AlertTriangle className="w-4 h-4 shrink-0" />
               <span>
                 {redactSecrets(tunnelStatus?.error_message) ||
@@ -1310,8 +1310,8 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
           <div
             className={`p-3 rounded-lg flex items-center gap-2 text-xs font-medium ${
               tunnelTestResult.success
-                ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-500"
-                : "bg-red-500/10 border border-red-500/30 text-red-500"
+                ? "bg-[var(--btn-primary-bg)]/10 border border-theme-subtle text-[var(--success)]"
+                : "bg-[var(--btn-primary-bg)]/10 border border-theme-subtle text-[var(--warning)]"
             }`}
           >
             {tunnelTestResult.success ? (
@@ -1329,7 +1329,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
           <div className="p-3.5 bg-theme-card-muted border border-theme-subtle rounded-lg space-y-3">
             <div className="flex items-center justify-between">
               <div className="text-xs font-semibold text-theme-primary flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5 text-sky-500" />
+                <Globe className="w-3.5 h-3.5 text-theme-primary" />
                 <span>{t.tunnel?.networkModeLabel || "Network Proxy"}</span>
               </div>
               {(tunnelStatus?.active_proxy_url || tunnelStatus?.resolved_proxy_url) && (
@@ -1363,8 +1363,8 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                     onClick={() => setNetworkMode(mode)}
                     className={`px-2.5 py-1.5 rounded-lg text-xs font-medium border text-center transition ${
                       active
-                        ? "bg-indigo-600 text-white border-indigo-600 shadow-xs"
-                        : "bg-theme-input border-theme-input text-theme-secondary hover:border-indigo-500"
+                        ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] border-theme-subtle "
+                        : "bg-theme-input border-theme-input text-theme-secondary border-theme-subtle"
                     }`}
                   >
                     {label}
@@ -1397,10 +1397,10 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                   placeholder={
                     t.tunnel?.customProxyUrlPlaceholder || "http://127.0.0.1:7890"
                   }
-                  className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-1.5 text-xs font-mono text-theme-primary focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-1.5 text-xs font-mono text-theme-primary focus:outline-none border-theme-subtle"
                 />
                 {customProxyUrl.includes("@") && (
-                  <p className="text-[11px] text-red-500 font-medium">
+                  <p className="text-[11px] text-[var(--warning)] font-medium">
                     {t.errors?.PROXY_CREDENTIALS_UNSUPPORTED ||
                       "Proxy authentication with username/password is not supported"}
                   </p>
@@ -1419,7 +1419,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
               value={tunnelId}
               onChange={(e) => setTunnelId(e.target.value)}
               placeholder="tunnel_<32位字符> (由 OpenAI/ChatGPT 分配)"
-              className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-xs font-mono text-theme-primary focus:outline-none focus:border-indigo-500"
+              className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-xs font-mono text-theme-primary focus:outline-none border-theme-subtle"
             />
             <p className="mt-1 text-[11px] text-theme-muted font-mono">
               {isZh ? "OpenAI 分配的隧道唯一标识符（例如 tunnel_abc123...），请勿填写 http 链接" : "Unique identifier assigned by OpenAI (e.g. tunnel_abc123...)"}
@@ -1436,7 +1436,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsEditingKey(!isEditingKey)}
-                  className="text-[11px] text-indigo-500 hover:text-indigo-400 font-medium"
+                  className="text-[11px] text-theme-primary hover:text-theme-primary font-medium"
                 >
                   {isEditingKey
                     ? t.common?.cancel || "Cancel"
@@ -1452,12 +1452,12 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                 placeholder={
                   t.tunnel?.runtimeApiKeyPlaceholder || "Enter API Key"
                 }
-                className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-xs font-mono text-theme-primary focus:outline-none focus:border-indigo-500"
+                className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-xs font-mono text-theme-primary focus:outline-none border-theme-subtle"
               />
             ) : (
               <div className="w-full bg-theme-input/50 border border-theme-subtle rounded-lg px-3 py-2 text-xs font-mono text-theme-muted flex items-center justify-between">
                 <span>{t.tunnel?.keyConfigured || "Key securely configured"}</span>
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-[var(--success)] shrink-0" />
               </div>
             )}
           </div>
@@ -1473,12 +1473,12 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                   <button
                     type="button"
                     onClick={handleCopySavedToken}
-                    className="text-[11px] text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                    className="text-[11px] text-theme-primary text-theme-primary hover:underline flex items-center gap-1 font-medium cursor-pointer"
                   >
                     {copiedToken ? (
                       <>
-                        <Check className="w-3 h-3 text-emerald-500" />
-                        <span className="text-emerald-500">{isZh ? "已复制" : "Copied"}</span>
+                        <Check className="w-3 h-3 text-[var(--success)]" />
+                        <span className="text-[var(--success)]">{isZh ? "已复制" : "Copied"}</span>
                       </>
                     ) : (
                       <>
@@ -1492,7 +1492,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                   <button
                     type="button"
                     onClick={() => setIsEditingToken(!isEditingToken)}
-                    className="text-[11px] text-indigo-500 hover:text-indigo-400 font-medium cursor-pointer"
+                    className="text-[11px] text-theme-primary hover:text-theme-primary font-medium cursor-pointer"
                   >
                     {isEditingToken
                       ? t.common?.cancel || "Cancel"
@@ -1510,14 +1510,14 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                   placeholder={
                     t.tunnel?.mcpTokenPlaceholder || "Enter MCP Token (lb_...)"
                   }
-                  className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-xs font-mono text-theme-primary focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-xs font-mono text-theme-primary focus:outline-none border-theme-subtle"
                 />
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={handleSaveMcpTokenOnly}
                     disabled={tunnelBusy || !mcpToken.trim()}
-                    className="py-1 px-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-medium flex items-center gap-1.5 transition disabled:opacity-50 cursor-pointer shadow-xs"
+                    className="py-1 px-3 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded text-xs font-medium flex items-center gap-1.5 transition disabled:opacity-50 cursor-pointer "
                   >
                     <Check className="w-3.5 h-3.5" />
                     <span>{isZh ? "保存令牌到 DPAPI" : "Save Token (DPAPI)"}</span>
@@ -1537,7 +1537,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
             ) : (
               <div className="w-full bg-theme-input/50 border border-theme-subtle rounded-lg px-3 py-2 text-xs font-mono text-theme-muted flex items-center justify-between">
                 <span>{t.tunnel?.tokenConfigured || "Token securely configured"}</span>
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-[var(--success)] shrink-0" />
               </div>
             )}
           </div>
@@ -1549,7 +1549,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
               type="checkbox"
               checked={autoReconnect}
               onChange={(e) => setAutoReconnect(e.target.checked)}
-              className="rounded border-theme-input text-indigo-600 focus:ring-indigo-500"
+              className="rounded border-theme-input text-theme-primary ring-[var(--border)]"
             />
             <span className="text-xs text-theme-secondary font-medium">
               {t.tunnel?.autoReconnectLabel || "Auto-reconnect on disconnect"}
@@ -1563,7 +1563,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
             type="button"
             disabled={tunnelBusy || (!tunnelId.trim() && !mcpToken.trim())}
             onClick={() => handleSaveTunnel(true)}
-            className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg text-xs font-semibold transition shadow-sm cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-2 bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] disabled:opacity-50 text-[var(--btn-primary-text)] rounded-lg text-xs font-semibold transition  cursor-pointer"
           >
             <Play className="w-3.5 h-3.5" />
             <span>
@@ -1588,7 +1588,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
               type="button"
               disabled={tunnelBusy}
               onClick={handleStopTunnel}
-              className="flex items-center gap-1.5 px-3 py-2 bg-amber-500/15 hover:bg-amber-500/25 text-amber-500 border border-amber-500/30 rounded-lg text-xs font-medium transition disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-2 bg-[var(--btn-primary-bg)]/15 hover:bg-[var(--btn-primary-bg)]/25 text-[var(--warning)] border border-theme-subtle rounded-lg text-xs font-medium transition disabled:opacity-50"
             >
               <Square className="w-3.5 h-3.5" />
               <span>{t.tunnel?.disconnectBtn || "Disconnect"}</span>
@@ -1598,7 +1598,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
               type="button"
               disabled={tunnelBusy}
               onClick={handleStartTunnel}
-              className="flex items-center gap-1.5 px-3 py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-500 border border-emerald-500/30 rounded-lg text-xs font-medium transition disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-2 bg-[var(--btn-primary-bg)]/15 hover:bg-[var(--btn-primary-bg)]/25 text-[var(--success)] border border-theme-subtle rounded-lg text-xs font-medium transition disabled:opacity-50"
             >
               <Play className="w-3.5 h-3.5" />
               <span>{t.tunnel?.connectBtn || "Connect"}</span>
@@ -1610,7 +1610,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
               type="button"
               disabled={tunnelBusy}
               onClick={handleClearTunnel}
-              className="flex items-center gap-1.5 px-3 py-2 text-red-500 hover:bg-red-500/10 rounded-lg text-xs font-medium transition ml-auto disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-2 text-[var(--warning)] hover:bg-[var(--btn-primary-bg)]/10 rounded-lg text-xs font-medium transition ml-auto disabled:opacity-50"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>{t.tunnel?.removeBtn || "Remove"}</span>
@@ -1640,7 +1640,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
           {showDiagnostics && (
             <div className="mt-3 p-3.5 bg-theme-card-muted border border-theme-subtle rounded-lg space-y-2.5 text-xs">
               <div className="font-semibold text-theme-primary text-xs flex items-center gap-1.5">
-                <Activity className="w-3.5 h-3.5 text-indigo-500" />
+                <Activity className="w-3.5 h-3.5 text-theme-primary" />
                 <span>{t.tunnel?.diagnosticsTitle || "Tunnel Diagnostics"}</span>
               </div>
               <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
@@ -1708,7 +1708,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                     className={
                       tunnelStatus?.control_plane_status === "Connected" ||
                       tunnelStatus?.control_plane_connected
-                        ? "text-emerald-500 font-semibold"
+                        ? "text-[var(--success)] font-semibold"
                         : "text-theme-primary"
                     }
                   >
@@ -1732,8 +1732,8 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
                     className={
                       tunnelStatus?.local_mcp_status !== "Failed" &&
                       tunnelStatus?.local_mcp_connected !== false
-                        ? "text-emerald-500 font-semibold"
-                        : "text-red-500 font-semibold"
+                        ? "text-[var(--success)] font-semibold"
+                        : "text-[var(--warning)] font-semibold"
                     }
                   >
                     {tunnelStatus?.local_mcp_status !== "Failed" &&

@@ -118,7 +118,7 @@ export const ActionLedgerPage: React.FC = () => {
       <div className="px-6 py-4 border-b border-theme-subtle bg-theme-card/30 flex items-center justify-between gap-4 shrink-0">
         <div>
           <h1 className="text-base font-semibold text-theme-primary flex items-center gap-2">
-            <FileText className="w-4 h-4 text-sky-500" />
+            <FileText className="w-4 h-4 text-theme-primary" />
             <span>{isZh ? "操作审计账本" : "Action Ledger"}</span>
           </h1>
           <p className="text-xs text-theme-muted mt-0.5">
@@ -139,7 +139,7 @@ export const ActionLedgerPage: React.FC = () => {
                 setSearchTerm(e.target.value);
                 setPage(0);
               }}
-              className="pl-8 pr-3 py-1.5 bg-theme-card text-theme-primary border border-theme-subtle rounded-lg text-xs w-64 focus:outline-none focus:border-sky-500 font-mono"
+              className="pl-8 pr-3 py-1.5 bg-theme-card text-theme-primary border border-theme-subtle rounded-lg text-xs w-64 focus:outline-none border-theme-subtle font-mono"
             />
           </div>
         </div>
@@ -176,7 +176,7 @@ export const ActionLedgerPage: React.FC = () => {
                         onClick={() => setSelectedRecord(row)}
                         className={`cursor-pointer transition ${
                           isSelected
-                            ? "bg-theme-card-hover text-theme-primary font-medium border-l-2 border-l-sky-500"
+                            ? "bg-theme-card-hover text-theme-primary font-medium border-l-2 border-l-[var(--text-primary)]"
                             : "hover:bg-theme-card/40 text-theme-secondary hover:text-theme-primary"
                         }`}
                       >
@@ -186,10 +186,10 @@ export const ActionLedgerPage: React.FC = () => {
                           <span
                             className={`px-1.5 py-0.2 rounded text-[10px] ${
                               row.status === "EXECUTED" || row.status === "VERIFIED"
-                                ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                                ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle"
                                 : row.status === "COMMITTED"
-                                ? "bg-sky-500/10 text-sky-500 border border-sky-500/20"
-                                : "bg-red-500/10 text-red-500 border border-red-500/20"
+                                ? "bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle"
+                                : "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle"
                             }`}
                           >
                             {row.status}
@@ -238,7 +238,7 @@ export const ActionLedgerPage: React.FC = () => {
         <div className="w-80 border-l border-theme-subtle bg-theme-card/10 p-5 overflow-y-auto space-y-5">
           {selectedRecord ? (
             <div className="space-y-4">
-              <div className="text-xs font-mono uppercase tracking-wider text-sky-500 font-semibold">
+              <div className="text-xs font-mono uppercase tracking-wider text-theme-primary font-semibold">
                 Action Details
               </div>
 

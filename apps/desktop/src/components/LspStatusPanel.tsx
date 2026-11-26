@@ -97,7 +97,7 @@ export const LspStatusPanel: React.FC<LspStatusPanelProps> = ({
     <div className="p-3 bg-theme-card-muted rounded-lg border border-theme-subtle space-y-2 text-xs">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 min-w-0">
-          <Code2 className="w-4 h-4 text-indigo-500 shrink-0" />
+          <Code2 className="w-4 h-4 text-theme-primary shrink-0" />
           <span className="font-semibold text-theme-primary truncate">
             {t.lsp?.title || "Code Intelligence (LSP)"}
           </span>
@@ -124,7 +124,7 @@ export const LspStatusPanel: React.FC<LspStatusPanelProps> = ({
               onClick={handleRestart}
               disabled={actionInProgress !== null}
               title={t.lsp?.restartBtn || "Restart LSP Server"}
-              className="p-1 rounded hover:bg-theme-card-hover text-theme-secondary hover:text-indigo-400 transition disabled:opacity-50"
+              className="p-1 rounded hover:bg-theme-card-hover text-theme-secondary hover:text-theme-primary transition disabled:opacity-50"
             >
               {actionInProgress === "restart" ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -138,7 +138,7 @@ export const LspStatusPanel: React.FC<LspStatusPanelProps> = ({
                 onClick={handleStop}
                 disabled={actionInProgress !== null}
                 title={t.lsp?.stopBtn || "Stop LSP Server"}
-                className="p-1 rounded hover:bg-theme-card-hover text-theme-secondary hover:text-red-400 transition disabled:opacity-50"
+                className="p-1 rounded hover:bg-theme-card-hover text-theme-secondary hover:text-[var(--warning)] transition disabled:opacity-50"
               >
                 {actionInProgress === "stop" ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -152,15 +152,15 @@ export const LspStatusPanel: React.FC<LspStatusPanelProps> = ({
       </div>
 
       {status?.lastError && (
-        <div className="text-[11px] text-red-400 bg-red-500/10 p-1.5 rounded flex items-center gap-1.5">
-          <AlertTriangle className="w-3 h-3 text-red-400 shrink-0" />
+        <div className="text-[11px] text-[var(--warning)] bg-[var(--btn-primary-bg)]/10 p-1.5 rounded flex items-center gap-1.5">
+          <AlertTriangle className="w-3 h-3 text-[var(--warning)] shrink-0" />
           <span className="truncate">{status.lastError}</span>
         </div>
       )}
 
       {errorMsg && (
-        <div className="text-[11px] text-red-400 bg-red-500/10 p-1.5 rounded flex items-center gap-1.5">
-          <AlertTriangle className="w-3 h-3 text-red-400 shrink-0" />
+        <div className="text-[11px] text-[var(--warning)] bg-[var(--btn-primary-bg)]/10 p-1.5 rounded flex items-center gap-1.5">
+          <AlertTriangle className="w-3 h-3 text-[var(--warning)] shrink-0" />
           <span className="truncate">{errorMsg}</span>
         </div>
       )}

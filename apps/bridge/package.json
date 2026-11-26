@@ -1,6 +1,6 @@
 {
   "name": "nexus-mcp-bridge",
-  "version": "1.3.4",
+  "version": "1.4.0",
   "description": "Standard MCP HTTP Bridge for Nexus LocalBridge",
   "homepage": "https://github.com/ysunyang4/Nexus",
   "repository": {

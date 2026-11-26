@@ -222,7 +222,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
       case "running":
         return (
           <span className="badge badge-blue flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--btn-primary-bg)] animate-pulse" />
             {t.jobs.running}
           </span>
         );
@@ -279,14 +279,14 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
       case "running":
         return (
           <span className="badge badge-green flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--btn-primary-bg)] animate-pulse" />
             running
           </span>
         );
       case "starting":
         return (
           <span className="badge badge-blue flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--btn-primary-bg)] animate-ping" />
             starting
           </span>
         );
@@ -383,7 +383,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
               }}
               className={`px-3 py-1 rounded-md font-medium transition ${
                 pageMode === "jobs"
-                  ? "bg-theme-accent text-white shadow-sm"
+                  ? "bg-theme-accent text-white "
                   : "text-theme-muted hover:text-theme-primary"
               }`}
             >
@@ -396,14 +396,14 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
               }}
               className={`px-3 py-1 rounded-md font-medium transition flex items-center gap-1.5 ${
                 pageMode === "runtimes"
-                  ? "bg-theme-accent text-white shadow-sm"
+                  ? "bg-theme-accent text-white "
                   : "text-theme-muted hover:text-theme-primary"
               }`}
             >
               <Server className="w-3.5 h-3.5" />
               <span>Runtimes ({runtimes.length})</span>
               {runningRuntimesCount > 0 && (
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-[var(--success)] animate-pulse" />
               )}
             </button>
           </div>
@@ -414,7 +414,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
               else void fetchRuntimes();
             }}
             disabled={pageMode === "runtimes" && loadingRuntimes}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-theme-card-muted hover:bg-theme-card-hover text-theme-secondary border border-theme-subtle rounded-lg text-xs font-medium transition shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-theme-card-muted hover:bg-theme-card-hover text-theme-secondary border border-theme-subtle rounded-lg text-xs font-medium transition "
           >
             <RotateCw className={`w-3.5 h-3.5 ${pageMode === "runtimes" && loadingRuntimes ? "animate-spin" : ""}`} />
             <span>{t.common.refresh}</span>
@@ -428,7 +428,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
           onClick={() => setActiveTab("all")}
           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
             activeTab === "all"
-              ? "bg-theme-accent text-white shadow-sm"
+              ? "bg-theme-accent text-white "
               : "text-theme-muted hover:text-theme-primary hover:bg-theme-card-hover"
           }`}
         >
@@ -438,13 +438,13 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
           onClick={() => setActiveTab("running")}
           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
             activeTab === "running"
-              ? "bg-theme-accent text-white shadow-sm"
+              ? "bg-theme-accent text-white "
               : "text-theme-muted hover:text-theme-primary hover:bg-theme-card-hover"
           }`}
         >
           <span>{t.jobs.tabRunning}</span>
           {(pageMode === "jobs" ? runningCount : runningRuntimesCount) > 0 && (
-            <span className="px-1.5 py-0.2 bg-blue-500/20 text-blue-300 rounded-full text-[10px] font-bold">
+            <span className="px-1.5 py-0.2 bg-[var(--btn-primary-bg)]/20 text-theme-primary rounded-full text-[10px] font-bold">
               {pageMode === "jobs" ? runningCount : runningRuntimesCount}
             </span>
           )}
@@ -453,13 +453,13 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
           onClick={() => setActiveTab("failed")}
           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
             activeTab === "failed"
-              ? "bg-theme-accent text-white shadow-sm"
+              ? "bg-theme-accent text-white "
               : "text-theme-muted hover:text-theme-primary hover:bg-theme-card-hover"
           }`}
         >
           <span>{t.jobs.tabFailed}</span>
           {pageMode === "jobs" && failedCount > 0 && (
-            <span className="px-1.5 py-0.2 bg-red-500/20 text-red-300 rounded-full text-[10px] font-bold">
+            <span className="px-1.5 py-0.2 bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] rounded-full text-[10px] font-bold">
               {failedCount}
             </span>
           )}
@@ -467,7 +467,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
       </div>
 
       {error && (
-        <div className="p-3 bg-red-500/15 border border-red-500/30 rounded-lg text-xs text-red-500">
+        <div className="p-3 bg-[var(--btn-primary-bg)]/15 border border-theme-subtle rounded-lg text-xs text-[var(--warning)]">
           {error}
         </div>
       )}
@@ -475,7 +475,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
       {/* Runtimes View */}
       {pageMode === "runtimes" ? (
         filteredRuntimes.length === 0 ? (
-          <div className="p-12 text-center bg-theme-card border border-theme-card rounded-xl space-y-3 shadow-sm">
+          <div className="p-12 text-center bg-theme-card border border-theme-card rounded-xl space-y-3 ">
             <Server className="w-10 h-10 text-theme-muted mx-auto" />
             <div className="text-theme-primary font-semibold text-sm">
               {t.runtimes.noActiveRuntimes}
@@ -494,9 +494,9 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
               return (
                 <div
                   key={runtime.runtimeId}
-                  className={`bg-theme-card border rounded-xl overflow-hidden shadow-sm transition ${
+                  className={`bg-theme-card border rounded-xl overflow-hidden  transition ${
                     isExpanded
-                      ? "border-theme-accent/50 shadow-md"
+                      ? "border-theme-accent/50 "
                       : "border-theme-card hover:border-theme-subtle"
                   }`}
                 >
@@ -522,7 +522,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
                           <span className="text-xs font-mono font-bold text-theme-primary">
                             {runtime.name || runtime.runtimeId}
                           </span>
-                          <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 text-[10px] font-mono font-semibold">
+                          <span className="px-2 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-theme-primary text-[10px] font-mono font-semibold">
                             Gen {runtime.generation}
                           </span>
                           <span className="px-2 py-0.5 rounded bg-theme-card-muted text-theme-muted text-[10px] font-mono">
@@ -535,7 +535,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
                             </span>
                           </span>
                           {runtime.worktreeId && (
-                            <span className="px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-400 text-[10px]">
+                            <span className="px-1.5 py-0.2 rounded bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[10px]">
                               worktree
                             </span>
                           )}
@@ -551,7 +551,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
                             <span>Restarts: {runtime.restartCount}</span>
                           )}
                           {runtime.lastError && (
-                            <span className="text-red-400 truncate max-w-md">
+                            <span className="text-[var(--warning)] truncate max-w-md">
                               Error: {runtime.lastError}
                             </span>
                           )}
@@ -574,7 +574,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
                           onClick={(e) => handleStopRuntime(runtime.runtimeId, e)}
                           disabled={runtimeActionId === runtime.runtimeId}
                           title="Stop runtime process tree"
-                          className="flex items-center gap-1 px-2.5 py-1.5 bg-red-500/15 hover:bg-red-500/25 text-red-500 border border-red-500/30 rounded-lg text-xs font-semibold transition"
+                          className="flex items-center gap-1 px-2.5 py-1.5 bg-[var(--btn-primary-bg)]/15 hover:bg-[var(--btn-primary-bg)]/25 text-[var(--warning)] border border-theme-subtle rounded-lg text-xs font-semibold transition"
                         >
                           <Square className="w-3.5 h-3.5" />
                           <span>{t.runtimes.stop}</span>
@@ -612,7 +612,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
                         </div>
                       </div>
 
-                      <div className="h-64 overflow-y-auto bg-black/90 rounded-lg p-3 font-mono text-[11px] text-neutral-200 border border-neutral-800 shadow-inner space-y-0.5 leading-relaxed select-text">
+                      <div className="h-64 overflow-y-auto bg-[var(--bg-app)] rounded-lg p-3 font-mono text-[11px] text-neutral-200 border border-neutral-800  space-y-0.5 leading-relaxed select-text">
                         {runtimeLogs.length === 0 ? (
                           <div className="text-neutral-500 italic p-4 text-center">
                             {loadingRuntimeLogs ? t.common.loading : "No logs available"}
@@ -624,7 +624,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
                               <div
                                 key={chunk.seq}
                                 className={`whitespace-pre-wrap break-all ${
-                                  isStderr ? "text-red-400" : "text-neutral-200"
+                                  isStderr ? "text-[var(--warning)]" : "text-neutral-200"
                                 }`}
                               >
                                 {chunk.text}
@@ -642,7 +642,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
           </div>
         )
       ) : filteredJobs.length === 0 ? (
-        <div className="p-12 text-center bg-theme-card border border-theme-card rounded-xl space-y-3 shadow-sm">
+        <div className="p-12 text-center bg-theme-card border border-theme-card rounded-xl space-y-3 ">
           <Terminal className="w-10 h-10 text-theme-muted mx-auto" />
           <div className="text-theme-primary font-semibold text-sm">{t.jobs.noJobs}</div>
           <p className="text-theme-muted text-xs">{t.jobs.noJobsDesc}</p>
@@ -657,9 +657,9 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
             return (
               <div
                 key={job.jobId}
-                className={`bg-theme-card border rounded-xl overflow-hidden shadow-sm transition ${
+                className={`bg-theme-card border rounded-xl overflow-hidden  transition ${
                   isExpanded
-                    ? "border-theme-accent/50 shadow-md"
+                    ? "border-theme-accent/50 "
                     : "border-theme-card hover:border-theme-subtle"
                 }`}
               >
@@ -711,15 +711,15 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
                           <span
                             className={
                               job.exitCode === 0
-                                ? "text-emerald-500 font-semibold"
-                                : "text-red-500 font-semibold"
+                                ? "text-[var(--success)] font-semibold"
+                                : "text-[var(--warning)] font-semibold"
                             }
                           >
                             {t.jobs.exitCode}: {job.exitCode}
                           </span>
                         )}
                         {job.outputTruncated && (
-                          <span className="text-amber-500 flex items-center gap-1 text-[11px]">
+                          <span className="text-[var(--warning)] flex items-center gap-1 text-[11px]">
                             <AlertTriangle className="w-3 h-3" />
                             Truncated
                           </span>
@@ -733,7 +733,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
                       <button
                         onClick={(e) => handleCancel(job.jobId, e)}
                         disabled={cancellingId === job.jobId}
-                        className="flex items-center gap-1 px-3 py-1.5 bg-red-500/15 hover:bg-red-500/25 text-red-500 border border-red-500/30 rounded-lg text-xs font-semibold transition"
+                        className="flex items-center gap-1 px-3 py-1.5 bg-[var(--btn-primary-bg)]/15 hover:bg-[var(--btn-primary-bg)]/25 text-[var(--warning)] border border-theme-subtle rounded-lg text-xs font-semibold transition"
                       >
                         <XCircle className="w-3.5 h-3.5" />
                         <span>
@@ -773,7 +773,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
                         </button>
                         <button
                           onClick={() => setLogs([])}
-                          className="flex items-center gap-1 px-2 py-1 bg-theme-card hover:bg-theme-card-hover border border-theme-subtle rounded text-[11px] font-medium text-theme-muted hover:text-red-400 transition"
+                          className="flex items-center gap-1 px-2 py-1 bg-theme-card hover:bg-theme-card-hover border border-theme-subtle rounded text-[11px] font-medium text-theme-muted hover:text-[var(--warning)] transition"
                         >
                           <Trash2 className="w-3 h-3" />
                           <span>{t.jobs.clearLogs}</span>
@@ -781,7 +781,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
                       </div>
                     </div>
 
-                    <div className="h-64 overflow-y-auto bg-black/90 rounded-lg p-3 font-mono text-[11px] text-neutral-200 border border-neutral-800 shadow-inner space-y-0.5 leading-relaxed select-text">
+                    <div className="h-64 overflow-y-auto bg-[var(--bg-app)] rounded-lg p-3 font-mono text-[11px] text-neutral-200 border border-neutral-800  space-y-0.5 leading-relaxed select-text">
                       {logs.length === 0 ? (
                         <div className="text-neutral-500 italic p-4 text-center">
                           {loadingLogs ? t.common.loading : t.jobs.noLogs}
@@ -793,7 +793,7 @@ export const JobsPage: React.FC<JobsPageProps> = ({ jobs, onRefresh }) => {
                             <div
                               key={chunk.seq}
                               className={`whitespace-pre-wrap break-all ${
-                                isStderr ? "text-red-400" : "text-neutral-200"
+                                isStderr ? "text-[var(--warning)]" : "text-neutral-200"
                               }`}
                             >
                               {chunk.text}

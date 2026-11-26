@@ -57,18 +57,18 @@ const RecentProjectCard: React.FC<{
   return (
     <div
       onClick={onOpen}
-      className="p-4 rounded-xl bg-theme-card border border-theme-subtle hover:border-theme-strong transition-all duration-150 cursor-pointer group shadow-sm flex items-center justify-between gap-4"
+      className="p-4 rounded-xl bg-theme-card border border-theme-subtle hover:border-theme-strong transition-all duration-150 cursor-pointer group  flex items-center justify-between gap-4"
     >
       <div className="space-y-1 min-w-0">
         <div className="flex items-center gap-2.5">
-          <span className="font-semibold text-theme-primary text-sm tracking-tight group-hover:text-sky-500 dark:group-hover:text-sky-300 transition-colors truncate">
+          <span className="font-semibold text-theme-primary text-sm tracking-tight group-hover:text-theme-primary dark:group-hover:text-theme-primary transition-colors truncate">
             {project.name}
           </span>
           <span
             className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
               project.enabled
-                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-                : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] text-[var(--success)] border border-theme-subtle"
+                : "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle"
             }`}
           >
             {project.enabled
@@ -152,22 +152,22 @@ export const ControlPage: React.FC<ControlPageProps> = ({
     <div className="p-6 md:p-8 space-y-8 max-w-7xl mx-auto select-none">
       {/* Full Control Active Banner */}
       {fullControlStatus?.activeSession && (
-        <section className="p-4 rounded-xl bg-amber-500/10 border-2 border-amber-500/30 dark:border-amber-500/40 text-amber-900 dark:text-amber-200 shadow-sm space-y-3">
+        <section className="p-4 rounded-xl bg-[var(--btn-primary-bg)]/10 border-2 border-theme-subtle border-theme-subtle text-[var(--warning)] text-[var(--warning)]  space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400">
+              <div className="p-2 rounded-lg bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] text-[var(--warning)]">
                 <ShieldAlert className="w-5 h-5 animate-pulse" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-sm text-amber-700 dark:text-amber-300">
+                  <span className="font-bold text-sm text-[var(--warning)] text-[var(--warning)]">
                     完全控制模式进行中 (Full Control Active)
                   </span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 font-semibold border border-amber-500/30">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] text-[var(--warning)] font-semibold border border-theme-subtle">
                     {fullControlStatus.activeSession.scope === "device" ? "整台设备 (Device-Wide)" : "当前项目 (Project-Scoped)"}
                   </span>
                 </div>
-                <p className="text-xs text-amber-700/80 dark:text-amber-300/80">
+                <p className="text-xs text-[var(--warning)]/80 text-[var(--warning)]/80">
                   AI 客户端已获临时完全控制权，允许执行二进制删除、递归目录清理与自动化本地文件系统操作。
                 </p>
               </div>
@@ -181,37 +181,37 @@ export const ControlPage: React.FC<ControlPageProps> = ({
                     if (onRefresh) await onRefresh();
                   }
                 }}
-                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-600 hover:bg-amber-500 text-white transition shadow-sm"
+                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] transition "
               >
                 立即恢复安全模式
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-amber-500/20 text-xs font-mono">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-theme-subtle text-xs font-mono">
             <div>
-              <span className="text-amber-600/70 dark:text-amber-400/70 text-[10px] block">授权客户端</span>
-              <span className="font-semibold text-amber-800 dark:text-amber-200 truncate block">
+              <span className="text-[var(--warning)]/70 text-[var(--warning)]/70 text-[10px] block">授权客户端</span>
+              <span className="font-semibold text-[var(--warning)] text-[var(--warning)] truncate block">
                 {fullControlStatus.activeSession.clientName || fullControlStatus.activeSession.clientId}
               </span>
             </div>
             <div>
-              <span className="text-amber-600/70 dark:text-amber-400/70 text-[10px] block">目标范围</span>
-              <span className="truncate block font-semibold text-amber-800 dark:text-amber-200">
+              <span className="text-[var(--warning)]/70 text-[var(--warning)]/70 text-[10px] block">目标范围</span>
+              <span className="truncate block font-semibold text-[var(--warning)] text-[var(--warning)]">
                 {fullControlStatus.activeSession.scope === "device"
                   ? "整台设备本地存储"
                   : fullControlStatus.activeSession.projectName || fullControlStatus.activeSession.projectId || "当前项目"}
               </span>
             </div>
             <div>
-              <span className="text-amber-600/70 dark:text-amber-400/70 text-[10px] block">生效时间</span>
-              <span className="text-amber-800 dark:text-amber-200">
+              <span className="text-[var(--warning)]/70 text-[var(--warning)]/70 text-[10px] block">生效时间</span>
+              <span className="text-[var(--warning)] text-[var(--warning)]">
                 {new Date(fullControlStatus.activeSession.startedAt).toLocaleTimeString()}
               </span>
             </div>
             <div>
-              <span className="text-amber-600/70 dark:text-amber-400/70 text-[10px] block">自动失效</span>
-              <span className="text-amber-800 dark:text-amber-200">
+              <span className="text-[var(--warning)]/70 text-[var(--warning)]/70 text-[10px] block">自动失效</span>
+              <span className="text-[var(--warning)] text-[var(--warning)]">
                 {fullControlStatus.activeSession.expiresAt
                   ? `预计 ${new Date(fullControlStatus.activeSession.expiresAt).toLocaleTimeString()}`
                   : "手动关闭为止"}
@@ -231,8 +231,8 @@ export const ControlPage: React.FC<ControlPageProps> = ({
                   {t.overview?.greetingReady || "Nexus is ready"}
                 </h1>
                 {intelStatus?.provider === "laya" && intelStatus?.status === "ready" && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
-                    <Brain className="w-3 h-3 text-purple-500" />
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[var(--btn-primary-bg)]/10 text-theme-primary text-theme-primary border border-theme-subtle">
+                    <Brain className="w-3 h-3 text-theme-primary" />
                     <span>Laya · {t.intelligence?.advisoryOnly || "Advisory Only"}</span>
                   </span>
                 )}
@@ -247,7 +247,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
               {projects.length > 0 ? (
                 <button
                   onClick={() => onSelectProject(projects[0].id)}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-sky-600 hover:bg-sky-500 text-white transition shadow-sm"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] transition "
                 >
                   <span>{t.overview?.primaryCtaOpen || "Open Project"}</span>
                   <ChevronRight className="w-4 h-4" />
@@ -255,7 +255,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
               ) : (
                 <button
                   onClick={onOpenAuthorizeModal}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-sky-600 hover:bg-sky-500 text-white transition shadow-sm"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] transition "
                 >
                   <Plus className="w-4 h-4" />
                   <span>{t.overview?.primaryCtaAuthorize || "Authorize Project"}</span>
@@ -279,7 +279,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
                   {projects.length > 0 ? (t.control?.statusAuthorized || "Authorized") : (t.control?.authorizeProject || "Authorize a directory")}
                 </div>
               </div>
-              <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${projects.length > 0 ? "bg-emerald-500" : "bg-amber-500"}`} />
+              <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${projects.length > 0 ? "bg-[var(--btn-primary-bg)]" : "bg-[var(--btn-primary-bg)]"}`} />
             </div>
 
             {/* 2. ChatGPT Connection */}
@@ -297,7 +297,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
                     : (t.overview?.aiDisconnected || "Standby")}
                 </div>
               </div>
-              <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${isTunnelConnected || (mcpStatus?.mcpActive && !mcpStatus?.paused) ? "bg-emerald-500" : "bg-slate-400 dark:bg-slate-600"}`} />
+              <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${isTunnelConnected || (mcpStatus?.mcpActive && !mcpStatus?.paused) ? "bg-[var(--btn-primary-bg)]" : "bg-slate-400 dark:bg-slate-600"}`} />
             </div>
 
             {/* 3. Nexus Services */}
@@ -313,21 +313,21 @@ export const ControlPage: React.FC<ControlPageProps> = ({
                   127.0.0.1:18080 · Safe Sandbox
                 </div>
               </div>
-              <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${serverStatus ? "bg-emerald-500" : "bg-red-500"}`} />
+              <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${serverStatus ? "bg-[var(--btn-primary-bg)]" : "bg-[var(--btn-primary-bg)]"}`} />
             </div>
           </div>
 
           {/* 1-2-3 Getting Started Guide */}
           <div className="p-5 rounded-xl bg-theme-card border border-theme-subtle space-y-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-sky-500" />
+              <Sparkles className="w-4 h-4 text-theme-primary" />
               <h2 className="text-xs font-mono uppercase tracking-wider text-theme-primary font-semibold">
                 {t.overview?.gettingStartedTitle || "Getting Started"}
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="flex items-start gap-3 p-3 rounded-lg bg-theme-card-muted border border-theme-subtle">
-                <div className="w-6 h-6 rounded-full bg-sky-500/15 text-sky-500 dark:text-sky-400 flex items-center justify-center text-xs font-bold shrink-0">
+                <div className="w-6 h-6 rounded-full bg-[var(--btn-primary-bg)]/15 text-theme-primary text-theme-primary flex items-center justify-center text-xs font-bold shrink-0">
                   1
                 </div>
                 <div className="space-y-0.5">
@@ -341,7 +341,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
               </div>
 
               <div className="flex items-start gap-3 p-3 rounded-lg bg-theme-card-muted border border-theme-subtle">
-                <div className="w-6 h-6 rounded-full bg-sky-500/15 text-sky-500 dark:text-sky-400 flex items-center justify-center text-xs font-bold shrink-0">
+                <div className="w-6 h-6 rounded-full bg-[var(--btn-primary-bg)]/15 text-theme-primary text-theme-primary flex items-center justify-center text-xs font-bold shrink-0">
                   2
                 </div>
                 <div className="space-y-0.5">
@@ -355,7 +355,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
               </div>
 
               <div className="flex items-start gap-3 p-3 rounded-lg bg-theme-card-muted border border-theme-subtle">
-                <div className="w-6 h-6 rounded-full bg-sky-500/15 text-sky-500 dark:text-sky-400 flex items-center justify-center text-xs font-bold shrink-0">
+                <div className="w-6 h-6 rounded-full bg-[var(--btn-primary-bg)]/15 text-theme-primary text-theme-primary flex items-center justify-center text-xs font-bold shrink-0">
                   3
                 </div>
                 <div className="space-y-0.5">
@@ -377,7 +377,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
           <div className="p-3.5 rounded-xl bg-theme-card border border-theme-subtle flex items-center justify-between">
             <div className="space-y-0.5">
               <div className="text-[10px] font-mono uppercase tracking-wider text-theme-muted flex items-center gap-1.5">
-                <Radio className="w-3 h-3 text-sky-500" />
+                <Radio className="w-3 h-3 text-theme-primary" />
                 <span>{t.control?.secureTunnel || "Secure Tunnel"}</span>
               </div>
               <div className="text-xs font-semibold text-theme-primary">
@@ -395,7 +395,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
             </div>
             <span
               className={`w-2 h-2 rounded-full ${
-                isTunnelConnected ? "bg-emerald-500" : "bg-slate-400 dark:bg-slate-500"
+                isTunnelConnected ? "bg-[var(--btn-primary-bg)]" : "bg-slate-400 dark:bg-slate-500"
               }`}
             />
           </div>
@@ -418,7 +418,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
             </div>
             <span
               className={`w-2 h-2 rounded-full ${
-                serverStatus ? "bg-emerald-500" : "bg-red-500"
+                serverStatus ? "bg-[var(--btn-primary-bg)]" : "bg-[var(--btn-primary-bg)]"
               }`}
             />
           </div>
@@ -434,14 +434,14 @@ export const ControlPage: React.FC<ControlPageProps> = ({
                 {serverStatus?.runners_connected || 0} {t.control?.runnerConnected || "Connected"}
               </div>
               <div className="text-[10px] font-mono text-theme-muted">
-                Node v{serverStatus?.version || "1.3.4"}
+                Node v{serverStatus?.version || "1.4.0"}
               </div>
             </div>
             <span
               className={`w-2 h-2 rounded-full ${
                 (serverStatus?.runners_connected || 0) > 0
-                  ? "bg-emerald-500"
-                  : "bg-amber-500"
+                  ? "bg-[var(--btn-primary-bg)]"
+                  : "bg-[var(--btn-primary-bg)]"
               }`}
             />
           </div>
@@ -465,10 +465,10 @@ export const ControlPage: React.FC<ControlPageProps> = ({
             <span
               className={`w-2 h-2 rounded-full ${
                 mcpStatus?.paused
-                  ? "bg-amber-500"
+                  ? "bg-[var(--btn-primary-bg)]"
                   : mcpStatus?.mcpActive
-                    ? "bg-emerald-500"
-                    : "bg-red-500"
+                    ? "bg-[var(--btn-primary-bg)]"
+                    : "bg-[var(--btn-primary-bg)]"
               }`}
             />
           </div>
@@ -477,7 +477,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
           <div className="p-3.5 rounded-xl bg-theme-card border border-theme-subtle flex items-center justify-between">
             <div className="space-y-0.5">
               <div className="text-[10px] font-mono uppercase tracking-wider text-theme-muted flex items-center gap-1.5">
-                <Brain className="w-3 h-3 text-sky-500" />
+                <Brain className="w-3 h-3 text-theme-primary" />
                 <span>{t.control?.intelligencePill || "Decision Intelligence"}</span>
               </div>
               <div className="text-xs font-semibold text-theme-primary">
@@ -494,9 +494,9 @@ export const ControlPage: React.FC<ControlPageProps> = ({
             <span
               className={`w-2 h-2 rounded-full ${
                 intelStatus?.status === "ready"
-                  ? "bg-emerald-500"
+                  ? "bg-[var(--btn-primary-bg)]"
                   : intelStatus?.status === "loading"
-                    ? "bg-amber-500 animate-pulse"
+                    ? "bg-[var(--btn-primary-bg)] animate-pulse"
                     : "bg-slate-400 dark:bg-slate-600"
               }`}
             />
@@ -509,8 +509,8 @@ export const ControlPage: React.FC<ControlPageProps> = ({
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-              <h2 className="text-xs font-mono uppercase tracking-wider text-amber-600 dark:text-amber-300 font-semibold">
+              <span className="w-2 h-2 rounded-full bg-[var(--btn-primary-bg)] animate-pulse" />
+              <h2 className="text-xs font-mono uppercase tracking-wider text-[var(--warning)] text-[var(--warning)] font-semibold">
                 {t.control?.pendingApprovals || "Pending Operator Approvals"} ({pendingApprovals.length})
               </h2>
             </div>
@@ -557,16 +557,16 @@ export const ControlPage: React.FC<ControlPageProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={onOpenAuthorizeModal}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-theme-card hover:bg-theme-card-hover text-theme-primary border border-theme-subtle transition shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-theme-card hover:bg-theme-card-hover text-theme-primary border border-theme-subtle transition "
             >
-              <Plus className="w-3.5 h-3.5 text-sky-500" />
+              <Plus className="w-3.5 h-3.5 text-theme-primary" />
               <span>{t.control?.authorizeProject || "Authorize Project"}</span>
             </button>
           </div>
         </div>
 
         {projects.length === 0 ? (
-          <div className="p-10 rounded-xl bg-theme-card border border-theme-subtle text-center space-y-3 shadow-sm">
+          <div className="p-10 rounded-xl bg-theme-card border border-theme-subtle text-center space-y-3 ">
             <FolderLock className="w-8 h-8 text-theme-muted mx-auto" />
             <div className="text-sm font-medium text-theme-primary">
               {t.control?.noAuthorizedProjects || "No Authorized Projects"}
@@ -577,7 +577,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
             </p>
             <button
               onClick={onOpenAuthorizeModal}
-              className="px-4 py-2 rounded-lg text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white transition shadow-sm"
+              className="px-4 py-2 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] transition "
             >
               {t.control?.authorizeFirstProject || "Authorize First Project"}
             </button>
@@ -625,7 +625,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
                 <span className="text-theme-muted/30">|</span>
                 <button
                   onClick={onOpenFullControlModal}
-                  className="text-amber-600 dark:text-amber-400 hover:text-amber-500 font-mono text-[11px] transition flex items-center gap-1"
+                  className="text-[var(--warning)] text-[var(--warning)] hover:text-[var(--warning)] font-mono text-[11px] transition flex items-center gap-1"
                 >
                   <Zap className="w-3 h-3" />
                   <span>完全控制模式</span>
@@ -636,7 +636,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
 
           <button
             onClick={onOpenEmergencyStopModal}
-            className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 font-mono text-[11px] transition"
+            className="text-[var(--warning)] hover:text-[var(--warning)] text-[var(--warning)] dark:hover:text-[var(--warning)] font-mono text-[11px] transition"
           >
             {t.control?.emergencyHaltAll || "Emergency Halt All"}
           </button>
@@ -660,7 +660,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
           </div>
 
           <span className="text-theme-muted text-[11px]">
-            Nexus v{serverStatus?.version || "1.3.4"} · Standard Mode
+            Nexus v{serverStatus?.version || "1.4.0"} · Standard Mode
           </span>
         </section>
       )}

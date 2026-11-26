@@ -541,14 +541,14 @@ export const App: React.FC = () => {
         )}
 
         {startupError && (
-          <div className="m-6 p-6 bg-red-500/10 border border-red-500/30 rounded-xl space-y-3">
-            <div className="flex items-center gap-3 text-red-500">
+          <div className="m-6 p-6 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-xl space-y-3">
+            <div className="flex items-center gap-3 text-[var(--warning)]">
               <OctagonAlert className="w-6 h-6 shrink-0" />
               <div>
                 <div className="font-semibold text-sm">
                   Nexus Core Server failed to start / 核心服务启动失败
                 </div>
-                <div className="text-xs text-red-400 font-mono mt-1">
+                <div className="text-xs text-[var(--warning)] font-mono mt-1">
                   Reason: {startupError}
                 </div>
               </div>
@@ -561,7 +561,7 @@ export const App: React.FC = () => {
               <button
                 onClick={handleManualRefresh}
                 disabled={isRefreshing}
-                className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-medium transition"
+                className="px-3 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded-lg text-xs font-medium transition"
               >
                 {isRefreshing ? t.common.refreshing : t.common.refresh}
               </button>

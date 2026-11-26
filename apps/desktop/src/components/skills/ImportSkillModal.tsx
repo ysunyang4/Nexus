@@ -688,7 +688,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
           <button
             type="button"
             disabled
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-sky-600 text-white opacity-70 cursor-not-allowed shadow-none"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] opacity-70 cursor-not-allowed "
           >
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
             <span>{language === "zh-CN" ? "正在导入..." : "Importing..."}</span>
@@ -703,7 +703,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
           type="button"
           onClick={handleBatchImport}
           disabled={count === 0}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]  transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Sparkles className="w-3.5 h-3.5" />
           <span>
@@ -725,7 +725,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
           <button
             type="button"
             disabled
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 cursor-not-allowed shadow-none"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-theme-card bg-theme-card text-theme-secondary text-theme-secondary border border-theme-subtle border-theme-subtle cursor-not-allowed "
           >
             <span>{t.skills.importButton}</span>
           </button>
@@ -737,7 +737,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
             type="button"
             disabled={previewLoading}
             onClick={handleContinue}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]  transition disabled:opacity-50"
           >
             {previewLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
             <span>{language === "zh-CN" ? "继续" : "Continue"}</span>
@@ -749,7 +749,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
           <button
             type="button"
             onClick={() => setShowWizard(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]  transition"
           >
             <Settings className="w-3.5 h-3.5" />
             <span>{t.skills.configureAndImport}</span>
@@ -761,7 +761,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
           <button
             type="button"
             disabled
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 cursor-not-allowed shadow-none"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-theme-card bg-theme-card text-theme-secondary text-theme-secondary border border-theme-subtle border-theme-subtle cursor-not-allowed "
             title={roundTrip.errors.join("; ") || t.skills.completeConfig}
           >
             <span>{t.skills.completeConfig}</span>
@@ -777,7 +777,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                 handleImport(true, showWizard ? buildWizardYaml() : undefined)
               }
               disabled={importing}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-amber-600 hover:bg-amber-500 text-white shadow-xs transition"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]  transition"
             >
               {importing && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
               <span>{t.skills.replaceButton}</span>
@@ -791,7 +791,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
               handleImport(wizardOverwrite, showWizard ? buildWizardYaml() : undefined)
             }
             disabled={importing}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]  transition"
           >
             {importing && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
             <span>{t.skills.importButton}</span>
@@ -803,7 +803,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
           <button
             type="button"
             disabled
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-sky-600 text-white opacity-70 cursor-not-allowed shadow-none"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] opacity-70 cursor-not-allowed "
           >
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
             <span>{language === "zh-CN" ? "正在导入..." : "Importing..."}</span>
@@ -815,7 +815,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]  transition"
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
             <span>{language === "zh-CN" ? "完成" : "Done"}</span>
@@ -827,7 +827,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
           <button
             type="button"
             disabled
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 cursor-not-allowed shadow-none"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-theme-card bg-theme-card text-theme-secondary text-theme-secondary border border-theme-subtle border-theme-subtle cursor-not-allowed "
             title={preview?.validationErrors?.join("; ") || "Invalid skill"}
           >
             <span>{t.skills.importButton}</span>
@@ -839,7 +839,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
           <button
             type="button"
             disabled
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 cursor-not-allowed shadow-none"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-theme-card bg-theme-card text-theme-secondary text-theme-secondary border border-theme-subtle border-theme-subtle cursor-not-allowed "
           >
             <span>{t.skills.importButton}</span>
           </button>
@@ -864,7 +864,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
 
     if (status === "valid") {
       return (
-        <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/60">
+        <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-theme-card text-[var(--success)] border border-theme-subtle bg-theme-card text-[var(--success)] border-theme-subtle">
           <CheckCircle2 className="w-3.5 h-3.5" />
           <span>✓ Valid</span>
         </span>
@@ -872,7 +872,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
     }
     if (status === "warning") {
       return (
-        <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/60">
+        <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-theme-card text-[var(--warning)] border border-theme-subtle bg-theme-card text-[var(--warning)] border-theme-subtle">
           <AlertTriangle className="w-3.5 h-3.5" />
           <span>⚠ Valid with Warnings</span>
         </span>
@@ -880,14 +880,14 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
     }
     if (status === "needs_setup") {
       return (
-        <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-sky-50 text-sky-800 border border-sky-200 dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800/60">
+        <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-theme-card text-theme-primary border border-theme-subtle bg-theme-card text-theme-primary border-theme-subtle">
           <Settings className="w-3.5 h-3.5" />
           <span>⚙ Needs Setup</span>
         </span>
       );
     }
     return (
-      <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/60">
+      <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-theme-card text-[var(--warning)] border border-theme-subtle bg-theme-card text-[var(--warning)] border-theme-subtle">
         <AlertCircle className="w-3.5 h-3.5" />
         <span>✕ Invalid</span>
       </span>
@@ -897,23 +897,23 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 dark:bg-black/65 backdrop-blur-sm p-4 animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-theme-base dark:bg-[var(--bg-app)] backdrop-blur-sm p-4 animate-in fade-in duration-150">
       <div
-        className="w-full max-w-xl bg-white dark:bg-[#0d1320] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden max-h-[90vh]"
+        className="w-full max-w-xl bg-white dark:bg-[#0d1320] border border-theme-subtle border-theme-subtle rounded-2xl  flex flex-col overflow-hidden max-h-[90vh]"
         role="dialog"
         aria-modal="true"
       >
         {/* Section 1: Modal Header */}
-        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-900/40">
+        <div className="px-6 py-4 border-b border-theme-subtle border-theme-subtle flex items-center justify-between bg-theme-card bg-theme-base">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/50 border border-sky-200 dark:border-sky-800/60 text-sky-600 dark:text-sky-400 shrink-0">
+            <div className="p-2.5 rounded-xl bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-theme-primary text-theme-primary shrink-0">
               <Upload className="w-5 h-5" />
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
                 {t.skills.importModalTitle}
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              <p className="text-xs text-theme-secondary text-theme-secondary mt-0.5">
                 {language === "zh-CN"
                   ? "支持标准 Nexus Skill 或普通 GitHub 仓库兼容包"
                   : "Supports Nexus Native Skills and compatible GitHub repository packages"}
@@ -923,7 +923,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            className="p-1.5 rounded-lg text-theme-secondary hover:text-slate-700 dark:hover:text-slate-200 hover:bg-theme-card dark:hover:bg-theme-card transition"
             title={t.common.close}
           >
             <X className="w-5 h-5" />
@@ -957,17 +957,17 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
             onDrop={handleDrop}
             className={`p-6 rounded-xl border-2 border-dashed transition-all flex flex-col items-center justify-center text-center ${
               isDragging
-                ? "border-sky-500 bg-sky-50/60 dark:bg-sky-950/30 scale-[1.01]"
-                : "border-slate-300 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/40 hover:bg-slate-50 dark:hover:bg-slate-900/60 hover:border-sky-500/50"
+                ? "border-theme-subtle bg-theme-card bg-theme-card scale-[1.01]"
+                : "border-theme-subtle border-theme-subtle bg-theme-card bg-theme-base hover:bg-theme-card dark:hover:bg-theme-base border-theme-subtle"
             }`}
           >
-            <div className="p-3 rounded-full bg-sky-100/80 dark:bg-sky-950/70 text-sky-600 dark:text-sky-400 mb-3 shadow-2xs">
+            <div className="p-3 rounded-full bg-theme-card bg-theme-card text-theme-primary text-theme-primary mb-3 ">
               <Sparkles className="w-6 h-6" />
             </div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-1">
               {t.skills.dragDropTitle}
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 max-w-sm">
+            <p className="text-xs text-theme-secondary text-theme-secondary mb-4 max-w-sm">
               {language === "zh-CN"
                 ? "Skill 仅保存在你的本地 Nexus 环境中。外部脚本将被声明式排除，绝不执行。"
                 : "Skills stay locally on your device. External scripts are sanitized and never executed."}
@@ -977,25 +977,25 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
               <button
                 type="button"
                 onClick={handleSelectFolder}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-medium text-slate-800 dark:text-slate-200 shadow-2xs transition"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white bg-theme-card border border-theme-subtle border-theme-subtle hover:bg-theme-card dark:hover:bg-slate-700 text-xs font-medium text-slate-800 dark:text-slate-200  transition"
               >
-                <FolderOpen className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+                <FolderOpen className="w-4 h-4 text-theme-primary text-theme-primary" />
                 <span>{t.skills.chooseFolder}</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleSelectZip}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-medium text-slate-800 dark:text-slate-200 shadow-2xs transition"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white bg-theme-card border border-theme-subtle border-theme-subtle hover:bg-theme-card dark:hover:bg-slate-700 text-xs font-medium text-slate-800 dark:text-slate-200  transition"
               >
-                <Archive className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                <Archive className="w-4 h-4 text-theme-primary text-theme-primary" />
                 <span>{t.skills.chooseZip}</span>
               </button>
             </div>
 
             {sourcePath && (
-              <div className="mt-3.5 px-3 py-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/50 border border-sky-200 dark:border-sky-800/60 text-xs font-mono text-sky-800 dark:text-sky-300 truncate max-w-md shadow-2xs flex items-center gap-1.5">
-                <FileCheck className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400 shrink-0" />
+              <div className="mt-3.5 px-3 py-1.5 rounded-lg bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-xs font-mono text-theme-primary text-theme-primary truncate max-w-md  flex items-center gap-1.5">
+                <FileCheck className="w-3.5 h-3.5 text-theme-primary text-theme-primary shrink-0" />
                 <span className="truncate">{sourcePath}</span>
               </div>
             )}
@@ -1003,31 +1003,31 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
 
           {/* Candidate Multi-Skill Collection Batch Selector */}
           {preview?.candidateSkills && preview.candidateSkills.length > 1 && (
-            <div className="p-3.5 rounded-xl bg-purple-50/60 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/60 text-xs space-y-3">
+            <div className="p-3.5 rounded-xl bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-xs space-y-3">
               <div className="flex items-center justify-between">
-                <label className="font-bold text-purple-900 dark:text-purple-200 flex items-center gap-2">
-                  <Workflow className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                <label className="font-bold text-theme-primary text-theme-primary flex items-center gap-2">
+                  <Workflow className="w-4 h-4 text-theme-primary text-theme-primary" />
                   <span>发现 {preview.candidateSkills.length} 个 Skill</span>
                 </label>
-                <span className="text-[11px] font-semibold text-purple-700 dark:text-purple-300">
+                <span className="text-[11px] font-semibold text-theme-primary text-theme-primary">
                   已选 {selectedCandidateIds.size} / {preview.candidateSkills.length}
                 </span>
               </div>
 
               {/* Search Filter */}
               <div className="relative">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className="w-3.5 h-3.5 text-theme-secondary absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={candidateSearch}
                   onChange={(e) => setCandidateSearch(e.target.value)}
                   placeholder="搜索 Skill..."
-                  className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-purple-300 dark:border-purple-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-purple-500"
+                  className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-theme-subtle border-theme-subtle bg-white bg-theme-base text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none border-theme-subtle"
                 />
               </div>
 
               {/* Master Select All Checkbox */}
-              <div className="flex items-center justify-between py-1 border-b border-purple-200 dark:border-purple-800/60">
+              <div className="flex items-center justify-between py-1 border-b border-theme-subtle border-theme-subtle">
                 <label className="flex items-center gap-2 font-medium text-slate-700 dark:text-slate-300 cursor-pointer select-none">
                   <input
                     type="checkbox"
@@ -1036,7 +1036,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                       displayedCandidates.every((c) => selectedCandidateIds.has(c.id))
                     }
                     onChange={(e) => handleToggleSelectAll(e.target.checked)}
-                    className="rounded text-purple-600 focus:ring-purple-500"
+                    className="rounded text-theme-primary ring-[var(--border)]"
                   />
                   <span>全选 ({selectedCandidateIds.size} / {preview.candidateSkills.length})</span>
                 </label>
@@ -1044,7 +1044,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleToggleSelectAll(true)}
-                    className="text-[11px] text-purple-600 dark:text-purple-400 hover:underline"
+                    className="text-[11px] text-theme-primary text-theme-primary hover:underline"
                   >
                     全部选中
                   </button>
@@ -1052,7 +1052,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleToggleSelectAll(false)}
-                    className="text-[11px] text-purple-600 dark:text-purple-400 hover:underline"
+                    className="text-[11px] text-theme-primary text-theme-primary hover:underline"
                   >
                     全部取消
                   </button>
@@ -1068,8 +1068,8 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                       key={c.id}
                       className={`flex items-center justify-between p-2 rounded-lg border transition cursor-pointer ${
                         isChecked
-                          ? "bg-white dark:bg-slate-900 border-purple-300 dark:border-purple-700 text-slate-800 dark:text-slate-200 shadow-2xs"
-                          : "bg-purple-50/30 dark:bg-purple-950/20 border-purple-100 dark:border-purple-900/40 text-slate-500 dark:text-slate-400 opacity-75"
+                          ? "bg-white bg-theme-base border-theme-subtle border-theme-subtle text-slate-800 dark:text-slate-200 "
+                          : "bg-theme-card bg-theme-card border-theme-subtle border-theme-subtle text-theme-secondary text-theme-secondary opacity-75"
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
@@ -1077,24 +1077,24 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                           type="checkbox"
                           checked={isChecked}
                           onChange={() => handleToggleCandidate(c.id)}
-                          className="rounded text-purple-600 focus:ring-purple-500"
+                          className="rounded text-theme-primary ring-[var(--border)]"
                         />
                         <div className="min-w-0">
                           <div className="font-semibold text-xs truncate text-slate-900 dark:text-slate-100">
                             {c.name}
                           </div>
-                          <div className="text-[10px] text-slate-400 dark:text-slate-500 truncate font-mono">
+                          <div className="text-[10px] text-theme-secondary text-theme-secondary truncate font-mono">
                             {c.path}
                           </div>
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0 ml-2">
                         {c.hasManifest && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-sky-100 dark:bg-sky-900/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-theme-card bg-theme-card text-theme-primary text-theme-primary border border-theme-subtle border-theme-subtle">
                             skill.yaml
                           </span>
                         )}
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-theme-card bg-theme-card text-[var(--success)] text-[var(--success)] border border-theme-subtle border-theme-subtle">
                           SKILL.md
                         </span>
                       </div>
@@ -1102,7 +1102,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                   );
                 })}
                 {displayedCandidates.length === 0 && (
-                  <div className="py-4 text-center text-slate-400 dark:text-slate-500 text-xs">
+                  <div className="py-4 text-center text-theme-secondary text-theme-secondary text-xs">
                     没有匹配的子技能
                   </div>
                 )}
@@ -1119,8 +1119,8 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
               <label
                 className={`flex items-start gap-3 p-3.5 rounded-xl transition cursor-pointer ${
                   selectedTarget === "user"
-                    ? "border-2 border-sky-500 bg-sky-50/60 dark:bg-sky-950/30 text-slate-900 dark:text-slate-100 shadow-xs"
-                    : "border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700"
+                    ? "border-2 border-theme-subtle bg-theme-card bg-theme-card text-slate-900 dark:text-slate-100 "
+                    : "border border-theme-subtle border-theme-subtle bg-theme-card bg-theme-base text-slate-700 dark:text-slate-300 hover:border-theme-subtle dark:hover:border-theme-subtle"
                 }`}
               >
                 <input
@@ -1129,13 +1129,13 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                   value="user"
                   checked={selectedTarget === "user"}
                   onChange={() => handleTargetChange("user")}
-                  className="mt-0.5 text-sky-600 focus:ring-sky-500"
+                  className="mt-0.5 text-theme-primary ring-[var(--border)]"
                 />
                 <div>
                   <div className="text-xs font-bold text-slate-900 dark:text-slate-100">
                     {language === "zh-CN" ? "用户技能" : "User Skill"}
                   </div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                  <div className="text-[11px] text-theme-secondary text-theme-secondary mt-0.5 leading-relaxed">
                     {t.skills.targetUser}
                   </div>
                 </div>
@@ -1144,10 +1144,10 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
               <label
                 className={`flex items-start gap-3 p-3.5 rounded-xl transition ${
                   !projectId
-                    ? "opacity-50 cursor-not-allowed bg-slate-100/50 dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800"
+                    ? "opacity-50 cursor-not-allowed bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle"
                     : selectedTarget === "project"
-                    ? "border-2 border-purple-500 bg-purple-50/60 dark:bg-purple-950/30 text-slate-900 dark:text-slate-100 cursor-pointer shadow-xs"
-                    : "border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer"
+                    ? "border-2 border-theme-subtle bg-theme-card bg-theme-card text-slate-900 dark:text-slate-100 cursor-pointer "
+                    : "border border-theme-subtle border-theme-subtle bg-theme-card bg-theme-base text-slate-700 dark:text-slate-300 hover:border-theme-subtle dark:hover:border-theme-subtle cursor-pointer"
                 }`}
                 title={!projectId ? t.skills.noProjectSelected : undefined}
               >
@@ -1158,13 +1158,13 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                   disabled={!projectId}
                   checked={selectedTarget === "project"}
                   onChange={() => handleTargetChange("project")}
-                  className="mt-0.5 text-purple-600 focus:ring-purple-500"
+                  className="mt-0.5 text-theme-primary ring-[var(--border)]"
                 />
                 <div>
                   <div className="text-xs font-bold text-slate-900 dark:text-slate-100">
                     {language === "zh-CN" ? "当前项目" : "Project Skill"}
                   </div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                  <div className="text-[11px] text-theme-secondary text-theme-secondary mt-0.5 leading-relaxed">
                     {!projectId ? t.skills.noProjectSelected : t.skills.targetProject}
                   </div>
                 </div>
@@ -1174,15 +1174,15 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
 
           {/* Preview Loading Indicator */}
           {previewLoading && (
-            <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-              <Loader2 className="w-4 h-4 animate-spin text-sky-600 dark:text-sky-400" />
+            <div className="p-6 rounded-xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle flex items-center justify-center gap-2 text-xs text-theme-secondary text-theme-secondary">
+              <Loader2 className="w-4 h-4 animate-spin text-theme-primary text-theme-primary" />
               <span>{t.common.loading}...</span>
             </div>
           )}
 
           {/* Preview Error Banner */}
           {previewError && (
-            <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 dark:bg-rose-950/40 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 text-xs flex items-start gap-2.5">
+            <div className="p-3.5 rounded-xl bg-theme-card border border-theme-subtle bg-theme-card border-theme-subtle text-[var(--warning)] text-[var(--warning)] text-xs flex items-start gap-2.5">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <div>
                 <span className="font-semibold">{t.skills.importFailed}: </span>
@@ -1193,31 +1193,31 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
 
           {/* Structured Import Error Banner */}
           {(importErrorData || importError) && (
-            <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 dark:bg-rose-950/40 dark:border-rose-800/60 text-rose-800 dark:text-rose-200 text-xs space-y-2 shadow-xs animate-in fade-in duration-150">
-              <div className="flex items-center gap-2 font-bold text-rose-700 dark:text-rose-300">
+            <div className="p-4 rounded-xl bg-theme-card border border-theme-subtle bg-theme-card border-theme-subtle text-[var(--warning)] text-[var(--warning)] text-xs space-y-2  animate-in fade-in duration-150">
+              <div className="flex items-center gap-2 font-bold text-[var(--warning)] text-[var(--warning)]">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{t.skills.importFailed}</span>
                 {importErrorData?.code && (
-                  <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300">
+                  <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-theme-card bg-theme-card text-[var(--warning)] text-[var(--warning)]">
                     {importErrorData.code}
                   </span>
                 )}
               </div>
 
               {importErrorData?.stage && (
-                <div className="text-[11px] text-rose-700 dark:text-rose-300">
+                <div className="text-[11px] text-[var(--warning)] text-[var(--warning)]">
                   <span className="font-semibold">{language === "zh-CN" ? "阶段：" : "Stage: "}</span>
                   <span>{formatStageName(importErrorData.stage, language)}</span>
                 </div>
               )}
 
-              <div className="text-[11px] text-rose-800 dark:text-rose-200 leading-relaxed">
+              <div className="text-[11px] text-[var(--warning)] text-[var(--warning)] leading-relaxed">
                 <span className="font-semibold">{language === "zh-CN" ? "原因：" : "Reason: "}</span>
                 <span>{importErrorData?.message || importError}</span>
               </div>
 
               {importErrorData?.details && Array.isArray(importErrorData.details) && importErrorData.details.length > 0 && (
-                <div className="mt-1 pt-1 border-t border-rose-200/60 dark:border-rose-800/40 text-[10px] font-mono space-y-0.5 text-rose-700 dark:text-rose-300 max-h-24 overflow-y-auto">
+                <div className="mt-1 pt-1 border-t border-theme-subtle border-theme-subtle text-[10px] font-mono space-y-0.5 text-[var(--warning)] text-[var(--warning)] max-h-24 overflow-y-auto">
                   {importErrorData.details.map((d: any, i: number) => (
                     <div key={i}>• {String(d)}</div>
                   ))}
@@ -1228,17 +1228,17 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
 
           {/* Section 4: Skill Preview Card */}
           {preview && !previewLoading && (!preview.candidateSkills || preview.candidateSkills.length <= 1) && (
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3.5 shadow-2xs animate-in fade-in duration-200">
+            <div className="p-4 rounded-xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle space-y-3.5  animate-in fade-in duration-200">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="p-2 rounded-lg bg-sky-50 dark:bg-sky-950/50 border border-sky-200 dark:border-sky-800/60 text-sky-600 dark:text-sky-400 shrink-0">
+                  <div className="p-2 rounded-lg bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-theme-primary text-theme-primary shrink-0">
                     <Sparkles className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
                     <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
                       {displayName}
                     </h4>
-                    <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 truncate">
+                    <div className="text-[11px] font-mono text-theme-secondary text-theme-secondary truncate">
                       {preview.id} · v{preview.version}
                     </div>
                   </div>
@@ -1256,13 +1256,13 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
 
               {/* Metrics Strip */}
               {preview.skillType === "raw" ? (
-                <div className="flex items-center gap-4 text-xs font-mono text-slate-600 dark:text-slate-400 pt-2.5 border-t border-slate-200 dark:border-slate-800">
+                <div className="flex items-center gap-4 text-xs font-mono text-theme-secondary text-theme-secondary pt-2.5 border-t border-theme-subtle border-theme-subtle">
                   <span className="flex items-center gap-1.5 font-medium text-fuchsia-600 dark:text-fuchsia-400">
                     <FileText className="w-3.5 h-3.5" />
                     <span>主文档: {preview.primaryDocument || "SKILL.md"}</span>
                   </span>
                   {preview.filesCount !== undefined && preview.filesCount > 1 && (
-                    <span className="text-slate-500">
+                    <span className="text-theme-secondary">
                       {preview.filesCount} 篇关联文档
                     </span>
                   )}
@@ -1271,9 +1271,9 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                   </span>
                 </div>
               ) : (
-                <div className="flex items-center gap-4 text-xs font-mono text-slate-600 dark:text-slate-400 pt-2.5 border-t border-slate-200 dark:border-slate-800">
+                <div className="flex items-center gap-4 text-xs font-mono text-theme-secondary text-theme-secondary pt-2.5 border-t border-theme-subtle border-theme-subtle">
                   <span className="flex items-center gap-1">
-                    <Workflow className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                    <Workflow className="w-3.5 h-3.5 text-theme-primary text-theme-primary" />
                     <span>
                       {preview.validationStatus === "needs_setup" && !showWizard
                         ? t.skills.workflowPending
@@ -1283,7 +1283,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                     </span>
                   </span>
                   <span className="flex items-center gap-1">
-                    <Wrench className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                    <Wrench className="w-3.5 h-3.5 text-theme-primary text-theme-primary" />
                     <span>
                       {preview.validationStatus === "needs_setup" && !showWizard
                         ? t.skills.toolsPending
@@ -1292,7 +1292,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                         : `${preview.toolsCount} ${t.skills.toolsCount}`}
                     </span>
                   </span>
-                  <span className="uppercase text-[10px] px-2 py-0.5 rounded font-semibold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                  <span className="uppercase text-[10px] px-2 py-0.5 rounded font-semibold bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle">
                     {showWizard ? wizardRisk : preview.risk} Risk
                   </span>
                 </div>
@@ -1300,22 +1300,22 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
 
               {/* Needs Setup Conversion Prompt */}
               {preview.validationStatus === "needs_setup" && (
-                <div className="p-3.5 rounded-lg bg-sky-50/80 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/60 text-xs space-y-2">
+                <div className="p-3.5 rounded-lg bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-xs space-y-2">
                   <div className="flex items-center justify-between">
-                    <div className="font-bold text-sky-900 dark:text-sky-200 flex items-center gap-1.5">
-                      <Settings className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+                    <div className="font-bold text-theme-primary text-theme-primary flex items-center gap-1.5">
+                      <Settings className="w-4 h-4 text-theme-primary text-theme-primary" />
                       <span>{language === "zh-CN" ? "未发现 Nexus skill.yaml" : "Nexus skill.yaml not found"}</span>
                     </div>
                     <button
                       type="button"
                       onClick={() => setShowWizard(!showWizard)}
-                      className="text-[11px] text-sky-700 dark:text-sky-400 hover:text-sky-900 dark:hover:text-sky-200 hover:underline flex items-center gap-1 font-medium transition"
+                      className="text-[11px] text-theme-primary text-theme-primary hover:text-theme-primary dark:hover:text-theme-primary hover:underline flex items-center gap-1 font-medium transition"
                     >
                       <span>{showWizard ? t.skills.hideConfig : t.skills.viewConfig}</span>
                       {showWizard ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                     </button>
                   </div>
-                  <p className="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                  <p className="text-theme-secondary dark:text-slate-300 text-[11px] leading-relaxed">
                     {language === "zh-CN"
                       ? "需要生成声明式配置后才能导入。点击下方「配置并导入」开始配置。"
                       : "Declarative configuration must be generated before importing. Click 'Configure & Import' below to proceed."}
@@ -1325,8 +1325,8 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
 
               {/* Config Wizard Form */}
               {showWizard && (
-                <form onSubmit={handleWizardSubmit} className="p-3.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs space-y-3">
-                  <h5 className="font-bold text-slate-900 dark:text-slate-100 border-b border-slate-200 dark:border-slate-800 pb-2">
+                <form onSubmit={handleWizardSubmit} className="p-3.5 rounded-lg bg-white bg-theme-base border border-theme-subtle border-theme-subtle text-xs space-y-3">
+                  <h5 className="font-bold text-slate-900 dark:text-slate-100 border-b border-theme-subtle border-theme-subtle pb-2">
                     创建 Nexus 声明式 Skill 配置
                   </h5>
 
@@ -1339,7 +1339,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                         type="text"
                         value={wizardNameZh}
                         onChange={(e) => setWizardNameZh(e.target.value)}
-                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs"
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-theme-subtle border-theme-subtle bg-theme-card bg-theme-card text-slate-900 dark:text-slate-100 text-xs"
                         required
                       />
                     </div>
@@ -1351,7 +1351,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                         type="text"
                         value={wizardNameEn}
                         onChange={(e) => setWizardNameEn(e.target.value)}
-                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs"
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-theme-subtle border-theme-subtle bg-theme-card bg-theme-card text-slate-900 dark:text-slate-100 text-xs"
                         required
                       />
                     </div>
@@ -1367,7 +1367,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                         value={wizardDescZh}
                         onChange={(e) => setWizardDescZh(e.target.value)}
                         placeholder="请填写技能用途"
-                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs resize-none"
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-theme-subtle border-theme-subtle bg-theme-card bg-theme-card text-slate-900 dark:text-slate-100 text-xs resize-none"
                         required
                       />
                     </div>
@@ -1380,7 +1380,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                         value={wizardDescEn}
                         onChange={(e) => setWizardDescEn(e.target.value)}
                         placeholder="Skill purpose"
-                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs resize-none"
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-theme-subtle border-theme-subtle bg-theme-card bg-theme-card text-slate-900 dark:text-slate-100 text-xs resize-none"
                         required
                       />
                     </div>
@@ -1394,7 +1394,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                       type="text"
                       value={wizardId}
                       onChange={(e) => setWizardId(e.target.value)}
-                      className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs font-mono"
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-theme-subtle border-theme-subtle bg-theme-card bg-theme-card text-slate-900 dark:text-slate-100 text-xs font-mono"
                       pattern="^[a-z0-9][a-z0-9._-]{1,62}[a-z0-9]$"
                       required
                     />
@@ -1408,7 +1408,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                       <select
                         value={wizardCategory}
                         onChange={(e) => setWizardCategory(e.target.value as SkillCategory)}
-                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs"
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-theme-subtle border-theme-subtle bg-theme-card bg-theme-card text-slate-900 dark:text-slate-100 text-xs"
                       >
                         <option value="inspection">inspection</option>
                         <option value="debugging">debugging</option>
@@ -1427,7 +1427,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                       <select
                         value={wizardRisk}
                         onChange={(e) => setWizardRisk(e.target.value as SkillRisk)}
-                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs"
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-theme-subtle border-theme-subtle bg-theme-card bg-theme-card text-slate-900 dark:text-slate-100 text-xs"
                       >
                         <option value="low">low</option>
                         <option value="medium">medium</option>
@@ -1445,7 +1445,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                       value={wizardTriggers}
                       onChange={(e) => setWizardTriggers(e.target.value)}
                       placeholder="e.g. 逆向, 分析, reverse analysis"
-                      className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs"
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-theme-subtle border-theme-subtle bg-theme-card bg-theme-card text-slate-900 dark:text-slate-100 text-xs"
                       required
                     />
                   </div>
@@ -1459,24 +1459,24 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                       value={wizardWorkflow}
                       onChange={(e) => setWizardWorkflow(e.target.value)}
                       placeholder="e.g. inspect, analyze, summarize"
-                      className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs"
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-theme-subtle border-theme-subtle bg-theme-card bg-theme-card text-slate-900 dark:text-slate-100 text-xs"
                       required
                     />
                   </div>
 
                   {/* Live Manifest Preview & Round-Trip Validation Status */}
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+                  <div className="p-3 rounded-xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5 text-xs">
-                        <Sparkles className="w-3.5 h-3.5 text-sky-500" />
+                        <Sparkles className="w-3.5 h-3.5 text-theme-primary" />
                         <span>生成的 Manifest 预览 (Generated Manifest Preview)</span>
                       </span>
                       <div className="flex items-center gap-2">
                         <span
                           className={`px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 ${
                             roundTrip.valid
-                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/60"
-                              : "bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-800/60"
+                              ? "bg-theme-card text-[var(--success)] border border-theme-subtle bg-theme-card text-[var(--success)] border-theme-subtle"
+                              : "bg-theme-card text-[var(--warning)] border border-theme-subtle bg-theme-card text-[var(--warning)] border-theme-subtle"
                           }`}
                         >
                           {roundTrip.valid ? <CheckCircle2 className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
@@ -1485,8 +1485,8 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                         <span
                           className={`px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 ${
                             roundTrip.valid
-                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/60"
-                              : "bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-800/60"
+                              ? "bg-theme-card text-[var(--success)] border border-theme-subtle bg-theme-card text-[var(--success)] border-theme-subtle"
+                              : "bg-theme-card text-[var(--warning)] border border-theme-subtle bg-theme-card text-[var(--warning)] border-theme-subtle"
                           }`}
                         >
                           {roundTrip.valid ? <CheckCircle2 className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
@@ -1496,7 +1496,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                     </div>
 
                     {!roundTrip.valid && roundTrip.errors.length > 0 && (
-                      <div className="p-2 rounded bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-[11px] text-red-700 dark:text-red-300">
+                      <div className="p-2 rounded bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-[11px] text-[var(--warning)] text-[var(--warning)]">
                         <div className="font-semibold mb-1">Manifest 校验未通过：</div>
                         <ul className="list-disc pl-4 space-y-0.5">
                           {roundTrip.errors.map((err, idx) => (
@@ -1506,18 +1506,18 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                       </div>
                     )}
 
-                    <div className="bg-slate-900 dark:bg-slate-950 rounded-lg p-2.5 font-mono text-[11px] text-slate-200 overflow-x-auto max-h-40 border border-slate-800">
+                    <div className="bg-theme-base bg-theme-base rounded-lg p-2.5 font-mono text-[11px] text-slate-200 overflow-x-auto max-h-40 border border-theme-subtle">
                       <pre>{roundTrip.yaml || "等待配置..."}</pre>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between pt-2">
-                    <label className="flex items-center gap-2 text-[11px] text-slate-600 dark:text-slate-400 select-none cursor-pointer">
+                    <label className="flex items-center gap-2 text-[11px] text-theme-secondary text-theme-secondary select-none cursor-pointer">
                       <input
                         type="checkbox"
                         checked={wizardOverwrite}
                         onChange={(e) => setWizardOverwrite(e.target.checked)}
-                        className="rounded border-slate-300 text-sky-600 focus:ring-sky-500"
+                        className="rounded border-theme-subtle text-theme-primary ring-[var(--border)]"
                       />
                       <span>{language === "zh-CN" ? "若同名技能已存在则覆盖安装" : "Overwrite if skill already exists"}</span>
                     </label>
@@ -1525,7 +1525,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                     <button
                       type="submit"
                       disabled={importing || !roundTrip.valid}
-                      className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-xs shadow-xs"
+                      className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] disabled:opacity-50 disabled:cursor-not-allowed text-[var(--btn-primary-text)] font-semibold text-xs "
                     >
                       {importing && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                       <span>生成并导入为 Nexus Skill</span>
@@ -1536,10 +1536,10 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
 
               {/* Excluded Executable Files Summary & Expander */}
               {(preview.archiveTotalExecutables !== undefined && preview.archiveTotalExecutables > 0) ? (
-                <div className="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs space-y-2">
+                <div className="p-3.5 rounded-lg bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-[var(--warning)] text-[var(--warning)] text-xs space-y-2">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <ShieldAlert className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                      <ShieldAlert className="w-4 h-4 text-[var(--warning)] text-[var(--warning)] shrink-0" />
                       <span className="font-semibold">
                         {language === "zh-CN"
                           ? `归档共发现 ${preview.archiveTotalExecutables} 个可执行资源，当前候选包含 ${preview.candidateExecutablesCount ?? 0} 个，导入时全部排除`
@@ -1550,21 +1550,21 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                       <button
                         type="button"
                         onClick={() => setShowExcludedFiles(!showExcludedFiles)}
-                        className="text-[11px] text-amber-700 dark:text-amber-400 hover:underline flex items-center gap-1"
+                        className="text-[11px] text-[var(--warning)] text-[var(--warning)] hover:underline flex items-center gap-1"
                       >
                         <span>{showExcludedFiles ? "收起" : `查看候选文件 (${preview.executableFilesFound.length})`}</span>
                         {showExcludedFiles ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                       </button>
                     )}
                   </div>
-                  <p className="text-[11px] text-amber-700/90 dark:text-amber-300/80 leading-relaxed">
+                  <p className="text-[11px] text-[var(--warning)]/90 text-[var(--warning)]/80 leading-relaxed">
                     {language === "zh-CN"
                       ? "出于安全原因，任何外部脚本与二进制文件绝不进入 Nexus Skill 目录，且绝不被执行。技能仅作为纯声明式元数据导入。"
                       : "For security, external scripts and binaries are excluded and never executed. The skill imports as declarative metadata only."}
                   </p>
 
                   {showExcludedFiles && preview.executableFilesFound && preview.executableFilesFound.length > 0 && (
-                    <div className="mt-2 max-h-32 overflow-y-auto p-2 rounded bg-amber-100/50 dark:bg-black/40 border border-amber-200 dark:border-amber-900/60 font-mono text-[10px] space-y-0.5 text-slate-800 dark:text-slate-300">
+                    <div className="mt-2 max-h-32 overflow-y-auto p-2 rounded bg-theme-card dark:bg-[var(--bg-app)] border border-theme-subtle border-theme-subtle font-mono text-[10px] space-y-0.5 text-slate-800 dark:text-slate-300">
                       {preview.executableFilesFound.map((file, i) => (
                         <div key={i} className="truncate">
                           ✕ {file}
@@ -1574,10 +1574,10 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                   )}
                 </div>
               ) : (preview.executableFilesFound && preview.executableFilesFound.length > 0) ? (
-                <div className="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs space-y-2">
+                <div className="p-3.5 rounded-lg bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-[var(--warning)] text-[var(--warning)] text-xs space-y-2">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <ShieldAlert className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                      <ShieldAlert className="w-4 h-4 text-[var(--warning)] text-[var(--warning)] shrink-0" />
                       <span className="font-semibold">
                         ⚠ 发现 {preview.executableFilesFound.length} 个可执行资源
                       </span>
@@ -1585,18 +1585,18 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setShowExcludedFiles(!showExcludedFiles)}
-                      className="text-[11px] text-amber-700 dark:text-amber-400 hover:underline flex items-center gap-1"
+                      className="text-[11px] text-[var(--warning)] text-[var(--warning)] hover:underline flex items-center gap-1"
                     >
                       <span>{showExcludedFiles ? "收起" : `查看文件列表 (${preview.executableFilesFound.length})`}</span>
                       {showExcludedFiles ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                     </button>
                   </div>
-                  <p className="text-[11px] text-amber-700/90 dark:text-amber-300/80 leading-relaxed">
+                  <p className="text-[11px] text-[var(--warning)]/90 text-[var(--warning)]/80 leading-relaxed">
                     出于安全原因，这些脚本与二进制文件不会被复制到 Nexus Skill 安装目录中，且绝不会被执行。
                   </p>
 
                   {showExcludedFiles && (
-                    <div className="mt-2 max-h-32 overflow-y-auto p-2 rounded bg-amber-100/50 dark:bg-black/40 border border-amber-200 dark:border-amber-900/60 font-mono text-[10px] space-y-0.5 text-slate-800 dark:text-slate-300">
+                    <div className="mt-2 max-h-32 overflow-y-auto p-2 rounded bg-theme-card dark:bg-[var(--bg-app)] border border-theme-subtle border-theme-subtle font-mono text-[10px] space-y-0.5 text-slate-800 dark:text-slate-300">
                       {preview.executableFilesFound.map((file, i) => (
                         <div key={i} className="truncate">
                           ✕ {file}
@@ -1609,12 +1609,12 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
 
               {/* Conflict Alert */}
               {preview.isBuiltinConflict ? (
-                <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 text-xs flex items-center gap-2">
+                <div className="p-3 rounded-lg bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-[var(--warning)] text-[var(--warning)] text-xs flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 shrink-0" />
                   <span>nexus.* 命名空间仅供 Nexus 官方内置技能使用。</span>
                 </div>
               ) : preview.hasConflict ? (
-                <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs flex items-center gap-2">
+                <div className="p-3 rounded-lg bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-[var(--warning)] text-[var(--warning)] text-xs flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 shrink-0" />
                   <span>
                     {language === "zh-CN"
@@ -1626,7 +1626,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
 
               {/* Validation Errors List (if invalid) */}
               {preview.validationStatus === "invalid" && preview.validationErrors.length > 0 && (
-                <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 text-xs space-y-1">
+                <div className="p-3 rounded-lg bg-theme-card bg-theme-card border border-theme-subtle border-theme-subtle text-[var(--warning)] text-[var(--warning)] text-xs space-y-1">
                   <div className="font-semibold">{t.skills.validationErrorsTitle}:</div>
                   <ul className="list-disc list-inside space-y-0.5">
                     {preview.validationErrors.map((err, i) => (
@@ -1639,8 +1639,8 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
           )}
 
           {/* Section 5: Security Info Box */}
-          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 flex items-start gap-2.5 leading-relaxed shadow-2xs">
-            <Info className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0 mt-0.5" />
+          <div className="p-3.5 rounded-xl bg-theme-card bg-theme-base border border-theme-subtle border-theme-subtle text-xs text-theme-secondary text-theme-secondary flex items-start gap-2.5 leading-relaxed ">
+            <Info className="w-4 h-4 text-theme-primary text-theme-primary shrink-0 mt-0.5" />
             <span>
               {language === "zh-CN"
                 ? "Nexus Skill 始终以只读声明式元数据运行。任何外部脚本均已被净化排除。所有系统操作必须经由 64 个 Nexus MCP 工具显式完成，并受审批与紧急停止约束。"
@@ -1650,12 +1650,12 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
         </div>
 
         {/* Section 6: Modal Footer with Single Primary CTA Driven by importState */}
-        <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3 bg-slate-50/70 dark:bg-slate-900/30">
+        <div className="px-6 py-4 border-t border-theme-subtle border-theme-subtle flex items-center justify-end gap-3 bg-theme-card bg-theme-base">
           <button
             type="button"
             onClick={onClose}
             disabled={importing}
-            className="px-4 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-2xs"
+            className="px-4 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 bg-white bg-theme-card border border-theme-subtle border-theme-subtle hover:bg-theme-card dark:hover:bg-slate-700 transition "
           >
             {t.common.cancel}
           </button>

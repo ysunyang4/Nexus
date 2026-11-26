@@ -51,19 +51,19 @@ export const WebAgentConnection: React.FC<WebAgentConnectionProps> = ({
   return (
     <div className="space-y-6 max-w-5xl">
       {/* Hero Header Card */}
-      <div className="p-6 bg-theme-card border border-theme-subtle rounded-2xl shadow-xs space-y-4">
+      <div className="p-6 bg-theme-card border border-theme-subtle rounded-2xl  space-y-4">
         <div className="flex items-start justify-between flex-wrap gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500/10 via-indigo-500/10 to-purple-500/10 border border-sky-500/20 flex items-center justify-center text-sky-500 shrink-0 shadow-inner">
+            <div className="w-12 h-12 rounded-xl bg-theme-card border border-theme-subtle flex items-center justify-center text-theme-primary shrink-0 ">
               <Compass className="w-6 h-6 animate-spin-slow" />
             </div>
             <div>
               <div className="flex items-center gap-2.5">
-                <h3 className="font-bold text-base text-theme-primary">
+                <h3 className="font-bold text-base text-[var(--accent-brand)]">
                   {isZh ? "WebAgent 浏览器插件" : "WebAgent Browser Extension"}
                 </h3>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-transparent text-[var(--success)] border border-[var(--border-default)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--success)]" />
                   {isZh ? "本地引擎已就绪" : "Engine Ready"}
                 </span>
               </div>
@@ -89,7 +89,7 @@ export const WebAgentConnection: React.FC<WebAgentConnectionProps> = ({
               <div className="text-[10px] text-theme-muted uppercase tracking-wider font-mono">
                 {isZh ? "本地端口" : "LOCAL PORT"}
               </div>
-              <div className="text-xs font-semibold text-sky-500 font-mono mt-0.5">
+              <div className="text-xs font-semibold text-theme-primary font-mono mt-0.5">
                 8787
               </div>
             </div>
@@ -98,9 +98,9 @@ export const WebAgentConnection: React.FC<WebAgentConnectionProps> = ({
       </div>
 
       {/* Tutorial Guidance Card */}
-      <div className="p-5 bg-gradient-to-r from-sky-500/10 via-indigo-500/5 to-transparent border border-sky-500/30 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
+      <div className="p-5 bg-theme-card border border-theme-subtle rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 ">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-sky-600 dark:text-sky-400 font-bold text-sm">
+          <div className="flex items-center gap-2 text-theme-primary text-theme-primary font-bold text-sm">
             <BookOpen className="w-4 h-4" />
             <span>{isZh ? "WebAgent 详细配置与使用教程" : "WebAgent Setup & Usage Guide"}</span>
           </div>
@@ -113,7 +113,7 @@ export const WebAgentConnection: React.FC<WebAgentConnectionProps> = ({
         <button
           type="button"
           onClick={handleOpenBlogTutorial}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-sky-500 hover:bg-sky-600 active:scale-[0.98] text-white rounded-xl text-xs font-bold shadow-md shadow-sky-500/20 transition shrink-0 cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[var(--btn-primary-bg)] hover:opacity-90 active:scale-[0.98] text-[var(--btn-primary-text)] rounded-xl text-xs font-bold   transition shrink-0 cursor-pointer"
         >
           <span>{isZh ? "查看详细配置教程 (博客)" : "View Tutorial on Blog"}</span>
           <ExternalLink className="w-3.5 h-3.5" />
@@ -122,9 +122,9 @@ export const WebAgentConnection: React.FC<WebAgentConnectionProps> = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Card 1: Local MCP Endpoint */}
-        <div className="p-6 bg-theme-card border border-theme-subtle rounded-2xl shadow-xs space-y-4">
+        <div className="p-6 bg-theme-card border border-theme-subtle rounded-2xl  space-y-4">
           <div className="flex items-center gap-2">
-            <Globe className="w-4 h-4 text-sky-500" />
+            <Globe className="w-4 h-4 text-theme-primary" />
             <h4 className="font-bold text-sm text-theme-primary">
               {isZh ? "本地 MCP 服务端点" : "Local MCP Endpoint"}
             </h4>
@@ -147,7 +147,7 @@ export const WebAgentConnection: React.FC<WebAgentConnectionProps> = ({
             >
               {copiedEndpoint ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  <Check className="w-3.5 h-3.5 text-[var(--success)]" />
                   <span>{isZh ? "已复制" : "Copied"}</span>
                 </>
               ) : (
@@ -161,9 +161,9 @@ export const WebAgentConnection: React.FC<WebAgentConnectionProps> = ({
         </div>
 
         {/* Card 2: Quick Steps Card */}
-        <div className="p-6 bg-theme-card border border-theme-subtle rounded-2xl shadow-xs space-y-3">
+        <div className="p-6 bg-theme-card border border-theme-subtle rounded-2xl  space-y-3">
           <h4 className="font-bold text-sm text-theme-primary flex items-center gap-2">
-            <Layers className="w-4 h-4 text-indigo-500" />
+            <Layers className="w-4 h-4 text-theme-primary" />
             <span>{isZh ? "配置三步法" : "3-Step Setup"}</span>
           </h4>
 

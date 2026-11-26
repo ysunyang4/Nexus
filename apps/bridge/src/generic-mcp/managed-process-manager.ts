@@ -154,7 +154,12 @@ export class ManagedProcessManager {
       const localAppData =
         process.env.LOCALAPPDATA ||
         (process.env.USERPROFILE ? path.join(process.env.USERPROFILE, "AppData", "Local") : path.join(os.homedir(), "AppData", "Local"));
-      return path.join(localAppData, "Nexus");
+      const dockraDir = path.join(localAppData, "Nexus");
+      const legacyDir = path.join(localAppData, "Nexus");
+      if (!fs.existsSync(dockraDir) && fs.existsSync(legacyDir)) {
+        try { fs.cpSync(legacyDir, dockraDir, { recursive: true }); } catch {}
+      }
+      return dockraDir;
     }
     if (process.platform === "darwin") {
       return path.join(os.homedir(), "Library", "Application Support", "Nexus");
@@ -217,6 +222,14 @@ export class ManagedProcessManager {
         }
       }
     }
+  }
+
+  private resolveServerScriptArgs(args: string[]): string[] {
+    return args.map((a) =>
+      !path.isAbsolute(a) && /^[a-z0-9_]+_server\.py$/i.test(a)
+        ? this.getServerScriptPath(a)
+        : a
+    );
   }
 
   private getServerScriptPath(fileName: string): string {
@@ -532,7 +545,6 @@ export class ManagedProcessManager {
       path.join(process.env.LOCALAPPDATA || "", "uv"),
       path.join(process.env.USERPROFILE || "", ".cargo", "bin"),
       path.join(process.env.USERPROFILE || "", ".local", "bin"),
-      "E:\\workspace\\release\\verify_install\\resources\\runtime",
     ];
     let resolvedPath = process.env.PATH || process.env.Path || "";
     for (const d of [nodeDir, ...uvCandidateDirs]) {
@@ -577,12 +589,13 @@ export class ManagedProcessManager {
       // 1. If service is a Stdio MCP server (custom service, photoshop, maya, etc.), run via Native Pure-Stream Gateway
       if (!isDirectHttpService(service.config)) {
         const unwrapped = unwrapSupergateway(service.config);
+        const resolvedArgs = this.resolveServerScriptArgs(unwrapped.args);
         this.appendLog(id, `[Nexus] Launching via Native Pure-Stream Gateway on port ${service.config.port}...`);
         
         const gw = new NativeStdioGateway({
           serviceId: id,
           command: unwrapped.command,
-          args: unwrapped.args,
+          args: resolvedArgs,
           port: service.config.port,
           env: injectedEnv,
           onLog: (line) => this.appendLog(id, line),
@@ -624,6 +637,8 @@ export class ManagedProcessManager {
           execArgs = parsed.args;
         }
       }
+
+      execArgs = this.resolveServerScriptArgs(execArgs);
 
       if (execCmd === "uv" || execCmd === "uv.exe") {
         for (const dir of uvCandidateDirs) {

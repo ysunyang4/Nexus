@@ -195,8 +195,12 @@ export class SkillLoader {
     // 4. Load Project skills
     const activeProjectDirs = projectDirs.length > 0 ? projectDirs : this.defaultProjectDirs;
     for (const proj of activeProjectDirs) {
-      const projSkillDir = path.join(proj.rootPath, ".nexus", "skills");
-      skills.push(...this.loadFromDirectory(projSkillDir, "project", proj.projectId));
+      const dockraSkillDir = path.join(proj.rootPath, ".dockra", "skills");
+      skills.push(...this.loadFromDirectory(dockraSkillDir, "project", proj.projectId));
+      const legacySkillDir = path.join(proj.rootPath, ".nexus", "skills");
+      if (fs.existsSync(legacySkillDir)) {
+        skills.push(...this.loadFromDirectory(legacySkillDir, "project", proj.projectId));
+      }
     }
 
     return skills;

@@ -86,7 +86,7 @@ export const McpToolsPage: React.FC = () => {
       <div className="px-6 py-4 border-b border-theme-subtle bg-theme-card/30 flex items-center justify-between gap-4 shrink-0">
         <div>
           <h1 className="text-base font-semibold text-theme-primary flex items-center gap-2">
-            <Wrench className="w-4 h-4 text-sky-500" />
+            <Wrench className="w-4 h-4 text-theme-primary" />
             <span>{isZh ? "MCP 工具库" : "MCP Tool Registry"}</span>
           </h1>
           <p className="text-xs text-theme-muted mt-0.5">
@@ -103,7 +103,7 @@ export const McpToolsPage: React.FC = () => {
               setSelectedCategory(e.target.value);
               setPage(0);
             }}
-            className="bg-theme-card text-theme-primary text-xs px-2.5 py-1.5 rounded-lg border border-theme-subtle focus:outline-none focus:border-sky-500 font-mono"
+            className="bg-theme-card text-theme-primary text-xs px-2.5 py-1.5 rounded-lg border border-theme-subtle focus:outline-none border-theme-subtle font-mono"
           >
             {categories.map((c) => (
               <option key={c} value={c}>
@@ -122,7 +122,7 @@ export const McpToolsPage: React.FC = () => {
                 setSearch(e.target.value);
                 setPage(0);
               }}
-              className="pl-8 pr-3 py-1.5 bg-theme-card text-theme-primary border border-theme-subtle rounded-lg text-xs w-64 focus:outline-none focus:border-sky-500 font-mono"
+              className="pl-8 pr-3 py-1.5 bg-theme-card text-theme-primary border border-theme-subtle rounded-lg text-xs w-64 focus:outline-none border-theme-subtle font-mono"
             />
           </div>
         </div>
@@ -159,7 +159,7 @@ export const McpToolsPage: React.FC = () => {
                         onClick={() => setSelectedTool(tool)}
                         className={`cursor-pointer transition ${
                           isSelected
-                            ? "bg-theme-card-hover text-theme-primary font-medium border-l-2 border-l-sky-500"
+                            ? "bg-theme-card-hover text-theme-primary font-medium border-l-2 border-l-[var(--text-primary)]"
                             : "hover:bg-theme-card/40 text-theme-secondary hover:text-theme-primary"
                         }`}
                       >
@@ -171,10 +171,10 @@ export const McpToolsPage: React.FC = () => {
                           <span
                             className={`px-1.5 py-0.2 rounded text-[10px] ${
                               tool.riskLevel === "safe" || tool.riskLevel === "low"
-                                ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                                ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle"
                                 : tool.riskLevel === "medium"
-                                ? "bg-amber-500/10 text-amber-500 border border-amber-500/20"
-                                : "bg-red-500/10 text-red-500 border border-red-500/20"
+                                ? "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle"
+                                : "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle"
                             }`}
                           >
                             {tool.riskLevel}
@@ -183,7 +183,7 @@ export const McpToolsPage: React.FC = () => {
                         <td className="py-2.5 px-4 text-theme-muted">
                           {tool.mcpScope || (tool.riskLevel === "safe" ? "read" : "write")}
                         </td>
-                        <td className="py-2.5 px-4 text-emerald-500 text-[11px]">
+                        <td className="py-2.5 px-4 text-[var(--success)] text-[11px]">
                           ✓ Deterministic
                         </td>
                       </tr>
@@ -225,7 +225,7 @@ export const McpToolsPage: React.FC = () => {
         <div className="w-96 border-l border-theme-subtle bg-theme-card/10 p-5 overflow-y-auto space-y-5">
           {selectedTool ? (
             <div className="space-y-4">
-              <div className="text-xs font-mono uppercase tracking-wider text-sky-500 font-semibold">
+              <div className="text-xs font-mono uppercase tracking-wider text-theme-primary font-semibold">
                 Tool Specification
               </div>
 
@@ -259,7 +259,7 @@ export const McpToolsPage: React.FC = () => {
                 </div>
                 <div className="flex justify-between py-1">
                   <span className="text-theme-muted">Execution Mode</span>
-                  <span className="font-mono text-emerald-500">Local Native Worker</span>
+                  <span className="font-mono text-[var(--success)]">Local Native Worker</span>
                 </div>
               </div>
 

@@ -667,7 +667,7 @@ export function getCanonicalToolManifest(): CanonicalToolManifest {
     sortedToolNames,
     toolNamesHash,
     schemaHash,
-    surfaceVersion: "1.3.4",
+    surfaceVersion: "1.4.0",
     protocolVersion: "2024-11-05",
     generatedAt: new Date().toISOString(),
   };
@@ -1180,7 +1180,7 @@ export function logToolTelemetry(entry: {
       totalBytes,
     };
 
-    const defaultLogDir = fs.existsSync("E:/workspace/cod") ? "E:/workspace/cod" : process.cwd();
+    const defaultLogDir = process.cwd();
     const logPath =
       process.env.NEXUS_TOKEN_LOG_PATH || path.resolve(defaultLogDir, "nexus-token-telemetry.jsonl");
     fs.mkdirSync(path.dirname(logPath), { recursive: true });
@@ -1518,7 +1518,7 @@ export function createMcpServer(nexusClient: NexusClient, targetProviderId?: str
   const server = new Server(
     {
       name: cleanTargetId ? `nexus-mcp-bridge [${cleanTargetId}]` : "nexus-mcp-bridge",
-      version: "1.3.4",
+      version: "1.4.0",
     },
     {
       capabilities: {
@@ -1676,8 +1676,8 @@ ${text}` }],
     }
 
     const code = args.code || args.script || args.python || args.command || "";
-    const userPrompt = args.user_prompt || args.prompt || args.context || "";
-    const execRes = await executeBlenderScript(code, userPrompt);
+    const blenderPort = Number(process.env.BLENDER_PORT || 9876) || 9876;
+    const execRes = await executeBlenderScript(code, blenderPort);
     const resultText = execRes.output || "Executed";
 
     return {
@@ -3561,7 +3561,7 @@ export async function handleMcpHttpRequest(
   body: any,
   nexusClient: NexusClient
 ): Promise<void> {
-  // Hard Ingress Barrier: Nexus 1.3.4 strictly supports ChatGPT only.
+  // Hard Ingress Barrier: Nexus 1.4.0 strictly supports ChatGPT only.
   const userAgentLower = String(req.headers["user-agent"] || "").toLowerCase();
   const originLower = String(req.headers["origin"] || "").toLowerCase();
   const refererLower = String(req.headers["referer"] || "").toLowerCase();
@@ -3578,7 +3578,7 @@ export async function handleMcpHttpRequest(
     res.writeHead(403, { "Content-Type": "application/json" });
     res.end(
       JSON.stringify({
-        error: "Forbidden: Client not supported in Nexus 1.3.4 (ChatGPT only)",
+        error: "Forbidden: Client not supported in Nexus 1.4.0 (ChatGPT only)",
         code: "CLIENT_NOT_SUPPORTED",
       })
     );

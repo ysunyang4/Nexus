@@ -847,11 +847,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 }}
                 className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition ${
                   isSelected
-                    ? "bg-theme-card text-theme-primary border border-theme-subtle shadow-sm font-semibold"
+                    ? "bg-theme-card text-theme-primary border border-theme-subtle  font-semibold"
                     : "text-theme-secondary hover:text-theme-primary hover:bg-theme-card/50 border border-transparent"
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isSelected ? "text-sky-500" : "text-theme-muted"}`} />
+                <Icon className={`w-3.5 h-3.5 ${isSelected ? "text-theme-primary" : "text-theme-muted"}`} />
                 <span>{cat.label}</span>
               </button>
             );
@@ -863,7 +863,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         {/* Tab: Computer Control */}
         {activeTab === "computer" && (
           <div className="flex flex-col h-full space-y-4">
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-theme-card border border-theme-subtle w-fit shadow-xs">
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-theme-card border border-theme-subtle w-fit ">
               {[
                 { id: "desktop", label: tText("桌面预览", "Desktop Preview", "デスクトッププレビュー", "Desktop-Vorschau"), icon: Monitor },
                 { id: "files", label: tText("文件浏览器", "Files Explorer", "ファイルエクスプローラー", "Datei-Explorer"), icon: FolderTree },
@@ -878,7 +878,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     onClick={() => setComputerSubPage(tab.id as any)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                       active
-                        ? "bg-theme-base text-sky-500 shadow-xs font-semibold border border-theme-subtle"
+                        ? "bg-theme-base text-theme-primary  font-semibold border border-theme-subtle"
                         : "text-theme-muted hover:text-theme-primary"
                     }`}
                   >
@@ -900,7 +900,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         {/* Tab: Execution & Ledger */}
         {activeTab === "execution" && (
           <div className="flex flex-col h-full space-y-4">
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-theme-card border border-theme-subtle w-fit shadow-xs">
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-theme-card border border-theme-subtle w-fit ">
               {[
                 { id: "pipeline", label: tText("执行管道", "Pipeline", "パイプライン", "Pipeline"), icon: Terminal },
                 { id: "ledger", label: tText("操作审计账本", "Action Ledger", "アクション台帳", "Aktions-Hauptbuch"), icon: FileText },
@@ -914,7 +914,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     onClick={() => setExecutionSubPage(tab.id as any)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                       active
-                        ? "bg-theme-base text-sky-500 shadow-xs font-semibold border border-theme-subtle"
+                        ? "bg-theme-base text-theme-primary  font-semibold border border-theme-subtle"
                         : "text-theme-muted hover:text-theme-primary"
                     }`}
                   >
@@ -935,7 +935,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         {/* Tab: MCP Ecosystem */}
         {activeTab === "mcp" && (
           <div className="flex flex-col h-full space-y-4">
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-theme-card border border-theme-subtle w-fit shadow-xs">
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-theme-card border border-theme-subtle w-fit ">
               {[
                 { id: "servers", label: tText("服务节点", "Servers", "サーバー", "Server"), icon: Server },
                 { id: "tools", label: tText("工具库 (332)", "Tools (332)", "ツール (332)", "Werkzeuge (332)"), icon: Wrench },
@@ -951,7 +951,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     onClick={() => setMcpSubPage(tab.id as any)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                       active
-                        ? "bg-theme-base text-sky-500 shadow-xs font-semibold border border-theme-subtle"
+                        ? "bg-theme-base text-theme-primary  font-semibold border border-theme-subtle"
                         : "text-theme-muted hover:text-theme-primary"
                     }`}
                   >
@@ -990,13 +990,13 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         {/* Tab: AI Connections (ChatGPT & WebAgent) */}
         {activeTab === "connections" && (
           <div className="flex flex-col h-full space-y-4">
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-theme-card border border-theme-subtle w-fit shadow-xs">
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-theme-card border border-theme-subtle w-fit ">
               <button
                 type="button"
                 onClick={() => setConnectionsSubTab("chatgpt")}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
                   connectionsSubTab === "chatgpt"
-                    ? "bg-sky-500 text-white shadow-xs font-semibold"
+                    ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)]  font-semibold"
                     : "text-theme-secondary hover:text-theme-primary hover:bg-theme-card-hover border border-transparent"
                 }`}
               >
@@ -1009,7 +1009,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 onClick={() => setConnectionsSubTab("webagent")}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
                   connectionsSubTab === "webagent"
-                    ? "bg-sky-500 text-white shadow-xs font-semibold"
+                    ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)]  font-semibold"
                     : "text-theme-secondary hover:text-theme-primary hover:bg-theme-card-hover border border-transparent"
                 }`}
               >
@@ -1040,19 +1040,19 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
       {activeTab === "security" && (
         <div className="max-w-4xl space-y-6">
           {/* Command Safety Layer Control Card */}
-          <div className="p-6 bg-theme-card border border-theme-card rounded-xl space-y-5 shadow-sm">
+          <div className="p-6 bg-theme-card border border-theme-card rounded-xl space-y-5 ">
             <div className="flex items-center justify-between flex-wrap gap-3">
               <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
                 {safetyLayerDisabled ? (
-                  <Unlock className="w-5 h-5 text-amber-500" />
+                  <Unlock className="w-5 h-5 text-[var(--warning)]" />
                 ) : (
-                  <ShieldCheck className="w-5 h-5 text-emerald-500" />
+                  <ShieldCheck className="w-5 h-5 text-[var(--success)]" />
                 )}
                 <span>{isZh ? "Nexus 命令安全层 (Command Safety Layer)" : "Nexus Command Safety Layer"}</span>
               </div>
               {safetyLayerMsg && (
                 <span className={`text-xs font-medium flex items-center gap-1 ${
-                  safetyLayerDisabled ? "text-amber-400" : "text-emerald-400"
+                  safetyLayerDisabled ? "text-[var(--warning)]" : "text-[var(--success)]"
                 }`}>
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   {safetyLayerMsg}
@@ -1063,15 +1063,15 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
             {/* Current Mode & Status Indicator */}
             <div className={`p-4 rounded-xl border transition ${
               safetyLayerDisabled
-                ? "bg-amber-500/10 border-amber-500/30 text-amber-300"
-                : "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"
+                ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle text-[var(--warning)]"
+                : "bg-[var(--btn-primary-bg)]/10 border-theme-subtle text-[var(--success)]"
             }`}>
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2.5">
                   <div className={`w-3 h-3 rounded-full ${
                     safetyLayerDisabled
-                      ? "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)] animate-pulse"
-                      : "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]"
+                      ? "bg-[var(--warning)] -[0_0_8px_rgba(251,191,36,0.6)] animate-pulse"
+                      : "bg-[var(--success)] -[0_0_8px_rgba(52,211,153,0.6)]"
                   }`} />
                   <div>
                     <div className="text-[11px] font-bold uppercase tracking-wider text-theme-muted">
@@ -1079,11 +1079,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     </div>
                     <div className="text-sm font-semibold text-theme-primary mt-0.5">
                       {safetyLayerDisabled ? (
-                        <span className="text-amber-400 font-bold">
+                        <span className="text-[var(--warning)] font-bold">
                           {isZh ? "Mode B: 关闭安全层（Universal Computer Use / 全桌面控制模式）" : "Mode B: Universal Computer Use / Full Desktop Control Mode"}
                         </span>
                       ) : (
-                        <span className="text-emerald-400 font-bold">
+                        <span className="text-[var(--success)] font-bold">
                           {isZh ? "Mode A: 安全层开启（受控工具保护模式）" : "Mode A: Safe Mode Active (Controlled Tools Protection)"}
                         </span>
                       )}
@@ -1094,11 +1094,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 {/* Status Badge */}
                 <div>
                   {safetyLayerDisabled ? (
-                    <span className="font-mono text-[11px] font-semibold px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                    <span className="font-mono text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border border-theme-subtle">
                       {isZh ? "UNIVERSAL 模式" : "UNIVERSAL MODE"}
                     </span>
                   ) : (
-                    <span className="font-mono text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                    <span className="font-mono text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[var(--btn-primary-bg)]/20 text-[var(--success)] border border-theme-subtle">
                       {isZh ? "SAFE 受控模式" : "SAFE MODE"}
                     </span>
                   )}
@@ -1113,12 +1113,12 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   </span>
                   <div className="font-medium">
                     {safetyLayerDisabled ? (
-                      <span className="text-amber-400 flex items-center gap-1.5">
+                      <span className="text-[var(--warning)] flex items-center gap-1.5">
                         <HardDrive className="w-3.5 h-3.5 shrink-0" />
                         {isZh ? "全面开启 Universal Computer Use（鼠标/键盘/窗口/截图/全盘控制）" : "Universal Computer Use Active (Full Mouse/Keyboard/Window/Screen Control)"}
                       </span>
                     ) : (
-                      <span className="text-emerald-400 flex items-center gap-1.5">
+                      <span className="text-[var(--success)] flex items-center gap-1.5">
                         <Shield className="w-3.5 h-3.5 shrink-0" />
                         {isZh ? "受控保护模式（仅允许受控工具，禁用通用桌面控制）" : "Safe Mode (Controlled Tools only, Universal Computer Use blocked)"}
                       </span>
@@ -1130,7 +1130,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   <span className="text-theme-muted font-medium">
                     {isZh ? "命令审批弹窗策略：" : "Command Approval Policy:"}
                   </span>
-                  <div className="font-medium text-purple-400 flex items-center gap-1.5">
+                  <div className="font-medium text-theme-primary flex items-center gap-1.5">
                     <Zap className="w-3.5 h-3.5 shrink-0" />
                     {isZh ? "免审批弹窗确认（两种模式下均不再弹出命令审批确认）" : "Zero Popups (No approval prompts in either mode)"}
                   </div>
@@ -1156,10 +1156,10 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 type="button"
                 onClick={handleToggleSafetyLayer}
                 disabled={safetyLayerBusy || safetyLayerLoading}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-sm disabled:opacity-50 ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition  disabled:opacity-50 ${
                   safetyLayerDisabled
-                    ? "bg-emerald-600 hover:bg-emerald-500 text-white"
-                    : "bg-amber-600 hover:bg-amber-500 text-white"
+                    ? "bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]"
+                    : "bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)]"
                 }`}
               >
                 {safetyLayerBusy ? (
@@ -1179,14 +1179,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           </div>
 
           {/* Approval Routing Mode */}
-          <div className="p-6 bg-theme-card border border-theme-card rounded-xl space-y-4 shadow-sm">
+          <div className="p-6 bg-theme-card border border-theme-card rounded-xl space-y-4 ">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-                <MessageSquare className="w-4 h-4 text-indigo-500" />
+                <MessageSquare className="w-4 h-4 text-theme-primary" />
                 <span>{t.settings.approvalRoutingGroup}</span>
               </div>
               {routingModeSavedMsg && (
-                <span className="text-xs text-emerald-500 font-medium flex items-center gap-1">
+                <span className="text-xs text-[var(--success)] font-medium flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   {routingModeSavedMsg}
                 </span>
@@ -1222,7 +1222,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     onClick={() => !routingModeBusy && handleSaveApprovalRoutingMode(item.mode)}
                     className={`p-3 rounded-lg border cursor-pointer transition flex items-start gap-3 ${
                       active
-                        ? "bg-indigo-500/10 border-indigo-500 shadow-sm"
+                        ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle "
                         : "bg-theme-card-muted border-theme-subtle hover:border-theme-muted"
                     }`}
                   >
@@ -1230,7 +1230,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       <div
                         className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
                           active
-                            ? "border-indigo-500 bg-indigo-500"
+                            ? "border-theme-subtle bg-[var(--btn-primary-bg)]"
                             : "border-theme-muted"
                         }`}
                       >
@@ -1253,14 +1253,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           </div>
 
           {/* Trust & Approval Policy */}
-          <div className="p-6 bg-theme-card border border-theme-card rounded-xl space-y-5 shadow-sm">
+          <div className="p-6 bg-theme-card border border-theme-card rounded-xl space-y-5 ">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-                <Shield className="w-4 h-4 text-indigo-500" />
+                <Shield className="w-4 h-4 text-theme-primary" />
                 <span>{t.trust.title}</span>
               </div>
               {policySavedMsg && (
-                <span className="text-xs text-emerald-500 font-medium flex items-center gap-1">
+                <span className="text-xs text-[var(--success)] font-medium flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   {policySavedMsg}
                 </span>
@@ -1281,7 +1281,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 <select
                   value={selectedProjectId}
                   onChange={(e) => setSelectedProjectId(e.target.value)}
-                  className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                 >
                   {projects.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -1305,7 +1305,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       onClick={() => handleSelectTrustLevel("standard")}
                       className={`p-3 rounded-lg border cursor-pointer transition flex items-start gap-3 ${
                         trustPolicy.trustLevel === "standard"
-                          ? "bg-indigo-500/10 border-indigo-500"
+                          ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle"
                           : "bg-theme-card-muted border-theme-subtle hover:border-theme-muted"
                       }`}
                     >
@@ -1313,7 +1313,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                         <div
                           className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
                             trustPolicy.trustLevel === "standard"
-                              ? "border-indigo-500 bg-indigo-500"
+                              ? "border-theme-subtle bg-[var(--btn-primary-bg)]"
                               : "border-theme-muted"
                           }`}
                         >
@@ -1337,7 +1337,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       onClick={() => handleSelectTrustLevel("session-trusted")}
                       className={`p-3 rounded-lg border cursor-pointer transition flex items-start gap-3 ${
                         trustPolicy.trustLevel === "session-trusted"
-                          ? "bg-indigo-500/10 border-indigo-500"
+                          ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle"
                           : "bg-theme-card-muted border-theme-subtle hover:border-theme-muted"
                       }`}
                     >
@@ -1345,7 +1345,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                         <div
                           className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
                             trustPolicy.trustLevel === "session-trusted"
-                              ? "border-indigo-500 bg-indigo-500"
+                              ? "border-theme-subtle bg-[var(--btn-primary-bg)]"
                               : "border-theme-muted"
                           }`}
                         >
@@ -1369,7 +1369,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       onClick={() => handleSelectTrustLevel("full-project-trust")}
                       className={`p-3 rounded-lg border cursor-pointer transition flex items-start gap-3 ${
                         trustPolicy.trustLevel === "full-project-trust"
-                          ? "bg-amber-500/10 border-amber-500"
+                          ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle"
                           : "bg-theme-card-muted border-theme-subtle hover:border-theme-muted"
                       }`}
                     >
@@ -1377,7 +1377,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                         <div
                           className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
                             trustPolicy.trustLevel === "full-project-trust"
-                              ? "border-amber-500 bg-amber-500"
+                              ? "border-theme-subtle bg-[var(--btn-primary-bg)]"
                               : "border-theme-muted"
                           }`}
                         >
@@ -1402,7 +1402,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       onClick={() => handleSelectTrustLevel("custom")}
                       className={`p-3 rounded-lg border cursor-pointer transition flex items-start gap-3 ${
                         trustPolicy.trustLevel === "custom"
-                          ? "bg-indigo-500/10 border-indigo-500"
+                          ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle"
                           : "bg-theme-card-muted border-theme-subtle hover:border-theme-muted"
                       }`}
                     >
@@ -1410,7 +1410,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                         <div
                           className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
                             trustPolicy.trustLevel === "custom"
-                              ? "border-indigo-500 bg-indigo-500"
+                              ? "border-theme-subtle bg-[var(--btn-primary-bg)]"
                               : "border-theme-muted"
                           }`}
                         >
@@ -1435,7 +1435,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 {trustPolicy.trustLevel === "custom" && (
                   <div className="p-3.5 bg-theme-card-muted border border-theme-subtle rounded-lg space-y-3 text-xs">
                     <div className="font-semibold text-theme-primary flex items-center gap-1.5">
-                      <Sliders className="w-3.5 h-3.5 text-indigo-500" />
+                      <Sliders className="w-3.5 h-3.5 text-theme-primary" />
                       <span>{t.trust.levelCustom} Matrix</span>
                     </div>
 
@@ -1611,11 +1611,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
                   {/* Absolute Security Badges */}
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-red-500/10 text-red-500 border border-red-500/20">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle">
                       <AlertTriangle className="w-3 h-3" />
                       {t.trust.badgeRawShellDenied}
                     </span>
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-red-500/10 text-red-500 border border-red-500/20">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle">
                       <AlertTriangle className="w-3 h-3" />
                       {t.trust.badgeUnknownCommandDenied}
                     </span>
@@ -1687,7 +1687,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                         onClick={item.onClick}
                         className={`p-2.5 rounded-lg border cursor-pointer transition text-left ${
                           item.active
-                            ? "bg-indigo-500/10 border-indigo-500 shadow-sm"
+                            ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle "
                             : "bg-theme-card-muted border-theme-subtle hover:border-theme-muted"
                         }`}
                       >
@@ -1779,7 +1779,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                         protectedFilesPolicy: e.target.value as ProtectedFilesPolicy,
                       }))
                     }
-                    className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-theme-input border border-theme-input rounded-lg px-3 py-2 text-xs text-theme-primary focus:outline-none border-theme-subtle"
                   >
                     <option value="always-ask">{t.trust.protectedAlwaysAsk}</option>
                     <option value="deny">{t.trust.protectedDeny}</option>
@@ -1794,20 +1794,20 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       type="button"
                       disabled={policyBusy}
                       onClick={handleSavePolicy}
-                      className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg text-xs font-semibold transition shadow-sm"
+                      className="flex items-center gap-1.5 px-4 py-2 bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] disabled:opacity-50 text-[var(--btn-primary-text)] rounded-lg text-xs font-semibold transition "
                     >
                       <Check className="w-3.5 h-3.5" />
                       <span>{t.common.save}</span>
                     </button>
                   </div>
                   {policySavedMsg && (
-                    <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-500 text-xs font-medium flex items-center gap-2">
+                    <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg text-[var(--success)] text-xs font-medium flex items-center gap-2">
                       <Check className="w-4 h-4 shrink-0" />
                       <span>{policySavedMsg}</span>
                     </div>
                   )}
                   {policyErrorMsg && (
-                    <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-500 text-xs font-medium flex items-center gap-2">
+                    <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg text-[var(--warning)] text-xs font-medium flex items-center gap-2">
                       <AlertTriangle className="w-4 h-4 shrink-0" />
                       <span>{policyErrorMsg}</span>
                     </div>
@@ -1832,7 +1832,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 type="button"
                 disabled={policyBusy}
                 onClick={handleClearAllSessions}
-                className="flex items-center gap-1 px-3 py-1.5 bg-theme-card-muted hover:bg-theme-card-hover text-amber-500 rounded-lg text-xs font-medium border border-theme-subtle transition"
+                className="flex items-center gap-1 px-3 py-1.5 bg-theme-card-muted hover:bg-theme-card-hover text-[var(--warning)] rounded-lg text-xs font-medium border border-theme-subtle transition"
               >
                 <Zap className="w-3.5 h-3.5" />
                 <span>{t.trust.clearAllSessionsBtn}</span>
@@ -1846,23 +1846,23 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
       {activeTab === "intelligence" && (
         <div className="max-w-4xl space-y-6">
           {/* Main Laya Product Card */}
-          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-5 shadow-sm">
+          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-5 ">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-                <Brain className="w-4 h-4 text-purple-400" />
+                <Brain className="w-4 h-4 text-theme-primary" />
                 <span>{t.intelligence.layaCardTitle || "Laya 决策模型"}</span>
               </div>
               <span
                 className={`text-[10px] font-mono px-2.5 py-0.5 rounded-full border ${
                   modelStatus?.status === "ready"
-                    ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
+                    ? "bg-[var(--btn-primary-bg)]/15 text-[var(--success)] border-theme-subtle"
                     : modelStatus?.status === "downloading"
-                    ? "bg-sky-500/15 text-sky-400 border-sky-500/30 animate-pulse"
+                    ? "bg-[var(--btn-primary-bg)]/15 text-theme-primary border-theme-subtle animate-pulse"
                     : modelStatus?.status === "verifying"
-                    ? "bg-purple-500/15 text-purple-400 border-purple-500/30 animate-pulse"
+                    ? "bg-[var(--btn-primary-bg)]/15 text-theme-primary border-theme-subtle animate-pulse"
                     : modelStatus?.status === "error"
-                    ? "bg-red-500/15 text-red-400 border-red-500/30"
-                    : "bg-slate-500/15 text-slate-400 border-slate-500/30"
+                    ? "bg-[var(--btn-primary-bg)]/15 text-[var(--warning)] border-theme-subtle"
+                    : "bg-slate-500/15 text-theme-secondary border-slate-500/30"
                 }`}
               >
                 {modelStatus?.status === "ready"
@@ -1882,14 +1882,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
             </p>
 
             {intelSuccessMsg && (
-              <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg flex items-center gap-2 text-emerald-400 text-xs font-medium">
+              <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg flex items-center gap-2 text-[var(--success)] text-xs font-medium">
                 <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <span>{intelSuccessMsg}</span>
               </div>
             )}
 
             {intelErrorMsg && (
-              <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-2 text-red-400 text-xs font-medium">
+              <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-lg flex items-center gap-2 text-[var(--warning)] text-xs font-medium">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{intelErrorMsg}</span>
               </div>
@@ -1909,7 +1909,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 <div className="text-[10px] text-theme-muted uppercase tracking-wider font-mono">
                   {t.intelligence.executionLabel || "Execution"}
                 </div>
-                <div className="font-mono text-emerald-500 dark:text-emerald-400 font-medium">
+                <div className="font-mono text-[var(--success)] text-[var(--success)] font-medium">
                   {t.intelligence.executionLocal || "Local · Private"}
                 </div>
               </div>
@@ -1928,7 +1928,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="space-y-0.5">
                   <div className="text-xs font-semibold text-theme-primary flex items-center gap-2">
-                    <Download className="w-3.5 h-3.5 text-purple-400" />
+                    <Download className="w-3.5 h-3.5 text-theme-primary" />
                     <span>Laya Multilingual Model Files</span>
                   </div>
                   <div className="text-[11px] text-theme-muted">
@@ -1942,12 +1942,12 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     type="button"
                     onClick={handleCancelDownload}
                     disabled={downloadBusy}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 transition disabled:opacity-50"
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border border-theme-subtle transition disabled:opacity-50"
                   >
                     {t.intelligence.cancelDownload || "Cancel Download"}
                   </button>
                 ) : modelStatus?.installed || modelStatus?.status === "ready" ? (
-                  <div className="flex items-center gap-1.5 text-xs text-emerald-500 dark:text-emerald-400 font-mono font-medium">
+                  <div className="flex items-center gap-1.5 text-xs text-[var(--success)] text-[var(--success)] font-mono font-medium">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>{t.intelligence.modelReady || "Ready"}</span>
                   </div>
@@ -1957,7 +1957,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       type="button"
                       onClick={handleStartDownload}
                       disabled={downloadBusy}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-600 hover:bg-purple-500 text-white transition shadow-sm disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] transition  disabled:opacity-50"
                     >
                       {downloadBusy ? (
                         <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -1975,9 +1975,9 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                         setImportValidation(null);
                         setImportError(null);
                       }}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-theme-card hover:bg-theme-card-hover text-theme-primary border border-theme-subtle transition shadow-sm"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-theme-card hover:bg-theme-card-hover text-theme-primary border border-theme-subtle transition "
                     >
-                      <FolderOpen className="w-3.5 h-3.5 text-sky-400" />
+                      <FolderOpen className="w-3.5 h-3.5 text-theme-primary" />
                       <span>{t.intelligence.importExistingModelBtn || "Import Existing Model"}</span>
                     </button>
                   </div>
@@ -1993,7 +1993,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     onClick={() => setDownloadProxyMode("system")}
                     className={`px-2 py-1 rounded text-[11px] font-medium transition ${
                       downloadProxyMode === "system"
-                        ? "bg-purple-600 text-white shadow-sm"
+                        ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] "
                         : "text-theme-muted hover:text-theme-primary"
                     }`}
                   >
@@ -2004,7 +2004,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     onClick={() => setDownloadProxyMode("direct")}
                     className={`px-2 py-1 rounded text-[11px] font-medium transition ${
                       downloadProxyMode === "direct"
-                        ? "bg-purple-600 text-white shadow-sm"
+                        ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] "
                         : "text-theme-muted hover:text-theme-primary"
                     }`}
                   >
@@ -2015,7 +2015,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     onClick={() => setDownloadProxyMode("custom")}
                     className={`px-2 py-1 rounded text-[11px] font-medium transition ${
                       downloadProxyMode === "custom"
-                        ? "bg-purple-600 text-white shadow-sm"
+                        ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] "
                         : "text-theme-muted hover:text-theme-primary"
                     }`}
                   >
@@ -2028,7 +2028,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     value={downloadCustomProxyUrl}
                     onChange={(e) => setDownloadCustomProxyUrl(e.target.value)}
                     placeholder="http://127.0.0.1:10808"
-                    className="px-2.5 py-1 rounded-lg bg-theme-input border border-theme-input text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none focus:border-purple-500 w-48"
+                    className="px-2.5 py-1 rounded-lg bg-theme-input border border-theme-input text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none border-theme-subtle w-48"
                   />
                 )}
               </div>
@@ -2038,7 +2038,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 <div className="space-y-2 pt-2 border-t border-theme-subtle">
                   <div className="w-full bg-theme-input rounded-full h-2 overflow-hidden">
                     <div
-                      className="bg-purple-500 h-full transition-all duration-300"
+                      className="bg-[var(--btn-primary-bg)] h-full transition-all duration-300"
                       style={{ width: `${Math.min(100, Math.max(0, modelStatus.progress.percent))}%` }}
                     />
                   </div>
@@ -2058,7 +2058,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
               {/* Verifying indicator */}
               {modelStatus?.status === "verifying" && (
-                <div className="flex items-center gap-2 pt-2 text-xs text-purple-400 font-mono">
+                <div className="flex items-center gap-2 pt-2 text-xs text-theme-primary font-mono">
                   <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                   <span>{t.intelligence.verifyingModel || "Verifying model file integrity..."}</span>
                 </div>
@@ -2081,11 +2081,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 onClick={handleToggleLayaDecisions}
                 disabled={intelBusy}
                 className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                  intelProvider === "laya" ? "bg-purple-600" : "bg-theme-card-muted border-theme-subtle"
+                  intelProvider === "laya" ? "bg-[var(--btn-primary-bg)]" : "bg-theme-card-muted border-theme-subtle"
                 }`}
               >
                 <span
-                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white  ring-0 transition duration-200 ease-in-out ${
                     intelProvider === "laya" ? "translate-x-5" : "translate-x-0"
                   }`}
                 />
@@ -2094,9 +2094,9 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
             {/* Uninstalled Prompt Banner */}
             {showModelPrompt && (
-              <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl space-y-3">
+              <div className="p-4 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-xl space-y-3">
                 <div className="flex items-start gap-2.5">
-                  <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                  <AlertTriangle className="w-4 h-4 text-[var(--warning)] shrink-0 mt-0.5" />
                   <div className="space-y-1">
                     <div className="text-xs font-semibold text-theme-primary">
                       {t.intelligence.modelRequiredPrompt || "Laya Multilingual is required to enable decision intelligence."}
@@ -2112,7 +2112,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     type="button"
                     onClick={handleDownloadAndEnable}
                     disabled={downloadBusy}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-600 hover:bg-purple-500 text-white transition shadow-sm"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] transition "
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>{t.intelligence.downloadAndEnableBtn || "Download & Enable"}</span>
@@ -2125,9 +2125,9 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       setImportValidation(null);
                       setImportError(null);
                     }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-theme-card hover:bg-theme-card-hover text-theme-primary border border-theme-subtle transition shadow-sm"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-theme-card hover:bg-theme-card-hover text-theme-primary border border-theme-subtle transition "
                   >
-                    <FolderOpen className="w-3.5 h-3.5 text-sky-400" />
+                    <FolderOpen className="w-3.5 h-3.5 text-theme-primary" />
                     <span>{t.intelligence.importExistingModelBtn || "Import Existing Model"}</span>
                   </button>
                   <button
@@ -2142,10 +2142,10 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
             )}
 
             {/* Advisory Authority Disclaimer Callout */}
-            <div className="p-3.5 bg-amber-500/10 border border-amber-500/25 rounded-xl flex items-start gap-2.5 text-xs">
-              <ShieldCheck className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+            <div className="p-3.5 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-xl flex items-start gap-2.5 text-xs">
+              <ShieldCheck className="w-4 h-4 text-[var(--warning)] shrink-0 mt-0.5" />
               <div className="space-y-0.5">
-                <strong className="text-amber-500 font-medium">{t.intelligence.advisoryNotice || "Advisory Notice"}: </strong>
+                <strong className="text-[var(--warning)] font-medium">{t.intelligence.advisoryNotice || "Advisory Notice"}: </strong>
                 <span className="text-theme-secondary leading-relaxed">
                   {t.intelligence.layaAdvisoryDisclaimer || "Use the local Laya model to provide risk and approval advice. Laya is advisory only and cannot override Nexus security policies."}
                 </span>
@@ -2170,7 +2170,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   type="button"
                   onClick={handleTestBenchmark}
                   disabled={intelTesting}
-                  className="px-4 py-2 rounded-lg text-xs font-medium bg-purple-600 hover:bg-purple-500 text-white transition shadow-sm disabled:opacity-50 flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] transition  disabled:opacity-50 flex items-center gap-1.5"
                 >
                   {intelTesting ? (
                     <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -2202,20 +2202,20 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
                 if (isPass) {
                   return (
-                    <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl space-y-3 pt-3">
+                    <div className="p-4 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-xl space-y-3 pt-3">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-semibold text-emerald-400 flex items-center gap-1.5">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                        <span className="font-semibold text-[var(--success)] flex items-center gap-1.5">
+                          <CheckCircle2 className="w-4 h-4 text-[var(--success)]" />
                           <span>{t.intelligence.benchmarkPass}</span>
                         </span>
-                        <span className="font-mono text-[11px] text-emerald-300">
+                        <span className="font-mono text-[11px] text-[var(--success)]">
                           {formatLatency(testAdvice.latencyMs, true)}
                         </span>
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
                         <div className="p-2 bg-theme-card rounded border border-theme-subtle">
                           <div className="text-[10px] text-theme-muted">{t.intelligence.riskEvaluation}</div>
-                          <div className="text-rose-400 font-bold mt-0.5">{mapRiskLabel(testRisk, language)}</div>
+                          <div className="text-[var(--warning)] font-bold mt-0.5">{mapRiskLabel(testRisk, language)}</div>
                         </div>
                         <div className="p-2 bg-theme-card rounded border border-theme-subtle">
                           <div className="text-[10px] text-theme-muted">{t.intelligence.recommendedAction}</div>
@@ -2225,7 +2225,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                         </div>
                         <div className="p-2 bg-theme-card rounded border border-theme-subtle">
                           <div className="text-[10px] text-theme-muted">{t.intelligence.confidenceLabel}</div>
-                          <div className="text-emerald-400 font-bold mt-0.5">
+                          <div className="text-[var(--success)] font-bold mt-0.5">
                             {testConfPercent}%
                           </div>
                         </div>
@@ -2246,17 +2246,17 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
                 // Benchmark Not Executed or Fallback Used
                 return (
-                  <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl space-y-3 pt-3">
+                  <div className="p-4 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-xl space-y-3 pt-3">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-semibold text-amber-400 flex items-center gap-1.5">
-                        <AlertTriangle className="w-4 h-4 text-amber-400" />
+                      <span className="font-semibold text-[var(--warning)] flex items-center gap-1.5">
+                        <AlertTriangle className="w-4 h-4 text-[var(--warning)]" />
                         <span>
                           {testAdvice.providerUsed === "disabled"
                             ? t.intelligence.testNotExecuted
                             : t.intelligence.testFailedFallback}
                         </span>
                       </span>
-                      <span className="font-mono text-[11px] text-amber-300">
+                      <span className="font-mono text-[11px] text-[var(--warning)]">
                         {formatLatency(testAdvice.latencyMs, false)}
                       </span>
                     </div>
@@ -2286,7 +2286,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               <div className="flex items-center justify-between gap-3">
                 <div className="space-y-0.5">
                   <div className="text-xs font-semibold text-theme-primary flex items-center gap-2">
-                    <Activity className="w-3.5 h-3.5 text-purple-400" />
+                    <Activity className="w-3.5 h-3.5 text-theme-primary" />
                     <span>{isZh ? "最近一次真实 MCP 推理" : "Recent Real MCP Inference"}</span>
                   </div>
                   <div className="text-[11px] text-theme-muted">
@@ -2296,7 +2296,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   </div>
                 </div>
                 {intelStatus?.recentInference && (
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle">
                     {intelStatus.recentInference.source === "chatgpt" ? "ChatGPT MCP" : "Internal Pipeline"}
                   </span>
                 )}
@@ -2319,7 +2319,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       <span className="text-theme-muted">
                         {new Date(intelStatus.recentInference.timestamp).toLocaleTimeString()}
                       </span>
-                      <span className="text-purple-400 font-semibold">
+                      <span className="text-theme-primary font-semibold">
                         {intelStatus.recentInference.latencyMs} ms
                       </span>
                     </div>
@@ -2330,10 +2330,10 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       <div className="text-[10px] text-theme-muted">{isZh ? "风险级别" : "Risk Level"}</div>
                       <div className={`font-bold mt-0.5 ${
                         intelStatus.recentInference.risk === "low"
-                          ? "text-emerald-400"
+                          ? "text-[var(--success)]"
                           : intelStatus.recentInference.risk === "medium"
-                          ? "text-amber-400"
-                          : "text-rose-400"
+                          ? "text-[var(--warning)]"
+                          : "text-[var(--warning)]"
                       }`}>
                         {mapRiskLabel(intelStatus.recentInference.risk, language)}
                       </div>
@@ -2346,7 +2346,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     </div>
                     <div className="p-2 bg-theme-card rounded border border-theme-subtle">
                       <div className="text-[10px] text-theme-muted">{isZh ? "置信度" : "Confidence"}</div>
-                      <div className="text-emerald-400 font-bold mt-0.5">
+                      <div className="text-[var(--success)] font-bold mt-0.5">
                         {Math.round(intelStatus.recentInference.confidence * 100)}%
                       </div>
                     </div>
@@ -2362,7 +2362,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
                   <div className="flex items-center justify-between text-[11px] font-mono text-theme-muted pt-1">
                     <span>Provider: <strong className="text-theme-secondary">{intelStatus.recentInference.providerUsed}</strong></span>
-                    <span>Status: <strong className={intelStatus.recentInference.fallbackUsed ? "text-amber-400" : "text-emerald-400"}>
+                    <span>Status: <strong className={intelStatus.recentInference.fallbackUsed ? "text-[var(--warning)]" : "text-[var(--success)]"}>
                       {intelStatus.recentInference.fallbackUsed ? "Fallback" : "Verified Real Model"}
                     </strong></span>
                   </div>
@@ -2396,11 +2396,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     <div className="text-[10px] text-theme-muted">{t.intelligence.workerLabel}</div>
                     <div className="font-mono font-semibold mt-0.5 truncate">
                       {intelStatus?.workerStatus === "running" ? (
-                        <span className="text-emerald-400">{t.intelligence.workerRunning}</span>
+                        <span className="text-[var(--success)]">{t.intelligence.workerRunning}</span>
                       ) : intelStatus?.workerStatus === "starting" ? (
-                        <span className="text-purple-400">{t.intelligence.workerStarting}</span>
+                        <span className="text-theme-primary">{t.intelligence.workerStarting}</span>
                       ) : intelStatus?.workerStatus === "error" ? (
-                        <span className="text-rose-400">{t.intelligence.workerError}</span>
+                        <span className="text-[var(--warning)]">{t.intelligence.workerError}</span>
                       ) : (
                         <span className="text-theme-muted">{t.intelligence.workerStopped}</span>
                       )}
@@ -2411,7 +2411,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     <div className="text-[10px] text-theme-muted">{t.intelligence.modelLabel}</div>
                     <div className="font-mono font-semibold mt-0.5 truncate">
                       {intelStatus?.modelLoaded ? (
-                        <span className="text-emerald-400">{t.intelligence.modelLoaded}</span>
+                        <span className="text-[var(--success)]">{t.intelligence.modelLoaded}</span>
                       ) : (
                         <span className="text-theme-muted">{t.intelligence.modelNotLoaded}</span>
                       )}
@@ -2429,7 +2429,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     <div className="text-[10px] text-theme-muted">{t.intelligence.inferenceLabel}</div>
                     <div className="font-mono font-semibold mt-0.5 truncate">
                       {intelStatus?.inferenceReady ? (
-                        <span className="text-emerald-400">{t.intelligence.inferenceReady}</span>
+                        <span className="text-[var(--success)]">{t.intelligence.inferenceReady}</span>
                       ) : (
                         <span className="text-theme-muted">{t.intelligence.inferenceNotReady}</span>
                       )}
@@ -2438,7 +2438,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
                   <div className="p-2.5 bg-theme-card-muted rounded-lg border border-theme-subtle text-xs">
                     <div className="text-[10px] text-theme-muted">{t.intelligence.recentWarmInference}</div>
-                    <div className="font-mono text-emerald-400 font-semibold mt-0.5 truncate">
+                    <div className="font-mono text-[var(--success)] font-semibold mt-0.5 truncate">
                       {intelStatus?.warmInferenceMs ? `${intelStatus.warmInferenceMs} ms` : t.intelligence.warmInferenceNotMeasured}
                     </div>
                   </div>
@@ -2455,14 +2455,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       value={intelModelPath}
                       onChange={(e) => setIntelModelPath(e.target.value)}
                       placeholder={t.intelligence.modelPathPlaceholder}
-                      className="flex-1 px-3 py-2 rounded-lg bg-theme-input-bg border border-theme-input-border text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none focus:border-purple-500"
+                      className="flex-1 px-3 py-2 rounded-lg bg-theme-input-bg border border-theme-input-border text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none border-theme-subtle"
                     />
                     <button
                       type="button"
                       onClick={handleBrowseAdvancedModelPath}
                       className="px-3 py-2 rounded-lg bg-theme-card hover:bg-theme-card-hover border border-theme-subtle text-xs text-theme-primary transition flex items-center gap-1.5 shrink-0"
                     >
-                      <FolderOpen className="w-3.5 h-3.5 text-sky-400" />
+                      <FolderOpen className="w-3.5 h-3.5 text-theme-primary" />
                       <span>{t.intelligence.browseBtn || "Browse..."}</span>
                     </button>
                   </div>
@@ -2479,7 +2479,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                         type="checkbox"
                         checked={intelDeveloperOverride}
                         onChange={(e) => setIntelDeveloperOverride(e.target.checked)}
-                        className="rounded border-theme-subtle text-purple-600 focus:ring-purple-500"
+                        className="rounded border-theme-subtle text-theme-primary ring-[var(--border)]"
                       />
                       <span>{t.intelligence.developerOverrideCheckbox}</span>
                     </label>
@@ -2499,14 +2499,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                           value={intelPythonPath}
                           onChange={(e) => setIntelPythonPath(e.target.value)}
                           placeholder={t.intelligence.pythonPathPlaceholder}
-                          className="flex-1 px-3 py-2 rounded-lg bg-theme-input-bg border border-theme-input-border text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none focus:border-purple-500"
+                          className="flex-1 px-3 py-2 rounded-lg bg-theme-input-bg border border-theme-input-border text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none border-theme-subtle"
                         />
                         <button
                           type="button"
                           onClick={handleBrowsePythonPath}
                           className="px-3 py-2 rounded-lg bg-theme-card hover:bg-theme-card-hover border border-theme-subtle text-xs text-theme-primary transition flex items-center gap-1.5 shrink-0"
                         >
-                          <FolderOpen className="w-3.5 h-3.5 text-sky-400" />
+                          <FolderOpen className="w-3.5 h-3.5 text-theme-primary" />
                           <span>{t.intelligence.browseBtn}</span>
                         </button>
                       </div>
@@ -2530,7 +2530,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       min={5000}
                       max={120000}
                       step={1000}
-                      className="w-full px-3 py-2 rounded-lg bg-theme-input-bg border border-theme-input-border text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none focus:border-purple-500"
+                      className="w-full px-3 py-2 rounded-lg bg-theme-input-bg border border-theme-input-border text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none border-theme-subtle"
                     />
                   </div>
 
@@ -2545,7 +2545,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       min={500}
                       max={30000}
                       step={500}
-                      className="w-full px-3 py-2 rounded-lg bg-theme-input-bg border border-theme-input-border text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none focus:border-purple-500"
+                      className="w-full px-3 py-2 rounded-lg bg-theme-input-bg border border-theme-input-border text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none border-theme-subtle"
                     />
                   </div>
                 </div>
@@ -2556,7 +2556,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     type="button"
                     onClick={handleSaveIntelligence}
                     disabled={intelBusy}
-                    className="px-4 py-2 rounded-lg text-xs font-medium bg-purple-600 hover:bg-purple-500 text-white transition shadow-sm disabled:opacity-50 flex items-center gap-1.5"
+                    className="px-4 py-2 rounded-lg text-xs font-medium bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] transition  disabled:opacity-50 flex items-center gap-1.5"
                   >
                     {intelBusy ? (
                       <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -2571,11 +2571,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
             {/* Import Existing Model Modal */}
             {showImportModal && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                <div className="bg-theme-card border border-theme-subtle rounded-xl shadow-2xl max-w-lg w-full p-6 space-y-4">
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+                <div className="bg-theme-card border border-theme-subtle rounded-xl  max-w-lg w-full p-6 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <FolderOpen className="w-5 h-5 text-sky-400" />
+                      <FolderOpen className="w-5 h-5 text-theme-primary" />
                       <h3 className="font-semibold text-theme-primary text-sm">
                         {t.intelligence.importModalTitle}
                       </h3>
@@ -2604,14 +2604,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                         value={importSourceDir}
                         onChange={(e) => handleValidateImportDir(e.target.value)}
                         placeholder="C:\Models\Example"
-                        className="flex-1 px-3 py-2 rounded-lg bg-theme-input border border-theme-input text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none focus:border-purple-500"
+                        className="flex-1 px-3 py-2 rounded-lg bg-theme-input border border-theme-input text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none border-theme-subtle"
                       />
                       <button
                         type="button"
                         onClick={handleBrowseImportFolder}
                         className="px-3 py-2 rounded-lg bg-theme-card-muted hover:bg-theme-card border border-theme-subtle text-xs text-theme-primary transition flex items-center gap-1.5 shrink-0"
                       >
-                        <FolderOpen className="w-3.5 h-3.5 text-sky-400" />
+                        <FolderOpen className="w-3.5 h-3.5 text-theme-primary" />
                         <span>{t.intelligence.browseBtn}</span>
                       </button>
                     </div>
@@ -2619,7 +2619,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
                   {/* Live validation feedback */}
                   {importValidating && (
-                    <div className="flex items-center gap-2 text-xs text-purple-400 font-mono">
+                    <div className="flex items-center gap-2 text-xs text-theme-primary font-mono">
                       <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                       <span>Validating model files...</span>
                     </div>
@@ -2629,14 +2629,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     <div
                       className={`p-3 rounded-lg border text-xs flex items-start gap-2 ${
                         importValidation.valid
-                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                          : "bg-red-500/10 border-red-500/30 text-red-400"
+                          ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle text-[var(--success)]"
+                          : "bg-[var(--btn-primary-bg)]/10 border-theme-subtle text-[var(--warning)]"
                       }`}
                     >
                       {importValidation.valid ? (
-                        <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-400" />
+                        <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-[var(--success)]" />
                       ) : (
-                        <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-red-400" />
+                        <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[var(--warning)]" />
                       )}
                       <div className="space-y-0.5">
                         <div className="font-semibold">
@@ -2645,7 +2645,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                             : t.intelligence.modelValidError}
                         </div>
                         {!importValidation.valid && importValidation.missingFiles?.length > 0 && (
-                          <div className="text-[11px] text-red-300 font-mono">
+                          <div className="text-[11px] text-[var(--warning)] font-mono">
                             Missing: {importValidation.missingFiles.join(", ")}
                           </div>
                         )}
@@ -2654,7 +2654,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   )}
 
                   {importError && (
-                    <div className="p-2.5 rounded-lg bg-red-500/10 border border-red-500/30 text-xs text-red-400">
+                    <div className="p-2.5 rounded-lg bg-[var(--btn-primary-bg)]/10 border border-theme-subtle text-xs text-[var(--warning)]">
                       {importError}
                     </div>
                   )}
@@ -2665,7 +2665,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       onClick={() => setImportCopyToManaged(false)}
                       className={`p-3 rounded-lg border cursor-pointer transition flex items-start gap-3 ${
                         !importCopyToManaged
-                          ? "bg-purple-500/10 border-purple-500"
+                          ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle"
                           : "bg-theme-card-muted border-theme-subtle hover:border-theme-muted"
                       }`}
                     >
@@ -2673,7 +2673,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                         <div
                           className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
                             !importCopyToManaged
-                              ? "border-purple-500 bg-purple-500"
+                              ? "border-theme-subtle bg-[var(--btn-primary-bg)]"
                               : "border-theme-muted"
                           }`}
                         >
@@ -2694,7 +2694,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       onClick={() => setImportCopyToManaged(true)}
                       className={`p-3 rounded-lg border cursor-pointer transition flex items-start gap-3 ${
                         importCopyToManaged
-                          ? "bg-purple-500/10 border-purple-500"
+                          ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle"
                           : "bg-theme-card-muted border-theme-subtle hover:border-theme-muted"
                       }`}
                     >
@@ -2702,7 +2702,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                         <div
                           className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
                             importCopyToManaged
-                              ? "border-purple-500 bg-purple-500"
+                              ? "border-theme-subtle bg-[var(--btn-primary-bg)]"
                               : "border-theme-muted"
                           }`}
                         >
@@ -2733,7 +2733,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       type="button"
                       onClick={handleConfirmImport}
                       disabled={!importValidation?.valid || importBusy}
-                      className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold bg-purple-600 hover:bg-purple-500 text-white transition shadow-sm disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] transition  disabled:opacity-50"
                     >
                       {importBusy && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                       <span>{t.intelligence.confirmImportBtn}</span>
@@ -2750,9 +2750,9 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
       {(activeTab === "general" || activeTab === "appearance") && (
         <div className="max-w-4xl space-y-6">
           {/* Theme & Appearance Card */}
-          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 shadow-sm">
+          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 ">
             <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-              <SunMoon className="w-4 h-4 text-sky-500" />
+              <SunMoon className="w-4 h-4 text-theme-primary" />
               <span>{t.settings.appearanceGroup || (isZh ? "界面风格与外观" : "Appearance")}</span>
             </div>
 
@@ -2776,8 +2776,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                       onClick={() => setThemeMode(mode)}
                       className={`p-3 rounded-lg border text-xs font-medium transition text-center ${
                         active
-                          ? "bg-sky-600 text-white border-sky-600 shadow-sm"
-                          : "bg-theme-input-bg border-theme-input-border text-theme-secondary hover:border-sky-500"
+                          ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] border-transparent "
+                          : "bg-theme-input-bg border-theme-input-border text-theme-secondary hover:border-theme-strong"
                       }`}
                     >
                       {label}
@@ -2789,9 +2789,9 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           </div>
 
           {/* Language & Locale Card */}
-          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 shadow-sm">
+          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 ">
             <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-              <Globe className="w-4 h-4 text-sky-500" />
+              <Globe className="w-4 h-4 text-theme-muted" />
               <span>{t.settings.generalGroup || (isZh ? "语言与地区" : "Language")}</span>
             </div>
 
@@ -2805,8 +2805,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   onClick={() => setLanguage("zh-CN")}
                   className={`p-3 rounded-lg border text-xs font-medium transition text-left ${
                     language === "zh-CN"
-                      ? "bg-sky-600 text-white border-sky-600 shadow-sm"
-                      : "bg-theme-input-bg border-theme-input-border text-theme-secondary hover:border-sky-500"
+                      ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] border-transparent "
+                      : "bg-theme-input-bg border-theme-input-border text-theme-secondary hover:border-theme-strong"
                   }`}
                 >
                   <div className="font-semibold">{t.settings.languageZh || "简体中文"}</div>
@@ -2818,8 +2818,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   onClick={() => setLanguage("en-US")}
                   className={`p-3 rounded-lg border text-xs font-medium transition text-left ${
                     language === "en-US"
-                      ? "bg-sky-600 text-white border-sky-600 shadow-sm"
-                      : "bg-theme-input-bg border-theme-input-border text-theme-secondary hover:border-sky-500"
+                      ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] border-transparent "
+                      : "bg-theme-input-bg border-theme-input-border text-theme-secondary hover:border-theme-strong"
                   }`}
                 >
                   <div className="font-semibold">{t.settings.languageEn || "English"}</div>
@@ -2831,8 +2831,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   onClick={() => setLanguage("ja-JP")}
                   className={`p-3 rounded-lg border text-xs font-medium transition text-left ${
                     language === "ja-JP"
-                      ? "bg-sky-600 text-white border-sky-600 shadow-sm"
-                      : "bg-theme-input-bg border-theme-input-border text-theme-secondary hover:border-sky-500"
+                      ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] border-transparent "
+                      : "bg-theme-input-bg border-theme-input-border text-theme-secondary hover:border-theme-strong"
                   }`}
                 >
                   <div className="font-semibold">日本語 (Japanese)</div>
@@ -2844,8 +2844,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   onClick={() => setLanguage("de-DE")}
                   className={`p-3 rounded-lg border text-xs font-medium transition text-left ${
                     language === "de-DE"
-                      ? "bg-sky-600 text-white border-sky-600 shadow-sm"
-                      : "bg-theme-input-bg border-theme-input-border text-theme-secondary hover:border-sky-500"
+                      ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] border-transparent "
+                      : "bg-theme-input-bg border-theme-input-border text-theme-secondary hover:border-theme-strong"
                   }`}
                 >
                   <div className="font-semibold">Deutsch (German)</div>
@@ -2856,9 +2856,9 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           </div>
 
           {/* Experience: Standard vs Advanced Mode */}
-          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 shadow-sm">
+          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 ">
             <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-              <Sliders className="w-4 h-4 text-sky-500" />
+              <Sliders className="w-4 h-4 text-theme-primary" />
               <span>{t.settings.experienceGroup || (isZh ? "使用体验 (Experience)" : "Experience")}</span>
             </div>
             <p className="text-xs text-theme-muted">
@@ -2871,8 +2871,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 onClick={() => onChangeUxMode?.("standard")}
                 className={`p-4 rounded-xl border cursor-pointer transition flex items-start gap-3.5 ${
                   uxMode === "standard"
-                    ? "bg-sky-500/10 border-sky-500/40 text-theme-primary shadow-sm"
-                    : "bg-theme-card-muted border-theme-subtle text-theme-secondary hover:border-theme-primary/30"
+                    ? "bg-theme-card-muted border-theme-strong text-theme-primary "
+                    : "bg-theme-card border-theme-subtle text-theme-secondary hover:border-theme-strong"
                 }`}
               >
                 <input
@@ -2880,12 +2880,12 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   name="uxModeSelector"
                   checked={uxMode === "standard"}
                   onChange={() => onChangeUxMode?.("standard")}
-                  className="mt-1 text-sky-500 focus:ring-sky-500"
+                  className="mt-1 accent-[#444347]"
                 />
                 <div className="space-y-1">
                   <div className="text-sm font-semibold text-theme-primary flex items-center gap-2">
                     <span>{t.settings.standardMode || (isZh ? "普通模式" : "Standard")}</span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 border border-sky-500/30">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-theme-card-muted text-theme-secondary border border-theme-subtle">
                       Default
                     </span>
                   </div>
@@ -2900,8 +2900,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 onClick={() => onChangeUxMode?.("advanced")}
                 className={`p-4 rounded-xl border cursor-pointer transition flex items-start gap-3.5 ${
                   uxMode === "advanced"
-                    ? "bg-purple-500/10 border-purple-500/40 text-theme-primary shadow-sm"
-                    : "bg-theme-card-muted border-theme-subtle text-theme-secondary hover:border-theme-primary/30"
+                    ? "bg-theme-card-muted border-theme-strong text-theme-primary "
+                    : "bg-theme-card border-theme-subtle text-theme-secondary hover:border-theme-strong"
                 }`}
               >
                 <input
@@ -2909,12 +2909,12 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   name="uxModeSelector"
                   checked={uxMode === "advanced"}
                   onChange={() => onChangeUxMode?.("advanced")}
-                  className="mt-1 text-purple-500 focus:ring-purple-500"
+                  className="mt-1 accent-[#444347]"
                 />
                 <div className="space-y-1">
                   <div className="text-sm font-semibold text-theme-primary flex items-center gap-2">
                     <span>{t.settings.advancedMode || (isZh ? "高级模式" : "Advanced")}</span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-400 border border-purple-500/30">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-theme-card-muted text-theme-secondary border border-theme-subtle">
                       Cockpit
                     </span>
                   </div>
@@ -2934,10 +2934,10 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           {/* Server Connection */}
           <form
             onSubmit={handleSaveServer}
-            className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 shadow-sm"
+            className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 "
           >
             <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-              <Server className="w-4 h-4 text-sky-500" />
+              <Server className="w-4 h-4 text-theme-primary" />
               <span>{t.settings.serverConnectionGroup}</span>
             </div>
 
@@ -2949,7 +2949,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 type="text"
                 value={serverUrl}
                 onChange={(e) => setServerUrl(e.target.value)}
-                className="w-full bg-theme-input-bg border border-theme-input-border rounded-lg px-3 py-2 text-xs font-mono text-theme-primary focus:outline-none focus:border-sky-500"
+                className="w-full bg-theme-input-bg border border-theme-input-border rounded-lg px-3 py-2 text-xs font-mono text-theme-primary focus:outline-none border-theme-subtle"
               />
               <p className="text-[11px] text-theme-muted mt-1">{t.settings.serverUrlHelp}</p>
             </div>
@@ -2957,11 +2957,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
             <div className="flex gap-2 pt-2">
               <button
                 type="submit"
-                className="flex items-center gap-1.5 px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold transition shadow-sm"
+                className="flex items-center gap-1.5 px-4 py-2 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded-lg text-xs font-semibold transition "
               >
                 {saved ? (
                   <>
-                    <Check className="w-3.5 h-3.5 text-emerald-300" />
+                    <Check className="w-3.5 h-3.5 text-[var(--success)]" />
                     <span>{t.common.saved}</span>
                   </>
                 ) : (
@@ -2983,10 +2983,10 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           {/* Local Operator Settings */}
           <form
             onSubmit={handleSaveOperator}
-            className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 shadow-sm"
+            className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 "
           >
             <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-              <User className="w-4 h-4 text-sky-500" />
+              <User className="w-4 h-4 text-theme-primary" />
               <span>{t.trust.operatorSettingsTitle}</span>
             </div>
             <p className="text-xs text-theme-muted">{t.trust.operatorSettingsDesc}</p>
@@ -3001,15 +3001,15 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   value={operatorDisplayName}
                   onChange={(e) => setOperatorDisplayName(e.target.value)}
                   placeholder={isZh ? "本机用户" : "Local User"}
-                  className="flex-1 bg-theme-input-bg border border-theme-input-border rounded-lg px-3 py-2 text-xs font-medium text-theme-primary focus:outline-none focus:border-sky-500"
+                  className="flex-1 bg-theme-input-bg border border-theme-input-border rounded-lg px-3 py-2 text-xs font-medium text-theme-primary focus:outline-none border-theme-subtle"
                 />
                 <button
                   type="submit"
-                  className="flex items-center gap-1.5 px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold transition shrink-0 shadow-sm"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded-lg text-xs font-semibold transition shrink-0 "
                 >
                   {operatorSaved ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-emerald-300" />
+                      <Check className="w-3.5 h-3.5 text-[var(--success)]" />
                       <span>{t.common.saved}</span>
                     </>
                   ) : (
@@ -3027,9 +3027,9 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
       {activeTab === "about" && (
         <div className="max-w-4xl space-y-6">
           {/* Section 1: Product & Version Header */}
-          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs shadow-sm">
+          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs ">
             <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-              <Info className="w-4 h-4 text-sky-500" />
+              <Info className="w-4 h-4 text-theme-primary" />
               <span>{t.settings.aboutGroup}</span>
             </div>
 
@@ -3037,7 +3037,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               <img
                 src={nexusLogo}
                 alt="Nexus"
-                className="w-14 h-14 rounded-2xl object-cover shadow-sm border border-theme-subtle shrink-0"
+                className="w-14 h-14 rounded-2xl object-cover  border border-theme-subtle shrink-0"
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).src = "/nexus.png";
                 }}
@@ -3045,22 +3045,41 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               <div className="space-y-1.5 flex-1">
                 <div className="flex items-center gap-3">
                   <span className="font-bold text-lg text-theme-primary">
-                    {t.settings.appName || "Nexus Control Center"}
+                    Nexus Control Center
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-xs font-mono font-semibold bg-sky-500/10 text-sky-500 border border-sky-500/20">
-                    v1.3.4
+                  <span className="px-2 py-0.5 rounded-full text-xs font-mono font-semibold bg-theme-card-muted text-theme-secondary border border-theme-subtle">
+                    v1.4.0
                   </span>
                 </div>
-                <div className="text-theme-secondary text-xs leading-relaxed space-y-1">
+                <div className="text-theme-secondary text-xs leading-relaxed space-y-1.5">
                   <div>
                     {isZh
-                      ? "ChatGPT 专用的本地 AI 控制平面。将 ChatGPT 连接到您授权的本地环境。"
-                      : "Local AI control plane for ChatGPT. Connects ChatGPT to the local environment you authorize."}
+                      ? "面向多个网页 AI 模型（支持 ChatGPT、DeepSeek、Claude、Gemini、Kimi、Qwen 等）的本地控制平面。通过 WebAgent 浏览器插件与本地 MCP 网关，将您授权的本地工具、文件与桌面能力安全接入网页端 AI。"
+                      : "Local control plane for multiple web AI models (ChatGPT, DeepSeek, Claude, Gemini, Kimi, Qwen, and more). Connects your authorized local tools and workspace safely to web AI assistants via WebAgent and the local MCP gateway."}
                   </div>
                   <div>
                     {isZh
-                      ? "引擎通过工具目录暴露 332 个受控原子工具。ChatGPT 连接默认向模型展示 3 个核心元工具，其他工具按需通过动态发现调用。"
-                      : "The engine exposes 332 atomic tools through a catalog. The ChatGPT connection shows 3 core meta tools to the model by default. Other tools are reached on demand through discovery."}
+                      ? "引擎通过工具目录暴露 332 个受控原子工具，默认只展示 3 个核心工具，其余按需发现。"
+                      : "The engine exposes 332 atomic tools through a catalog. Shows 3 core tools by default; other tools are discovered on demand."}
+                  </div>
+                  <div className="pt-1">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleOpenExternalUrl(
+                          "https://blog.ycu.de5.net/2026/11/17/%E7%BD%91%E9%A1%B5ai%E5%8F%98%E6%88%90%E6%9C%AC%E5%9C%B0agent%EF%BC%9Anexus-webagent%E9%A1%B9%E7%9B%AE%E5%85%A8%E6%99%AF%E8%A7%A3%E6%9E%90/"
+                        )
+                      }
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--border-strong)] bg-transparent hover:bg-theme-card-hover text-theme-primary text-xs font-medium transition cursor-pointer"
+                    >
+                      <Globe className="w-3.5 h-3.5 text-[var(--accent-brand)]" />
+                      <span>
+                        {isZh
+                          ? "阅读全景解析博客：网页 AI 变成本地 Agent"
+                          : "Read Full Architecture Blog: Nexus + WebAgent"}
+                      </span>
+                      <ExternalLink className="w-3 h-3 text-theme-tertiary" />
+                    </button>
                   </div>
                 </div>
                 <div className="text-[11px] font-mono text-theme-muted pt-0.5">
@@ -3071,9 +3090,9 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           </div>
 
           {/* Section 2: Security Architecture Guarantees (Verified Claims) */}
-          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs shadow-sm">
+          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs ">
             <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-              <ShieldCheck className="w-4 h-4 text-emerald-500" />
+              <ShieldCheck className="w-4 h-4 text-[var(--success)]" />
               <span>{t.settings.securityTitle}</span>
             </div>
 
@@ -3098,9 +3117,9 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           </div>
 
           {/* Section 3: Author Information */}
-          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs shadow-sm">
+          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs ">
             <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-              <User className="w-4 h-4 text-indigo-500" />
+              <User className="w-4 h-4 text-theme-primary" />
               <span>{isZh ? "作者信息" : "Author Information"}</span>
             </div>
 
@@ -3130,7 +3149,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   onClick={() => handleOpenExternalUrl("https://blog.ycu.de5.net/")}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover text-theme-primary text-xs font-medium transition cursor-pointer"
                 >
-                  <Globe className="w-3.5 h-3.5 text-sky-500" />
+                  <Globe className="w-3.5 h-3.5 text-theme-primary" />
                   <span>{isZh ? "个人博客" : "Blog"}</span>
                   <ExternalLink className="w-3 h-3 text-theme-muted" />
                 </button>
@@ -3150,7 +3169,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   onClick={() => handleOpenExternalUrl("https://linux.do/u/yang_sunny/summary")}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover text-theme-primary text-xs font-medium transition cursor-pointer"
                 >
-                  <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                  <span className="w-2 h-2 rounded-full bg-[var(--btn-primary-bg)] shrink-0" />
                   <span>LINUX DO</span>
                   <ExternalLink className="w-3 h-3 text-theme-muted" />
                 </button>
@@ -3170,7 +3189,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   onClick={() => handleOpenExternalUrl("mailto:ysunyang4@gmail.com")}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-theme-subtle bg-theme-base/60 hover:bg-theme-card-hover text-theme-primary text-xs font-medium transition cursor-pointer"
                 >
-                  <Mail className="w-3.5 h-3.5 text-amber-500" />
+                  <Mail className="w-3.5 h-3.5 text-[var(--warning)]" />
                   <span>Email</span>
                   <ExternalLink className="w-3 h-3 text-theme-muted" />
                 </button>
@@ -3179,9 +3198,9 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           </div>
 
           {/* Section 4: Project Ecosystem Links */}
-          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs shadow-sm">
+          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs ">
             <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-              <Layers className="w-4 h-4 text-sky-500" />
+              <Layers className="w-4 h-4 text-theme-primary" />
               <span>{isZh ? "开源项目与文档矩阵" : "Project Ecosystem & Documentation"}</span>
             </div>
 
@@ -3212,13 +3231,25 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   key={proj.title}
                   type="button"
                   onClick={() => handleOpenExternalUrl(proj.url)}
-                  className="p-3.5 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-base hover:border-sky-500/40 text-left transition cursor-pointer space-y-1 group"
+                  className="p-3.5 rounded-xl border border-theme-subtle bg-theme-base/60 hover:bg-theme-base border-theme-subtle text-left transition cursor-pointer space-y-1 group"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-theme-primary group-hover:text-sky-500 transition">
+                    <span
+                      className={`font-semibold transition ${
+                        proj.url.includes("WebAgent")
+                          ? "text-[var(--accent-brand)]"
+                          : "text-theme-primary"
+                      }`}
+                    >
                       {proj.title}
                     </span>
-                    <ExternalLink className="w-3.5 h-3.5 text-theme-muted group-hover:text-sky-500 transition" />
+                    <ExternalLink
+                      className={`w-3.5 h-3.5 transition ${
+                        proj.url.includes("WebAgent")
+                          ? "text-[var(--accent-brand)]"
+                          : "text-theme-muted group-hover:text-theme-primary"
+                      }`}
+                    />
                   </div>
                   <p className="text-[11px] text-theme-muted leading-relaxed">
                     {proj.desc}
@@ -3229,13 +3260,13 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           </div>
 
           {/* Section 5: Support & Sponsorship */}
-          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs shadow-sm">
+          <div className="p-6 bg-theme-card border border-theme-subtle rounded-xl space-y-4 text-xs ">
             <div className="flex items-center gap-2 font-semibold text-theme-primary text-sm">
-              <Heart className="w-4 h-4 text-rose-500" />
+              <Heart className="w-4 h-4 text-[var(--warning)]" />
               <span>{isZh ? "赞助与支持" : "Sponsor & Support"}</span>
             </div>
 
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-xl bg-rose-500/5 border border-rose-500/20">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-xl bg-[var(--btn-primary-bg)]/5 border border-theme-subtle">
               <div className="space-y-1.5 max-w-xl">
                 <div className="font-bold text-xs text-theme-primary">
                   {tText("支持 Nexus 持续开源演进", "Support Nexus Open Source Development")}
@@ -3260,7 +3291,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                         "https://github.com/ysunyang4/Nexus#supported-contribution-channels"
                       )
                     }
-                    className="inline-flex items-center gap-0.5 text-sky-500 hover:text-sky-400 underline underline-offset-2 transition cursor-pointer font-medium"
+                    className="inline-flex items-center gap-0.5 text-theme-primary hover:text-theme-primary underline underline-offset-2 transition cursor-pointer font-medium"
                   >
                     <span>README</span>
                     <ExternalLink className="w-2.5 h-2.5 inline" />
@@ -3271,7 +3302,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               <button
                 type="button"
                 onClick={() => handleOpenExternalUrl("https://afdian.com/a/ysunyang4")}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 transition shrink-0 cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded-xl text-xs font-bold   transition shrink-0 cursor-pointer"
               >
                 <Heart className="w-3.5 h-3.5" />
                 <span>{tText("前往爱发电赞助", "Sponsor on Afdian")}</span>
@@ -3285,16 +3316,16 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
       {/* Full Project Trust Confirmation Modal */}
       {showFullTrustModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-theme-card border border-amber-500/50 rounded-xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col">
-            <div className="px-6 py-4 bg-amber-500/10 border-b border-amber-500/30 flex items-center justify-between">
-              <div className="flex items-center gap-2.5 text-amber-500 font-bold text-base">
-                <AlertTriangle className="w-5 h-5 text-amber-500" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+          <div className="bg-theme-card border border-theme-subtle rounded-xl w-full max-w-lg  overflow-hidden flex flex-col">
+            <div className="px-6 py-4 bg-[var(--btn-primary-bg)]/10 border-b border-theme-subtle flex items-center justify-between">
+              <div className="flex items-center gap-2.5 text-[var(--warning)] font-bold text-base">
+                <AlertTriangle className="w-5 h-5 text-[var(--warning)]" />
                 <span>{t.trust.fullTrustWarningTitle}</span>
               </div>
               <button
                 onClick={() => setShowFullTrustModal(false)}
-                className="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-500/10 transition"
+                className="text-[var(--warning)] hover:text-[var(--warning)] p-1 rounded-lg hover:bg-[var(--btn-primary-bg)]/10 transition"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -3316,7 +3347,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 <button
                   type="button"
                   onClick={confirmFullProjectTrust}
-                  className="flex items-center gap-1.5 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold shadow-sm transition"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] rounded-lg text-xs font-semibold  transition"
                 >
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>{t.trust.fullTrustConfirmBtn}</span>

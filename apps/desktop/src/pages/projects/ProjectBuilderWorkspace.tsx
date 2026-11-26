@@ -97,7 +97,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
   if (isLoading && !project) {
     return (
       <div className="flex-1 flex items-center justify-center bg-theme-base font-mono text-xs text-theme-muted">
-        <RefreshCw className="w-5 h-5 animate-spin mr-2 text-sky-400" />
+        <RefreshCw className="w-5 h-5 animate-spin mr-2 text-theme-primary" />
         加载 Project Builder 状态...
       </div>
     );
@@ -106,7 +106,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
   if (!project) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center bg-theme-base font-mono text-xs text-theme-muted p-8">
-        <p className="mb-4 text-rose-400">未找到工程项目: {projectId}</p>
+        <p className="mb-4 text-[var(--warning)]">未找到工程项目: {projectId}</p>
         <button
           onClick={onBack}
           className="px-3 py-1.5 bg-theme-card border border-theme-subtle rounded text-theme-primary"
@@ -125,22 +125,22 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
     switch (status) {
       case "DELIVERED":
       case "COMMITTED":
-        return <span className="px-2 py-0.5 rounded text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono font-semibold">DELIVERED</span>;
+        return <span className="px-2 py-0.5 rounded text-[11px] bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle font-mono font-semibold">DELIVERED</span>;
       case "RUNNING":
       case "EXECUTING":
-        return <span className="px-2 py-0.5 rounded text-[11px] bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono font-semibold animate-pulse">RUNNING</span>;
+        return <span className="px-2 py-0.5 rounded text-[11px] bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle font-mono font-semibold animate-pulse">RUNNING</span>;
       case "VERIFYING":
-        return <span className="px-2 py-0.5 rounded text-[11px] bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono font-semibold">VERIFYING</span>;
+        return <span className="px-2 py-0.5 rounded text-[11px] bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle font-mono font-semibold">VERIFYING</span>;
       case "NEEDS_REPLAN":
-        return <span className="px-2 py-0.5 rounded text-[11px] bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono font-semibold">NEEDS_REPLAN</span>;
+        return <span className="px-2 py-0.5 rounded text-[11px] bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle font-mono font-semibold">NEEDS_REPLAN</span>;
       case "FAILED":
-        return <span className="px-2 py-0.5 rounded text-[11px] bg-rose-500/10 text-rose-400 border border-rose-500/20 font-mono font-semibold">FAILED</span>;
+        return <span className="px-2 py-0.5 rounded text-[11px] bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle font-mono font-semibold">FAILED</span>;
       case "BLOCKED":
-        return <span className="px-2 py-0.5 rounded text-[11px] bg-zinc-500/10 text-zinc-400 border border-zinc-500/20 font-mono">BLOCKED</span>;
+        return <span className="px-2 py-0.5 rounded text-[11px] bg-zinc-500/10 text-theme-secondary border border-zinc-500/20 font-mono">BLOCKED</span>;
       case "PAUSED":
-        return <span className="px-2 py-0.5 rounded text-[11px] bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">PAUSED</span>;
+        return <span className="px-2 py-0.5 rounded text-[11px] bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border border-theme-subtle font-mono">PAUSED</span>;
       default:
-        return <span className="px-2 py-0.5 rounded text-[11px] bg-zinc-500/10 text-zinc-400 border border-zinc-500/20 font-mono">PREPARED</span>;
+        return <span className="px-2 py-0.5 rounded text-[11px] bg-zinc-500/10 text-theme-secondary border border-zinc-500/20 font-mono">PREPARED</span>;
     }
   };
 
@@ -160,7 +160,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
               <div className="flex items-center gap-2">
                 <h1 className="text-sm font-bold text-theme-primary">{project.name}</h1>
                 {getStatusBadge(project.status)}
-                <span className="px-1.5 py-0.5 rounded text-[10px] bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                <span className="px-1.5 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle">
                   {project.executionMode}
                 </span>
               </div>
@@ -191,7 +191,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                   );
                   setShowReplanModal(true);
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs bg-amber-600 hover:bg-amber-500 text-white font-medium shadow-sm transition"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-medium  transition"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>AI Replan 提交</span>
@@ -203,7 +203,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                 type="button"
                 onClick={handlePause}
                 disabled={actionLoading}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs bg-amber-600/20 text-amber-300 border border-amber-500/30 hover:bg-amber-600/30 transition"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border border-theme-subtle hover:bg-[var(--btn-primary-bg)]/30 transition"
               >
                 <Pause className="w-3.5 h-3.5" />
                 <span>暂停执行</span>
@@ -213,7 +213,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                 type="button"
                 onClick={handleStart}
                 disabled={actionLoading}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium shadow-sm transition"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-medium  transition"
               >
                 <Play className="w-3.5 h-3.5" />
                 <span>开始 / 继续执行</span>
@@ -241,7 +241,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
           </div>
           <div className="h-1.5 w-full bg-theme-base rounded-full overflow-hidden border border-theme-subtle">
             <div
-              className="h-full bg-sky-500 transition-all duration-300"
+              className="h-full bg-[var(--btn-primary-bg)] transition-all duration-300"
               style={{ width: `${progressPct}%` }}
             />
           </div>
@@ -267,7 +267,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                 onClick={() => setActiveTab(tab.id as ProjectTabId)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-[11px] font-medium transition shrink-0 ${
                   isCurrent
-                    ? "bg-sky-500/15 text-sky-400 border border-sky-500/30"
+                    ? "bg-[var(--btn-primary-bg)]/15 text-theme-primary border border-theme-subtle"
                     : "text-theme-muted hover:text-theme-primary hover:bg-theme-card/50"
                 }`}
               >
@@ -319,7 +319,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                 {project.blueprint.providers?.map((p: string) => (
                   <span
                     key={p}
-                    className="px-2.5 py-1 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xs font-semibold"
+                    className="px-2.5 py-1 rounded bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle text-xs font-semibold"
                   >
                     {p}
                   </span>
@@ -329,8 +329,8 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
 
             {/* Replan Alert Card */}
             {project.replanContext && (
-              <div className="p-5 bg-amber-500/10 border border-amber-500/30 rounded-xl space-y-3">
-                <div className="flex items-center gap-2 text-amber-400 font-semibold text-xs">
+              <div className="p-5 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded-xl space-y-3">
+                <div className="flex items-center gap-2 text-[var(--warning)] font-semibold text-xs">
                   <AlertTriangle className="w-4 h-4" />
                   <span>阶段需要 AI 重新规划 (NEEDS_REPLAN)</span>
                 </div>
@@ -339,7 +339,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                 </p>
                 <div className="text-[11px] text-theme-muted">
                   已提交完成的阶段:{" "}
-                  <strong className="text-emerald-400">
+                  <strong className="text-[var(--success)]">
                     [{project.replanContext.committedStages.join(", ")}]
                   </strong>{" "}
                   (已被安全锁定，不会重复执行)
@@ -366,7 +366,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                 <div key={stage.stageId} className="flex flex-col">
                   <div className="p-4 bg-theme-sidebar/40 border border-theme-subtle rounded-xl flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-7 h-7 rounded-full bg-theme-base border border-theme-subtle flex items-center justify-center text-xs font-bold text-sky-400">
+                      <div className="w-7 h-7 rounded-full bg-theme-base border border-theme-subtle flex items-center justify-center text-xs font-bold text-theme-primary">
                         {idx + 1}
                       </div>
                       <div>
@@ -437,7 +437,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 font-semibold text-theme-primary">
                             <span>{act.name}</span>
-                            <span className="text-[10px] text-sky-400 font-normal">
+                            <span className="text-[10px] text-theme-primary font-normal">
                               (Capability: {act.capability})
                             </span>
                           </div>
@@ -452,11 +452,11 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                         <div>
                           {result ? (
                             result.verificationPassed ? (
-                              <span className="text-emerald-400 flex items-center gap-1 text-[11px]">
+                              <span className="text-[var(--success)] flex items-center gap-1 text-[11px]">
                                 <CheckCircle2 className="w-3.5 h-3.5" /> 已验证
                               </span>
                             ) : (
-                              <span className="text-rose-400 flex items-center gap-1 text-[11px]">
+                              <span className="text-[var(--warning)] flex items-center gap-1 text-[11px]">
                                 <XCircle className="w-3.5 h-3.5" /> 验证失败
                               </span>
                             )
@@ -492,8 +492,8 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                       stage.verificationVerdict === "VERIFIED"
-                        ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                        : "bg-zinc-500/10 text-zinc-400 border border-zinc-500/20"
+                        ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)] border border-theme-subtle"
+                        : "bg-zinc-500/10 text-theme-secondary border border-zinc-500/20"
                     }`}
                   >
                     {stage.verificationVerdict}
@@ -502,12 +502,12 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
 
                 <div className="space-y-3 pt-2">
                   {stage.actionResults?.map((res) => (
-                    <div key={res.actionId} className="p-3 bg-black/40 border border-theme-subtle rounded-lg space-y-2 text-xs">
+                    <div key={res.actionId} className="p-3 bg-[var(--bg-app)] border border-theme-subtle rounded-lg space-y-2 text-xs">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-sky-400">{res.actionName}</span>
+                        <span className="font-bold text-theme-primary">{res.actionName}</span>
                         <span className="text-[10px] text-theme-muted">Evidence: {res.evidenceId}</span>
                       </div>
-                      <div className="text-[11px] text-emerald-300/90 font-medium">
+                      <div className="text-[11px] text-[var(--success)]/90 font-medium">
                         {res.verificationDetails || "独立验证已通过"}
                       </div>
                       {res.postState && (
@@ -540,7 +540,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                   <div key={l.sequenceId} className="py-2.5 flex items-start justify-between gap-4">
                     <div className="space-y-0.5">
                       <div className="flex items-center gap-2">
-                        <span className="text-sky-400 font-bold">#{l.sequenceId}</span>
+                        <span className="text-theme-primary font-bold">#{l.sequenceId}</span>
                         <span className="text-theme-primary font-semibold">{l.operationId}</span>
                         <span className="text-[10px] text-theme-muted">{l.timestamp}</span>
                       </div>
@@ -550,10 +550,10 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                     <span
                       className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
                         l.status === "COMMITTED"
-                          ? "bg-emerald-500/10 text-emerald-400"
+                          ? "bg-[var(--btn-primary-bg)]/10 text-[var(--success)]"
                           : l.status === "FAILED"
-                          ? "bg-rose-500/10 text-rose-400"
-                          : "bg-sky-500/10 text-sky-400"
+                          ? "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)]"
+                          : "bg-[var(--btn-primary-bg)]/10 text-theme-primary"
                       }`}
                     >
                       {l.status}
@@ -569,8 +569,8 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
         {activeTab === "delivery" && (
           <div className="max-w-4xl space-y-6">
             {project.deliveryReport ? (
-              <div className="p-6 bg-emerald-500/5 border border-emerald-500/30 rounded-xl space-y-4">
-                <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+              <div className="p-6 bg-[var(--btn-primary-bg)]/5 border border-theme-subtle rounded-xl space-y-4">
+                <div className="flex items-center gap-2 text-[var(--success)] font-bold text-sm">
                   <CheckCircle2 className="w-5 h-5" />
                   <span>工程项目交付成功 (Project Delivered)</span>
                 </div>
@@ -578,10 +578,10 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                   {project.deliveryReport.summary}
                 </p>
 
-                <div className="p-3 bg-black/40 border border-theme-subtle rounded-lg space-y-2 text-xs font-mono">
+                <div className="p-3 bg-[var(--bg-app)] border border-theme-subtle rounded-lg space-y-2 text-xs font-mono">
                   <div className="flex items-center justify-between text-theme-muted">
                     <span>Root Evidence Hash:</span>
-                    <strong className="text-sky-400">{project.deliveryReport.rootEvidenceHash}</strong>
+                    <strong className="text-theme-primary">{project.deliveryReport.rootEvidenceHash}</strong>
                   </div>
                   <div className="flex items-center justify-between text-theme-muted">
                     <span>完成耗时:</span>
@@ -601,7 +601,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                         <strong className="text-theme-primary">{art.name}</strong>
                         <div className="text-[10px] text-theme-muted">SHA-256: {art.sha256}</div>
                       </div>
-                      <span className="px-2 py-0.5 rounded text-[10px] bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                      <span className="px-2 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle">
                         {art.type}
                       </span>
                     </div>
@@ -624,7 +624,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                 原始 Project Blueprint JSON
               </span>
             </div>
-            <pre className="p-4 bg-black/50 border border-theme-subtle rounded-xl text-xs text-sky-300/90 overflow-x-auto max-h-[600px]">
+            <pre className="p-4 bg-[var(--bg-app)] border border-theme-subtle rounded-xl text-xs text-theme-primary/90 overflow-x-auto max-h-[600px]">
               {JSON.stringify(project.blueprint, null, 2)}
             </pre>
           </div>
@@ -633,11 +633,11 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
 
       {/* AI Replan Modal */}
       {showReplanModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 font-mono">
-          <div className="w-full max-w-xl bg-theme-base border border-theme-subtle rounded-xl p-5 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] p-4 font-mono">
+          <div className="w-full max-w-xl bg-theme-base border border-theme-subtle rounded-xl p-5 space-y-4 ">
             <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
               <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">
-                <RotateCcw className="w-4 h-4 text-amber-400" />
+                <RotateCcw className="w-4 h-4 text-[var(--warning)]" />
                 <span>提交 AI 重新规划阶段 (Replan Stages)</span>
               </h3>
               <button
@@ -656,7 +656,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
               value={replanJson}
               onChange={(e) => setReplanJson(e.target.value)}
               rows={12}
-              className="w-full p-3 bg-black/40 border border-theme-subtle rounded text-xs text-sky-300 font-mono focus:outline-none focus:border-sky-500"
+              className="w-full p-3 bg-[var(--bg-app)] border border-theme-subtle rounded text-xs text-theme-primary font-mono focus:outline-none border-theme-subtle"
             />
 
             <div className="flex items-center justify-end gap-2 pt-2 border-t border-theme-subtle">
@@ -671,7 +671,7 @@ export const ProjectBuilderWorkspace: React.FC<ProjectBuilderWorkspaceProps> = (
                 type="button"
                 onClick={handleReplanSubmit}
                 disabled={actionLoading}
-                className="px-4 py-1.5 rounded text-xs bg-amber-600 hover:bg-amber-500 text-white font-medium shadow-sm transition"
+                className="px-4 py-1.5 rounded text-xs bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-medium  transition"
               >
                 确认提交并恢复执行
               </button>

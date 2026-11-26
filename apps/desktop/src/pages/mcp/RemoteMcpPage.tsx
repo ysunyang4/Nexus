@@ -239,7 +239,7 @@ export const RemoteMcpPage: React.FC = () => {
       <div className="flex items-center justify-between gap-4 border-b border-theme-subtle pb-4">
         <div>
           <h1 className="text-base font-semibold text-theme-primary flex items-center gap-2">
-            <Globe className="w-4 h-4 text-sky-400" />
+            <Globe className="w-4 h-4 text-theme-primary" />
             <span>{isZh ? "云端与远程 MCP 服务 (Remote & Cloud MCP)" : "Remote & Cloud MCP Services"}</span>
           </h1>
           <p className="text-xs text-theme-muted mt-0.5">
@@ -262,7 +262,7 @@ export const RemoteMcpPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded text-xs font-semibold shadow-sm transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded text-xs font-semibold  transition"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>{isZh ? "+ 接入云端 MCP" : "+ Add Remote MCP"}</span>
@@ -283,25 +283,25 @@ export const RemoteMcpPage: React.FC = () => {
           return (
             <div
               key={svc.config.id}
-              className="p-5 rounded-xl border border-theme-subtle bg-theme-card/30 space-y-4 shadow-sm"
+              className="p-5 rounded-xl border border-theme-subtle bg-theme-card/30 space-y-4 "
             >
               {/* Card Header */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-theme-subtle/50 pb-3">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                  <div className="p-2 rounded-lg bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle">
                     <Globe className="w-5 h-5" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-bold text-theme-primary">{svc.config.name}</span>
-                      <span className="px-1.5 py-0.5 rounded text-[10px] bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                      <span className="px-1.5 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/10 text-theme-primary border border-theme-subtle">
                         {svc.config.id}
                       </span>
                       {svc.config.websiteUrl && (
                         <button
                           type="button"
                           onClick={() => handleOpenBrowser(svc.config.websiteUrl!)}
-                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-sky-500/15 hover:bg-sky-500/25 text-sky-400 border border-sky-500/30 text-xs font-semibold transition cursor-pointer shadow-xs"
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[var(--btn-primary-bg)]/15 hover:bg-[var(--btn-primary-bg)]/25 text-theme-primary border border-theme-subtle text-xs font-semibold transition cursor-pointer "
                           title={isZh ? "在系统浏览器中打开注册登录以获取体验金" : "Open in system browser to register"}
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
@@ -311,8 +311,8 @@ export const RemoteMcpPage: React.FC = () => {
                     </div>
                     <div className="text-xs text-theme-muted mt-0.5 flex items-center gap-3">
                       <span>云端端点: <strong className="text-theme-secondary">{svc.config.endpoint}</strong></span>
-                      <span>当前账号: <strong className="text-amber-400">{activeAccount ? activeAccount.accountLabel : (isZh ? "未绑定" : "None")}</strong></span>
-                      <span>工具数: <strong className="text-sky-400">{svc.toolCount} Tools</strong></span>
+                      <span>当前账号: <strong className="text-[var(--warning)]">{activeAccount ? activeAccount.accountLabel : (isZh ? "未绑定" : "None")}</strong></span>
+                      <span>工具数: <strong className="text-theme-primary">{svc.toolCount} Tools</strong></span>
                     </div>
                   </div>
                 </div>
@@ -322,17 +322,17 @@ export const RemoteMcpPage: React.FC = () => {
                   <span
                     className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1.5 border ${
                       isConnected
-                        ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/15 text-[var(--success)] border-theme-subtle"
                         : isConnecting
-                        ? "bg-sky-500/15 text-sky-400 border-sky-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/15 text-theme-primary border-theme-subtle"
                         : isError
-                        ? "bg-rose-500/15 text-rose-400 border-rose-500/30"
-                        : "bg-zinc-500/15 text-zinc-400 border-zinc-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/15 text-[var(--warning)] border-theme-subtle"
+                        : "bg-zinc-500/15 text-theme-secondary border-zinc-500/30"
                     }`}
                   >
                     <span
                       className={`w-2 h-2 rounded-full ${
-                        isConnected ? "bg-emerald-400 animate-pulse" : isConnecting ? "bg-sky-400 animate-ping" : isError ? "bg-rose-400" : "bg-zinc-500"
+                        isConnected ? "bg-[var(--success)] animate-pulse" : isConnecting ? "bg-[var(--text-primary)] animate-ping" : isError ? "bg-[var(--warning)]" : "bg-zinc-500"
                       }`}
                     />
                     <span>
@@ -352,7 +352,7 @@ export const RemoteMcpPage: React.FC = () => {
                       type="button"
                       disabled={isBusy}
                       onClick={() => handleDisconnect(svc.config.id)}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-500/40 rounded-lg text-xs font-semibold transition"
+                      className="flex items-center gap-1 px-3 py-1.5 bg-[var(--btn-primary-bg)]/20 hover:bg-[var(--btn-primary-bg)]/30 text-[var(--warning)] border border-theme-subtle rounded-lg text-xs font-semibold transition"
                     >
                       {isBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Unplug className="w-3.5 h-3.5" />}
                       <span>{isZh ? "断开" : "Disconnect"}</span>
@@ -362,7 +362,7 @@ export const RemoteMcpPage: React.FC = () => {
                       type="button"
                       disabled={isBusy}
                       onClick={() => handleConnect(svc.config.id)}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold shadow-sm transition"
+                      className="flex items-center gap-1 px-3 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded-lg text-xs font-semibold  transition"
                     >
                       {isBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plug className="w-3.5 h-3.5" />}
                       <span>{isZh ? "挂载连接" : "Connect"}</span>
@@ -375,11 +375,11 @@ export const RemoteMcpPage: React.FC = () => {
                     onClick={() => setExpandedAccounts((prev) => ({ ...prev, [svc.config.id]: !prev[svc.config.id] }))}
                     className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition ${
                       isAccountsOpen
-                        ? "bg-amber-500/10 text-amber-400 border-amber-500/30"
+                        ? "bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] border-theme-subtle"
                         : "bg-theme-card text-theme-muted hover:text-theme-primary border-theme-subtle"
                     }`}
                   >
-                    <Coins className="w-3.5 h-3.5 text-amber-400" />
+                    <Coins className="w-3.5 h-3.5 text-[var(--warning)]" />
                     <span>{isZh ? `多账号与配额 (${svc.config.accounts.length})` : `Accounts (${svc.config.accounts.length})`}</span>
                     {isAccountsOpen ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
                   </button>
@@ -389,7 +389,7 @@ export const RemoteMcpPage: React.FC = () => {
                     type="button"
                     disabled={isBusy}
                     onClick={() => handleDeleteService(svc.config.id, svc.config.name)}
-                    className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition"
+                    className="p-1.5 rounded-lg bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border border-theme-subtle transition"
                     title={isZh ? "移除服务" : "Remove Service"}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -406,7 +406,7 @@ export const RemoteMcpPage: React.FC = () => {
 
               {/* Error Banner */}
               {isError && svc.lastError && (
-                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs space-y-2.5">
+                <div className="p-4 rounded-xl bg-[var(--btn-primary-bg)]/10 border border-theme-subtle text-[var(--warning)] text-xs space-y-2.5">
                   <div className="flex items-start gap-2">
                     <span className="text-sm">⚠️</span>
                     <span className="flex-1 font-sans font-medium">{svc.lastError}</span>
@@ -416,7 +416,7 @@ export const RemoteMcpPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleOpenBrowser(svc.config.websiteUrl!)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold shadow-sm transition cursor-pointer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded-lg text-xs font-semibold  transition cursor-pointer"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
                         <span>{isZh ? "🌐 立即打开浏览器前往官网注册登录 ↗" : "🌐 Open Browser to Register / Login ↗"}</span>
@@ -434,7 +434,7 @@ export const RemoteMcpPage: React.FC = () => {
                 <div className="p-4 rounded-xl bg-theme-base/60 border border-theme-subtle space-y-3">
                   <div className="flex items-center justify-between border-b border-theme-subtle/50 pb-2">
                     <div className="flex items-center gap-2">
-                      <Coins className="w-4 h-4 text-amber-400" />
+                      <Coins className="w-4 h-4 text-[var(--warning)]" />
                       <h3 className="text-xs font-bold text-theme-primary">
                         {isZh ? "多邮箱账号与赠送额度轮换 (Multi-Account Token Profiles)" : "Account Profiles & Quota Management"}
                       </h3>
@@ -451,21 +451,21 @@ export const RemoteMcpPage: React.FC = () => {
                         key={acc.id}
                         className={`p-3 rounded-lg border flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs transition ${
                           acc.isActive
-                            ? "bg-amber-500/10 border-amber-500/40 text-theme-primary"
+                            ? "bg-[var(--btn-primary-bg)]/10 border-theme-subtle text-theme-primary"
                             : "bg-theme-card/30 border-theme-subtle text-theme-muted hover:border-theme-subtle/80"
                         }`}
                       >
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            <Mail className="w-3.5 h-3.5 text-sky-400" />
+                            <Mail className="w-3.5 h-3.5 text-theme-primary" />
                             <span className="font-semibold text-theme-primary">{acc.accountLabel}</span>
                             {acc.isActive ? (
-                              <span className="px-1.5 py-0.2 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold flex items-center gap-1">
+                              <span className="px-1.5 py-0.2 rounded text-[10px] bg-[var(--btn-primary-bg)]/20 text-[var(--success)] border border-theme-subtle font-bold flex items-center gap-1">
                                 <Check className="w-3 h-3" />
                                 <span>{isZh ? "当前激活生效" : "ACTIVE"}</span>
                               </span>
                             ) : (
-                              <span className="px-1.5 py-0.2 rounded text-[10px] bg-zinc-500/10 text-zinc-400 border border-zinc-500/20">
+                              <span className="px-1.5 py-0.2 rounded text-[10px] bg-zinc-500/10 text-theme-secondary border border-zinc-500/20">
                                 {isZh ? "待用" : "STANDBY"}
                               </span>
                             )}
@@ -473,7 +473,7 @@ export const RemoteMcpPage: React.FC = () => {
                           <div className="text-[11px] text-theme-muted flex items-center gap-3">
                             <span>Key: <code className="text-zinc-300 font-mono">{acc.token || (isZh ? "无 Token (公开服务)" : "None")}</code></span>
                             {acc.quotaNote && (
-                              <span>额度备注: <strong className="text-amber-400">{acc.quotaNote}</strong></span>
+                              <span>额度备注: <strong className="text-[var(--warning)]">{acc.quotaNote}</strong></span>
                             )}
                           </div>
                         </div>
@@ -485,7 +485,7 @@ export const RemoteMcpPage: React.FC = () => {
                               type="button"
                               disabled={isBusy}
                               onClick={() => handleActivateAccount(svc.config.id, acc.id)}
-                              className="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-white font-medium text-[11px] transition shadow-xs"
+                              className="px-2.5 py-1 rounded bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-medium text-[11px] transition "
                             >
                               {isZh ? "切换为此账号" : "Activate"}
                             </button>
@@ -494,7 +494,7 @@ export const RemoteMcpPage: React.FC = () => {
                             type="button"
                             disabled={isBusy}
                             onClick={() => handleDeleteAccount(svc.config.id, acc.id, acc.accountLabel)}
-                            className="p-1.5 rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition"
+                            className="p-1.5 rounded bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border border-theme-subtle transition"
                             title={isZh ? "移除此账号 (没额度时删除)" : "Remove Account"}
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -514,7 +514,7 @@ export const RemoteMcpPage: React.FC = () => {
                   {addingAccountFor === svc.config.id ? (
                     <div className="p-3 rounded-lg bg-theme-card/60 border border-theme-subtle space-y-3 mt-2 text-xs">
                       <div className="font-semibold text-theme-primary flex items-center gap-1.5">
-                        <Key className="w-3.5 h-3.5 text-sky-400" />
+                        <Key className="w-3.5 h-3.5 text-theme-primary" />
                         <span>{isZh ? "添加新邮箱账号 / Token Profile" : "Add Account Profile"}</span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
@@ -523,21 +523,21 @@ export const RemoteMcpPage: React.FC = () => {
                           placeholder={isZh ? "账号备注 (如: personal@163.com)" : "Account Label / Email"}
                           value={newAccLabel}
                           onChange={(e) => setNewAccLabel(e.target.value)}
-                          className="p-2 bg-theme-base border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                          className="p-2 bg-theme-base border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                         />
                         <input
                           type="password"
                           placeholder={isZh ? "API Key 或 Access Token" : "API Key or Access Token"}
                           value={newAccToken}
                           onChange={(e) => setNewAccToken(e.target.value)}
-                          className="p-2 bg-theme-base border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                          className="p-2 bg-theme-base border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                         />
                         <input
                           type="text"
                           placeholder={isZh ? "额度备注 (如: 赠送 $5 体验金)" : "Quota Note (e.g. $5 Free Credits)"}
                           value={newAccQuota}
                           onChange={(e) => setNewAccQuota(e.target.value)}
-                          className="p-2 bg-theme-base border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                          className="p-2 bg-theme-base border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                         />
                       </div>
                       <div className="flex items-center justify-end gap-2">
@@ -552,7 +552,7 @@ export const RemoteMcpPage: React.FC = () => {
                           type="button"
                           disabled={isBusy}
                           onClick={() => handleAddAccount(svc.config.id)}
-                          className="px-3.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-medium shadow-xs"
+                          className="px-3.5 py-1 rounded bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-medium "
                         >
                           {isZh ? "保存并添加账号" : "Save Account"}
                         </button>
@@ -568,7 +568,7 @@ export const RemoteMcpPage: React.FC = () => {
                           setNewAccToken("");
                           setNewAccQuota(isZh ? "赠送体验额度" : "Free Trial Credits");
                         }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-theme-card hover:bg-theme-card/80 border border-theme-subtle text-sky-400 text-xs font-medium transition"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-theme-card hover:bg-theme-card/80 border border-theme-subtle text-theme-primary text-xs font-medium transition"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>{isZh ? "+ 添加新邮箱账号 / Token Profile" : "+ Add Account Profile"}</span>
@@ -578,7 +578,7 @@ export const RemoteMcpPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleOpenBrowser(svc.config.websiteUrl!)}
-                          className="text-[11px] text-theme-muted hover:text-sky-400 flex items-center gap-1"
+                          className="text-[11px] text-theme-muted hover:text-theme-primary flex items-center gap-1"
                         >
                           <span>{isZh ? "去官网新注册邮箱领取体验金 ↗" : "Get Free Credits on Official Site ↗"}</span>
                         </button>
@@ -600,11 +600,11 @@ export const RemoteMcpPage: React.FC = () => {
 
       {/* Add Remote MCP Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 font-mono">
-          <div className="w-full max-w-lg bg-theme-base border border-theme-subtle rounded-xl p-5 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] p-4 font-mono">
+          <div className="w-full max-w-lg bg-theme-base border border-theme-subtle rounded-xl p-5 space-y-4 ">
             <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
               <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">
-                <Globe className="w-4 h-4 text-sky-400" />
+                <Globe className="w-4 h-4 text-theme-primary" />
                 <span>{isZh ? "接入云端与远程 MCP 服务" : "Add Remote MCP Service"}</span>
               </h3>
               <button onClick={() => setShowAddModal(false)} className="text-theme-muted hover:text-theme-primary text-xs">
@@ -613,7 +613,7 @@ export const RemoteMcpPage: React.FC = () => {
             </div>
 
             {addError && (
-              <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded text-rose-400 text-xs">
+              <div className="p-3 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded text-[var(--warning)] text-xs">
                 {addError}
               </div>
             )}
@@ -627,7 +627,7 @@ export const RemoteMcpPage: React.FC = () => {
                   placeholder="例如: htmlcsstoimage 或 my-cloud-tool"
                   value={newId}
                   onChange={(e) => setNewId(e.target.value)}
-                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -638,7 +638,7 @@ export const RemoteMcpPage: React.FC = () => {
                   placeholder="例如: HTML/CSS to Image (MCP.so)"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -650,7 +650,7 @@ export const RemoteMcpPage: React.FC = () => {
                   placeholder="例如: https://mcp.hcti.io"
                   value={newEndpoint}
                   onChange={(e) => setNewEndpoint(e.target.value)}
-                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -661,7 +661,7 @@ export const RemoteMcpPage: React.FC = () => {
                   placeholder="例如: https://htmlcsstoimage.com"
                   value={newWebsite}
                   onChange={(e) => setNewWebsite(e.target.value)}
-                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                  className="w-full p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                 />
               </div>
 
@@ -673,14 +673,14 @@ export const RemoteMcpPage: React.FC = () => {
                     placeholder="邮箱或账号标签"
                     value={initialEmail}
                     onChange={(e) => setInitialEmail(e.target.value)}
-                    className="p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                    className="p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                   />
                   <input
                     type="password"
                     placeholder="API Key / Token"
                     value={initialToken}
                     onChange={(e) => setInitialToken(e.target.value)}
-                    className="p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none focus:border-sky-500"
+                    className="p-2 bg-theme-card border border-theme-subtle rounded text-theme-primary focus:outline-none border-theme-subtle"
                   />
                 </div>
               </div>
@@ -696,7 +696,7 @@ export const RemoteMcpPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-1.5 rounded bg-sky-600 hover:bg-sky-500 text-white font-medium shadow-sm transition disabled:opacity-50"
+                  className="px-4 py-1.5 rounded bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] font-medium  transition disabled:opacity-50"
                 >
                   {isSubmitting ? (isZh ? "正在接入..." : "Connecting...") : (isZh ? "完成并接入" : "Add Service")}
                 </button>

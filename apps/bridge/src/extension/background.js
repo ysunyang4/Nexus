@@ -172,7 +172,7 @@ function connectToNexus(force = false) {
       ws.send(
         JSON.stringify({
           type: "EXTENSION_REGISTER",
-          version: "1.3.4",
+          version: "1.4.0",
           client: "Nexus Extension Bridge Pro",
         })
       );

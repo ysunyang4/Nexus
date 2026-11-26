@@ -9,11 +9,11 @@ export const UnityStatusBar: React.FC<UnityStatusBarProps> = ({ data }) => {
   const getStatusDot = (status: UnityConnectionStatus) => {
     switch (status) {
       case "CONNECTED":
-        return <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />;
+        return <span className="w-1.5 h-1.5 rounded-full bg-[var(--btn-primary-bg)] shrink-0" />;
       case "UNKNOWN":
-        return <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />;
+        return <span className="w-1.5 h-1.5 rounded-full bg-[var(--btn-primary-bg)] shrink-0" />;
       case "FAILED":
-        return <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />;
+        return <span className="w-1.5 h-1.5 rounded-full bg-[var(--btn-primary-bg)] shrink-0" />;
       case "DISCONNECTED":
       default:
         return <span className="w-1.5 h-1.5 rounded-full bg-zinc-500 shrink-0" />;
@@ -23,26 +23,26 @@ export const UnityStatusBar: React.FC<UnityStatusBarProps> = ({ data }) => {
   const getStatusTextClass = (status: UnityConnectionStatus) => {
     switch (status) {
       case "CONNECTED":
-        return "text-emerald-500";
+        return "text-[var(--success)]";
       case "UNKNOWN":
-        return "text-amber-500";
+        return "text-[var(--warning)]";
       case "FAILED":
-        return "text-rose-500";
+        return "text-[var(--warning)]";
       case "DISCONNECTED":
       default:
-        return "text-zinc-500";
+        return "text-theme-secondary";
     }
   };
 
   const getServiceDot = (state: UnityServiceState) => {
     switch (state) {
       case "RUNNING":
-        return <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />;
+        return <span className="w-1.5 h-1.5 rounded-full bg-[var(--btn-primary-bg)] shrink-0" />;
       case "STARTING":
       case "STOPPING":
-        return <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" />;
+        return <span className="w-1.5 h-1.5 rounded-full bg-[var(--btn-primary-bg)] animate-pulse shrink-0" />;
       case "FAILED":
-        return <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />;
+        return <span className="w-1.5 h-1.5 rounded-full bg-[var(--btn-primary-bg)] shrink-0" />;
       case "STOPPED":
       default:
         return <span className="w-1.5 h-1.5 rounded-full bg-zinc-500 shrink-0" />;
@@ -52,31 +52,31 @@ export const UnityStatusBar: React.FC<UnityStatusBarProps> = ({ data }) => {
   const getServiceTextClass = (state: UnityServiceState) => {
     switch (state) {
       case "RUNNING":
-        return "text-emerald-400 font-semibold";
+        return "text-[var(--success)] font-semibold";
       case "STARTING":
       case "STOPPING":
-        return "text-amber-400 font-semibold";
+        return "text-[var(--warning)] font-semibold";
       case "FAILED":
-        return "text-rose-400 font-semibold";
+        return "text-[var(--warning)] font-semibold";
       case "STOPPED":
       default:
-        return "text-zinc-400";
+        return "text-theme-secondary";
     }
   };
 
   const getPermissionBadge = (level: string) => {
     switch (level) {
       case "L5":
-        return <span className="text-purple-400 font-semibold">👑 L5 Full</span>;
+        return <span className="text-theme-primary font-semibold">👑 L5 Full</span>;
       case "L4":
-        return <span className="text-indigo-400 font-semibold">🔗 L4 Scene+Code</span>;
+        return <span className="text-theme-primary font-semibold">🔗 L4 Scene+Code</span>;
       case "L3":
-        return <span className="text-sky-400 font-semibold">💻 L3 Code</span>;
+        return <span className="text-theme-primary font-semibold">💻 L3 Code</span>;
       case "L2":
-        return <span className="text-emerald-400 font-semibold">🧱 L2 Scene</span>;
+        return <span className="text-[var(--success)] font-semibold">🧱 L2 Scene</span>;
       case "L1":
       default:
-        return <span className="text-zinc-400 font-semibold">👁 L1 Viewer</span>;
+        return <span className="text-theme-secondary font-semibold">👁 L1 Viewer</span>;
     }
   };
 
@@ -94,8 +94,8 @@ export const UnityStatusBar: React.FC<UnityStatusBarProps> = ({ data }) => {
         {/* 2. Execution Mode */}
         <div className="flex items-center gap-1.5" title="执行与验证策略模式">
           <span className="text-theme-muted">Mode:</span>
-          <span className={data.executionMode === "DEEP" ? "text-amber-400 font-semibold" : "text-sky-400 font-semibold"}>
-            {data.executionMode === "DEEP" ? "🧠 Deep" : "⚡ Fast"}
+          <span className={data.executionMode === "DEEP" ? "text-[var(--warning)] font-semibold" : "text-theme-primary font-semibold"}>
+            {data.executionMode === "DEEP" ? "🧠 Deep" : "Fast"}
           </span>
         </div>
 
@@ -115,7 +115,7 @@ export const UnityStatusBar: React.FC<UnityStatusBarProps> = ({ data }) => {
         {/* 4. Port */}
         <div className="flex items-center gap-1.5" title="本地监听端口">
           <span className="text-theme-muted">Port:</span>
-          <span className={data.portListening ? "text-sky-400 font-medium" : "text-theme-muted"}>
+          <span className={data.portListening ? "text-theme-primary font-medium" : "text-theme-muted"}>
             {data.portListening ? `127.0.0.1:${data.port}` : "未监听"}
           </span>
         </div>
@@ -171,9 +171,9 @@ export const UnityStatusBar: React.FC<UnityStatusBarProps> = ({ data }) => {
           <span
             className={`font-medium ${
               data.runtime === "PLAYING"
-                ? "text-emerald-500"
+                ? "text-[var(--success)]"
                 : data.runtime === "PAUSED"
-                ? "text-amber-500"
+                ? "text-[var(--warning)]"
                 : "text-theme-secondary"
             }`}
           >
@@ -189,11 +189,11 @@ export const UnityStatusBar: React.FC<UnityStatusBarProps> = ({ data }) => {
           <span
             className={`font-medium ${
               data.build === "SUCCESS"
-                ? "text-emerald-500"
+                ? "text-[var(--success)]"
                 : data.build === "BUILDING"
-                ? "text-sky-500 animate-pulse"
+                ? "text-theme-primary animate-pulse"
                 : data.build === "FAILED"
-                ? "text-rose-500"
+                ? "text-[var(--warning)]"
                 : "text-theme-muted"
             }`}
           >

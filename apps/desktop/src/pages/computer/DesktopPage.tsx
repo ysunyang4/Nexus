@@ -81,7 +81,7 @@ export const DesktopPage: React.FC = () => {
       <div className="flex items-center justify-between gap-4 border-b border-theme-subtle pb-4">
         <div>
           <h1 className="text-base font-semibold text-theme-primary flex items-center gap-2">
-            <Monitor className="w-4 h-4 text-sky-500" />
+            <Monitor className="w-4 h-4 text-theme-primary" />
             <span>Computer Desktop</span>
           </h1>
           <p className="text-xs text-theme-muted mt-0.5">
@@ -95,7 +95,7 @@ export const DesktopPage: React.FC = () => {
             disabled={loadingScreenshot}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-theme-card-hover hover:bg-theme-card text-theme-primary border border-theme-subtle hover:border-theme-strong rounded-lg text-xs font-medium transition"
           >
-            <Camera className={`w-3.5 h-3.5 ${loadingScreenshot ? "animate-spin" : "text-sky-500"}`} />
+            <Camera className={`w-3.5 h-3.5 ${loadingScreenshot ? "animate-spin" : "text-theme-primary"}`} />
             <span>Capture Preview</span>
           </button>
 
@@ -103,7 +103,7 @@ export const DesktopPage: React.FC = () => {
             <button
               onClick={handleReturnControl}
               disabled={actionLoading}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 rounded-lg text-xs font-medium transition"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--success)] border border-theme-subtle rounded-lg text-xs font-medium transition"
             >
               <Unlock className="w-3.5 h-3.5" />
               <span>Return Control</span>
@@ -112,7 +112,7 @@ export const DesktopPage: React.FC = () => {
             <button
               onClick={handleTakeControl}
               disabled={actionLoading}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/30 rounded-lg text-xs font-medium transition"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-[var(--warning)] border border-theme-subtle rounded-lg text-xs font-medium transition"
             >
               <Lock className="w-3.5 h-3.5" />
               <span>Take Control</span>
@@ -124,12 +124,12 @@ export const DesktopPage: React.FC = () => {
       {/* Main Preview Surface */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
-          <div className="relative rounded-xl border border-theme-subtle bg-theme-card overflow-hidden shadow-sm aspect-video flex items-center justify-center">
+          <div className="relative rounded-xl border border-theme-subtle bg-theme-card overflow-hidden  aspect-video flex items-center justify-center">
             {screenshot ? (
               <img
                 src={screenshot}
                 alt="Desktop Preview"
-                className="w-full h-full object-contain bg-black/40"
+                className="w-full h-full object-contain bg-[var(--bg-app)]"
               />
             ) : (
               <div className="text-center p-8 space-y-3">
@@ -140,7 +140,7 @@ export const DesktopPage: React.FC = () => {
                 <button
                   onClick={captureScreen}
                   disabled={loadingScreenshot}
-                  className="px-3 py-1.5 bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 border border-sky-500/30 rounded-lg text-xs font-medium transition"
+                  className="px-3 py-1.5 bg-[var(--btn-primary-bg)]/10 hover:bg-[var(--btn-primary-bg)]/20 text-theme-primary border border-theme-subtle rounded-lg text-xs font-medium transition"
                 >
                   Capture Desktop
                 </button>
@@ -148,7 +148,7 @@ export const DesktopPage: React.FC = () => {
             )}
 
             {lastRefreshed && (
-              <div className="absolute bottom-2 right-2 px-2 py-1 rounded bg-black/70 text-[10px] font-mono text-zinc-300">
+              <div className="absolute bottom-2 right-2 px-2 py-1 rounded bg-[var(--bg-app)] text-[10px] font-mono text-zinc-300">
                 Frame captured: {lastRefreshed}
               </div>
             )}
@@ -169,8 +169,8 @@ export const DesktopPage: React.FC = () => {
               </div>
               <div className="flex items-center justify-between py-1.5 border-b border-theme-subtle/50">
                 <span className="text-theme-muted">Active Host</span>
-                <span className="font-mono text-emerald-500 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span className="font-mono text-[var(--success)] flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--btn-primary-bg)]" />
                   Connected
                 </span>
               </div>
@@ -194,15 +194,15 @@ export const DesktopPage: React.FC = () => {
             <div className="space-y-2 text-xs font-mono">
               <div className="flex items-center justify-between text-theme-secondary">
                 <span>Display Adapter</span>
-                <span className="text-emerald-500">✓ Verified</span>
+                <span className="text-[var(--success)]">✓ Verified</span>
               </div>
               <div className="flex items-center justify-between text-theme-secondary">
                 <span>Mouse / Keyboard Hook</span>
-                <span className="text-emerald-500">✓ Verified</span>
+                <span className="text-[var(--success)]">✓ Verified</span>
               </div>
               <div className="flex items-center justify-between text-theme-secondary">
                 <span>Direct Window Handle</span>
-                <span className="text-emerald-500">✓ Verified</span>
+                <span className="text-[var(--success)]">✓ Verified</span>
               </div>
             </div>
           </div>

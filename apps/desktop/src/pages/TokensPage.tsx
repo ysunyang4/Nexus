@@ -44,7 +44,7 @@ export const TokensPage: React.FC<TokensPageProps> = ({
         </div>
         <button
           onClick={onOpenCreateTokenModal}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg text-xs shadow-sm transition"
+          className="flex items-center gap-2 px-4 py-2 bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] font-semibold rounded-lg text-xs  transition"
         >
           <Plus className="w-4 h-4" />
           <span>{t.tokens.createTokenBtn}</span>
@@ -52,19 +52,19 @@ export const TokensPage: React.FC<TokensPageProps> = ({
       </div>
 
       {error && (
-        <div className="p-3 bg-red-500/15 border border-red-500/30 rounded-lg text-xs text-red-500">
+        <div className="p-3 bg-[var(--btn-primary-bg)]/15 border border-theme-subtle rounded-lg text-xs text-[var(--warning)]">
           {error}
         </div>
       )}
 
       {tokens.length === 0 ? (
-        <div className="p-12 text-center bg-theme-card border border-theme-card rounded-xl space-y-3 shadow-sm">
+        <div className="p-12 text-center bg-theme-card border border-theme-card rounded-xl space-y-3 ">
           <KeyRound className="w-10 h-10 text-theme-muted mx-auto" />
           <div className="text-theme-primary font-semibold text-sm">{t.tokens.noTokens}</div>
           <p className="text-theme-muted text-xs">{t.tokens.noTokensDesc}</p>
           <button
             onClick={onOpenCreateTokenModal}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg text-xs transition shadow-sm"
+            className="px-4 py-2 bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] font-semibold rounded-lg text-xs transition "
           >
             {t.tokens.createTokenBtn}
           </button>
@@ -79,7 +79,7 @@ export const TokensPage: React.FC<TokensPageProps> = ({
             return (
               <div
                 key={token.id}
-                className={`p-4 bg-theme-card border rounded-xl flex items-center justify-between gap-4 transition shadow-sm ${
+                className={`p-4 bg-theme-card border rounded-xl flex items-center justify-between gap-4 transition  ${
                   isRevoked ? "border-theme-subtle opacity-50" : "border-theme-card"
                 }`}
               >
@@ -115,28 +115,28 @@ export const TokensPage: React.FC<TokensPageProps> = ({
                       {token.scopes && token.scopes.length > 0 ? (
                         <>
                           {token.scopes.includes("read") && token.scopes.includes("write") && token.scopes.includes("execute") ? (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[var(--btn-primary-bg)]/15 text-theme-primary text-theme-primary border border-theme-subtle">
                               {language === "zh-CN" ? "读写执行 (全权限)" : "Full Control (Read/Write/Exec)"}
                             </span>
                           ) : (
                             token.scopes.map((sc) => {
                               if (sc === "read") {
                                 return (
-                                  <span key={sc} className="px-1.5 py-0.5 rounded text-[10px] bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                                  <span key={sc} className="px-1.5 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/10 text-theme-primary text-theme-primary border border-theme-subtle">
                                     {language === "zh-CN" ? "只读" : "read"}
                                   </span>
                                 );
                               }
                               if (sc === "write") {
                                 return (
-                                  <span key={sc} className="px-1.5 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                  <span key={sc} className="px-1.5 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/10 text-[var(--success)] text-[var(--success)] border border-theme-subtle">
                                     {language === "zh-CN" ? "写入" : "write"}
                                   </span>
                                 );
                               }
                               if (sc === "execute") {
                                 return (
-                                  <span key={sc} className="px-1.5 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                  <span key={sc} className="px-1.5 py-0.5 rounded text-[10px] bg-[var(--btn-primary-bg)]/10 text-[var(--warning)] text-[var(--warning)] border border-theme-subtle">
                                     {language === "zh-CN" ? "执行" : "execute"}
                                   </span>
                                 );
@@ -161,7 +161,7 @@ export const TokensPage: React.FC<TokensPageProps> = ({
                     <button
                       onClick={() => handleRevoke(token.id)}
                       disabled={revokingId === token.id}
-                      className="p-2 text-theme-muted hover:text-red-500 hover:bg-theme-card-hover rounded-lg transition"
+                      className="p-2 text-theme-muted hover:text-[var(--warning)] hover:bg-theme-card-hover rounded-lg transition"
                       title={t.tokens.revokeBtn}
                     >
                       <Trash2 className="w-4 h-4" />

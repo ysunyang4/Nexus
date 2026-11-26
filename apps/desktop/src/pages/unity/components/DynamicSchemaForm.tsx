@@ -133,7 +133,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
           <div className="flex items-center justify-between text-xs font-mono">
             <label className="text-theme-primary font-medium flex items-center gap-1">
               <span>{label}</span>
-              {isRequired && <span className="text-rose-400 font-bold">*</span>}
+              {isRequired && <span className="text-[var(--warning)] font-bold">*</span>}
             </label>
             <span className="text-theme-muted text-[10px]">{fieldType}</span>
           </div>
@@ -141,7 +141,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
           <select
             value={val}
             onChange={(e) => handleFieldChange(path, e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-theme-base border border-theme-subtle rounded text-xs font-mono text-theme-primary focus:border-sky-500 focus:outline-none"
+            className="w-full px-2.5 py-1.5 bg-theme-base border border-theme-subtle rounded text-xs font-mono text-theme-primary border-theme-subtle focus:outline-none"
           >
             <option value="">-- 选择 (Select) --</option>
             {propDef.enum.map((opt: any) => (
@@ -162,7 +162,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
           <div>
             <label className="text-xs font-mono text-theme-primary font-medium flex items-center gap-1">
               <span>{label}</span>
-              {isRequired && <span className="text-rose-400 font-bold">*</span>}
+              {isRequired && <span className="text-[var(--warning)] font-bold">*</span>}
             </label>
             {desc && <p className="text-[11px] text-theme-muted font-mono">{desc}</p>}
           </div>
@@ -170,7 +170,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
             type="checkbox"
             checked={val}
             onChange={(e) => handleFieldChange(path, e.target.checked)}
-            className="w-4 h-4 rounded text-sky-600 focus:ring-sky-500 bg-theme-base border-theme-subtle cursor-pointer"
+            className="w-4 h-4 rounded text-theme-primary ring-[var(--border)] bg-theme-base border-theme-subtle cursor-pointer"
           />
         </div>
       );
@@ -184,7 +184,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
           <div className="flex items-center justify-between text-xs font-mono">
             <label className="text-theme-primary font-medium flex items-center gap-1">
               <span>{label}</span>
-              {isRequired && <span className="text-rose-400 font-bold">*</span>}
+              {isRequired && <span className="text-[var(--warning)] font-bold">*</span>}
             </label>
             <span className="text-theme-muted text-[10px]">{fieldType}</span>
           </div>
@@ -198,7 +198,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
               const parsed = e.target.value === "" ? "" : Number(e.target.value);
               handleFieldChange(path, parsed);
             }}
-            className="w-full px-2.5 py-1.5 bg-theme-base border border-theme-subtle rounded text-xs font-mono text-theme-primary placeholder-theme-muted/40 focus:border-sky-500 focus:outline-none"
+            className="w-full px-2.5 py-1.5 bg-theme-base border border-theme-subtle rounded text-xs font-mono text-theme-primary placeholder-theme-muted/40 border-theme-subtle focus:outline-none"
           />
         </div>
       );
@@ -218,7 +218,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
             <div className="flex items-center gap-1.5 font-medium text-theme-primary">
               {isCollapsed ? <ChevronRight className="w-3.5 h-3.5 text-theme-muted" /> : <ChevronDown className="w-3.5 h-3.5 text-theme-muted" />}
               <span>{label}</span>
-              {isRequired && <span className="text-rose-400 font-bold">*</span>}
+              {isRequired && <span className="text-[var(--warning)] font-bold">*</span>}
             </div>
             <span className="text-[10px] text-theme-muted bg-theme-card px-1.5 py-0.5 rounded border border-theme-subtle">
               object
@@ -253,12 +253,12 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
           <div className="flex items-center justify-between text-xs font-mono">
             <label className="text-theme-primary font-medium flex items-center gap-1">
               <span>{label}</span>
-              {isRequired && <span className="text-rose-400 font-bold">*</span>}
+              {isRequired && <span className="text-[var(--warning)] font-bold">*</span>}
             </label>
             <button
               type="button"
               onClick={() => handleFieldChange(path, [...currentList, itemsDef.type === "number" ? 0 : ""])}
-              className="px-2 py-0.5 bg-sky-600/20 hover:bg-sky-600/30 text-sky-400 border border-sky-500/30 rounded text-[10px] font-mono flex items-center gap-1 transition"
+              className="px-2 py-0.5 bg-[var(--btn-primary-bg)]/20 hover:bg-[var(--btn-primary-bg)]/30 text-theme-primary border border-theme-subtle rounded text-[10px] font-mono flex items-center gap-1 transition"
             >
               <Plus className="w-3 h-3" />
               <span>添加项 (Add)</span>
@@ -278,7 +278,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
                     next[idx] = itemsDef.type === "number" ? Number(e.target.value) : e.target.value;
                     handleFieldChange(path, next);
                   }}
-                  className="flex-1 px-2.5 py-1 bg-theme-base border border-theme-subtle rounded text-xs font-mono text-theme-primary focus:border-sky-500 focus:outline-none"
+                  className="flex-1 px-2.5 py-1 bg-theme-base border border-theme-subtle rounded text-xs font-mono text-theme-primary border-theme-subtle focus:outline-none"
                 />
                 <button
                   type="button"
@@ -286,7 +286,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
                     const next = currentList.filter((_, i) => i !== idx);
                     handleFieldChange(path, next);
                   }}
-                  className="p-1 text-theme-muted hover:text-rose-400 transition"
+                  className="p-1 text-theme-muted hover:text-[var(--warning)] transition"
                   title="删除此项"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -310,7 +310,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
         <div className="flex items-center justify-between text-xs font-mono">
           <label className="text-theme-primary font-medium flex items-center gap-1">
             <span>{label}</span>
-            {isRequired && <span className="text-rose-400 font-bold">*</span>}
+            {isRequired && <span className="text-[var(--warning)] font-bold">*</span>}
           </label>
           <span className="text-theme-muted text-[10px]">{fieldType}</span>
         </div>
@@ -321,7 +321,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
             value={val}
             placeholder={propDef.default ? String(propDef.default) : `输入 ${label}...`}
             onChange={(e) => handleFieldChange(path, e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-theme-base border border-theme-subtle rounded text-xs font-mono text-theme-primary placeholder-theme-muted/40 focus:border-sky-500 focus:outline-none resize-y"
+            className="w-full px-2.5 py-1.5 bg-theme-base border border-theme-subtle rounded text-xs font-mono text-theme-primary placeholder-theme-muted/40 border-theme-subtle focus:outline-none resize-y"
           />
         ) : (
           <input
@@ -329,7 +329,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
             value={val}
             placeholder={propDef.default ? String(propDef.default) : `输入 ${label}...`}
             onChange={(e) => handleFieldChange(path, e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-theme-base border border-theme-subtle rounded text-xs font-mono text-theme-primary placeholder-theme-muted/40 focus:border-sky-500 focus:outline-none"
+            className="w-full px-2.5 py-1.5 bg-theme-base border border-theme-subtle rounded text-xs font-mono text-theme-primary placeholder-theme-muted/40 border-theme-subtle focus:outline-none"
           />
         )}
       </div>
@@ -343,7 +343,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
     <form onSubmit={validateAndSubmit} className="space-y-4">
       {Object.keys(properties).length === 0 ? (
         <div className="p-3 bg-theme-card/40 border border-theme-subtle rounded text-xs font-mono text-theme-muted flex items-center gap-2">
-          <Info className="w-4 h-4 text-sky-400" />
+          <Info className="w-4 h-4 text-theme-primary" />
           <span>该工具无需任何输入参数 (No arguments required)。</span>
         </div>
       ) : (
@@ -355,7 +355,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
       )}
 
       {validationError && (
-        <div className="p-2.5 bg-rose-500/10 border border-rose-500/30 rounded text-rose-400 text-xs font-mono flex items-center gap-2">
+        <div className="p-2.5 bg-[var(--btn-primary-bg)]/10 border border-theme-subtle rounded text-[var(--warning)] text-xs font-mono flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{validationError}</span>
         </div>
@@ -365,7 +365,7 @@ export const DynamicSchemaForm: React.FC<DynamicSchemaFormProps> = ({
         <button
           type="submit"
           disabled={isLoading}
-          className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-mono font-medium flex items-center gap-2 transition disabled:opacity-50 shadow-sm"
+          className="px-4 py-2 bg-[var(--btn-primary-bg)] hover:opacity-90 text-[var(--btn-primary-text)] rounded-lg text-xs font-mono font-medium flex items-center gap-2 transition disabled:opacity-50 "
         >
           {isLoading && <span className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin" />}
           <span>{isLoading ? "执行中..." : submitLabel}</span>
