@@ -32,7 +32,7 @@
   --bg-card-hover: var(--bg-hover);
   --bg-card-muted: var(--bg-surface-raised);
   --bg-header: var(--bg-app);
-  --bg-modal-overlay: rgba(0, 0, 0, 0.80);
+  --bg-modal-overlay: rgba(10, 12, 16, 0.56);
   --bg-tag: var(--bg-hover);
   --border-card: var(--border-subtle);
   --border-focus: var(--border-strong);
@@ -45,7 +45,7 @@
 [data-theme="light"] {
   --accent-soft: rgba(23, 23, 23, 0.06);
   --bg-header: var(--bg-app);
-  --bg-modal-overlay: rgba(23, 23, 23, 0.45);
+  --bg-modal-overlay: rgba(255, 255, 255, 0.58);
   --bg-tag: var(--bg-surface-raised);
   --scrollbar-thumb: var(--border-default);
   --scrollbar-hover: var(--border-strong);

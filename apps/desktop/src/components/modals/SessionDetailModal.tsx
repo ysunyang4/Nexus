@@ -219,7 +219,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
   const isActive = session.state === "active";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4">
       <div className="bg-theme-card border border-theme-subtle rounded-xl w-full max-w-4xl max-h-[90vh]  overflow-hidden flex flex-col">
         {/* Modal Header */}
         <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-card-muted/50">

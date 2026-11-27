@@ -39,7 +39,7 @@ export const EmergencyStopModal: React.FC<EmergencyStopModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4">
       <div className="bg-theme-card border border-theme-subtle rounded-xl w-full max-w-md  overflow-hidden flex flex-col">
         {/* Red Title Banner */}
         <div className="px-6 py-4 bg-[var(--btn-primary-bg)]/10 border-b border-theme-subtle flex items-center justify-between">

@@ -391,7 +391,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex justify-end bg-theme-base dark:bg-[var(--bg-app)] backdrop-blur-sm transition-opacity animate-in fade-in duration-150 cursor-pointer"
+      className="fixed inset-0 z-[110] flex justify-end bg-[var(--bg-modal-overlay)] backdrop-blur-md transition-opacity animate-in fade-in duration-150 cursor-pointer"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -1244,7 +1244,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
       {/* Centered High-Priority Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-xs p-4 animate-in fade-in duration-150"
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4 animate-in fade-in duration-150"
           onClick={() => !deleting && setShowDeleteConfirm(false)}
         >
           <div

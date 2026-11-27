@@ -374,7 +374,7 @@ export const MemoryPage: React.FC = () => {
 
       {/* Add Memory Modal */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4">
           <div className="bg-theme-card border border-theme-subtle rounded-xl max-w-lg w-full p-6 space-y-4 ">
             <h2 className="text-base font-bold text-theme-primary">{t.memory?.modalTitle || "将记忆持久化至存储库"}</h2>
             <form onSubmit={handleCreateMemory} className="space-y-3">

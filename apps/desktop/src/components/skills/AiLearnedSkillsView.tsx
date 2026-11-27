@@ -547,7 +547,7 @@ export const AiLearnedSkillsView: React.FC<AiLearnedSkillsViewProps> = ({ projec
 
       {/* GPT Auto-Generate Skill Modal */}
       {isAiModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4">
           <div className="bg-theme-card border border-theme-subtle rounded-xl max-w-lg w-full p-6 space-y-4 ">
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-theme-primary" />

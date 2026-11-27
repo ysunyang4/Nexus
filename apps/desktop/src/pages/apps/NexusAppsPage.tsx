@@ -556,7 +556,7 @@ export const NexusAppsPage: React.FC = () => {
 
       {/* Modal 1: 网页提纯器 */}
       {activeModal === "reader" && (
-        <div className="fixed inset-0 z-50 bg-[var(--bg-app)] backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] bg-[var(--bg-modal-overlay)] backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh]  overflow-hidden animate-scale-up">
             <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -628,7 +628,7 @@ export const NexusAppsPage: React.FC = () => {
 
       {/* Modal 2: Token 精炼器 */}
       {activeModal === "shrink" && (
-        <div className="fixed inset-0 z-50 bg-[var(--bg-app)] backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] bg-[var(--bg-modal-overlay)] backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh]  overflow-hidden animate-scale-up">
             <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -726,7 +726,7 @@ export const NexusAppsPage: React.FC = () => {
 
       {/* Modal 3: Schema 工坊 */}
       {activeModal === "schema" && (
-        <div className="fixed inset-0 z-50 bg-[var(--bg-app)] backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] bg-[var(--bg-modal-overlay)] backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh]  overflow-hidden animate-scale-up">
             <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -792,7 +792,7 @@ export const NexusAppsPage: React.FC = () => {
 
       {/* Modal 4: Prompt 工坊 */}
       {activeModal === "prompt" && (
-        <div className="fixed inset-0 z-50 bg-[var(--bg-app)] backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] bg-[var(--bg-modal-overlay)] backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh]  overflow-hidden animate-scale-up">
             <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -871,7 +871,7 @@ export const NexusAppsPage: React.FC = () => {
 
       {/* Modal 5: 脱敏沙箱 */}
       {activeModal === "masker" && (
-        <div className="fixed inset-0 z-50 bg-[var(--bg-app)] backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] bg-[var(--bg-modal-overlay)] backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh]  overflow-hidden animate-scale-up">
             <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -933,7 +933,7 @@ export const NexusAppsPage: React.FC = () => {
 
       {/* Modal 6: 脚本沙箱 */}
       {activeModal === "playground" && (
-        <div className="fixed inset-0 z-50 bg-[var(--bg-app)] backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] bg-[var(--bg-modal-overlay)] backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-theme-card border border-theme-subtle rounded-2xl max-w-3xl w-full flex flex-col max-h-[85vh]  overflow-hidden animate-scale-up">
             <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">
               <div className="flex items-center gap-2">

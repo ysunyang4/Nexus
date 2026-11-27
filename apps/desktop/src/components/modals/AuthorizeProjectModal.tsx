@@ -76,7 +76,7 @@ export const AuthorizeProjectModal: React.FC<AuthorizeProjectModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4">
       <div className="bg-theme-card border border-theme-card rounded-xl w-full max-w-lg  overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between">

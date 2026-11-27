@@ -60,7 +60,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--bg-app)] backdrop-blur-sm animate-in fade-in duration-200 select-none"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[var(--bg-modal-overlay)] backdrop-blur-md animate-in fade-in duration-200 select-none"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}

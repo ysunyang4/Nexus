@@ -537,6 +537,7 @@ export const App: React.FC = () => {
             fullControlStatus={fullControlStatus}
             onOpenFullControl={() => setIsFullControlModalOpen(true)}
             onStopFullControl={handleStopFullControl}
+            activeRunningCount={jobs.filter((j) => j.state === "running" || j.state === "queued").length}
           />
         )}
 

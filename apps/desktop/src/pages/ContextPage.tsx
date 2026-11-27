@@ -646,7 +646,7 @@ export const ContextPage: React.FC = () => {
 
       {/* GPT Auto-generate Context Modal */}
       {isAiModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4 animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4 animate-in fade-in duration-200">
           <div className="bg-theme-card border border-theme-subtle rounded-2xl w-full max-w-lg p-6  space-y-5">
             <div className="flex items-center justify-between border-b border-theme-subtle pb-4">
               <div className="flex items-center gap-2.5">

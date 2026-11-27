@@ -553,7 +553,7 @@ export const ChatGPTConnection: React.FC<ChatGPTConnectionProps> = ({
   const renderTokenRevealModal = () => {
     if (!revealedToken) return null;
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-xs p-4 animate-fade-in">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4 animate-fade-in">
         <div className="bg-theme-card border border-theme-card rounded-xl w-full max-w-lg  overflow-hidden flex flex-col p-6 space-y-4">
           <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
             <div className="flex items-center gap-2 text-theme-primary font-bold text-sm">

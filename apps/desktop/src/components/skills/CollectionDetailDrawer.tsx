@@ -161,7 +161,7 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
   return (
     <>
       <div
-        className={`fixed inset-0 z-50 flex justify-end bg-[var(--bg-app)] backdrop-blur-xs transition-opacity duration-200 ${
+        className={`fixed inset-0 z-[100] flex justify-end bg-[var(--bg-modal-overlay)] backdrop-blur-md transition-opacity duration-200 ${
           isChildDrawerOpen ? "hidden" : ""
         }`}
         onClick={onClose}
@@ -443,7 +443,7 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
       {/* Delete Collection Confirmation Modal */}
       {showDeleteModal && (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-xs p-4 animate-in fade-in duration-150"
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4 animate-in fade-in duration-150"
           onClick={() => !deletingCollection && setShowDeleteModal(false)}
         >
           <div
@@ -502,7 +502,7 @@ export const CollectionDetailDrawer: React.FC<CollectionDetailDrawerProps> = ({
       {/* Delete Single Child Skill Confirmation Modal */}
       {skillToDelete && (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-xs p-4 animate-in fade-in duration-150"
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4 animate-in fade-in duration-150"
           onClick={() => !deletingSkill && setSkillToDelete(null)}
         >
           <div

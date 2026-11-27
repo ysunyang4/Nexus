@@ -2571,7 +2571,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
             {/* Import Existing Model Modal */}
             {showImportModal && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+              <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4">
                 <div className="bg-theme-card border border-theme-subtle rounded-xl  max-w-lg w-full p-6 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -3316,7 +3316,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
       {/* Full Project Trust Confirmation Modal */}
       {showFullTrustModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4">
           <div className="bg-theme-card border border-theme-subtle rounded-xl w-full max-w-lg  overflow-hidden flex flex-col">
             <div className="px-6 py-4 bg-[var(--btn-primary-bg)]/10 border-b border-theme-subtle flex items-center justify-between">
               <div className="flex items-center gap-2.5 text-[var(--warning)] font-bold text-base">

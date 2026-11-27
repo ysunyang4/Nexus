@@ -815,7 +815,7 @@ export const ManagedMcpPage: React.FC = () => {
 
       {/* Create Custom Service Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] p-4 font-mono">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4 font-mono">
           <div className="w-full max-w-lg bg-theme-base border border-theme-subtle rounded-xl p-5 space-y-4 ">
             <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
               <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">
@@ -903,7 +903,7 @@ export const ManagedMcpPage: React.FC = () => {
 
       {/* Import JSON Modal */}
       {showJsonModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] p-4 font-mono">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4 font-mono">
           <div className="w-full max-w-xl bg-theme-base border border-theme-subtle rounded-xl p-5 space-y-4 ">
             <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
               <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">
@@ -978,7 +978,7 @@ export const ManagedMcpPage: React.FC = () => {
 
       {/* Smart Auto-Installer Modal */}
       {showAutoInstallModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-app)] p-4 font-mono backdrop-blur-sm">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--bg-modal-overlay)] p-4 font-mono backdrop-blur-md">
           <div className="w-full max-w-xl bg-theme-base border border-theme-subtle rounded-xl p-6 space-y-5 ">
             <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
               <h3 className="text-sm font-bold text-theme-primary flex items-center gap-2">

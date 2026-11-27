@@ -40,7 +40,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--bg-app)] backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[var(--bg-modal-overlay)] backdrop-blur-md animate-in fade-in duration-200">
       <div className="relative w-full max-w-lg bg-theme-card border border-theme-subtle rounded-2xl  p-6 sm:p-7 space-y-6">
         {/* Close Button */}
         <button

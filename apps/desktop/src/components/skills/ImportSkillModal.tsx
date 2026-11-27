@@ -897,7 +897,7 @@ export const ImportSkillModal: React.FC<ImportSkillModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-theme-base dark:bg-[var(--bg-app)] backdrop-blur-sm p-4 animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-md p-4 animate-in fade-in duration-150">
       <div
         className="w-full max-w-xl bg-white dark:bg-[#0d1320] border border-theme-subtle border-theme-subtle rounded-2xl  flex flex-col overflow-hidden max-h-[90vh]"
         role="dialog"

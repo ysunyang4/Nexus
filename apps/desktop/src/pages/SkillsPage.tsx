@@ -240,17 +240,31 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
       );
       if (!res.success) {
         showToast(
-          isZh ? "无法直接删除" : "Cannot delete directly",
-          isZh ? "该技能来自外部挂载目录，请在「挂载管理」中移除对应目录。" : (res.error || "Please unmount its directory in Sources Management."),
+          tText("无法单独删除", "Cannot delete individually", "個別削除できません", "Einzeln nicht löschbar"),
+          tText(
+            "外部挂载目录的技能请在右上角「挂载管理 (Sources)」中卸载对应目录。",
+            "Mounted external skills cannot be deleted individually. Unmount the folder in Sources Management (top-right).",
+            "外部マウントディレクトリのスキルは個別削除できません。右上の「ソース管理」からマウント解除してください。",
+            "Skills aus gemounteten Verzeichnissen können nicht einzeln gelöscht werden. Bitte unter Quellenverwaltung (oben rechts) aushängen."
+          ),
           "error"
         );
         return;
       }
       if (selectedSkill?.id === skill.id) setSelectedSkill(null);
       await loadSkills();
-      showToast(isZh ? "已删除技能" : "Skill deleted");
-    } catch (err: any) {
-      showToast(isZh ? "删除失败" : "Failed to delete skill", err?.message, "error");
+      showToast(tText("已删除技能", "Skill deleted", "スキルを削除しました", "Skill gelöscht"));
+    } catch (_err: any) {
+      showToast(
+        tText("无法单独删除", "Cannot delete individually", "個別削除できません", "Einzeln nicht löschbar"),
+        tText(
+          "若该技能来自外部挂载目录，请在右上角「挂载管理 (Sources)」中卸载对应目录。",
+          "If this skill is from a mounted directory, unmount its folder in Sources Management (top-right).",
+          "外部マウントディレクトリ由来の場合は、右上の「ソース管理」からマウント解除してください。",
+          "Falls dieser Skill aus einem gemounteten Ordner stammt, hängen Sie ihn in der Quellenverwaltung (oben rechts) aus."
+        ),
+        "error"
+      );
     }
   };
 
@@ -612,12 +626,12 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                       title={skill.enabled ? tText("已启用", "Enabled", "有効", "Aktiviert") : tText("已禁用", "Disabled", "無効", "Deaktiviert")}
                       className={`relative inline-flex items-center h-5 w-9 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out border-2 border-transparent focus:outline-none ${
                         skill.enabled
-                          ? "bg-[var(--btn-primary-bg)]"
-                          : "bg-zinc-700 hover:bg-zinc-600"
+                          ? "bg-[#10B981] hover:bg-[#059669]"
+                          : "bg-neutral-300 dark:bg-neutral-700 hover:bg-neutral-400 dark:hover:bg-neutral-600"
                       }`}
                     >
                       <span
-                        className={`pointer-events-none inline-block h-3.5 w-3.5 transform rounded-full bg-white  ring-0 transition duration-200 ease-in-out ${
+                        className={`pointer-events-none inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
                           skill.enabled ? "translate-x-4" : "translate-x-0.5"
                         }`}
                       />
@@ -700,7 +714,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
       {/* --- Right Slide-Over Detail Drawer --- */}
       {selectedSkill && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-end bg-[var(--bg-app)] backdrop-blur-xs cursor-pointer"
+          className="fixed inset-0 z-[100] flex items-center justify-end bg-[var(--bg-modal-overlay)] backdrop-blur-md cursor-pointer"
           onClick={(e) => {
             if (e.target === e.currentTarget) setSelectedSkill(null);
           }}
@@ -866,7 +880,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
       {/* --- Sources Management Drawer --- */}
       {isSourcesDrawerOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-end bg-[var(--bg-app)] backdrop-blur-xs cursor-pointer"
+          className="fixed inset-0 z-[100] flex items-center justify-end bg-[var(--bg-modal-overlay)] backdrop-blur-md cursor-pointer"
           onClick={(e) => {
             if (e.target === e.currentTarget) setIsSourcesDrawerOpen(false);
           }}

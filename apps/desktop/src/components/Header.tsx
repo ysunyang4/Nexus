@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  OctagonAlert,
+  AlertCircle,
   RefreshCw,
   ShieldAlert,
 } from "lucide-react";
@@ -29,6 +29,7 @@ interface HeaderProps {
   fullControlStatus?: FullControlStatusDto | null;
   onOpenFullControl?: () => void;
   onStopFullControl?: () => void;
+  activeRunningCount?: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -42,9 +43,53 @@ export const Header: React.FC<HeaderProps> = ({
   serverAvailable,
   fullControlStatus,
   onStopFullControl,
+  activeRunningCount = 0,
 }) => {
   const { tText } = useTranslation();
   const isPaused = mcpStatus?.paused ?? false;
+  const hasActiveTasks = activeRunningCount > 0;
+  const [showEmergencyTip, setShowEmergencyTip] = useState(false);
+  const tipTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (tipTimerRef.current !== null) window.clearTimeout(tipTimerRef.current);
+    };
+  }, []);
+
+  const handleTipMouseEnter = () => {
+    if (tipTimerRef.current !== null) window.clearTimeout(tipTimerRef.current);
+    tipTimerRef.current = window.setTimeout(() => setShowEmergencyTip(true), 350);
+  };
+
+  const handleTipMouseLeave = () => {
+    if (tipTimerRef.current !== null) {
+      window.clearTimeout(tipTimerRef.current);
+      tipTimerRef.current = null;
+    }
+    setShowEmergencyTip(false);
+  };
+
+  const emergencyAriaLabel = tText(
+    "紧急停止 (Emergency Halt)",
+    "Emergency Halt",
+    "緊急停止 (Emergency Halt)",
+    "Not-Halt (Emergency Halt)"
+  );
+
+  const emergencyTooltipText = hasActiveTasks
+    ? tText(
+        `紧急停止 (Emergency Halt) — ${activeRunningCount} 个任务运行中`,
+        `Emergency Halt — ${activeRunningCount} actions running`,
+        `緊急停止 (Emergency Halt) — ${activeRunningCount} 件の操作を実行中`,
+        `Not-Halt (Emergency Halt) — ${activeRunningCount} aktive Aktionen`
+      )
+    : tText(
+        "紧急停止 (Emergency Halt) — 停止所有运行中的操作",
+        "Emergency Halt — stops all running actions",
+        "緊急停止 (Emergency Halt) — 実行中の操作をすべて停止",
+        "Not-Halt (Emergency Halt) — stoppt alle laufenden Aktionen"
+      );
 
   return (
     <header className="h-14 px-6 bg-theme-header border-b border-theme-subtle flex items-center justify-between select-none shrink-0 z-10">
@@ -141,21 +186,33 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
 
         {/* Emergency Stop Button */}
-        <button
-          onClick={onTriggerEmergencyStop}
-          title={tText(
-            "紧急熔断中止执行",
-            "Emergency Stop Execution",
-            "緊急停止",
-            "Not-Halt Ausführung abbrechen"
+        <div className="relative">
+          <button
+            type="button"
+            onClick={onTriggerEmergencyStop}
+            onMouseEnter={handleTipMouseEnter}
+            onMouseLeave={handleTipMouseLeave}
+            onFocus={() => setShowEmergencyTip(true)}
+            onBlur={() => setShowEmergencyTip(false)}
+            aria-label={emergencyAriaLabel}
+            className={`w-8 h-8 rounded-lg flex items-center justify-center border transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#DC2626]/40 ${
+              hasActiveTasks
+                ? "bg-[#DC2626] hover:bg-[#B91C1C] border-[#DC2626] text-white shadow-sm"
+                : "bg-transparent border-[#DC2626]/75 text-[#DC2626] hover:bg-[#DC2626]/10"
+            }`}
+          >
+            <AlertCircle className="w-4 h-4 stroke-[2.2]" />
+          </button>
+
+          {showEmergencyTip && (
+            <div
+              role="tooltip"
+              className="absolute right-0 top-full mt-2 z-[150] whitespace-nowrap px-2.5 py-1.5 rounded-md text-[11px] font-medium bg-theme-card text-theme-primary border border-theme-subtle shadow-lg pointer-events-none"
+            >
+              {emergencyTooltipText}
+            </div>
           )}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-[#DC2626] hover:bg-[#B91C1C] text-white transition cursor-pointer"
-        >
-          <OctagonAlert className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">
-            {tText("紧急熔断", "Emergency Halt", "緊急停止", "Not-Halt")}
-          </span>
-        </button>
+        </div>
       </div>
     </header>
   );

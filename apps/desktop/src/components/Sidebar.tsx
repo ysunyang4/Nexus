@@ -175,49 +175,52 @@ export const Sidebar: React.FC<SidebarProps> = ({
           }`}
         >
           {!collapsed ? (
-            <div className="flex items-center gap-2.5 min-w-0">
+            <>
+              <div className="flex items-center gap-2.5 min-w-0">
+                <img
+                  src={nexusLogo}
+                  alt="Nexus"
+                  className="w-6 h-6 rounded-md object-cover border border-theme-subtle shrink-0"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = "/nexus.png";
+                  }}
+                />
+                <span className="font-semibold text-xs tracking-wider text-theme-primary">
+                  NEXUS
+                </span>
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-theme-card-muted text-theme-secondary border border-theme-subtle">
+                  1.4.1
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setCollapsed(true)}
+                className="p-1 rounded text-theme-muted hover:text-theme-primary hover:bg-theme-card-hover transition cursor-pointer"
+                title={tText("收起侧边栏", "Collapse Sidebar", "サイドバーを折りたたむ", "Seitenleiste einklappen")}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setCollapsed(false)}
+              className="group relative w-8 h-8 rounded-lg flex items-center justify-center hover:bg-theme-card-hover transition cursor-pointer"
+              title={tText("展开侧边栏", "Expand Sidebar", "サイドバーを展開", "Seitenleiste ausklappen")}
+              aria-label={tText("展开侧边栏", "Expand Sidebar", "サイドバーを展開", "Seitenleiste ausklappen")}
+            >
               <img
                 src={nexusLogo}
                 alt="Nexus"
-                className="w-6 h-6 rounded-md  object-cover border border-theme-subtle shrink-0"
+                className="w-6 h-6 rounded-md object-cover border border-theme-subtle transition-opacity duration-150 group-hover:opacity-0"
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).src = "/nexus.png";
                 }}
               />
-              <span className="font-semibold text-xs tracking-wider text-theme-primary">
-                NEXUS
-              </span>
-              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-theme-card-muted text-theme-secondary border border-theme-subtle">
-                1.4.1
-              </span>
-            </div>
-          ) : (
-            <img
-              src={nexusLogo}
-              alt="Nexus"
-              className="w-6 h-6 rounded-md  object-cover border border-theme-subtle"
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).src = "/nexus.png";
-              }}
-            />
+              <ChevronRight className="w-4 h-4 text-theme-primary absolute opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
+            </button>
           )}
-
-          <button
-            type="button"
-            onClick={() => setCollapsed(!collapsed)}
-            className="p-1 rounded text-theme-muted hover:text-theme-primary hover:bg-theme-card-hover transition"
-            title={
-              collapsed
-                ? tText("展开侧边栏", "Expand Sidebar", "サイドバーを展開", "Seitenleiste ausklappen")
-                : tText("收起侧边栏", "Collapse Sidebar", "サイドバーを折りたたむ", "Seitenleiste einklappen")
-            }
-          >
-            {collapsed ? (
-              <ChevronRight className="w-4 h-4" />
-            ) : (
-              <ChevronLeft className="w-4 h-4" />
-            )}
-          </button>
         </div>
 
         {/* Navigation Groups List */}
