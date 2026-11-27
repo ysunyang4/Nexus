@@ -1366,42 +1366,56 @@ export const managementRoutes: FastifyPluginAsync<ManagementRoutesOptions> = asy
     return reply.status(200).send({ success: true, config });
   });
 
+  const isValidExternalUrl = (raw: unknown): raw is string => {
+    if (typeof raw !== "string" || raw.length === 0 || raw.length > 2048 || raw.includes("\0")) {
+      return false;
+    }
+    try {
+      const parsed = new URL(raw);
+      return parsed.protocol === "http:" || parsed.protocol === "https:";
+    } catch {
+      return false;
+    }
+  };
+
   fastify.post("/api/browser/open", async (request, reply) => {
     const { url } = (request.body as any) || {};
-    if (typeof url === "string" && url) {
-      try {
-        if (process.platform === "win32") {
-          child_process.spawn("explorer.exe", [url], { detached: true, stdio: "ignore" }).unref();
-        } else if (process.platform === "darwin") {
-          child_process.spawn("open", [url], { detached: true, stdio: "ignore" }).unref();
-        } else {
-          child_process.spawn("xdg-open", [url], { detached: true, stdio: "ignore" }).unref();
-        }
-        return reply.status(200).send({ success: true });
-      } catch (err: any) {
-        return reply.status(500).send({ success: false, error: err.message });
-      }
+    if (!isValidExternalUrl(url)) {
+      return reply.status(400).send({ success: false, error: "Invalid or unsupported url parameter" });
     }
-    return reply.status(400).send({ success: false, error: "Missing url parameter" });
+    try {
+      const spawnOpts = { shell: false, detached: true, stdio: "ignore" as const };
+      if (process.platform === "win32") {
+        child_process.spawn("explorer.exe", [url], spawnOpts).unref();
+      } else if (process.platform === "darwin") {
+        child_process.spawn("open", [url], spawnOpts).unref();
+      } else {
+        child_process.spawn("xdg-open", [url], spawnOpts).unref();
+      }
+      return reply.status(200).send({ success: true });
+    } catch (err: any) {
+      return reply.status(500).send({ success: false, error: err.message });
+    }
   });
 
   fastify.post("/api/browser/open-system", async (request, reply) => {
     const { url } = (request.body as any) || {};
-    if (typeof url === "string" && url) {
-      try {
-        if (process.platform === "win32") {
-          child_process.spawn("explorer.exe", [url], { detached: true, stdio: "ignore" }).unref();
-        } else if (process.platform === "darwin") {
-          child_process.spawn("open", [url], { detached: true, stdio: "ignore" }).unref();
-        } else {
-          child_process.spawn("xdg-open", [url], { detached: true, stdio: "ignore" }).unref();
-        }
-        return reply.status(200).send({ success: true });
-      } catch (err: any) {
-        return reply.status(500).send({ success: false, error: err.message });
-      }
+    if (!isValidExternalUrl(url)) {
+      return reply.status(400).send({ success: false, error: "Invalid or unsupported url parameter" });
     }
-    return reply.status(400).send({ success: false, error: "Missing url parameter" });
+    try {
+      const spawnOpts = { shell: false, detached: true, stdio: "ignore" as const };
+      if (process.platform === "win32") {
+        child_process.spawn("explorer.exe", [url], spawnOpts).unref();
+      } else if (process.platform === "darwin") {
+        child_process.spawn("open", [url], spawnOpts).unref();
+      } else {
+        child_process.spawn("xdg-open", [url], spawnOpts).unref();
+      }
+      return reply.status(200).send({ success: true });
+    } catch (err: any) {
+      return reply.status(500).send({ success: false, error: err.message });
+    }
   });
 
   fastify.post("/management/clear-handle-file", async (_request, reply) => {

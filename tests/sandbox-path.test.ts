@@ -4,6 +4,7 @@ import path from "node:path";
 import os from "node:os";
 import {
   resolveProjectPath,
+  isPathInside,
   SecurityPathError,
   assertNoWindowsDevNamespace,
   assertNoDriveOrRootRelative,
@@ -178,5 +179,12 @@ describe("Security Path Sandbox", () => {
     expect(() =>
       resolveProjectPath(canonicalRoot, "deep/new/dir/../../../../outside.txt")
     ).toThrowError(expect.objectContaining({ code: LocalBridgeErrorCode.PATH_TRAVERSAL }));
+  });
+
+  it("isPathInside allows ..cache subdirectory but rejects ../x and outside absolute paths", () => {
+    expect(isPathInside(canonicalRoot, path.join(canonicalRoot, "..cache"))).toBe(true);
+    expect(isPathInside(canonicalRoot, path.join(canonicalRoot, "..", "x"))).toBe(false);
+    const otherRoot = path.resolve(path.parse(canonicalRoot).root, "outside-absolute-dir");
+    expect(isPathInside(canonicalRoot, otherRoot)).toBe(false);
   });
 });

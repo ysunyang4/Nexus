@@ -5,7 +5,11 @@ async function main() {
   console.log("       NEXUS E2E ACCEPTANCE MATRIX TEST (18080 -> 8787 -> 20705)                 ");
   console.log("================================================================================\n");
 
-  const MCP_TOKEN = "lb_c1fd4d51cbd4ed1043a823934dd3813f27d38919aad859917bb1cb820acfa469";
+  const MCP_TOKEN = process.env.NEXUS_E2E_MCP_TOKEN;
+  if (!MCP_TOKEN) {
+    console.error("Error: NEXUS_E2E_MCP_TOKEN environment variable is required.");
+    process.exit(1);
+  }
   const INVALID_TOKEN = "lb_invalid_token_1234567890";
   const INGRESS_URL = "http://127.0.0.1:18080/mcp";
   const GATEWAY_URL = "http://127.0.0.1:8787/mcp";

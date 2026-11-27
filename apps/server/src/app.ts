@@ -82,15 +82,26 @@ export async function buildApp(
   // CORS
   await app.register(cors, {
     origin: (origin, cb) => {
-      if (
-        !origin ||
-        origin.startsWith("http://127.0.0.1") ||
-        origin.startsWith("http://localhost") ||
-        origin.includes("tauri.localhost") ||
-        origin === "tauri://localhost"
-      ) {
+      if (!origin) {
         cb(null, true);
         return;
+      }
+      if (origin === "tauri://localhost") {
+        cb(null, true);
+        return;
+      }
+      try {
+        const parsed = new URL(origin);
+        if (
+          (parsed.protocol === "http:" &&
+            (parsed.hostname === "127.0.0.1" || parsed.hostname === "localhost")) ||
+          parsed.hostname === "tauri.localhost"
+        ) {
+          cb(null, true);
+          return;
+        }
+      } catch {
+        // invalid URL -> reject
       }
       cb(null, false);
     },
