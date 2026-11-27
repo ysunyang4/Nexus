@@ -1,6 +1,6 @@
 [package]
 name = "localbridge-desktop"
-version = "1.4.0"
+version = "1.4.1"
 description = "Nexus Desktop Control Center"
 authors = ["Nexus Team"]
 edition = "2021"
