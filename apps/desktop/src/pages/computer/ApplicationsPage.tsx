@@ -437,7 +437,7 @@ export const ApplicationsPage: React.FC = () => {
                 {tText("MCP 插件中心", "MCP Plugin Center", "MCP プラグインセンター", "MCP-Plugin-Zentrum")}
               </h1>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full font-medium bg-theme-base text-theme-secondary border border-theme-subtle">
-                v1.4.0
+                v1.4.1
               </span>
             </div>
           </div>

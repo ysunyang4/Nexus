@@ -54,7 +54,7 @@ export const ConnectionsPage: React.FC<ConnectionsPageProps> = ({
           <div className="p-3 bg-theme-card-muted rounded-lg border border-theme-subtle">
             <div className="text-theme-muted">{t.settings.versionLabel}</div>
             <div className="font-semibold text-theme-primary">
-              {serverStatus?.version || "1.4.0"}
+              {serverStatus?.version || "1.4.1"}
             </div>
           </div>
           <div className="p-3 bg-theme-card-muted rounded-lg border border-theme-subtle">

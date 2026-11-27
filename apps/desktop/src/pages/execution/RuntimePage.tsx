@@ -53,7 +53,7 @@ export const RuntimePage: React.FC<RuntimePageProps> = ({ serverStatus }) => {
             <div className="flex justify-between py-1">
               <span className="text-theme-muted">Server Version</span>
               <span className="font-mono text-theme-secondary">
-                {serverStatus?.version || "1.4.0"}
+                {serverStatus?.version || "1.4.1"}
               </span>
             </div>
           </div>

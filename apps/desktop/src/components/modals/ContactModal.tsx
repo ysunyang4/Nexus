@@ -81,7 +81,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                   {tText("关于 Nexus 与开源生态", "About Nexus & Ecosystem", "Nexus とエコシステムについて", "Über Nexus & Ökosystem")}
                 </h2>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[var(--btn-primary-bg)]/10 text-theme-primary text-theme-primary border border-theme-subtle font-mono">
-                  v1.4.0
+                  v1.4.1
                 </span>
               </div>
               <p className="text-xs text-theme-secondary mt-0.5">
@@ -368,7 +368,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold text-theme-primary group-hover:text-theme-primary transition">
-                        Nexus (v1.4.0)
+                        Nexus (v1.4.1)
                       </span>
                       <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-[var(--btn-primary-bg)]/10 text-theme-primary text-theme-primary">
                         Core System

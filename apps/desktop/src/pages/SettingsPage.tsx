@@ -3048,7 +3048,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                     Nexus Control Center
                   </span>
                   <span className="px-2 py-0.5 rounded-full text-xs font-mono font-semibold bg-theme-card-muted text-theme-secondary border border-theme-subtle">
-                    v1.4.0
+                    v1.4.1
                   </span>
                 </div>
                 <div className="text-theme-secondary text-xs leading-relaxed space-y-1.5">

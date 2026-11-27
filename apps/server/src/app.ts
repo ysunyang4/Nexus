@@ -129,7 +129,7 @@ export async function buildApp(
 
   // Strict Anti-Proxy & Ingress Defense
   app.addHook("onRequest", async (request, reply) => {
-    // Ingress restriction: Nexus 1.4.0 strictly supports ChatGPT only.
+    // Ingress restriction: Nexus 1.4.1 strictly supports ChatGPT only.
     // Hard block Claude, Anthropic, Gemini, Google-AI clients at transport boundary.
     const userAgent = String(request.headers["user-agent"] || "").toLowerCase();
     const origin = String(request.headers["origin"] || "").toLowerCase();
@@ -145,7 +145,7 @@ export async function buildApp(
       referer.includes("gemini.google.com")
     ) {
       reply.status(403).send({
-        error: "Forbidden: Client not supported in Nexus 1.4.0 (ChatGPT only)",
+        error: "Forbidden: Client not supported in Nexus 1.4.1 (ChatGPT only)",
         code: "CLIENT_NOT_SUPPORTED",
       });
       return reply;

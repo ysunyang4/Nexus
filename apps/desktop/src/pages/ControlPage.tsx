@@ -434,7 +434,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
                 {serverStatus?.runners_connected || 0} {t.control?.runnerConnected || "Connected"}
               </div>
               <div className="text-[10px] font-mono text-theme-muted">
-                Node v{serverStatus?.version || "1.4.0"}
+                Node v{serverStatus?.version || "1.4.1"}
               </div>
             </div>
             <span
@@ -660,7 +660,7 @@ export const ControlPage: React.FC<ControlPageProps> = ({
           </div>
 
           <span className="text-theme-muted text-[11px]">
-            Nexus v{serverStatus?.version || "1.4.0"} · Standard Mode
+            Nexus v{serverStatus?.version || "1.4.1"} · Standard Mode
           </span>
         </section>
       )}

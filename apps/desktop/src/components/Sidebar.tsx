@@ -188,7 +188,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 NEXUS
               </span>
               <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-theme-card-muted text-theme-secondary border border-theme-subtle">
-                1.4.0
+                1.4.1
               </span>
             </div>
           ) : (
@@ -448,7 +448,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   : tText("服务异常", "Standby", "サービス待機中", "Standby")}
               </span>
             </span>
-            <span className="text-[10px]">v1.4.0</span>
+            <span className="text-[10px]">v1.4.1</span>
           </div>
         ) : (
           <div
