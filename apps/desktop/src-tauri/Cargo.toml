@@ -1,10 +1,10 @@
 [package]
 name = "localbridge-desktop"
-version = "1.4.0"
+version = "1.4.1"
 description = "Nexus Desktop Control Center"
 authors = ["Nexus Team"]
 edition = "2021"
-license = "Apache-2.0"
+license = "AGPL-3.0-only"
 
 [package.metadata.tauri-winres]
 OriginalFilename = "localbridge-desktop.exe"
