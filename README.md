@@ -7,8 +7,8 @@
 <h1 align="center">Nexus</h1>
 
 <p align="center">
-  <strong>Dedicated Local AI Control Plane for ChatGPT, DeepSeek & Modern Web AI Assistants</strong><br>
-  <i>Powered by the LocalBridge 332 Canonical MCP Tool Architecture & Durable Action Ledger</i>
+  <strong>Turn Web AI into a Codex-Grade Local Agent — and Supercharge Native Clients (Cursor, Antigravity, Claude Code)</strong><br>
+  <i>3 Meta-Tools · 332 Canonical Capabilities · Built-in Token Guardrail · Action Ledger WAL</i>
 </p>
 
 <p align="center">
@@ -22,7 +22,14 @@
 </p>
 <!-- M8ven Publisher Verification: [![M8ven Verified](https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652)](https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme) -->
 
-Nexus is an enterprise-grade Local AI Control Plane designed specifically for ChatGPT, DeepSeek, and modern AI coding assistants. It securely bridges remote LLMs to your local workstation through a high-performance **Secure MCP Tunnel** (Streamable HTTP with Bearer tokens). Ask your assistant to inspect repositories, edit code, run builds, debug, or orchestrate complex local engineering workflows within strictly enforced sandbox boundaries—without exposing your full filesystem or transmitting proprietary code to untrusted cloud intermediaries.
+**Nexus** is a local MCP execution gateway with two ways to run—giving browser-based AI chats Codex-style workstation autonomy at zero API cost, and giving native AI coding clients desktop/3D control without blowing up their context window.
+
+### Two Ways to Power Your AI
+
+| Mode | What It Unlocks | Why It Matters |
+| :--- | :--- | :--- |
+| **🌐 Web AI → Codex-Grade Local Agent**<br>*(Paired with [WebAgent](https://github.com/ysunyang4/webagent))* | Bridge **ChatGPT, DeepSeek, Claude, Gemini, or Kimi** web tabs directly to local repositories, terminals, LSP, Git worktrees, and builds. | **Zero API key cost.** Turn your existing web AI subscription into a local coder and test-fix operator inside strict path sandboxes. |
+| **⚡ Native Clients → Token-Lean & Supercharged**<br>*(Cursor, Antigravity, Claude Code, Codex CLI, Windsurf)* | Connect via one Streamable HTTP MCP endpoint (`http://127.0.0.1:18080/mcp`) to unlock **Blender, Unity, Playwright, Windows Computer Use, and Action Ledger WAL**. | **Built-in Token Guardrail (`token-guardrail`):**<br>• **On-demand discovery (`nexus_discover_tools`)**: Search tools instead of dumping 332 schemas into context.<br>• **Single-turn batching (`nexus_run_script`)**: Run multi-step Python/Node workflows locally with zero intermediate round-trip tokens.<br>• **Payload stripping & handles**: Offload Base64 screenshots to disk paths, middle-truncate giant logs, and paginate large lists via `HandleManager`. |
 
 <p align="center">
   <a href="https://trendshift.io/repositories/358532?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-358532" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/358532/daily?language=TypeScript" alt="ysunyang4%2FNexus | Trendshift" width="250" height="55"/></a>
@@ -33,7 +40,7 @@ Nexus is an enterprise-grade Local AI Control Plane designed specifically for Ch
 ## 1. Overview
 
 ```text
- ChatGPT / DeepSeek / Web AI Assistants
+ Web AI (via WebAgent)  |  Native MCP Clients (Cursor / Antigravity / Claude Code / Codex)
                │
                │ Secure MCP Tunnel (Streamable HTTP, Bearer lb_xxx)
                ▼
