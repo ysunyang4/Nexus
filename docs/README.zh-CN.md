@@ -20,6 +20,9 @@
   <img src="https://img.shields.io/badge/MCP_Tools-332_规范工具-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="332 MCP Tools">
   <a href="../LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="License AGPL-3.0"></a>
 </p>
+<p align="center">
+  <a href="https://trendshift.io/repositories/358532?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-358532" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/358532/daily?language=TypeScript" alt="ysunyang4%2FNexus | Trendshift" width="250" height="55"/></a>
+</p>
 <!-- M8ven Publisher Verification: [![M8ven Verified](https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652)](https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme) -->
 
 **Nexus** 是一套“双端驱动”的本地 MCP 执行网关：既能让浏览器里的网页版 AI 零 API 成本获得类似 Codex 的本地编码闭环能力，也能让专业 AI 客户端在更省 Token 的前提下解锁桌面软件、3D 引擎与浏览器自动化能力。
@@ -30,10 +33,6 @@
 | :--- | :--- | :--- |
 | **🌐 网页版 AI → 化身 Codex 级本地工程师**<br>*(配合 [WebAgent 浏览器插件](https://github.com/ysunyang4/webagent))* | 直接把 **ChatGPT、DeepSeek、Claude、Gemini、Kimi 网页版** 桥接到本地仓库，实现读代码、改文件、跑编译、修报错与 Git Worktree 管理。 | **零额外 API 费用。** 用你原本的网页版会员，就能在严格路径沙盒内跑通端到端本地研发闭环，且源码不经第三方云端中继。 |
 | **⚡ 专业 AI 客户端 → 更省 Token、能力更强**<br>*(Cursor、Antigravity、Claude Code、Codex CLI、Windsurf)* | 只需配置一行 Streamable HTTP MCP 地址（`http://127.0.0.1:18080/mcp`），即可让客户端直接操控 **Blender、Unity、Playwright、Windows 桌面自动化**，并获得 **Action Ledger WAL 崩溃恢复**。 | **原生省 Token 引擎 (`token-guardrail`)：**<br>• **按需发现 (`nexus_discover_tools`)**：不再把 332 个工具 Schema 全塞进上下文。<br>• **脚本单轮批处理 (`nexus_run_script`)**：多步操作写进一次 Python/Node 脚本跑完，零中间往返 Token 消耗。<br>• **载荷瘦身**：Base64 截图自动落盘转路径、超长日志自动中间截断、大列表通过 `HandleManager` 分页读取。 |
-
-<p align="center">
-  <a href="https://trendshift.io/repositories/358532?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-358532" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/358532/daily?language=TypeScript" alt="ysunyang4%2FNexus | Trendshift" width="250" height="55"/></a>
-</p>
 
 ---
 

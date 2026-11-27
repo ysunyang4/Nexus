@@ -20,6 +20,9 @@
   <img src="https://img.shields.io/badge/MCP_Tools-332_Canonical-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="332 MCP Tools">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="License AGPL-3.0"></a>
 </p>
+<p align="center">
+  <a href="https://trendshift.io/repositories/358532?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-358532" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/358532/daily?language=TypeScript" alt="ysunyang4%2FNexus | Trendshift" width="250" height="55"/></a>
+</p>
 <!-- M8ven Publisher Verification: [![M8ven Verified](https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652)](https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme) -->
 
 **Nexus** is a local MCP execution gateway with two ways to run—giving browser-based AI chats Codex-style workstation autonomy at zero API cost, and giving native AI coding clients desktop/3D control without blowing up their context window.
@@ -30,10 +33,6 @@
 | :--- | :--- | :--- |
 | **🌐 Web AI → Codex-Grade Local Agent**<br>*(Paired with [WebAgent](https://github.com/ysunyang4/webagent))* | Bridge **ChatGPT, DeepSeek, Claude, Gemini, or Kimi** web tabs directly to local repositories, terminals, LSP, Git worktrees, and builds. | **Zero API key cost.** Turn your existing web AI subscription into a local coder and test-fix operator inside strict path sandboxes. |
 | **⚡ Native Clients → Token-Lean & Supercharged**<br>*(Cursor, Antigravity, Claude Code, Codex CLI, Windsurf)* | Connect via one Streamable HTTP MCP endpoint (`http://127.0.0.1:18080/mcp`) to unlock **Blender, Unity, Playwright, Windows Computer Use, and Action Ledger WAL**. | **Built-in Token Guardrail (`token-guardrail`):**<br>• **On-demand discovery (`nexus_discover_tools`)**: Search tools instead of dumping 332 schemas into context.<br>• **Single-turn batching (`nexus_run_script`)**: Run multi-step Python/Node workflows locally with zero intermediate round-trip tokens.<br>• **Payload stripping & handles**: Offload Base64 screenshots to disk paths, middle-truncate giant logs, and paginate large lists via `HandleManager`. |
-
-<p align="center">
-  <a href="https://trendshift.io/repositories/358532?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-358532" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/358532/daily?language=TypeScript" alt="ysunyang4%2FNexus | Trendshift" width="250" height="55"/></a>
-</p>
 
 ---
 
