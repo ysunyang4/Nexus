@@ -1,15 +1,30 @@
 import fs from 'fs';
 import path from 'path';
 
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
+const GITHUB_TOKEN = process.env.GH_TOKEN;
 const OWNER = 'ysunyang4';
 const REPO = 'Nexus';
-const TAG = 'v1.3.4';
+const TAG = process.argv[2] || process.env.RELEASE_TAG;
 
 const filePath = 'D:/Geek_AI/Nexus1.3.4/apps/desktop/src-tauri/target/release/bundle/nsis/Nexus_1.3.4_x64-setup.exe';
 const fileName = 'Nexus_1.3.4_x64-setup.exe';
 
 async function main() {
+  if (!GITHUB_TOKEN) {
+    console.error('Error: GH_TOKEN environment variable is required.');
+    process.exit(1);
+  }
+  if (!TAG) {
+    console.error('Error: Release tag must be provided via CLI argument or RELEASE_TAG environment variable.');
+    process.exit(1);
+  }
+
+  console.log(`Target release: ${OWNER}/${REPO} tag=${TAG}, asset=${fileName}`);
+  if (process.env.CONFIRM_RELEASE_UPLOAD !== 'yes') {
+    console.error('Aborted: set CONFIRM_RELEASE_UPLOAD=yes to confirm release asset upload.');
+    process.exit(1);
+  }
+
   if (!fs.existsSync(filePath)) {
     console.error(`Installer file not found at ${filePath}`);
     process.exit(1);

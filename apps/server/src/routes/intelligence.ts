@@ -1,8 +1,9 @@
 import type { FastifyPluginAsync, FastifyRequest } from "fastify";
 import fs from "node:fs";
 import path from "node:path";
-import { exec } from "node:child_process";
+import { spawn } from "node:child_process";
 import { RunnerRpcMethods } from "@localbridge/protocol";
+import { isPathInside } from "@localbridge/security";
 import type { McpContext } from "../mcp/context.js";
 import type { TokenService } from "../db/token-service.js";
 import { checkLoopbackAndSecurity } from "./management.js";
@@ -694,13 +695,32 @@ export const intelligenceRoutes: FastifyPluginAsync<IntelligenceRoutesOptions> =
   }>, reply) => {
     try {
       const runtime = getRuntime();
-      const targetPath = request.body?.folderPath || runtime.store.getStorageEngine().getStats().rootDir;
+      const rootDir = path.resolve(runtime.store.getStorageEngine().getStats().rootDir);
+      const rawFolder = request.body?.folderPath;
+
+      let targetPath = rootDir;
+      if (rawFolder !== undefined) {
+        if (
+          typeof rawFolder !== "string" ||
+          rawFolder.length === 0 ||
+          rawFolder.length > 1024 ||
+          rawFolder.includes("\0")
+        ) {
+          return reply.status(400).send({ error: "Invalid folderPath" });
+        }
+        targetPath = path.resolve(rootDir, rawFolder);
+        if (!isPathInside(rootDir, targetPath)) {
+          return reply.status(400).send({ error: "folderPath must be within storage rootDir" });
+        }
+      }
+
+      const spawnOpts = { shell: false, detached: true, stdio: "ignore" as const };
       if (process.platform === "win32") {
-        exec(`explorer "${targetPath}"`);
+        spawn("explorer.exe", [targetPath], spawnOpts).unref();
       } else if (process.platform === "darwin") {
-        exec(`open "${targetPath}"`);
+        spawn("open", [targetPath], spawnOpts).unref();
       } else {
-        exec(`xdg-open "${targetPath}"`);
+        spawn("xdg-open", [targetPath], spawnOpts).unref();
       }
       return reply.send({ success: true, path: targetPath });
     } catch (err: any) {

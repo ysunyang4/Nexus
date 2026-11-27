@@ -58,7 +58,7 @@ export function isPathInside(parentCanonical: string, childCanonical: string): b
   }
 
   const rel = path.relative(p, c);
-  if (rel.startsWith("..") || path.isAbsolute(rel) || rel === "..") {
+  if (rel === ".." || rel.startsWith(".." + path.sep) || path.isAbsolute(rel)) {
     return false;
   }
 

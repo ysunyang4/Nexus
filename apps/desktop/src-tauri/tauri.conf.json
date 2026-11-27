@@ -34,8 +34,8 @@
       "deb",
       "appimage"
     ],
-    "publisher": "Dockra",
-    "copyright": "Copyright © 2026 Dockra",
+    "publisher": "Ryan Sun",
+    "copyright": "Copyright © 2026 Ryan Sun",
     "license": "Apache-2.0",
     "licenseFile": "../../../LICENSE",
     "icon": [
